@@ -1,29 +1,17 @@
-<!-- agent-notes: { ctx: "project instructions and governance rules", deps: ["docs/code-map.md", "docs/methodology/personas.md"], state: active, last: "pat@2026-07-28" } -->
 <!-- For a human-readable overview, see README.md and docs/template-guide.md -->
 # AGENTS.md — Project Instructions for Antigravity
 
 ## Project Overview
 
-**Project Name:** SkillBridge AI - Frontend
-**Description:** Frontend web application for the SkillBridge AI learning platform
-**GitHub Repository:** `https://github.com/skillbridge-ai/frontend`
+<!-- TODO: Replace this section with your project's overview after scaffolding -->
 
-### Tech Stack Overview
-- **Core UI Framework:** React 19 (`react`, `react-dom`)
-- **Build System & Dev Server:** Vite 8 (`vite`, `@vitejs/plugin-react`)
-- **Styling:** Tailwind CSS v4 (`tailwindcss`, `@tailwindcss/vite`)
-- **Icons & UI Components:** Lucide React (`lucide-react`)
-- **Data Visualization:** Recharts (`recharts`)
-- **Linting & Code Quality:** Oxlint (`oxlint`)
-
-### App Launch & CLI Commands
-- `npm run dev` — Start the local Vite development server with HMR
-- `npm run build` — Compile production-ready static assets to `dist/`
-- `npm run preview` — Locally preview the production build
-- `npm run lint` — Run Oxlint source code linter
+**Project Name:** todo
+**Description:** A CLI todo list application for managing tasks
+**Tech Stack:** Python + Click + JSON file storage
 
 **Codebase map:** `docs/code-map.md` — read this first to understand the package structure, public APIs, and data flow.
 
+> **Note:** Several paths referenced below (e.g., `docs/code-map.md`, `docs/tech-debt.md`, `docs/test-strategy.md`) live under `docs/scaffolds/` until you run a scaffold command, which moves them to their final locations.
 
 ## First-Run Detection
 
