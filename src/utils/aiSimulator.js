@@ -46,7 +46,7 @@ export function analyzeResume(fileName, fileText = "") {
   const foundSkills = [];
   TECH_KEYWORDS.forEach(keyword => {
     // Escape regex characters just in case
-    const regex = new RegExp(`\\b${keyword.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}\\b`, 'i');
+    const regex = new RegExp(`\\b${keyword.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')}\\b`, 'i');
     if (regex.test(normalizedText)) {
       foundSkills.push(normalizeSkill(keyword));
     }
@@ -77,10 +77,10 @@ export function analyzeResume(fileName, fileText = "") {
     const projectText = text.substring(projectIndex);
     const projLines = projectText.split("\n").slice(0, 4);
     projLines.forEach(line => {
-      const cleanLine = line.replace(/project[s]?\s*[:\-]?/gi, "").trim();
+      const cleanLine = line.replace(/project[s]?\s*[:-]?/gi, "").trim();
       if (cleanLine.length > 10) {
         projects.push({
-          title: cleanLine.split(/[:\-]/)[0].trim(),
+          title: cleanLine.split(/[:-]/)[0].trim(),
           description: cleanLine,
           tech: uniqueSkills.slice(0, 3).join(", ")
         });
@@ -123,7 +123,7 @@ export function analyzeJobDescription(jdText) {
   const extractedSkills = [];
   
   TECH_KEYWORDS.forEach(keyword => {
-    const regex = new RegExp(`\\b${keyword.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}\\b`, 'i');
+    const regex = new RegExp(`\\b${keyword.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')}\\b`, 'i');
     if (regex.test(normalizedText)) {
       extractedSkills.push(normalizeSkill(keyword));
     }
@@ -151,7 +151,7 @@ export function analyzeJobDescription(jdText) {
     requiredSkills: uniqueSkills.length > 0 ? uniqueSkills : ["React.js", "Git", "SQL"],
     experience,
     tools: tools.length > 0 ? tools : ["Git"],
-    responsibilities: jdText.length > 50 ? jdText.split("\n").filter(l => l.includes("-") || l.includes("*")).slice(0, 3).map(l => l.replace(/^[-\*\s]+/, "")) : ["Build user features", "Maintain codebase", "Collaborate with team"]
+    responsibilities: jdText.length > 50 ? jdText.split("\n").filter(l => l.includes("-") || l.includes("*")).slice(0, 3).map(l => l.replace(/^[-*\s]+/, "")) : ["Build user features", "Maintain codebase", "Collaborate with team"]
   };
 }
 
@@ -199,7 +199,7 @@ export function generateRoadmap(missingSkills) {
 
   const roadmap = [];
   
-  missingSkills.forEach((skill, index) => {
+  missingSkills.forEach((skill, _index) => {
     const normalizedName = normalizeSkill(skill);
     const skillData = SKILL_LIBRARY[normalizedName];
     
@@ -395,7 +395,7 @@ export function evaluateInterviewResponse(track, questionIndex, answer) {
   let matchedWordsCount = 0;
   sampleWords.forEach(w => {
     // Clean punctuation
-    const cleanWord = w.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+    const cleanWord = w.replace(/[.,/#!$%^&*;:{}=\-_`~()]/g,"");
     if (studentAns.includes(cleanWord)) {
       matchedWordsCount++;
     }

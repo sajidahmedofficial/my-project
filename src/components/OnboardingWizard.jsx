@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { 
   GraduationCap, 
-  Briefcase, 
   Target, 
   CheckCircle2, 
   ArrowRight, 
@@ -10,7 +9,6 @@ import {
   UploadCloud, 
   Sparkles, 
   Code2, 
-  Layers, 
   Award,
   Check,
   Plus

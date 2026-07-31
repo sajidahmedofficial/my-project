@@ -4,14 +4,10 @@ import {
   Award, 
   CheckSquare, 
   TrendingUp, 
-  Layers, 
   Flame, 
   ArrowRight,
   Sparkles,
-  Clock,
   BookOpen,
-  GraduationCap,
-  Briefcase,
   Code2,
   ExternalLink,
   ShieldCheck,
@@ -24,9 +20,7 @@ import {
   YAxis, 
   CartesianGrid, 
   Tooltip, 
-  ResponsiveContainer,
-  BarChart,
-  Bar
+  ResponsiveContainer
 } from 'recharts';
 
 export default function Dashboard({ profile, setProfile, onNavigate }) {
@@ -79,13 +73,7 @@ export default function Dashboard({ profile, setProfile, onNavigate }) {
     { name: 'Week 5', score: scores.skillScore, readiness: scores.placementReadiness }
   ];
 
-  // Competency categories data
-  const skillBarData = [
-    { category: 'Frontend', count: 85 },
-    { category: 'Backend', count: 72 },
-    { category: 'Database', count: 65 },
-    { category: 'Cloud/DevOps', count: 58 }
-  ];
+
 
   const mockCertificates = [
     { id: 1, title: 'Google Cloud Certified Professional', provider: 'Google', date: '2026' },

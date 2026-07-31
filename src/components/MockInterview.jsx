@@ -12,7 +12,7 @@ import {
 import { MOCK_INTERVIEWS } from '../utils/mockData';
 import { evaluateInterviewResponse } from '../utils/aiSimulator';
 
-export default function MockInterview({ profile, setProfile }) {
+export default function MockInterview({ _profile, setProfile }) {
   const [track, setTrack] = React.useState(null); // 'frontend', 'backend', 'hr'
   const [step, setStep] = React.useState('select'); // 'select', 'interview', 'evaluating', 'report'
   

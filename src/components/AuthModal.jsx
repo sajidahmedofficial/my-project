@@ -126,7 +126,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
       setTimeout(() => {
         onClose();
       }, 600);
-    } catch (err) {
+    } catch {
       setErrorMsg(`Failed to log in with ${provider}.`);
     } finally {
       setLoading(false);

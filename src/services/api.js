@@ -1,6 +1,6 @@
-// agent-notes: { ctx: "Frontend API client service with server fallback for auth, onboarding & AI", deps: [], state: "active", last: "anti@2026-07-30" }
+// agent-notes: { ctx: "Frontend API client service with server fallback for auth, onboarding & AI", deps: [], state: "active", last: "anti@2026-07-31" }
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 async function request(endpoint, options = {}) {
   const token = localStorage.getItem('sb_token') || sessionStorage.getItem('sb_token');

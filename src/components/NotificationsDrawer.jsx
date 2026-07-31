@@ -1,6 +1,6 @@
 // agent-notes: { ctx: "Notifications Drawer for daily study reminders, milestones & alerts", deps: ["lucide-react"], state: "active", last: "anti@2026-07-30" }
 import React from 'react';
-import { Bell, X, CheckCircle, Clock, BookOpen, Award, Sparkles } from 'lucide-react';
+import { Bell, X, CheckCircle, Clock, BookOpen, Award } from 'lucide-react';
 
 const MOCK_NOTIFICATIONS = [
   {

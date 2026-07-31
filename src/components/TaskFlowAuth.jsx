@@ -17,7 +17,6 @@ import {
   Linkedin,
   GraduationCap,
   Target,
-  KeyRound,
   Database
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -169,7 +168,7 @@ export default function TaskFlowAuth({ isOpen, onClose, initialMode = 'signup', 
         onClose();
         if (onComplete) onComplete();
       }, 600);
-    } catch (err) {
+    } catch {
       setErrorMsg(`Failed to connect with ${provider}.`);
     } finally {
       setLoading(false);

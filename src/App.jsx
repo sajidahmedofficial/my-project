@@ -10,13 +10,11 @@ import {
   Code,
   Menu,
   X,
-  User,
   GraduationCap,
   Bell,
   LogOut,
   LogIn,
   Sparkles,
-  UserPlus,
   Zap
 } from 'lucide-react';
 
