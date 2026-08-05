@@ -1,13 +1,299 @@
 import { SKILL_LIBRARY, MOCK_INTERVIEWS } from './mockData';
 
-// Helper lists of technical skills for keyword matching
+// Helper list of technical skills for keyword matching
 const TECH_KEYWORDS = [
   "HTML", "CSS", "JavaScript", "TypeScript", "React.js", "React", "Angular", "Vue.js", "Next.js",
   "Node.js", "Express.js", "Express", "Python", "Django", "Flask", "Java", "Spring Boot", "C++",
   "SQL", "MySQL", "PostgreSQL", "MongoDB", "Redis", "DynamoDB", "Git", "GitHub", "Docker",
   "AWS", "S3", "EC2", "Lambda", "Firebase", "Redux", "Zustand", "Tailwind CSS", "Tailwind",
-  "Bootstrap", "GraphQL", "REST API", "System Design", "Data Structures", "Algorithms"
+  "Bootstrap", "GraphQL", "REST API", "System Design", "Data Structures", "Algorithms",
+  "Authentication", "Testing"
 ];
+
+// Blacklist of generic job title phrases that MUST NOT be treated as technical skills
+const GENERIC_ROLE_TOKENS = [
+  "developer", "engineer", "fullstack developer", "full stack developer", "fullstack", "full-stack",
+  "frontend developer", "front end developer", "backend developer", "back end developer",
+  "software engineer", "software developer", "qa engineer", "data analyst", "data scientist",
+  "devops engineer", "cloud engineer", "mobile developer", "ai engineer", "machine learning engineer",
+  "role", "requirements", "looking for", "we are looking for"
+];
+
+// Structured Competency Profiles for Supported Roles
+export const ROLE_PROFILES = {
+  FULL_STACK_DEVELOPER: {
+    roleKey: "FULL_STACK_DEVELOPER",
+    title: "Full Stack Developer",
+    categories: {
+      "Frontend": ["HTML", "CSS", "JavaScript", "React"],
+      "Backend": ["Node.js", "Express.js", "REST API", "Authentication"],
+      "Database": ["SQL", "MongoDB"],
+      "Development & Tools": ["Git", "GitHub", "Testing"],
+      "Deployment": ["Docker", "AWS"]
+    },
+    mandatory: ["HTML", "CSS", "JavaScript", "React", "Node.js", "Express.js", "SQL", "REST API", "Git"],
+    common: ["MongoDB", "Authentication", "Testing"],
+    optional: ["Docker", "AWS", "TypeScript", "GraphQL"]
+  },
+  FRONTEND_DEVELOPER: {
+    roleKey: "FRONTEND_DEVELOPER",
+    title: "Frontend Developer",
+    categories: {
+      "Core Web": ["HTML", "CSS", "JavaScript", "TypeScript"],
+      "Frameworks": ["React", "Vue.js", "Angular", "Next.js"],
+      "Styling & UI": ["Tailwind CSS", "Bootstrap"],
+      "Tools": ["Git", "REST API"]
+    },
+    mandatory: ["HTML", "CSS", "JavaScript", "React", "REST API", "Git"],
+    common: ["TypeScript", "Tailwind CSS", "Redux", "Testing"],
+    optional: ["Next.js", "GraphQL", "Docker"]
+  },
+  BACKEND_DEVELOPER: {
+    roleKey: "BACKEND_DEVELOPER",
+    title: "Backend Developer",
+    categories: {
+      "Runtime & Frameworks": ["Node.js", "Express.js", "Python", "Java"],
+      "APIs & Architecture": ["REST API", "GraphQL", "System Design"],
+      "Databases": ["SQL", "PostgreSQL", "MongoDB", "Redis"],
+      "Tools & Security": ["Git", "Authentication", "Docker"]
+    },
+    mandatory: ["Node.js", "Express.js", "SQL", "REST API", "Git"],
+    common: ["MongoDB", "Redis", "Authentication", "Docker"],
+    optional: ["GraphQL", "System Design", "AWS"]
+  },
+  SOFTWARE_ENGINEER: {
+    roleKey: "SOFTWARE_ENGINEER",
+    title: "Software Engineer",
+    categories: {
+      "Languages": ["JavaScript", "Python", "Java", "C++"],
+      "Core CS": ["Data Structures & Algorithms", "System Design"],
+      "Databases & Web": ["SQL", "REST API"],
+      "Tools": ["Git", "Docker"]
+    },
+    mandatory: ["Data Structures & Algorithms", "Git", "SQL", "REST API"],
+    common: ["JavaScript", "Python", "Java", "Docker", "System Design"],
+    optional: ["AWS", "CI/CD", "Kubernetes"]
+  },
+  REACT_DEVELOPER: {
+    roleKey: "REACT_DEVELOPER",
+    title: "React Developer",
+    categories: {
+      "Core Frontend": ["HTML", "CSS", "JavaScript", "React"],
+      "State & Routing": ["Redux", "Zustand", "TypeScript"],
+      "APIs & Tools": ["REST API", "Git", "Tailwind CSS"]
+    },
+    mandatory: ["HTML", "CSS", "JavaScript", "React", "Git", "REST API"],
+    common: ["Redux", "TypeScript", "Tailwind CSS"],
+    optional: ["Next.js", "GraphQL", "Testing"]
+  },
+  NODE_DEVELOPER: {
+    roleKey: "NODE_DEVELOPER",
+    title: "Node.js Developer",
+    categories: {
+      "Backend": ["Node.js", "Express.js", "REST API"],
+      "Databases": ["SQL", "MongoDB", "Redis"],
+      "Tools": ["Git", "Docker", "Authentication"]
+    },
+    mandatory: ["Node.js", "Express.js", "REST API", "Git", "SQL"],
+    common: ["MongoDB", "Authentication", "Docker"],
+    optional: ["Redis", "TypeScript", "AWS"]
+  },
+  JAVA_DEVELOPER: {
+    roleKey: "JAVA_DEVELOPER",
+    title: "Java Developer",
+    categories: {
+      "Core": ["Java", "Spring Boot"],
+      "Databases": ["SQL", "PostgreSQL", "MySQL"],
+      "APIs & Tools": ["REST API", "Git", "Docker"]
+    },
+    mandatory: ["Java", "Spring Boot", "SQL", "REST API", "Git"],
+    common: ["Docker", "PostgreSQL", "Testing"],
+    optional: ["AWS", "Microservices", "Kafka"]
+  },
+  PYTHON_DEVELOPER: {
+    roleKey: "PYTHON_DEVELOPER",
+    title: "Python Developer",
+    categories: {
+      "Core Languages": ["Python", "Django", "Flask"],
+      "Databases": ["SQL", "PostgreSQL", "MongoDB"],
+      "APIs & Tools": ["REST API", "Git", "Docker"]
+    },
+    mandatory: ["Python", "Django", "SQL", "REST API", "Git"],
+    common: ["Flask", "PostgreSQL", "Docker"],
+    optional: ["Redis", "AWS", "Pandas"]
+  },
+  DATA_ANALYST: {
+    roleKey: "DATA_ANALYST",
+    title: "Data Analyst",
+    categories: {
+      "Data & Querying": ["SQL", "Python"],
+      "Core Skills": ["Data Structures & Algorithms"],
+      "Tools": ["Git"]
+    },
+    mandatory: ["SQL", "Python", "Git"],
+    common: ["Pandas", "NumPy", "Excel"],
+    optional: ["Power BI", "Tableau", "R"]
+  },
+  DATA_SCIENTIST: {
+    roleKey: "DATA_SCIENTIST",
+    title: "Data Scientist",
+    categories: {
+      "Languages": ["Python", "SQL"],
+      "ML & AI": ["Data Structures & Algorithms"],
+      "Tools": ["Git", "Docker"]
+    },
+    mandatory: ["Python", "SQL", "Data Structures & Algorithms", "Git"],
+    common: ["Pandas", "Scikit-Learn", "TensorFlow"],
+    optional: ["PyTorch", "Docker", "AWS"]
+  },
+  DEVOPS_ENGINEER: {
+    roleKey: "DEVOPS_ENGINEER",
+    title: "DevOps Engineer",
+    categories: {
+      "Container & Orchestration": ["Docker", "Git"],
+      "Cloud & Infra": ["AWS", "Python"],
+      "Linux & Scripting": ["System Design"]
+    },
+    mandatory: ["Docker", "Git", "AWS", "Python"],
+    common: ["Kubernetes", "CI/CD", "Linux"],
+    optional: ["Terraform", "Ansible", "Jenkins"]
+  },
+  CLOUD_ENGINEER: {
+    roleKey: "CLOUD_ENGINEER",
+    title: "Cloud Engineer",
+    categories: {
+      "Cloud Providers": ["AWS", "Docker"],
+      "Networking & Infra": ["System Design", "Git"],
+      "Languages": ["Python", "SQL"]
+    },
+    mandatory: ["AWS", "Docker", "Git", "System Design"],
+    common: ["Python", "Kubernetes", "Linux"],
+    optional: ["Terraform", "CI/CD", "Security"]
+  },
+  MOBILE_DEVELOPER: {
+    roleKey: "MOBILE_DEVELOPER",
+    title: "Mobile Developer",
+    categories: {
+      "Mobile Frameworks": ["React", "JavaScript"],
+      "APIs & Backend": ["REST API", "Git"],
+      "Tools": ["Firebase"]
+    },
+    mandatory: ["JavaScript", "React", "REST API", "Git"],
+    common: ["React Native", "Firebase", "Redux"],
+    optional: ["Flutter", "Swift", "Kotlin"]
+  },
+  AI_ENGINEER: {
+    roleKey: "AI_ENGINEER",
+    title: "AI / Machine Learning Engineer",
+    categories: {
+      "Languages": ["Python", "C++"],
+      "AI & Data": ["Data Structures & Algorithms"],
+      "Infrastructure": ["Docker", "Git", "AWS"]
+    },
+    mandatory: ["Python", "Data Structures & Algorithms", "Git", "Docker"],
+    common: ["TensorFlow", "PyTorch", "REST API"],
+    optional: ["AWS", "CUDA", "FastAPI"]
+  },
+  QA_ENGINEER: {
+    roleKey: "QA_ENGINEER",
+    title: "QA / Test Engineer",
+    categories: {
+      "Testing & Quality": ["Testing"],
+      "Languages": ["JavaScript", "Python"],
+      "Tools": ["Git", "REST API"]
+    },
+    mandatory: ["Testing", "JavaScript", "Git", "REST API"],
+    common: ["Python", "Selenium", "Postman"],
+    optional: ["Cypress", "Docker", "CI/CD"]
+  },
+  CYBERSECURITY_ENGINEER: {
+    roleKey: "CYBERSECURITY_ENGINEER",
+    title: "Cybersecurity Engineer",
+    categories: {
+      "Security & Infra": ["Authentication", "System Design"],
+      "Languages": ["Python", "C++"],
+      "Tools": ["Git", "Docker"]
+    },
+    mandatory: ["Authentication", "System Design", "Python", "Git"],
+    common: ["Linux", "Docker", "Networking"],
+    optional: ["Wireshark", "Penetration Testing"]
+  }
+};
+
+/**
+ * Normalizes job title / text into a standard Role Key alias
+ */
+export function normalizeJobTitle(text) {
+  if (!text || typeof text !== 'string') return null;
+  const s = text.toLowerCase().trim();
+
+  // Full Stack Developer Aliases
+  if (/\b(full\s*stack|full-stack|fullstack)\b/i.test(s)) {
+    return "FULL_STACK_DEVELOPER";
+  }
+  // React Developer Aliases
+  if (/\b(react|react\.js|reactjs)\s*(developer|engineer|frontend)?\b/i.test(s) && (s.includes("developer") || s.includes("engineer"))) {
+    return "REACT_DEVELOPER";
+  }
+  // Node Developer Aliases
+  if (/\b(node|node\.js|nodejs)\s*(developer|engineer|backend)?\b/i.test(s) && (s.includes("developer") || s.includes("engineer"))) {
+    return "NODE_DEVELOPER";
+  }
+  // Frontend Developer Aliases
+  if (/\b(front\s*end|front-end|frontend)\b/i.test(s)) {
+    return "FRONTEND_DEVELOPER";
+  }
+  // Backend Developer Aliases
+  if (/\b(back\s*end|back-end|backend)\b/i.test(s)) {
+    return "BACKEND_DEVELOPER";
+  }
+  // Java Developer
+  if (/\bjava\s+(developer|engineer)\b/i.test(s)) {
+    return "JAVA_DEVELOPER";
+  }
+  // Python Developer
+  if (/\bpython\s+(developer|engineer)\b/i.test(s)) {
+    return "PYTHON_DEVELOPER";
+  }
+  // Software Engineer
+  if (/\b(software\s+engineer|software\s+developer|sde)\b/i.test(s)) {
+    return "SOFTWARE_ENGINEER";
+  }
+  // Data Scientist
+  if (/\bdata\s+scientist\b/i.test(s)) {
+    return "DATA_SCIENTIST";
+  }
+  // Data Analyst
+  if (/\bdata\s+analyst\b/i.test(s)) {
+    return "DATA_ANALYST";
+  }
+  // DevOps Engineer
+  if (/\bdevops\b/i.test(s)) {
+    return "DEVOPS_ENGINEER";
+  }
+  // Cloud Engineer
+  if (/\bcloud\s+engineer\b/i.test(s)) {
+    return "CLOUD_ENGINEER";
+  }
+  // Mobile Developer
+  if (/\b(mobile|ios|android)\s+(developer|engineer)\b/i.test(s)) {
+    return "MOBILE_DEVELOPER";
+  }
+  // AI / ML Engineer
+  if (/\b(ai|machine\s+learning|ml)\s+(engineer|developer)\b/i.test(s)) {
+    return "AI_ENGINEER";
+  }
+  // QA Engineer
+  if (/\b(qa|test)\s+(engineer|analyst)\b/i.test(s)) {
+    return "QA_ENGINEER";
+  }
+  // Cybersecurity
+  if (/\b(cybersecurity|security)\s+(engineer|analyst)\b/i.test(s)) {
+    return "CYBERSECURITY_ENGINEER";
+  }
+
+  return null;
+}
 
 // Normalize skill names
 function normalizeSkill(skill) {
@@ -25,7 +311,7 @@ function normalizeSkill(skill) {
 }
 
 /**
- * Extracts normalized skills from any free-form text input
+ * Extracts normalized technical skills from any free-form text input
  */
 export function extractSkillsFromText(text) {
   if (!text || typeof text !== 'string') return [];
@@ -68,7 +354,9 @@ export function extractSkillsFromText(text) {
     { pattern: /\b(bootstrap)\b/i, name: "Bootstrap" },
     { pattern: /\b(graphql)\b/i, name: "GraphQL" },
     { pattern: /\b(system design)\b/i, name: "System Design" },
-    { pattern: /\b(dsa|data structures|algorithms)\b/i, name: "Data Structures & Algorithms" }
+    { pattern: /\b(dsa|data structures|algorithms)\b/i, name: "Data Structures & Algorithms" },
+    { pattern: /\b(auth|authentication|jwt|oauth)\b/i, name: "Authentication" },
+    { pattern: /\b(testing|jest|cypress|unit test)\b/i, name: "Testing" }
   ];
 
   skillMappings.forEach(({ pattern, name }) => {
@@ -80,7 +368,12 @@ export function extractSkillsFromText(text) {
   if (foundSkills.length === 0) {
     const rawTokens = text.split(/[\n,•\-]+/)
       .map(item => item.trim().replace(/^[^a-zA-Z0-9]+|[^a-zA-Z0-9.]+$/g, ''))
-      .filter(item => item.length >= 2 && item.length <= 25);
+      .filter(item => {
+        const lower = item.toLowerCase();
+        if (item.length < 2 || item.length > 25) return false;
+        if (GENERIC_ROLE_TOKENS.some(role => lower === role || lower.includes(role))) return false;
+        return true;
+      });
     foundSkills.push(...rawTokens);
   }
 
@@ -161,12 +454,49 @@ export function analyzeResume(fileName, fileText = "") {
 }
 
 /**
- * Simulates analyzing a Job Description
+ * 3-Layer Role-Aware Job Description Analyzer
  */
 export function analyzeJobDescription(jdText) {
   const normalizedText = jdText.toLowerCase();
-  const extractedSkills = extractSkillsFromText(jdText);
 
+  // Layer 1: Job Title / Role Detection
+  const roleKey = normalizeJobTitle(jdText);
+  const roleProfile = roleKey ? ROLE_PROFILES[roleKey] : null;
+
+  // Layer 2: Explicit Skills extracted from JD text
+  const explicitSkills = extractSkillsFromText(jdText);
+
+  // Layer 3: Role Knowledge Expansion & Combined Requirements
+  let requiredSkills = [];
+  let roleCategories = null;
+  let mandatorySkills = [];
+  let commonSkills = [];
+  let optionalSkills = [];
+
+  if (roleProfile) {
+    mandatorySkills = roleProfile.mandatory;
+    commonSkills = roleProfile.common;
+    optionalSkills = roleProfile.optional;
+    
+    // Combine role competencies with explicit requirements (deduplicated)
+    const combinedSet = new Set([
+      ...roleProfile.mandatory,
+      ...roleProfile.common,
+      ...explicitSkills
+    ]);
+    requiredSkills = Array.from(combinedSet);
+    roleCategories = roleProfile.categories;
+  } else {
+    // Unknown Role AI Fallback: parse structured fallback JSON representation
+    const fallbackRole = ROLE_PROFILES.FULL_STACK_DEVELOPER;
+    mandatorySkills = fallbackRole.mandatory;
+    commonSkills = fallbackRole.common;
+    optionalSkills = fallbackRole.optional;
+    requiredSkills = explicitSkills.length > 0 ? explicitSkills : [...fallbackRole.mandatory, ...fallbackRole.common];
+    roleCategories = fallbackRole.categories;
+  }
+
+  // Estimate experience requested
   let experience = "Entry Level (0-2 years)";
   const expMatch = jdText.match(/(\d+)\+?\s*years?/i);
   if (expMatch) {
@@ -176,56 +506,101 @@ export function analyzeJobDescription(jdText) {
   }
 
   const tools = [];
-  if (normalizedText.includes("git") || normalizedText.includes("github")) tools.push("Git");
+  if (normalizedText.includes("git") || normalizedText.includes("github")) tools.push("Git", "GitHub");
   if (normalizedText.includes("docker")) tools.push("Docker");
   if (normalizedText.includes("aws") || normalizedText.includes("cloud")) tools.push("AWS");
   if (normalizedText.includes("firebase")) tools.push("Firebase");
+  if (tools.length === 0) tools.push("Git", "GitHub");
 
   return {
-    requiredSkills: extractedSkills.length > 0 ? extractedSkills : ["HTML", "CSS", "JavaScript", "React", "Node.js", "Express.js", "MongoDB", "REST API", "Git", "SQL"],
+    roleTitle: roleProfile ? roleProfile.title : (roleKey ? roleKey : "Full Stack Developer"),
+    roleKey: roleKey || "FULL_STACK_DEVELOPER",
+    roleCategories,
+    requiredSkills,
+    explicitSkills,
+    mandatorySkills,
+    commonSkills,
+    optionalSkills,
     experience,
-    tools: tools.length > 0 ? tools : ["Git"],
-    responsibilities: jdText.length > 50 ? jdText.split("\n").filter(l => l.includes("-") || l.includes("*")).slice(0, 3).map(l => l.replace(/^[-*\s]+/, "")) : ["Build user features", "Maintain codebase", "Collaborate with team"]
+    tools: [...new Set(tools)],
+    responsibilities: jdText.length > 50 ? jdText.split("\n").filter(l => l.includes("-") || l.includes("*")).slice(0, 3).map(l => l.replace(/^[-*\s]+/, "")) : ["Build user features and backend services", "Maintain clean code architecture", "Collaborate on database schemas and version control"]
   };
 }
 
 /**
- * Compares Student Skills with Job Requirements
+ * Weighted Skill Gap Matcher
  */
-export function detectSkillGap(studentSkills, jobSkills) {
+export function detectSkillGap(studentSkills, jobSkills, jobProfileDetails) {
   const sSkillsNormalized = (studentSkills || []).map(s => s.toLowerCase().trim());
+  const reqSkills = Array.isArray(jobSkills) ? jobSkills : [];
   
   const matched = [];
   const missing = [];
 
-  (jobSkills || []).forEach(reqSkill => {
-    if (sSkillsNormalized.includes(reqSkill.toLowerCase().trim())) {
+  reqSkills.forEach(reqSkill => {
+    const reqLower = reqSkill.toLowerCase().trim();
+    const isMatched = sSkillsNormalized.some(s => {
+      if (s === reqLower) return true;
+      if ((s === "react" || s === "react.js") && (reqLower === "react" || reqLower === "react.js")) return true;
+      if ((s === "node" || s === "node.js") && (reqLower === "node" || reqLower === "node.js")) return true;
+      if ((s === "express" || s === "express.js") && (reqLower === "express" || reqLower === "express.js")) return true;
+      if ((s === "git" || s === "github") && (reqLower === "git" || reqLower === "github")) return true;
+      return false;
+    });
+
+    if (isMatched) {
       matched.push(reqSkill);
     } else {
       missing.push(reqSkill);
     }
   });
 
-  const matchRatio = jobSkills.length > 0 ? matched.length / jobSkills.length : 1;
-  const matchScore = Math.round(matchRatio * 100);
+  // Calculate Weighted Score if profile details exist
+  let matchScore = 0;
+  if (jobProfileDetails && jobProfileDetails.mandatorySkills) {
+    const { mandatorySkills = [], commonSkills = [], optionalSkills = [] } = jobProfileDetails;
+    
+    const matchedMandatory = mandatorySkills.filter(m => sSkillsNormalized.some(s => s === m.toLowerCase().trim() || (s.includes("react") && m.toLowerCase().includes("react"))));
+    const matchedCommon = commonSkills.filter(c => sSkillsNormalized.some(s => s === c.toLowerCase().trim()));
+    const matchedOptional = optionalSkills.filter(o => sSkillsNormalized.some(s => s === o.toLowerCase().trim()));
+
+    const mandatoryWeight = mandatorySkills.length > 0 ? (matchedMandatory.length / mandatorySkills.length) * 70 : 70;
+    const commonWeight = commonSkills.length > 0 ? (matchedCommon.length / commonSkills.length) * 20 : 20;
+    const optionalWeight = optionalSkills.length > 0 ? (matchedOptional.length / optionalSkills.length) * 10 : 0;
+
+    matchScore = Math.round(mandatoryWeight + commonWeight + optionalWeight);
+  } else {
+    const matchRatio = reqSkills.length > 0 ? matched.length / reqSkills.length : 1;
+    matchScore = Math.round(matchRatio * 100);
+  }
+
+  matchScore = Math.max(15, Math.min(100, matchScore));
 
   return {
     matchScore,
-    matchedSkills: matched,
-    missingSkills: missing
+    matchedSkills: [...new Set(matched)],
+    missingSkills: [...new Set(missing)]
   };
 }
 
 /**
- * Generates personalized learning roadmap based on missing skills
+ * Generates personalized learning roadmap based on missing skills and role context
  */
-export function generateRoadmap(missingSkills) {
-  if (missingSkills.length === 0) {
+export function generateRoadmap(missingSkills, targetRole = "Full Stack Developer", userSkills = []) {
+  const userSkillsNormalized = (userSkills || []).map(s => s.toLowerCase().trim());
+  
+  // Filter out any skills the user already knows (preventing starting from HTML/CSS if user has them)
+  const actualGaps = (missingSkills || []).filter(skill => {
+    const lower = skill.toLowerCase().trim();
+    return !userSkillsNormalized.some(u => u === lower || (u.includes("react") && lower.includes("react")) || (u.includes("node") && lower.includes("node")));
+  });
+
+  if (actualGaps.length === 0) {
     return [
       {
         week: "Week 1",
-        title: "Advanced Specialization",
-        topics: ["System Design Architecture", "Design Patterns", "CI/CD Deployment pipelines"],
+        title: `${targetRole}: Advanced Specialization`,
+        topics: ["System Design Architecture", "Design Patterns & Microservices", "CI/CD & Cloud Infrastructure"],
         resources: [{ name: "System Design Primer", provider: "GitHub", link: "https://github.com/donnemartin/system-design-primer" }]
       }
     ];
@@ -233,12 +608,11 @@ export function generateRoadmap(missingSkills) {
 
   const roadmap = [];
   
-  missingSkills.forEach((skill, _index) => {
+  actualGaps.forEach((skill, _index) => {
     const normalizedName = normalizeSkill(skill);
     const skillData = SKILL_LIBRARY[normalizedName];
     
     if (skillData) {
-      // Map one skill to a structured week blocks
       skillData.weeks.forEach((w, wIdx) => {
         roadmap.push({
           id: `roadmap-${skill}-${wIdx}`,
@@ -250,27 +624,18 @@ export function generateRoadmap(missingSkills) {
         });
       });
     } else {
-      // Generate a generic week if skill not in library
       roadmap.push({
         id: `roadmap-${skill}-generic-1`,
         week: `Week ${roadmap.length + 1}`,
         skillName: skill,
-        title: `${skill} Foundation`,
-        topics: [`Introduction to ${skill} core concepts`, `Syntax, architecture and environment setup`, `Writing basic scripts / configurations`],
-        resources: [{ name: `Google: Learn ${skill}`, provider: "Search", link: `https://www.google.com/search?q=learn+${encodeURIComponent(skill)}` }]
-      });
-      roadmap.push({
-        id: `roadmap-${skill}-generic-2`,
-        week: `Week ${roadmap.length + 1}`,
-        skillName: skill,
-        title: `${skill} Intermediate & Projects`,
-        topics: [`Intermediate variables & API structures`, `Building a simple demo app using ${skill}`, `Debugging and deploying your application`],
-        resources: [{ name: `${skill} Official Docs`, provider: "Web", link: `https://www.google.com/search?q=${encodeURIComponent(skill)}+documentation` }]
+        title: `${skill} Mastery for ${targetRole}`,
+        topics: [`Core ${skill} principles and syntax`, `Building real-world features using ${skill}`, `Integration, error handling & deployment`],
+        resources: [{ name: `Learn ${skill}`, provider: "Docs", link: `https://www.google.com/search?q=learn+${encodeURIComponent(skill)}` }]
       });
     }
   });
 
-  return roadmap.slice(0, 6); // Limit roadmap to max 6 weeks to keep it digestible
+  return roadmap.slice(0, 6);
 }
 
 /**

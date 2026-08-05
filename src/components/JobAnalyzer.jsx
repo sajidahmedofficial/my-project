@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Job Description and Skill Gap Analyzer with two separate inputs for user profile skills and target job description", deps: ["lucide-react", "../utils/mockData", "../utils/aiSimulator"], state: "active", last: "anti@2026-08-05" }
+// agent-notes: { ctx: "Role-Aware Job Description and Skill Gap Analyzer with 3-layer role detection and structured competency matching", deps: ["lucide-react", "../utils/mockData", "../utils/aiSimulator"], state: "active", last: "anti@2026-08-05" }
 import React from 'react';
 import { 
   Briefcase, 
@@ -9,7 +9,9 @@ import {
   RefreshCw,
   AlertCircle,
   UserCheck,
-  ArrowDown
+  ArrowDown,
+  Layers,
+  Award
 } from 'lucide-react';
 import { JOB_PRESETS } from '../utils/mockData';
 import { analyzeJobDescription, detectSkillGap, extractSkillsFromText } from '../utils/aiSimulator';
@@ -21,19 +23,7 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap }) {
   );
 
   // Input 2: Target Job Description
-  const [jdText, setJdText] = React.useState(
-    `We are looking for a Full Stack Developer.
-
-Requirements:
-- Strong knowledge of HTML, CSS and JavaScript
-- React.js
-- Node.js
-- Express.js
-- MongoDB
-- REST APIs
-- Git and GitHub
-- SQL`
-  );
+  const [jdText, setJdText] = React.useState("fullstack developer");
 
   const [analyzing, setAnalyzing] = React.useState(false);
   
@@ -59,14 +49,14 @@ Requirements:
       const jSkills = extractSkillsFromText(jobText);
       const finalJobSkills = jSkills.length > 0 ? jSkills : jProfile.requiredSkills;
 
-      const gapResults = detectSkillGap(uSkills, finalJobSkills);
+      const gapResults = detectSkillGap(uSkills, finalJobSkills, jProfile);
       
       setExtractedUserSkills(uSkills);
       setExtractedJobSkills(finalJobSkills);
       setJobProfile(jProfile);
       setGapReport(gapResults);
       setAnalyzing(false);
-    }, 600);
+    }, 500);
   };
 
   const handleAnalyze = () => {
@@ -90,10 +80,10 @@ Requirements:
     <div className="space-y-6 animate-fade-in">
       <div>
         <h2 className="text-xl font-bold text-white flex items-center gap-2">
-          <Briefcase className="w-5 h-5 text-accent-purple" /> Job Description & Skill Gap Analyzer
+          <Briefcase className="w-5 h-5 text-accent-purple" /> Role-Aware Job & Skill Gap Analyzer
         </h2>
         <p className="text-xs text-gray-400">
-          Compare your current skills profile against target job requirements for automated skill gap diffing
+          Analyze role competencies, extract explicit requirements, and calculate weighted skill diffing
         </p>
       </div>
 
@@ -125,18 +115,18 @@ Requirements:
             />
           </div>
 
-          {/* Input 2: Target Job Description */}
+          {/* Input 2: Target Job Description or Role */}
           <div className="glass rounded-xl p-5 space-y-3 border border-gray-800 focus-within:border-accent-purple/50 transition-colors">
             <h3 className="text-sm font-semibold text-white flex items-center gap-2">
               <span className="w-5 h-5 rounded-full bg-accent-purple/20 text-accent-purple text-xs flex items-center justify-center font-bold">2</span>
-              Target Job Description
+              Target Job Description / Role
             </h3>
             <textarea
               value={jdText}
               onChange={(e) => setJdText(e.target.value)}
-              placeholder="Paste full job description, role requirements, or qualifications here..."
-              rows={6}
-              className="w-full px-3 py-2 bg-gray-900/80 border border-gray-800 rounded-lg text-xs text-white placeholder-gray-500 focus:outline-none focus:border-accent-purple resize-none leading-relaxed"
+              placeholder="e.g. Full Stack Developer or paste full job description..."
+              rows={4}
+              className="w-full px-3 py-2 bg-gray-900/80 border border-gray-800 rounded-lg text-xs text-white placeholder-gray-500 focus:outline-none focus:border-accent-purple resize-none leading-relaxed font-mono"
             />
           </div>
 
@@ -148,7 +138,7 @@ Requirements:
           >
             {analyzing ? (
               <>
-                <RefreshCw className="w-4 h-4 animate-spin" /> Calculating Skill Gap...
+                <RefreshCw className="w-4 h-4 animate-spin" /> Analyzing Role & Skills...
               </>
             ) : (
               <>
@@ -178,21 +168,21 @@ Requirements:
           </div>
         </div>
 
-        {/* Right Column: Skill Comparison Pipeline & Results (7 cols) */}
+        {/* Right Column: Role Detection & Skill Gap Results (7 cols) */}
         <div className="lg:col-span-7 space-y-6">
           {analyzing && (
             <div className="glass rounded-xl p-12 text-center flex flex-col items-center justify-center space-y-4 min-h-[400px]">
               <div className="w-12 h-12 rounded-full border-2 border-accent-purple border-t-transparent animate-spin" />
               <div className="space-y-1">
-                <h4 className="text-sm font-semibold text-white">Extracting & Diffing Skills...</h4>
-                <p className="text-xs text-gray-500">Matching profile competencies against job description requirements</p>
+                <h4 className="text-sm font-semibold text-white">Running Role & Skill Analysis...</h4>
+                <p className="text-xs text-gray-500">Detecting role competencies, mandatory skills, and weighted match score</p>
               </div>
             </div>
           )}
 
           {!analyzing && gapReport && (
             <div className="glass rounded-xl p-6 space-y-6 border border-gray-800">
-              {/* Header Match Badge */}
+              {/* Header Match Badge & Role Title */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-gray-800 gap-4">
                 <div className="flex items-center gap-4">
                   <div className={`w-20 h-20 rounded-2xl flex flex-col items-center justify-center shadow-xl border-2 ${
@@ -206,16 +196,20 @@ Requirements:
                     <span className="text-[10px] font-bold uppercase tracking-wider mt-1 text-gray-300">Match</span>
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-white">Skill Sync Results</h3>
-                    <p className="text-xs text-gray-400 mt-1">
-                      Matched <span className="text-emerald-400 font-bold">{gapReport.matchedSkills.length}</span> out of{' '}
-                      <span className="text-white font-bold">{extractedJobSkills.length}</span> job requirements
-                    </p>
-                    {jobProfile && (
-                      <span className="inline-block mt-2 px-2.5 py-0.5 rounded-full bg-accent-purple/20 text-accent-purple text-[10px] font-semibold">
-                        Role: {jobProfile.experience}
+                    <div className="flex items-center gap-2">
+                      <span className="px-2 py-0.5 rounded bg-accent-purple/20 text-accent-purple text-[10px] font-bold tracking-wider uppercase flex items-center gap-1">
+                        <Layers className="w-3 h-3" /> TARGET ROLE
                       </span>
-                    )}
+                    </div>
+                    <h3 className="text-lg font-bold text-white mt-1">
+                      {jobProfile?.roleTitle || "Full Stack Developer"}
+                    </h3>
+                    <p className="text-xs text-gray-400 mt-1">
+                      Matched <span className="text-emerald-400 font-bold">{gapReport.matchedSkills.length}</span> competencies expected for this role
+                    </p>
+                    <p className="text-[10px] text-gray-500 italic mt-1">
+                      Your match is based on the competencies expected for the {jobProfile?.roleTitle || "Full Stack Developer"} role.
+                    </p>
                   </div>
                 </div>
 
@@ -229,10 +223,45 @@ Requirements:
                 )}
               </div>
 
-              {/* Visual Flow Diagram Breakdown */}
-              <div className="space-y-4">
-                <h4 className="text-xs uppercase font-bold text-gray-400 tracking-wider">Skill Comparison Flow</h4>
-                
+              {/* Categorized Role Requirements */}
+              {jobProfile && jobProfile.roleCategories && (
+                <div className="space-y-3">
+                  <h4 className="text-xs uppercase font-bold text-gray-400 tracking-wider flex items-center gap-1.5">
+                    <Award className="w-4 h-4 text-accent-purple" /> Role Requirements Profile
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                    {Object.entries(jobProfile.roleCategories).map(([catName, catSkills]) => (
+                      <div key={catName} className="p-3 rounded-lg border border-gray-800 bg-gray-900/60 space-y-1.5">
+                        <span className="text-[11px] font-bold text-accent-purple uppercase tracking-wider block">
+                          {catName}
+                        </span>
+                        <div className="flex flex-wrap gap-1">
+                          {catSkills.map((sk, idx) => {
+                            const isMatched = gapReport.matchedSkills.some(m => m.toLowerCase().trim() === sk.toLowerCase().trim());
+                            return (
+                              <span 
+                                key={idx} 
+                                className={`px-2 py-0.5 text-[11px] font-medium rounded ${
+                                  isMatched 
+                                    ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30' 
+                                    : 'bg-gray-800 text-gray-400 border border-gray-700'
+                                }`}
+                              >
+                                {sk}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Skill Comparison Breakdown (Matched Skills & Skill Gaps) */}
+              <div className="space-y-4 pt-2">
+                <h4 className="text-xs uppercase font-bold text-gray-400 tracking-wider">Skill Comparison</h4>
+
                 {/* Flow Step 1: Extracted User Skills */}
                 <div className="p-4 rounded-xl border border-gray-800 bg-gray-900/60 space-y-2">
                   <div className="flex items-center justify-between text-xs font-semibold text-gray-300">
@@ -246,9 +275,6 @@ Requirements:
                         {skill}
                       </span>
                     ))}
-                    {extractedUserSkills.length === 0 && (
-                      <span className="text-xs text-gray-500 italic">No skills extracted from Input 1</span>
-                    )}
                   </div>
                 </div>
 
@@ -256,30 +282,7 @@ Requirements:
                   <ArrowDown className="w-5 h-5 animate-pulse text-accent-purple" />
                 </div>
 
-                {/* Flow Step 2: Extracted Job Requirements */}
-                <div className="p-4 rounded-xl border border-gray-800 bg-gray-900/60 space-y-2">
-                  <div className="flex items-center justify-between text-xs font-semibold text-gray-300">
-                    <span className="flex items-center gap-1.5 text-blue-400 font-bold">
-                      JOB REQUIREMENTS ({extractedJobSkills.length})
-                    </span>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {extractedJobSkills.map((skill, idx) => (
-                      <span key={idx} className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                        {skill}
-                      </span>
-                    ))}
-                    {extractedJobSkills.length === 0 && (
-                      <span className="text-xs text-gray-500 italic">No skills extracted from Input 2</span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex justify-center text-gray-600">
-                  <ArrowDown className="w-5 h-5 animate-pulse text-accent-purple" />
-                </div>
-
-                {/* Flow Step 3: Skill Comparison (Matched vs Missing) */}
+                {/* Matched Skills vs Skill Gaps */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Matched Skills */}
                   <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5 space-y-3">
@@ -298,10 +301,10 @@ Requirements:
                     </div>
                   </div>
 
-                  {/* Missing Skills */}
+                  {/* Skill Gaps */}
                   <div className="p-4 rounded-xl border border-red-500/30 bg-red-500/5 space-y-3">
                     <h5 className="text-xs uppercase font-bold text-red-400 flex items-center gap-1.5 tracking-wider">
-                      <XCircle className="w-4 h-4 text-red-400" /> Missing Skills ({gapReport.missingSkills.length})
+                      <XCircle className="w-4 h-4 text-red-400" /> Skill Gaps ({gapReport.missingSkills.length})
                     </h5>
                     <div className="flex flex-wrap gap-1.5">
                       {gapReport.missingSkills.map((skill, idx) => (
@@ -310,19 +313,19 @@ Requirements:
                         </span>
                       ))}
                       {gapReport.missingSkills.length === 0 && (
-                        <span className="text-xs text-emerald-400 italic font-medium">Perfect fit! No skill gaps detected</span>
+                        <span className="text-xs text-emerald-400 italic font-medium">Perfect fit! Zero gaps detected</span>
                       )}
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Extracted Tools & Responsibilities */}
+              {/* Tools & Responsibilities */}
               {jobProfile && (
                 <div className="pt-4 border-t border-gray-800 space-y-4">
                   {jobProfile.tools && jobProfile.tools.length > 0 && (
                     <div className="space-y-1.5">
-                      <h4 className="text-xs uppercase font-bold text-gray-400 tracking-wider">Extracted Required Tools</h4>
+                      <h4 className="text-xs uppercase font-bold text-gray-400 tracking-wider">Required Tools & Version Control</h4>
                       <div className="flex flex-wrap gap-1.5">
                         {jobProfile.tools.map((tool, idx) => (
                           <span key={idx} className="px-2.5 py-1 text-xs rounded-lg bg-gray-800 text-gray-300 border border-gray-700">
