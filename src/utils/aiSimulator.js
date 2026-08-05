@@ -9,26 +9,88 @@ const TECH_KEYWORDS = [
   "Bootstrap", "GraphQL", "REST API", "System Design", "Data Structures", "Algorithms"
 ];
 
-// Normalize skill names to match SKILL_LIBRARY keys
+// Normalize skill names
 function normalizeSkill(skill) {
   const s = skill.toLowerCase().trim();
-  if (s === "react" || s === "react.js") return "React.js";
-  if (s === "node" || s === "node.js") return "Node.js";
-  if (s === "express" || s === "express.js") return "Express.js";
+  if (s === "react" || s === "react.js" || s === "reactjs") return "React";
+  if (s === "node" || s === "node.js" || s === "nodejs") return "Node.js";
+  if (s === "express" || s === "express.js" || s === "expressjs") return "Express.js";
   if (s === "mongodb" || s === "mongo") return "MongoDB";
-  if (s === "sql" || s === "mysql" || s === "postgresql") return "SQL";
-  if (s === "git" || s === "github") return "Git";
+  if (s === "sql" || s === "mysql" || s === "postgresql" || s === "postgres") return "SQL";
+  if (s === "git" || s === "github" || s === "gitlab") return "Git";
+  if (s === "rest api" || s === "rest apis" || s === "restful api" || s === "restful apis") return "REST API";
   
-  // Find case-insensitive match in TECH_KEYWORDS
   const found = TECH_KEYWORDS.find(keyword => keyword.toLowerCase() === s);
   return found || skill;
+}
+
+/**
+ * Extracts normalized skills from any free-form text input
+ */
+export function extractSkillsFromText(text) {
+  if (!text || typeof text !== 'string') return [];
+  const normalizedText = text.toLowerCase();
+  
+  const foundSkills = [];
+
+  const skillMappings = [
+    { pattern: /\b(html|html5)\b/i, name: "HTML" },
+    { pattern: /\b(css|css3)\b/i, name: "CSS" },
+    { pattern: /\b(javascript|js|es6)\b/i, name: "JavaScript" },
+    { pattern: /\b(typescript|ts)\b/i, name: "TypeScript" },
+    { pattern: /\b(react|react\.js|reactjs)\b/i, name: "React" },
+    { pattern: /\b(angular|angularjs)\b/i, name: "Angular" },
+    { pattern: /\b(vue|vue\.js|vuejs)\b/i, name: "Vue.js" },
+    { pattern: /\b(next|next\.js|nextjs)\b/i, name: "Next.js" },
+    { pattern: /\b(node|node\.js|nodejs)\b/i, name: "Node.js" },
+    { pattern: /\b(express|express\.js|expressjs)\b/i, name: "Express.js" },
+    { pattern: /\b(python|python3)\b/i, name: "Python" },
+    { pattern: /\b(django)\b/i, name: "Django" },
+    { pattern: /\b(flask)\b/i, name: "Flask" },
+    { pattern: /\b(java)\b/i, name: "Java" },
+    { pattern: /\b(spring boot|spring)\b/i, name: "Spring Boot" },
+    { pattern: /\b(c\+\+|cpp)\b/i, name: "C++" },
+    { pattern: /\b(sql|mysql|postgresql|postgres)\b/i, name: "SQL" },
+    { pattern: /\b(mongodb|mongo)\b/i, name: "MongoDB" },
+    { pattern: /\b(redis)\b/i, name: "Redis" },
+    { pattern: /\b(dynamodb)\b/i, name: "DynamoDB" },
+    { pattern: /\b(rest api|rest apis|restful api|restful apis)\b/i, name: "REST API" },
+    { pattern: /\b(git|github|gitlab)\b/i, name: "Git" },
+    { pattern: /\b(docker|kubernetes|k8s)\b/i, name: "Docker" },
+    { pattern: /\b(aws|amazon web services)\b/i, name: "AWS" },
+    { pattern: /\b(s3)\b/i, name: "S3" },
+    { pattern: /\b(ec2)\b/i, name: "EC2" },
+    { pattern: /\b(lambda)\b/i, name: "Lambda" },
+    { pattern: /\b(firebase)\b/i, name: "Firebase" },
+    { pattern: /\b(redux)\b/i, name: "Redux" },
+    { pattern: /\b(zustand)\b/i, name: "Zustand" },
+    { pattern: /\b(tailwind|tailwind css|tailwindcss)\b/i, name: "Tailwind CSS" },
+    { pattern: /\b(bootstrap)\b/i, name: "Bootstrap" },
+    { pattern: /\b(graphql)\b/i, name: "GraphQL" },
+    { pattern: /\b(system design)\b/i, name: "System Design" },
+    { pattern: /\b(dsa|data structures|algorithms)\b/i, name: "Data Structures & Algorithms" }
+  ];
+
+  skillMappings.forEach(({ pattern, name }) => {
+    if (pattern.test(normalizedText)) {
+      foundSkills.push(name);
+    }
+  });
+
+  if (foundSkills.length === 0) {
+    const rawTokens = text.split(/[\n,•\-]+/)
+      .map(item => item.trim().replace(/^[^a-zA-Z0-9]+|[^a-zA-Z0-9.]+$/g, ''))
+      .filter(item => item.length >= 2 && item.length <= 25);
+    foundSkills.push(...rawTokens);
+  }
+
+  return [...new Set(foundSkills)];
 }
 
 /**
  * Simulates analyzing a resume and extracting details using keyword matching
  */
 export function analyzeResume(fileName, fileText = "") {
-  // If fileText is empty, we create some mock parsing based on the filename
   let text = fileText || "";
   if (!text) {
     text = `Resume of Student. Experienced in building websites. Skills: HTML, CSS, JavaScript, SQL. 
@@ -36,26 +98,12 @@ export function analyzeResume(fileName, fileText = "") {
     if (fileName.toLowerCase().includes("priya")) {
       text = "Priya Patel. B.E. in IT. Skills: Python, Java, C++, HTML. Project: Library Management System.";
     } else if (fileName.toLowerCase().includes("rohan")) {
-      text = "Rohan Verma. Skills: React.js, Node.js, Express.js, JavaScript, HTML, CSS, Git. Projects: Task Planner, Rest API.";
+      text = "Rohan Verma. Skills: React, Node.js, Express.js, JavaScript, HTML, CSS, Git. Projects: Task Planner, Rest API.";
     }
   }
 
-  const normalizedText = text.toLowerCase();
-  
-  // Extract skills
-  const foundSkills = [];
-  TECH_KEYWORDS.forEach(keyword => {
-    // Escape regex characters just in case
-    const regex = new RegExp(`\\b${keyword.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')}\\b`, 'i');
-    if (regex.test(normalizedText)) {
-      foundSkills.push(normalizeSkill(keyword));
-    }
-  });
-  
-  // De-duplicate skills
-  const uniqueSkills = [...new Set(foundSkills)];
+  const uniqueSkills = extractSkillsFromText(text);
 
-  // Extract education
   let education = "Not found";
   const eduKeywords = ["b.tech", "b.e.", "bca", "mca", "m.tech", "bsc", "computer science", "information technology"];
   const lines = text.split("\n");
@@ -69,11 +117,9 @@ export function analyzeResume(fileName, fileText = "") {
     education = "B.Tech in Computer Science & Engineering (Estimated)";
   }
 
-  // Extract projects
   const projects = [];
   const projectIndex = text.toLowerCase().indexOf("project");
   if (projectIndex !== -1) {
-    // Grab text after "projects"
     const projectText = text.substring(projectIndex);
     const projLines = projectText.split("\n").slice(0, 4);
     projLines.forEach(line => {
@@ -96,13 +142,12 @@ export function analyzeResume(fileName, fileText = "") {
     });
   }
 
-  // Calculate Resume Score (based on sections found, skill count, length)
   let score = 50;
   if (uniqueSkills.length > 3) score += 15;
   if (uniqueSkills.length > 6) score += 10;
   if (text.toLowerCase().includes("project")) score += 15;
   if (text.toLowerCase().includes("intern") || text.toLowerCase().includes("experience")) score += 10;
-  score = Math.min(score, 95); // max score from analyzer
+  score = Math.min(score, 95);
 
   return {
     skills: uniqueSkills,
@@ -120,18 +165,8 @@ export function analyzeResume(fileName, fileText = "") {
  */
 export function analyzeJobDescription(jdText) {
   const normalizedText = jdText.toLowerCase();
-  const extractedSkills = [];
-  
-  TECH_KEYWORDS.forEach(keyword => {
-    const regex = new RegExp(`\\b${keyword.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')}\\b`, 'i');
-    if (regex.test(normalizedText)) {
-      extractedSkills.push(normalizeSkill(keyword));
-    }
-  });
+  const extractedSkills = extractSkillsFromText(jdText);
 
-  const uniqueSkills = [...new Set(extractedSkills)];
-
-  // Estimate experience requested
   let experience = "Entry Level (0-2 years)";
   const expMatch = jdText.match(/(\d+)\+?\s*years?/i);
   if (expMatch) {
@@ -140,15 +175,14 @@ export function analyzeJobDescription(jdText) {
     else if (years >= 2) experience = "Mid Level (2-4 years)";
   }
 
-  // Extract tools
   const tools = [];
-  if (normalizedText.includes("git")) tools.push("Git");
+  if (normalizedText.includes("git") || normalizedText.includes("github")) tools.push("Git");
   if (normalizedText.includes("docker")) tools.push("Docker");
   if (normalizedText.includes("aws") || normalizedText.includes("cloud")) tools.push("AWS");
   if (normalizedText.includes("firebase")) tools.push("Firebase");
 
   return {
-    requiredSkills: uniqueSkills.length > 0 ? uniqueSkills : ["React.js", "Git", "SQL"],
+    requiredSkills: extractedSkills.length > 0 ? extractedSkills : ["HTML", "CSS", "JavaScript", "React", "Node.js", "Express.js", "MongoDB", "REST API", "Git", "SQL"],
     experience,
     tools: tools.length > 0 ? tools : ["Git"],
     responsibilities: jdText.length > 50 ? jdText.split("\n").filter(l => l.includes("-") || l.includes("*")).slice(0, 3).map(l => l.replace(/^[-*\s]+/, "")) : ["Build user features", "Maintain codebase", "Collaborate with team"]
@@ -159,13 +193,13 @@ export function analyzeJobDescription(jdText) {
  * Compares Student Skills with Job Requirements
  */
 export function detectSkillGap(studentSkills, jobSkills) {
-  const sSkillsNormalized = studentSkills.map(s => s.toLowerCase());
+  const sSkillsNormalized = (studentSkills || []).map(s => s.toLowerCase().trim());
   
   const matched = [];
   const missing = [];
 
-  jobSkills.forEach(reqSkill => {
-    if (sSkillsNormalized.includes(reqSkill.toLowerCase())) {
+  (jobSkills || []).forEach(reqSkill => {
+    if (sSkillsNormalized.includes(reqSkill.toLowerCase().trim())) {
       matched.push(reqSkill);
     } else {
       missing.push(reqSkill);
