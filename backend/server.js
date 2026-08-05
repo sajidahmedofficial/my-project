@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 import authRoutes from './routes/auth.js';
 import aiRoutes from './routes/ai.js';
+import aptitudeRoutes from './routes/aptitude.routes.js';
 
 // Load environmental parameters
 dotenv.config();
@@ -21,10 +22,12 @@ app.use(express.urlencoded({ extended: true }));
 // Routing mounts
 app.use('/api/auth', authRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/aptitude', aptitudeRoutes);
+app.use('/api', aptitudeRoutes); // Alias mount for direct /api/topics, /api/quiz, /api/questions
 
 // Base route checker
 app.get('/', (req, res) => {
-  res.json({ message: 'SkillBridge AI Server is running...' });
+  res.json({ message: 'AI Placement Aptitude Engine Server is running...' });
 });
 
 // Global Error Handler

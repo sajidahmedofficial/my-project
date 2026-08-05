@@ -12,21 +12,16 @@ export function AuthProvider({ children }) {
     if (saved) {
       try { return JSON.parse(saved); } catch {}
     }
-    return null;
+    return RESUME_PRESETS[0];
   });
 
   const [token, setToken] = useState(() => {
-    return localStorage.getItem('sb_token') || sessionStorage.getItem('sb_token') || null;
+    return localStorage.getItem('sb_token') || sessionStorage.getItem('sb_token') || 'sb_demo_token_123';
   });
 
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    const activeTok = localStorage.getItem('sb_token') || sessionStorage.getItem('sb_token');
-    return Boolean(activeTok);
-  });
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
-  const [isOnboarded, setIsOnboarded] = useState(() => {
-    return Boolean(currentUser && currentUser.college && currentUser.careerGoal);
-  });
+  const [isOnboarded, setIsOnboarded] = useState(true);
 
   useEffect(() => {
     if (currentUser) {

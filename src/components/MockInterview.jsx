@@ -12,7 +12,7 @@ import {
 import { MOCK_INTERVIEWS } from '../utils/mockData';
 import { evaluateInterviewResponse } from '../utils/aiSimulator';
 
-export default function MockInterview({ _profile, setProfile }) {
+export default function MockInterview({ _profile, setProfile, onNavigate }) {
   const [track, setTrack] = React.useState(null); // 'frontend', 'backend', 'hr'
   const [step, setStep] = React.useState('select'); // 'select', 'interview', 'evaluating', 'report'
   
@@ -172,21 +172,31 @@ export default function MockInterview({ _profile, setProfile }) {
             </button>
           </div>
 
-          {/* HR Card */}
+          {/* HR & Aptitude Card */}
           <div className="glass rounded-2xl p-6 border border-gray-800 hover:border-accent-pink/30 flex flex-col justify-between space-y-6 transition-all group">
             <div className="space-y-3">
               <div className="w-10 h-10 rounded-lg bg-accent-pink/10 border border-accent-pink/20 flex items-center justify-center text-accent-pink">
                 <MessageSquare className="w-5 h-5" />
               </div>
               <h3 className="text-sm font-semibold text-white">HR & Aptitude Track</h3>
-              <p className="text-xs text-gray-400 leading-relaxed">Questions covering technical introductions, project explanations (STAR method), conflicts resolutions, strengths, and weaknesses.</p>
+              <p className="text-xs text-gray-400 leading-relaxed">Behavioral questions (STAR method) & full Placement Aptitude MCQ Platform with 87 topics (Quant, Logical, Verbal, DI).</p>
             </div>
-            <button 
-              onClick={() => startInterview('hr')}
-              className="w-full py-2.5 rounded-xl bg-gray-800 group-hover:bg-accent-pink text-gray-300 group-hover:text-white font-semibold text-xs transition-all flex items-center justify-center gap-1"
-            >
-              Start Session <Play className="w-3 h-3 ml-0.5 fill-current" />
-            </button>
+            <div className="space-y-2">
+              {onNavigate && (
+                <button 
+                  onClick={() => onNavigate('aptitude')}
+                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-accent-purple to-accent-pink text-white font-extrabold text-xs shadow-lg shadow-purple-600/30 transition-all flex items-center justify-center gap-1.5 hover:scale-[1.02]"
+                >
+                  <Sparkles className="w-3.5 h-3.5 fill-current" /> Open Aptitude Platform (87 Topics)
+                </button>
+              )}
+              <button 
+                onClick={() => startInterview('hr')}
+                className="w-full py-2 rounded-xl bg-gray-900 border border-gray-800 hover:border-accent-pink text-gray-300 hover:text-white font-semibold text-xs transition-all flex items-center justify-center gap-1"
+              >
+                HR Interview Session <Play className="w-3 h-3 ml-0.5 fill-current" />
+              </button>
+            </div>
           </div>
         </div>
       )}

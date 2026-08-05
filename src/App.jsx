@@ -15,7 +15,8 @@ import {
   LogOut,
   LogIn,
   Sparkles,
-  Zap
+  Zap,
+  Brain
 } from 'lucide-react';
 
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -31,6 +32,8 @@ import LearningRoadmap from './components/LearningRoadmap';
 import CareerMentor from './components/CareerMentor';
 import ProjectRecommender from './components/ProjectRecommender';
 import MockInterview from './components/MockInterview';
+import CodingPractice from './components/CodingPractice';
+import AptitudeDashboard from './components/aptitude/AptitudeDashboard';
 
 import { RESUME_PRESETS } from './utils/mockData';
 
@@ -67,7 +70,9 @@ function MainLayout() {
     { id: 'roadmap', label: 'Learning Roadmap', icon: Map },
     { id: 'chat', label: 'Career Mentor', icon: MessageSquare },
     { id: 'projects', label: 'Project Recommendations', icon: Code },
-    { id: 'interview', label: 'Mock Interview', icon: Award }
+    { id: 'interview', label: 'Mock Interview', icon: Award },
+    { id: 'coding', label: 'Coding Practice', icon: Code },
+    { id: 'aptitude', label: 'Aptitude Practice', icon: Brain }
   ];
 
   const renderActiveView = () => {
@@ -129,7 +134,18 @@ function MainLayout() {
           <MockInterview 
             profile={activeProfile} 
             setProfile={handleProfileChange} 
+            onNavigate={setActiveTab}
           />
+        );
+      case 'coding':
+        return (
+          <CodingPractice 
+            profile={activeProfile} 
+          />
+        );
+      case 'aptitude':
+        return (
+          <AptitudeDashboard />
         );
       default:
         return <Dashboard profile={activeProfile} setProfile={handleProfileChange} onNavigate={setActiveTab} />;

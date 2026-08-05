@@ -1,0 +1,6120 @@
+{
+  "questions": [
+    {
+      "id": "percentage-000001",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 480?",
+      "questionType": "single_choice",
+      "options": [
+        "48",
+        "58",
+        "43",
+        "96"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 480 = (10/100) × 480 = 48.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 480 = (10/100) × 480 = 48.",
+      "questionHash": "hash_d471f6df"
+    },
+    {
+      "id": "percentage-000002",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 75% of 840?",
+      "questionType": "single_choice",
+      "options": [
+        "630",
+        "640",
+        "625",
+        "1260"
+      ],
+      "correctAnswer": 0,
+      "explanation": "75% of 840 = (75/100) × 840 = 630.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "75% of 840 = (75/100) × 840 = 630.",
+      "questionHash": "hash_5b4f0d94"
+    },
+    {
+      "id": "percentage-000003",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 15% of 460?",
+      "questionType": "single_choice",
+      "options": [
+        "69",
+        "79",
+        "64",
+        "138"
+      ],
+      "correctAnswer": 0,
+      "explanation": "15% of 460 = (15/100) × 460 = 69.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "15% of 460 = (15/100) × 460 = 69.",
+      "questionHash": "hash_8b3a18b8"
+    },
+    {
+      "id": "percentage-000004",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 15% of 520?",
+      "questionType": "single_choice",
+      "options": [
+        "78",
+        "88",
+        "73",
+        "156"
+      ],
+      "correctAnswer": 0,
+      "explanation": "15% of 520 = (15/100) × 520 = 78.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "15% of 520 = (15/100) × 520 = 78.",
+      "questionHash": "hash_7ad3398b"
+    },
+    {
+      "id": "percentage-000005",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 20% of 900?",
+      "questionType": "single_choice",
+      "options": [
+        "180",
+        "190",
+        "175",
+        "360"
+      ],
+      "correctAnswer": 0,
+      "explanation": "20% of 900 = (20/100) × 900 = 180.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "20% of 900 = (20/100) × 900 = 180.",
+      "questionHash": "hash_dfdafc15"
+    },
+    {
+      "id": "percentage-000006",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 520?",
+      "questionType": "single_choice",
+      "options": [
+        "260",
+        "270",
+        "255",
+        "520"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 520 = (50/100) × 520 = 260.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 520 = (50/100) × 520 = 260.",
+      "questionHash": "hash_2d5c8e5a"
+    },
+    {
+      "id": "percentage-000007",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 1000?",
+      "questionType": "single_choice",
+      "options": [
+        "500",
+        "510",
+        "495",
+        "1000"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 1000 = (50/100) × 1000 = 500.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 1000 = (50/100) × 1000 = 500.",
+      "questionHash": "hash_3822c2ec"
+    },
+    {
+      "id": "percentage-000008",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 15% of 660?",
+      "questionType": "single_choice",
+      "options": [
+        "99",
+        "109",
+        "94",
+        "198"
+      ],
+      "correctAnswer": 0,
+      "explanation": "15% of 660 = (15/100) × 660 = 99.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "15% of 660 = (15/100) × 660 = 99.",
+      "questionHash": "hash_3628d6ee"
+    },
+    {
+      "id": "percentage-000009",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 25% of 440?",
+      "questionType": "single_choice",
+      "options": [
+        "110",
+        "120",
+        "105",
+        "220"
+      ],
+      "correctAnswer": 0,
+      "explanation": "25% of 440 = (25/100) × 440 = 110.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "25% of 440 = (25/100) × 440 = 110.",
+      "questionHash": "hash_1209fbbb"
+    },
+    {
+      "id": "percentage-000010",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 300?",
+      "questionType": "single_choice",
+      "options": [
+        "30",
+        "40",
+        "25",
+        "60"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 300 = (10/100) × 300 = 30.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 300 = (10/100) × 300 = 30.",
+      "questionHash": "hash_87826326"
+    },
+    {
+      "id": "hcf-and-lcm-000001",
+      "category": "Quantitative Aptitude",
+      "topic": "HCF and LCM",
+      "topicId": "hcf-and-lcm",
+      "subtopic": "Core Fundamentals",
+      "question": "Which of the following principles correctly applies to Hcf And Lcm in placement technical evaluation?",
+      "questionType": "single_choice",
+      "options": [
+        "Optimal systematic evaluation of condition state A",
+        "Random non-deterministic distribution",
+        "Linear execution without condition verification",
+        "Redundant memory allocation overhead"
+      ],
+      "correctAnswer": 0,
+      "explanation": "In Hcf And Lcm, applying structured algorithmic constraints produces optimal deterministic accuracy.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "hcf-and-lcm",
+        "aptitude",
+        "placement"
+      ],
+      "solution": "In Hcf And Lcm, applying structured algorithmic constraints produces optimal deterministic accuracy.",
+      "questionHash": "hash_ce0e623b"
+    },
+    {
+      "id": "hcf-and-lcm-000002",
+      "category": "Quantitative Aptitude",
+      "topic": "HCF and LCM",
+      "topicId": "hcf-and-lcm",
+      "subtopic": "Core Fundamentals",
+      "question": "What is the expected complexity or outcome when evaluating standard Hcf And Lcm constraints under medium difficulty?",
+      "questionType": "single_choice",
+      "options": [
+        "O(N log N) time complexity with linear space",
+        "Exponential O(2^N) execution without memoization",
+        "Constant O(1) space with zero memory overhead",
+        "Undefined non-computable state"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Placement assessment standards for Hcf And Lcm emphasize scalable asymptotic efficiency.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "hcf-and-lcm",
+        "aptitude",
+        "placement"
+      ],
+      "solution": "Placement assessment standards for Hcf And Lcm emphasize scalable asymptotic efficiency.",
+      "questionHash": "hash_3dbf05b4"
+    },
+    {
+      "id": "percentage-000001",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 20% of 940?",
+      "questionType": "single_choice",
+      "options": [
+        "188",
+        "198",
+        "183",
+        "376"
+      ],
+      "correctAnswer": 0,
+      "explanation": "20% of 940 = (20/100) × 940 = 188.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "20% of 940 = (20/100) × 940 = 188.",
+      "questionHash": "hash_e7d07b51"
+    },
+    {
+      "id": "percentage-000002",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 260?",
+      "questionType": "single_choice",
+      "options": [
+        "26",
+        "36",
+        "21",
+        "52"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 260 = (10/100) × 260 = 26.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 260 = (10/100) × 260 = 26.",
+      "questionHash": "hash_0b660ea7"
+    },
+    {
+      "id": "percentage-000003",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 20% of 660?",
+      "questionType": "single_choice",
+      "options": [
+        "132",
+        "142",
+        "127",
+        "264"
+      ],
+      "correctAnswer": 0,
+      "explanation": "20% of 660 = (20/100) × 660 = 132.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "20% of 660 = (20/100) × 660 = 132.",
+      "questionHash": "hash_7376daa6"
+    },
+    {
+      "id": "percentage-000004",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 15% of 480?",
+      "questionType": "single_choice",
+      "options": [
+        "72",
+        "82",
+        "67",
+        "144"
+      ],
+      "correctAnswer": 0,
+      "explanation": "15% of 480 = (15/100) × 480 = 72.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "15% of 480 = (15/100) × 480 = 72.",
+      "questionHash": "hash_ff34bf26"
+    },
+    {
+      "id": "percentage-000005",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 40% of 400?",
+      "questionType": "single_choice",
+      "options": [
+        "160",
+        "170",
+        "155",
+        "320"
+      ],
+      "correctAnswer": 0,
+      "explanation": "40% of 400 = (40/100) × 400 = 160.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "40% of 400 = (40/100) × 400 = 160.",
+      "questionHash": "hash_1090c000"
+    },
+    {
+      "id": "percentage-000006",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 15% of 320?",
+      "questionType": "single_choice",
+      "options": [
+        "48",
+        "58",
+        "43",
+        "96"
+      ],
+      "correctAnswer": 0,
+      "explanation": "15% of 320 = (15/100) × 320 = 48.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "15% of 320 = (15/100) × 320 = 48.",
+      "questionHash": "hash_dff81c3d"
+    },
+    {
+      "id": "percentage-000007",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 75% of 780?",
+      "questionType": "single_choice",
+      "options": [
+        "585",
+        "595",
+        "580",
+        "1170"
+      ],
+      "correctAnswer": 0,
+      "explanation": "75% of 780 = (75/100) × 780 = 585.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "75% of 780 = (75/100) × 780 = 585.",
+      "questionHash": "hash_c266e9ad"
+    },
+    {
+      "id": "percentage-000008",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 30% of 800?",
+      "questionType": "single_choice",
+      "options": [
+        "240",
+        "250",
+        "235",
+        "480"
+      ],
+      "correctAnswer": 0,
+      "explanation": "30% of 800 = (30/100) × 800 = 240.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "30% of 800 = (30/100) × 800 = 240.",
+      "questionHash": "hash_062b38cd"
+    },
+    {
+      "id": "percentage-000009",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 600?",
+      "questionType": "single_choice",
+      "options": [
+        "300",
+        "310",
+        "295",
+        "600"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 600 = (50/100) × 600 = 300.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 600 = (50/100) × 600 = 300.",
+      "questionHash": "hash_5e0b4ea9"
+    },
+    {
+      "id": "percentage-000010",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 15% of 600?",
+      "questionType": "single_choice",
+      "options": [
+        "90",
+        "100",
+        "85",
+        "180"
+      ],
+      "correctAnswer": 0,
+      "explanation": "15% of 600 = (15/100) × 600 = 90.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "15% of 600 = (15/100) × 600 = 90.",
+      "questionHash": "hash_3219c618"
+    },
+    {
+      "id": "percentage-000011",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 75% of 640?",
+      "questionType": "single_choice",
+      "options": [
+        "480",
+        "490",
+        "475",
+        "960"
+      ],
+      "correctAnswer": 0,
+      "explanation": "75% of 640 = (75/100) × 640 = 480.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "75% of 640 = (75/100) × 640 = 480.",
+      "questionHash": "hash_cbecdbae"
+    },
+    {
+      "id": "percentage-000012",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 25% of 920?",
+      "questionType": "single_choice",
+      "options": [
+        "230",
+        "240",
+        "225",
+        "460"
+      ],
+      "correctAnswer": 0,
+      "explanation": "25% of 920 = (25/100) × 920 = 230.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "25% of 920 = (25/100) × 920 = 230.",
+      "questionHash": "hash_04127242"
+    },
+    {
+      "id": "percentage-000013",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 25% of 500?",
+      "questionType": "single_choice",
+      "options": [
+        "125",
+        "135",
+        "120",
+        "250"
+      ],
+      "correctAnswer": 0,
+      "explanation": "25% of 500 = (25/100) × 500 = 125.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "25% of 500 = (25/100) × 500 = 125.",
+      "questionHash": "hash_2a3f4ab4"
+    },
+    {
+      "id": "percentage-000014",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 25% of 960?",
+      "questionType": "single_choice",
+      "options": [
+        "240",
+        "250",
+        "235",
+        "480"
+      ],
+      "correctAnswer": 0,
+      "explanation": "25% of 960 = (25/100) × 960 = 240.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "25% of 960 = (25/100) × 960 = 240.",
+      "questionHash": "hash_7c1c2986"
+    },
+    {
+      "id": "percentage-000015",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 60% of 620?",
+      "questionType": "single_choice",
+      "options": [
+        "372",
+        "382",
+        "367",
+        "744"
+      ],
+      "correctAnswer": 0,
+      "explanation": "60% of 620 = (60/100) × 620 = 372.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "60% of 620 = (60/100) × 620 = 372.",
+      "questionHash": "hash_7652f4ce"
+    },
+    {
+      "id": "percentage-000016",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 75% of 700?",
+      "questionType": "single_choice",
+      "options": [
+        "525",
+        "535",
+        "520",
+        "1050"
+      ],
+      "correctAnswer": 0,
+      "explanation": "75% of 700 = (75/100) × 700 = 525.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "75% of 700 = (75/100) × 700 = 525.",
+      "questionHash": "hash_b27a5835"
+    },
+    {
+      "id": "percentage-000017",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 780?",
+      "questionType": "single_choice",
+      "options": [
+        "78",
+        "88",
+        "73",
+        "156"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 780 = (10/100) × 780 = 78.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 780 = (10/100) × 780 = 78.",
+      "questionHash": "hash_541f821a"
+    },
+    {
+      "id": "percentage-000018",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 460?",
+      "questionType": "single_choice",
+      "options": [
+        "46",
+        "56",
+        "41",
+        "92"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 460 = (10/100) × 460 = 46.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 460 = (10/100) × 460 = 46.",
+      "questionHash": "hash_60775071"
+    },
+    {
+      "id": "percentage-000019",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 880?",
+      "questionType": "single_choice",
+      "options": [
+        "440",
+        "450",
+        "435",
+        "880"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 880 = (50/100) × 880 = 440.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 880 = (50/100) × 880 = 440.",
+      "questionHash": "hash_d48f79ff"
+    },
+    {
+      "id": "percentage-000020",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 40% of 740?",
+      "questionType": "single_choice",
+      "options": [
+        "296",
+        "306",
+        "291",
+        "592"
+      ],
+      "correctAnswer": 0,
+      "explanation": "40% of 740 = (40/100) × 740 = 296.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "40% of 740 = (40/100) × 740 = 296.",
+      "questionHash": "hash_659e7565"
+    },
+    {
+      "id": "percentage-000021",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 25% of 340?",
+      "questionType": "single_choice",
+      "options": [
+        "85",
+        "95",
+        "80",
+        "170"
+      ],
+      "correctAnswer": 0,
+      "explanation": "25% of 340 = (25/100) × 340 = 85.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "25% of 340 = (25/100) × 340 = 85.",
+      "questionHash": "hash_5555e1da"
+    },
+    {
+      "id": "percentage-000022",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 75% of 760?",
+      "questionType": "single_choice",
+      "options": [
+        "570",
+        "580",
+        "565",
+        "1140"
+      ],
+      "correctAnswer": 0,
+      "explanation": "75% of 760 = (75/100) × 760 = 570.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "75% of 760 = (75/100) × 760 = 570.",
+      "questionHash": "hash_a675c823"
+    },
+    {
+      "id": "percentage-000024",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 40% of 280?",
+      "questionType": "single_choice",
+      "options": [
+        "112",
+        "122",
+        "107",
+        "224"
+      ],
+      "correctAnswer": 0,
+      "explanation": "40% of 280 = (40/100) × 280 = 112.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "40% of 280 = (40/100) × 280 = 112.",
+      "questionHash": "hash_ba5c78ea"
+    },
+    {
+      "id": "percentage-000025",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 580?",
+      "questionType": "single_choice",
+      "options": [
+        "290",
+        "300",
+        "285",
+        "580"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 580 = (50/100) × 580 = 290.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 580 = (50/100) × 580 = 290.",
+      "questionHash": "hash_914393e0"
+    },
+    {
+      "id": "percentage-000026",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 15% of 200?",
+      "questionType": "single_choice",
+      "options": [
+        "30",
+        "40",
+        "25",
+        "60"
+      ],
+      "correctAnswer": 0,
+      "explanation": "15% of 200 = (15/100) × 200 = 30.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "15% of 200 = (15/100) × 200 = 30.",
+      "questionHash": "hash_6d654624"
+    },
+    {
+      "id": "percentage-000027",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 60% of 960?",
+      "questionType": "single_choice",
+      "options": [
+        "576",
+        "586",
+        "571",
+        "1152"
+      ],
+      "correctAnswer": 0,
+      "explanation": "60% of 960 = (60/100) × 960 = 576.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "60% of 960 = (60/100) × 960 = 576.",
+      "questionHash": "hash_e7997a7f"
+    },
+    {
+      "id": "percentage-000028",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 40% of 840?",
+      "questionType": "single_choice",
+      "options": [
+        "336",
+        "346",
+        "331",
+        "672"
+      ],
+      "correctAnswer": 0,
+      "explanation": "40% of 840 = (40/100) × 840 = 336.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "40% of 840 = (40/100) × 840 = 336.",
+      "questionHash": "hash_2bf63ce0"
+    },
+    {
+      "id": "percentage-000029",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 40% of 460?",
+      "questionType": "single_choice",
+      "options": [
+        "184",
+        "194",
+        "179",
+        "368"
+      ],
+      "correctAnswer": 0,
+      "explanation": "40% of 460 = (40/100) × 460 = 184.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "40% of 460 = (40/100) × 460 = 184.",
+      "questionHash": "hash_149fd0d6"
+    },
+    {
+      "id": "percentage-000030",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 75% of 320?",
+      "questionType": "single_choice",
+      "options": [
+        "240",
+        "250",
+        "235",
+        "480"
+      ],
+      "correctAnswer": 0,
+      "explanation": "75% of 320 = (75/100) × 320 = 240.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "75% of 320 = (75/100) × 320 = 240.",
+      "questionHash": "hash_02e47fdb"
+    },
+    {
+      "id": "percentage-000031",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 60% of 320?",
+      "questionType": "single_choice",
+      "options": [
+        "192",
+        "202",
+        "187",
+        "384"
+      ],
+      "correctAnswer": 0,
+      "explanation": "60% of 320 = (60/100) × 320 = 192.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "60% of 320 = (60/100) × 320 = 192.",
+      "questionHash": "hash_228273e9"
+    },
+    {
+      "id": "percentage-000032",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 40% of 1000?",
+      "questionType": "single_choice",
+      "options": [
+        "400",
+        "410",
+        "395",
+        "800"
+      ],
+      "correctAnswer": 0,
+      "explanation": "40% of 1000 = (40/100) × 1000 = 400.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "40% of 1000 = (40/100) × 1000 = 400.",
+      "questionHash": "hash_5883c565"
+    },
+    {
+      "id": "percentage-000033",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 30% of 280?",
+      "questionType": "single_choice",
+      "options": [
+        "84",
+        "94",
+        "79",
+        "168"
+      ],
+      "correctAnswer": 0,
+      "explanation": "30% of 280 = (30/100) × 280 = 84.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "30% of 280 = (30/100) × 280 = 84.",
+      "questionHash": "hash_8eb98ad7"
+    },
+    {
+      "id": "percentage-000034",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 380?",
+      "questionType": "single_choice",
+      "options": [
+        "38",
+        "48",
+        "33",
+        "76"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 380 = (10/100) × 380 = 38.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 380 = (10/100) × 380 = 38.",
+      "questionHash": "hash_1796cd8e"
+    },
+    {
+      "id": "percentage-000035",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 25% of 400?",
+      "questionType": "single_choice",
+      "options": [
+        "100",
+        "110",
+        "95",
+        "200"
+      ],
+      "correctAnswer": 0,
+      "explanation": "25% of 400 = (25/100) × 400 = 100.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "25% of 400 = (25/100) × 400 = 100.",
+      "questionHash": "hash_8a13b2ff"
+    },
+    {
+      "id": "percentage-000036",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 30% of 840?",
+      "questionType": "single_choice",
+      "options": [
+        "252",
+        "262",
+        "247",
+        "504"
+      ],
+      "correctAnswer": 0,
+      "explanation": "30% of 840 = (30/100) × 840 = 252.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "30% of 840 = (30/100) × 840 = 252.",
+      "questionHash": "hash_6e214f29"
+    },
+    {
+      "id": "percentage-000037",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 30% of 320?",
+      "questionType": "single_choice",
+      "options": [
+        "96",
+        "106",
+        "91",
+        "192"
+      ],
+      "correctAnswer": 0,
+      "explanation": "30% of 320 = (30/100) × 320 = 96.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "30% of 320 = (30/100) × 320 = 96.",
+      "questionHash": "hash_0c1313d6"
+    },
+    {
+      "id": "percentage-000038",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 260?",
+      "questionType": "single_choice",
+      "options": [
+        "130",
+        "140",
+        "125",
+        "260"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 260 = (50/100) × 260 = 130.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 260 = (50/100) × 260 = 130.",
+      "questionHash": "hash_0da12703"
+    },
+    {
+      "id": "percentage-000039",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 20% of 380?",
+      "questionType": "single_choice",
+      "options": [
+        "76",
+        "86",
+        "71",
+        "152"
+      ],
+      "correctAnswer": 0,
+      "explanation": "20% of 380 = (20/100) × 380 = 76.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "20% of 380 = (20/100) × 380 = 76.",
+      "questionHash": "hash_1ac3f57f"
+    },
+    {
+      "id": "percentage-000040",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 280?",
+      "questionType": "single_choice",
+      "options": [
+        "140",
+        "150",
+        "135",
+        "280"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 280 = (50/100) × 280 = 140.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 280 = (50/100) × 280 = 140.",
+      "questionHash": "hash_2992488d"
+    },
+    {
+      "id": "percentage-000041",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 25% of 300?",
+      "questionType": "single_choice",
+      "options": [
+        "75",
+        "85",
+        "70",
+        "150"
+      ],
+      "correctAnswer": 0,
+      "explanation": "25% of 300 = (25/100) × 300 = 75.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "25% of 300 = (25/100) × 300 = 75.",
+      "questionHash": "hash_cd5f991e"
+    },
+    {
+      "id": "percentage-000042",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 30% of 560?",
+      "questionType": "single_choice",
+      "options": [
+        "168",
+        "178",
+        "163",
+        "336"
+      ],
+      "correctAnswer": 0,
+      "explanation": "30% of 560 = (30/100) × 560 = 168.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "30% of 560 = (30/100) × 560 = 168.",
+      "questionHash": "hash_bde2bf38"
+    },
+    {
+      "id": "percentage-000043",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 720?",
+      "questionType": "single_choice",
+      "options": [
+        "360",
+        "370",
+        "355",
+        "720"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 720 = (50/100) × 720 = 360.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 720 = (50/100) × 720 = 360.",
+      "questionHash": "hash_72813eac"
+    },
+    {
+      "id": "percentage-000044",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 60% of 780?",
+      "questionType": "single_choice",
+      "options": [
+        "468",
+        "478",
+        "463",
+        "936"
+      ],
+      "correctAnswer": 0,
+      "explanation": "60% of 780 = (60/100) × 780 = 468.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "60% of 780 = (60/100) × 780 = 468.",
+      "questionHash": "hash_5a0e94ff"
+    },
+    {
+      "id": "percentage-000045",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 20% of 540?",
+      "questionType": "single_choice",
+      "options": [
+        "108",
+        "118",
+        "103",
+        "216"
+      ],
+      "correctAnswer": 0,
+      "explanation": "20% of 540 = (20/100) × 540 = 108.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "20% of 540 = (20/100) × 540 = 108.",
+      "questionHash": "hash_c4757f35"
+    },
+    {
+      "id": "percentage-000047",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 40% of 420?",
+      "questionType": "single_choice",
+      "options": [
+        "168",
+        "178",
+        "163",
+        "336"
+      ],
+      "correctAnswer": 0,
+      "explanation": "40% of 420 = (40/100) × 420 = 168.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "40% of 420 = (40/100) × 420 = 168.",
+      "questionHash": "hash_9c961992"
+    },
+    {
+      "id": "percentage-000048",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 60% of 600?",
+      "questionType": "single_choice",
+      "options": [
+        "360",
+        "370",
+        "355",
+        "720"
+      ],
+      "correctAnswer": 0,
+      "explanation": "60% of 600 = (60/100) × 600 = 360.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "60% of 600 = (60/100) × 600 = 360.",
+      "questionHash": "hash_ea4d9b3c"
+    },
+    {
+      "id": "percentage-000049",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 40% of 260?",
+      "questionType": "single_choice",
+      "options": [
+        "104",
+        "114",
+        "99",
+        "208"
+      ],
+      "correctAnswer": 0,
+      "explanation": "40% of 260 = (40/100) × 260 = 104.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "40% of 260 = (40/100) × 260 = 104.",
+      "questionHash": "hash_b64d6814"
+    },
+    {
+      "id": "percentage-000050",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 60% of 440?",
+      "questionType": "single_choice",
+      "options": [
+        "264",
+        "274",
+        "259",
+        "528"
+      ],
+      "correctAnswer": 0,
+      "explanation": "60% of 440 = (60/100) × 440 = 264.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "60% of 440 = (60/100) × 440 = 264.",
+      "questionHash": "hash_c0743896"
+    },
+    {
+      "id": "percentage-000051",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 15% of 960?",
+      "questionType": "single_choice",
+      "options": [
+        "144",
+        "154",
+        "139",
+        "288"
+      ],
+      "correctAnswer": 0,
+      "explanation": "15% of 960 = (15/100) × 960 = 144.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "15% of 960 = (15/100) × 960 = 144.",
+      "questionHash": "hash_c77e023b"
+    },
+    {
+      "id": "percentage-000052",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 20% of 800?",
+      "questionType": "single_choice",
+      "options": [
+        "160",
+        "170",
+        "155",
+        "320"
+      ],
+      "correctAnswer": 0,
+      "explanation": "20% of 800 = (20/100) × 800 = 160.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "20% of 800 = (20/100) × 800 = 160.",
+      "questionHash": "hash_0005ca4a"
+    },
+    {
+      "id": "percentage-000053",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 15% of 400?",
+      "questionType": "single_choice",
+      "options": [
+        "60",
+        "70",
+        "55",
+        "120"
+      ],
+      "correctAnswer": 0,
+      "explanation": "15% of 400 = (15/100) × 400 = 60.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "15% of 400 = (15/100) × 400 = 60.",
+      "questionHash": "hash_8f49298e"
+    },
+    {
+      "id": "percentage-000054",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 25% of 380?",
+      "questionType": "single_choice",
+      "options": [
+        "95",
+        "105",
+        "90",
+        "190"
+      ],
+      "correctAnswer": 0,
+      "explanation": "25% of 380 = (25/100) × 380 = 95.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "25% of 380 = (25/100) × 380 = 95.",
+      "questionHash": "hash_bd4bf836"
+    },
+    {
+      "id": "percentage-000055",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 30% of 720?",
+      "questionType": "single_choice",
+      "options": [
+        "216",
+        "226",
+        "211",
+        "432"
+      ],
+      "correctAnswer": 0,
+      "explanation": "30% of 720 = (30/100) × 720 = 216.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "30% of 720 = (30/100) × 720 = 216.",
+      "questionHash": "hash_f0c7c62a"
+    },
+    {
+      "id": "percentage-000056",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 15% of 260?",
+      "questionType": "single_choice",
+      "options": [
+        "39",
+        "49",
+        "34",
+        "78"
+      ],
+      "correctAnswer": 0,
+      "explanation": "15% of 260 = (15/100) × 260 = 39.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "15% of 260 = (15/100) × 260 = 39.",
+      "questionHash": "hash_6160b612"
+    },
+    {
+      "id": "percentage-000057",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 30% of 300?",
+      "questionType": "single_choice",
+      "options": [
+        "90",
+        "100",
+        "85",
+        "180"
+      ],
+      "correctAnswer": 0,
+      "explanation": "30% of 300 = (30/100) × 300 = 90.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "30% of 300 = (30/100) × 300 = 90.",
+      "questionHash": "hash_a00deca4"
+    },
+    {
+      "id": "percentage-000058",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 60% of 760?",
+      "questionType": "single_choice",
+      "options": [
+        "456",
+        "466",
+        "451",
+        "912"
+      ],
+      "correctAnswer": 0,
+      "explanation": "60% of 760 = (60/100) × 760 = 456.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "60% of 760 = (60/100) × 760 = 456.",
+      "questionHash": "hash_66132511"
+    },
+    {
+      "id": "percentage-000059",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 30% of 980?",
+      "questionType": "single_choice",
+      "options": [
+        "294",
+        "304",
+        "289",
+        "588"
+      ],
+      "correctAnswer": 0,
+      "explanation": "30% of 980 = (30/100) × 980 = 294.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "30% of 980 = (30/100) × 980 = 294.",
+      "questionHash": "hash_966a3f0a"
+    },
+    {
+      "id": "percentage-000060",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 75% of 300?",
+      "questionType": "single_choice",
+      "options": [
+        "225",
+        "235",
+        "220",
+        "450"
+      ],
+      "correctAnswer": 0,
+      "explanation": "75% of 300 = (75/100) × 300 = 225.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "75% of 300 = (75/100) × 300 = 225.",
+      "questionHash": "hash_f6dfefc9"
+    },
+    {
+      "id": "percentage-000062",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 75% of 1000?",
+      "questionType": "single_choice",
+      "options": [
+        "750",
+        "760",
+        "745",
+        "1500"
+      ],
+      "correctAnswer": 0,
+      "explanation": "75% of 1000 = (75/100) × 1000 = 750.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "75% of 1000 = (75/100) × 1000 = 750.",
+      "questionHash": "hash_fe07f939"
+    },
+    {
+      "id": "percentage-000063",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 15% of 700?",
+      "questionType": "single_choice",
+      "options": [
+        "105",
+        "115",
+        "100",
+        "210"
+      ],
+      "correctAnswer": 0,
+      "explanation": "15% of 700 = (15/100) × 700 = 105.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "15% of 700 = (15/100) × 700 = 105.",
+      "questionHash": "hash_10b1c363"
+    },
+    {
+      "id": "percentage-000064",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 60% of 560?",
+      "questionType": "single_choice",
+      "options": [
+        "336",
+        "346",
+        "331",
+        "672"
+      ],
+      "correctAnswer": 0,
+      "explanation": "60% of 560 = (60/100) × 560 = 336.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "60% of 560 = (60/100) × 560 = 336.",
+      "questionHash": "hash_3afc8deb"
+    },
+    {
+      "id": "percentage-000065",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 40% of 480?",
+      "questionType": "single_choice",
+      "options": [
+        "192",
+        "202",
+        "187",
+        "384"
+      ],
+      "correctAnswer": 0,
+      "explanation": "40% of 480 = (40/100) × 480 = 192.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "40% of 480 = (40/100) × 480 = 192.",
+      "questionHash": "hash_a0a52a68"
+    },
+    {
+      "id": "percentage-000066",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 420?",
+      "questionType": "single_choice",
+      "options": [
+        "42",
+        "52",
+        "37",
+        "84"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 420 = (10/100) × 420 = 42.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 420 = (10/100) × 420 = 42.",
+      "questionHash": "hash_d88107b5"
+    },
+    {
+      "id": "percentage-000067",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 1000?",
+      "questionType": "single_choice",
+      "options": [
+        "100",
+        "110",
+        "95",
+        "200"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 1000 = (10/100) × 1000 = 100.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 1000 = (10/100) × 1000 = 100.",
+      "questionHash": "hash_21e56b00"
+    },
+    {
+      "id": "percentage-000068",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 540?",
+      "questionType": "single_choice",
+      "options": [
+        "270",
+        "280",
+        "265",
+        "540"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 540 = (50/100) × 540 = 270.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 540 = (50/100) × 540 = 270.",
+      "questionHash": "hash_1960ec0c"
+    },
+    {
+      "id": "percentage-000069",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 40% of 680?",
+      "questionType": "single_choice",
+      "options": [
+        "272",
+        "282",
+        "267",
+        "544"
+      ],
+      "correctAnswer": 0,
+      "explanation": "40% of 680 = (40/100) × 680 = 272.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "40% of 680 = (40/100) × 680 = 272.",
+      "questionHash": "hash_7f10f8de"
+    },
+    {
+      "id": "percentage-000070",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 40% of 520?",
+      "questionType": "single_choice",
+      "options": [
+        "208",
+        "218",
+        "203",
+        "416"
+      ],
+      "correctAnswer": 0,
+      "explanation": "40% of 520 = (40/100) × 520 = 208.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "40% of 520 = (40/100) × 520 = 208.",
+      "questionHash": "hash_83239619"
+    },
+    {
+      "id": "percentage-000071",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 75% of 380?",
+      "questionType": "single_choice",
+      "options": [
+        "285",
+        "295",
+        "280",
+        "570"
+      ],
+      "correctAnswer": 0,
+      "explanation": "75% of 380 = (75/100) × 380 = 285.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "75% of 380 = (75/100) × 380 = 285.",
+      "questionHash": "hash_06f390b1"
+    },
+    {
+      "id": "percentage-000072",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 20% of 1000?",
+      "questionType": "single_choice",
+      "options": [
+        "200",
+        "210",
+        "195",
+        "400"
+      ],
+      "correctAnswer": 0,
+      "explanation": "20% of 1000 = (20/100) × 1000 = 200.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "20% of 1000 = (20/100) × 1000 = 200.",
+      "questionHash": "hash_728607b7"
+    },
+    {
+      "id": "percentage-000073",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 40% of 640?",
+      "questionType": "single_choice",
+      "options": [
+        "256",
+        "266",
+        "251",
+        "512"
+      ],
+      "correctAnswer": 0,
+      "explanation": "40% of 640 = (40/100) × 640 = 256.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "40% of 640 = (40/100) × 640 = 256.",
+      "questionHash": "hash_76f2d732"
+    },
+    {
+      "id": "percentage-000074",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 30% of 360?",
+      "questionType": "single_choice",
+      "options": [
+        "108",
+        "118",
+        "103",
+        "216"
+      ],
+      "correctAnswer": 0,
+      "explanation": "30% of 360 = (30/100) × 360 = 108.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "30% of 360 = (30/100) × 360 = 108.",
+      "questionHash": "hash_94095c92"
+    },
+    {
+      "id": "percentage-000075",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 30% of 700?",
+      "questionType": "single_choice",
+      "options": [
+        "210",
+        "220",
+        "205",
+        "420"
+      ],
+      "correctAnswer": 0,
+      "explanation": "30% of 700 = (30/100) × 700 = 210.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "30% of 700 = (30/100) × 700 = 210.",
+      "questionHash": "hash_64c26c98"
+    },
+    {
+      "id": "percentage-000076",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 75% of 280?",
+      "questionType": "single_choice",
+      "options": [
+        "210",
+        "220",
+        "205",
+        "420"
+      ],
+      "correctAnswer": 0,
+      "explanation": "75% of 280 = (75/100) × 280 = 210.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "75% of 280 = (75/100) × 280 = 210.",
+      "questionHash": "hash_08840376"
+    },
+    {
+      "id": "percentage-000077",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 20% of 700?",
+      "questionType": "single_choice",
+      "options": [
+        "140",
+        "150",
+        "135",
+        "280"
+      ],
+      "correctAnswer": 0,
+      "explanation": "20% of 700 = (20/100) × 700 = 140.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "20% of 700 = (20/100) × 700 = 140.",
+      "questionHash": "hash_6f3d2dfb"
+    },
+    {
+      "id": "percentage-000078",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 75% of 600?",
+      "questionType": "single_choice",
+      "options": [
+        "450",
+        "460",
+        "445",
+        "900"
+      ],
+      "correctAnswer": 0,
+      "explanation": "75% of 600 = (75/100) × 600 = 450.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "75% of 600 = (75/100) × 600 = 450.",
+      "questionHash": "hash_53e3246a"
+    },
+    {
+      "id": "percentage-000079",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 60% of 520?",
+      "questionType": "single_choice",
+      "options": [
+        "312",
+        "322",
+        "307",
+        "624"
+      ],
+      "correctAnswer": 0,
+      "explanation": "60% of 520 = (60/100) × 520 = 312.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "60% of 520 = (60/100) × 520 = 312.",
+      "questionHash": "hash_33070eaf"
+    },
+    {
+      "id": "percentage-000080",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 15% of 580?",
+      "questionType": "single_choice",
+      "options": [
+        "87",
+        "97",
+        "82",
+        "174"
+      ],
+      "correctAnswer": 0,
+      "explanation": "15% of 580 = (15/100) × 580 = 87.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "15% of 580 = (15/100) × 580 = 87.",
+      "questionHash": "hash_7ee24a61"
+    },
+    {
+      "id": "percentage-000081",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 620?",
+      "questionType": "single_choice",
+      "options": [
+        "62",
+        "72",
+        "57",
+        "124"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 620 = (10/100) × 620 = 62.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 620 = (10/100) × 620 = 62.",
+      "questionHash": "hash_aea7a50f"
+    },
+    {
+      "id": "percentage-000082",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 25% of 680?",
+      "questionType": "single_choice",
+      "options": [
+        "170",
+        "180",
+        "165",
+        "340"
+      ],
+      "correctAnswer": 0,
+      "explanation": "25% of 680 = (25/100) × 680 = 170.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "25% of 680 = (25/100) × 680 = 170.",
+      "questionHash": "hash_772ede6d"
+    },
+    {
+      "id": "percentage-000083",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 60% of 240?",
+      "questionType": "single_choice",
+      "options": [
+        "144",
+        "154",
+        "139",
+        "288"
+      ],
+      "correctAnswer": 0,
+      "explanation": "60% of 240 = (60/100) × 240 = 144.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "60% of 240 = (60/100) × 240 = 144.",
+      "questionHash": "hash_c6bd1c74"
+    },
+    {
+      "id": "percentage-000084",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 380?",
+      "questionType": "single_choice",
+      "options": [
+        "190",
+        "200",
+        "185",
+        "380"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 380 = (50/100) × 380 = 190.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 380 = (50/100) × 380 = 190.",
+      "questionHash": "hash_a9bdade2"
+    },
+    {
+      "id": "percentage-000085",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 75% of 200?",
+      "questionType": "single_choice",
+      "options": [
+        "150",
+        "160",
+        "145",
+        "300"
+      ],
+      "correctAnswer": 0,
+      "explanation": "75% of 200 = (75/100) × 200 = 150.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "75% of 200 = (75/100) × 200 = 150.",
+      "questionHash": "hash_1897a45e"
+    },
+    {
+      "id": "percentage-000086",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 860?",
+      "questionType": "single_choice",
+      "options": [
+        "86",
+        "96",
+        "81",
+        "172"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 860 = (10/100) × 860 = 86.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 860 = (10/100) × 860 = 86.",
+      "questionHash": "hash_8bd63f05"
+    },
+    {
+      "id": "percentage-000087",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 60% of 300?",
+      "questionType": "single_choice",
+      "options": [
+        "180",
+        "190",
+        "175",
+        "360"
+      ],
+      "correctAnswer": 0,
+      "explanation": "60% of 300 = (60/100) × 300 = 180.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "60% of 300 = (60/100) × 300 = 180.",
+      "questionHash": "hash_ae87cd7b"
+    },
+    {
+      "id": "percentage-000088",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 75% of 800?",
+      "questionType": "single_choice",
+      "options": [
+        "600",
+        "610",
+        "595",
+        "1200"
+      ],
+      "correctAnswer": 0,
+      "explanation": "75% of 800 = (75/100) × 800 = 600.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "75% of 800 = (75/100) × 800 = 600.",
+      "questionHash": "hash_c34523f0"
+    },
+    {
+      "id": "percentage-000089",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 320?",
+      "questionType": "single_choice",
+      "options": [
+        "32",
+        "42",
+        "27",
+        "64"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 320 = (10/100) × 320 = 32.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 320 = (10/100) × 320 = 32.",
+      "questionHash": "hash_9b7e0574"
+    },
+    {
+      "id": "percentage-000090",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 40% of 360?",
+      "questionType": "single_choice",
+      "options": [
+        "144",
+        "154",
+        "139",
+        "288"
+      ],
+      "correctAnswer": 0,
+      "explanation": "40% of 360 = (40/100) × 360 = 144.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "40% of 360 = (40/100) × 360 = 144.",
+      "questionHash": "hash_9cdae49b"
+    },
+    {
+      "id": "percentage-000002",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 740?",
+      "questionType": "single_choice",
+      "options": [
+        "370",
+        "380",
+        "365",
+        "740"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 740 = (50/100) × 740 = 370.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 740 = (50/100) × 740 = 370.",
+      "questionHash": "hash_067c177a"
+    },
+    {
+      "id": "percentage-000003",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 20% of 480?",
+      "questionType": "single_choice",
+      "options": [
+        "96",
+        "106",
+        "91",
+        "192"
+      ],
+      "correctAnswer": 0,
+      "explanation": "20% of 480 = (20/100) × 480 = 96.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "20% of 480 = (20/100) × 480 = 96.",
+      "questionHash": "hash_dde802ae"
+    },
+    {
+      "id": "percentage-000004",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 25% of 360?",
+      "questionType": "single_choice",
+      "options": [
+        "90",
+        "100",
+        "85",
+        "180"
+      ],
+      "correctAnswer": 0,
+      "explanation": "25% of 360 = (25/100) × 360 = 90.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "25% of 360 = (25/100) × 360 = 90.",
+      "questionHash": "hash_c9508848"
+    },
+    {
+      "id": "percentage-000005",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 30% of 760?",
+      "questionType": "single_choice",
+      "options": [
+        "228",
+        "238",
+        "223",
+        "456"
+      ],
+      "correctAnswer": 0,
+      "explanation": "30% of 760 = (30/100) × 760 = 228.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "30% of 760 = (30/100) × 760 = 228.",
+      "questionHash": "hash_68d17d6e"
+    },
+    {
+      "id": "percentage-000006",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 840?",
+      "questionType": "single_choice",
+      "options": [
+        "84",
+        "94",
+        "79",
+        "168"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 840 = (10/100) × 840 = 84.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 840 = (10/100) × 840 = 84.",
+      "questionHash": "hash_17db9897"
+    },
+    {
+      "id": "percentage-000008",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 30% of 960?",
+      "questionType": "single_choice",
+      "options": [
+        "288",
+        "298",
+        "283",
+        "576"
+      ],
+      "correctAnswer": 0,
+      "explanation": "30% of 960 = (30/100) × 960 = 288.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "30% of 960 = (30/100) × 960 = 288.",
+      "questionHash": "hash_125bf7b4"
+    },
+    {
+      "id": "percentage-000009",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 60% of 880?",
+      "questionType": "single_choice",
+      "options": [
+        "528",
+        "538",
+        "523",
+        "1056"
+      ],
+      "correctAnswer": 0,
+      "explanation": "60% of 880 = (60/100) × 880 = 528.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "60% of 880 = (60/100) × 880 = 528.",
+      "questionHash": "hash_f3f148d6"
+    },
+    {
+      "id": "percentage-000010",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 560?",
+      "questionType": "single_choice",
+      "options": [
+        "56",
+        "66",
+        "51",
+        "112"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 560 = (10/100) × 560 = 56.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 560 = (10/100) × 560 = 56.",
+      "questionHash": "hash_79e9d3ea"
+    },
+    {
+      "id": "percentage-000012",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 15% of 980?",
+      "questionType": "single_choice",
+      "options": [
+        "147",
+        "157",
+        "142",
+        "294"
+      ],
+      "correctAnswer": 0,
+      "explanation": "15% of 980 = (15/100) × 980 = 147.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "15% of 980 = (15/100) × 980 = 147.",
+      "questionHash": "hash_4396ca55"
+    },
+    {
+      "id": "percentage-000013",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 25% of 580?",
+      "questionType": "single_choice",
+      "options": [
+        "145",
+        "155",
+        "140",
+        "290"
+      ],
+      "correctAnswer": 0,
+      "explanation": "25% of 580 = (25/100) × 580 = 145.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "25% of 580 = (25/100) × 580 = 145.",
+      "questionHash": "hash_1a52b93c"
+    },
+    {
+      "id": "percentage-000014",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 30% of 380?",
+      "questionType": "single_choice",
+      "options": [
+        "114",
+        "124",
+        "109",
+        "228"
+      ],
+      "correctAnswer": 0,
+      "explanation": "30% of 380 = (30/100) × 380 = 114.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "30% of 380 = (30/100) × 380 = 114.",
+      "questionHash": "hash_102224ac"
+    },
+    {
+      "id": "percentage-000015",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 75% of 360?",
+      "questionType": "single_choice",
+      "options": [
+        "270",
+        "280",
+        "265",
+        "540"
+      ],
+      "correctAnswer": 0,
+      "explanation": "75% of 360 = (75/100) × 360 = 270.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "75% of 360 = (75/100) × 360 = 270.",
+      "questionHash": "hash_7aee371f"
+    },
+    {
+      "id": "percentage-000016",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 940?",
+      "questionType": "single_choice",
+      "options": [
+        "470",
+        "480",
+        "465",
+        "940"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 940 = (50/100) × 940 = 470.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 940 = (50/100) × 940 = 470.",
+      "questionHash": "hash_ecc4c8f8"
+    },
+    {
+      "id": "percentage-000017",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 740?",
+      "questionType": "single_choice",
+      "options": [
+        "74",
+        "84",
+        "69",
+        "148"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 740 = (10/100) × 740 = 74.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 740 = (10/100) × 740 = 74.",
+      "questionHash": "hash_bc159876"
+    },
+    {
+      "id": "percentage-000018",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 25% of 460?",
+      "questionType": "single_choice",
+      "options": [
+        "115",
+        "125",
+        "110",
+        "230"
+      ],
+      "correctAnswer": 0,
+      "explanation": "25% of 460 = (25/100) × 460 = 115.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "25% of 460 = (25/100) × 460 = 115.",
+      "questionHash": "hash_8604a229"
+    },
+    {
+      "id": "percentage-000019",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 20% of 620?",
+      "questionType": "single_choice",
+      "options": [
+        "124",
+        "134",
+        "119",
+        "248"
+      ],
+      "correctAnswer": 0,
+      "explanation": "20% of 620 = (20/100) × 620 = 124.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "20% of 620 = (20/100) × 620 = 124.",
+      "questionHash": "hash_fb6d2362"
+    },
+    {
+      "id": "percentage-000002",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 15% of 340?",
+      "questionType": "single_choice",
+      "options": [
+        "51",
+        "61",
+        "46",
+        "102"
+      ],
+      "correctAnswer": 0,
+      "explanation": "15% of 340 = (15/100) × 340 = 51.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "15% of 340 = (15/100) × 340 = 51.",
+      "questionHash": "hash_53f2c2ab"
+    },
+    {
+      "id": "percentage-000004",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 75% of 420?",
+      "questionType": "single_choice",
+      "options": [
+        "315",
+        "325",
+        "310",
+        "630"
+      ],
+      "correctAnswer": 0,
+      "explanation": "75% of 420 = (75/100) × 420 = 315.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "75% of 420 = (75/100) × 420 = 315.",
+      "questionHash": "hash_617bb3a6"
+    },
+    {
+      "id": "percentage-000005",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 25% of 840?",
+      "questionType": "single_choice",
+      "options": [
+        "210",
+        "220",
+        "205",
+        "420"
+      ],
+      "correctAnswer": 0,
+      "explanation": "25% of 840 = (25/100) × 840 = 210.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "25% of 840 = (25/100) × 840 = 210.",
+      "questionHash": "hash_6eae361f"
+    },
+    {
+      "id": "percentage-000006",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 40% of 980?",
+      "questionType": "single_choice",
+      "options": [
+        "392",
+        "402",
+        "387",
+        "784"
+      ],
+      "correctAnswer": 0,
+      "explanation": "40% of 980 = (40/100) × 980 = 392.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "40% of 980 = (40/100) × 980 = 392.",
+      "questionHash": "hash_32aafb37"
+    },
+    {
+      "id": "percentage-000007",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 60% of 720?",
+      "questionType": "single_choice",
+      "options": [
+        "432",
+        "442",
+        "427",
+        "864"
+      ],
+      "correctAnswer": 0,
+      "explanation": "60% of 720 = (60/100) × 720 = 432.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "60% of 720 = (60/100) × 720 = 432.",
+      "questionHash": "hash_5e1da5d5"
+    },
+    {
+      "id": "percentage-000008",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 500?",
+      "questionType": "single_choice",
+      "options": [
+        "250",
+        "260",
+        "245",
+        "500"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 500 = (50/100) × 500 = 250.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 500 = (50/100) × 500 = 250.",
+      "questionHash": "hash_a15734c8"
+    },
+    {
+      "id": "percentage-000011",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 15% of 860?",
+      "questionType": "single_choice",
+      "options": [
+        "129",
+        "139",
+        "124",
+        "258"
+      ],
+      "correctAnswer": 0,
+      "explanation": "15% of 860 = (15/100) × 860 = 129.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "15% of 860 = (15/100) × 860 = 129.",
+      "questionHash": "hash_dfb35134"
+    },
+    {
+      "id": "percentage-000012",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 25% of 820?",
+      "questionType": "single_choice",
+      "options": [
+        "205",
+        "215",
+        "200",
+        "410"
+      ],
+      "correctAnswer": 0,
+      "explanation": "25% of 820 = (25/100) × 820 = 205.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "25% of 820 = (25/100) × 820 = 205.",
+      "questionHash": "hash_ea9feec9"
+    },
+    {
+      "id": "percentage-000014",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 75% of 240?",
+      "questionType": "single_choice",
+      "options": [
+        "180",
+        "190",
+        "175",
+        "360"
+      ],
+      "correctAnswer": 0,
+      "explanation": "75% of 240 = (75/100) × 240 = 180.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "75% of 240 = (75/100) × 240 = 180.",
+      "questionHash": "hash_a08ded1a"
+    },
+    {
+      "id": "percentage-000016",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 60% of 400?",
+      "questionType": "single_choice",
+      "options": [
+        "240",
+        "250",
+        "235",
+        "480"
+      ],
+      "correctAnswer": 0,
+      "explanation": "60% of 400 = (60/100) × 400 = 240.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "60% of 400 = (60/100) × 400 = 240.",
+      "questionHash": "hash_486a8152"
+    },
+    {
+      "id": "percentage-000018",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 660?",
+      "questionType": "single_choice",
+      "options": [
+        "66",
+        "76",
+        "61",
+        "132"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 660 = (10/100) × 660 = 66.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 660 = (10/100) × 660 = 66.",
+      "questionHash": "hash_369dedcb"
+    },
+    {
+      "id": "percentage-000001",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 75% of 880?",
+      "questionType": "single_choice",
+      "options": [
+        "660",
+        "670",
+        "655",
+        "1320"
+      ],
+      "correctAnswer": 0,
+      "explanation": "75% of 880 = (75/100) × 880 = 660.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "75% of 880 = (75/100) × 880 = 660.",
+      "questionHash": "hash_d358c4d8"
+    },
+    {
+      "id": "percentage-000002",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 30% of 460?",
+      "questionType": "single_choice",
+      "options": [
+        "138",
+        "148",
+        "133",
+        "276"
+      ],
+      "correctAnswer": 0,
+      "explanation": "30% of 460 = (30/100) × 460 = 138.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "30% of 460 = (30/100) × 460 = 138.",
+      "questionHash": "hash_2585974f"
+    },
+    {
+      "id": "percentage-000003",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 25% of 860?",
+      "questionType": "single_choice",
+      "options": [
+        "215",
+        "225",
+        "210",
+        "430"
+      ],
+      "correctAnswer": 0,
+      "explanation": "25% of 860 = (25/100) × 860 = 215.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "25% of 860 = (25/100) × 860 = 215.",
+      "questionHash": "hash_82a9d86d"
+    },
+    {
+      "id": "percentage-000005",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 30% of 940?",
+      "questionType": "single_choice",
+      "options": [
+        "282",
+        "292",
+        "277",
+        "564"
+      ],
+      "correctAnswer": 0,
+      "explanation": "30% of 940 = (30/100) × 940 = 282.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "30% of 940 = (30/100) × 940 = 282.",
+      "questionHash": "hash_fe605566"
+    },
+    {
+      "id": "percentage-000006",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 60% of 900?",
+      "questionType": "single_choice",
+      "options": [
+        "540",
+        "550",
+        "535",
+        "1080"
+      ],
+      "correctAnswer": 0,
+      "explanation": "60% of 900 = (60/100) × 900 = 540.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "60% of 900 = (60/100) × 900 = 540.",
+      "questionHash": "hash_e38a69a9"
+    },
+    {
+      "id": "percentage-000007",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 760?",
+      "questionType": "single_choice",
+      "options": [
+        "380",
+        "390",
+        "375",
+        "760"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 760 = (50/100) × 760 = 380.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 760 = (50/100) × 760 = 380.",
+      "questionHash": "hash_fa778768"
+    },
+    {
+      "id": "percentage-000008",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 15% of 500?",
+      "questionType": "single_choice",
+      "options": [
+        "75",
+        "85",
+        "70",
+        "150"
+      ],
+      "correctAnswer": 0,
+      "explanation": "15% of 500 = (15/100) × 500 = 75.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "15% of 500 = (15/100) × 500 = 75.",
+      "questionHash": "hash_eecddff9"
+    },
+    {
+      "id": "percentage-000009",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 360?",
+      "questionType": "single_choice",
+      "options": [
+        "180",
+        "190",
+        "175",
+        "360"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 360 = (50/100) × 360 = 180.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 360 = (50/100) × 360 = 180.",
+      "questionHash": "hash_25d675fc"
+    },
+    {
+      "id": "percentage-000011",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 75% of 960?",
+      "questionType": "single_choice",
+      "options": [
+        "720",
+        "730",
+        "715",
+        "1440"
+      ],
+      "correctAnswer": 0,
+      "explanation": "75% of 960 = (75/100) × 960 = 720.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "75% of 960 = (75/100) × 960 = 720.",
+      "questionHash": "hash_cde1e3ad"
+    },
+    {
+      "id": "percentage-000012",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 20% of 260?",
+      "questionType": "single_choice",
+      "options": [
+        "52",
+        "62",
+        "47",
+        "104"
+      ],
+      "correctAnswer": 0,
+      "explanation": "20% of 260 = (20/100) × 260 = 52.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "20% of 260 = (20/100) × 260 = 52.",
+      "questionHash": "hash_3efdd48a"
+    },
+    {
+      "id": "percentage-000016",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 30% of 880?",
+      "questionType": "single_choice",
+      "options": [
+        "264",
+        "274",
+        "259",
+        "528"
+      ],
+      "correctAnswer": 0,
+      "explanation": "30% of 880 = (30/100) × 880 = 264.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "30% of 880 = (30/100) × 880 = 264.",
+      "questionHash": "hash_763f70d5"
+    },
+    {
+      "id": "percentage-000018",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 780?",
+      "questionType": "single_choice",
+      "options": [
+        "390",
+        "400",
+        "385",
+        "780"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 780 = (50/100) × 780 = 390.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 780 = (50/100) × 780 = 390.",
+      "questionHash": "hash_6e722dd6"
+    },
+    {
+      "id": "percentage-000019",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 25% of 280?",
+      "questionType": "single_choice",
+      "options": [
+        "70",
+        "80",
+        "65",
+        "140"
+      ],
+      "correctAnswer": 0,
+      "explanation": "25% of 280 = (25/100) × 280 = 70.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "25% of 280 = (25/100) × 280 = 70.",
+      "questionHash": "hash_bbbb8571"
+    },
+    {
+      "id": "percentage-000020",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 40% of 780?",
+      "questionType": "single_choice",
+      "options": [
+        "312",
+        "322",
+        "307",
+        "624"
+      ],
+      "correctAnswer": 0,
+      "explanation": "40% of 780 = (40/100) × 780 = 312.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "40% of 780 = (40/100) × 780 = 312.",
+      "questionHash": "hash_5d8053b9"
+    },
+    {
+      "id": "percentage-000001",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 440?",
+      "questionType": "single_choice",
+      "options": [
+        "220",
+        "230",
+        "215",
+        "440"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 440 = (50/100) × 440 = 220.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 440 = (50/100) × 440 = 220.",
+      "questionHash": "hash_97f85237"
+    },
+    {
+      "id": "percentage-000002",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 60% of 220?",
+      "questionType": "single_choice",
+      "options": [
+        "132",
+        "142",
+        "127",
+        "264"
+      ],
+      "correctAnswer": 0,
+      "explanation": "60% of 220 = (60/100) × 220 = 132.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "60% of 220 = (60/100) × 220 = 132.",
+      "questionHash": "hash_3ab7c2e2"
+    },
+    {
+      "id": "percentage-000003",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 820?",
+      "questionType": "single_choice",
+      "options": [
+        "82",
+        "92",
+        "77",
+        "164"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 820 = (10/100) × 820 = 82.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 820 = (10/100) × 820 = 82.",
+      "questionHash": "hash_13cc87c1"
+    },
+    {
+      "id": "percentage-000004",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 20% of 300?",
+      "questionType": "single_choice",
+      "options": [
+        "60",
+        "70",
+        "55",
+        "120"
+      ],
+      "correctAnswer": 0,
+      "explanation": "20% of 300 = (20/100) × 300 = 60.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "20% of 300 = (20/100) × 300 = 60.",
+      "questionHash": "hash_2ad79667"
+    },
+    {
+      "id": "percentage-000005",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 15% of 760?",
+      "questionType": "single_choice",
+      "options": [
+        "114",
+        "124",
+        "109",
+        "228"
+      ],
+      "correctAnswer": 0,
+      "explanation": "15% of 760 = (15/100) × 760 = 114.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "15% of 760 = (15/100) × 760 = 114.",
+      "questionHash": "hash_1cb65375"
+    },
+    {
+      "id": "percentage-000006",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 20% of 560?",
+      "questionType": "single_choice",
+      "options": [
+        "112",
+        "122",
+        "107",
+        "224"
+      ],
+      "correctAnswer": 0,
+      "explanation": "20% of 560 = (20/100) × 560 = 112.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "20% of 560 = (20/100) × 560 = 112.",
+      "questionHash": "hash_507ad8c7"
+    },
+    {
+      "id": "percentage-000008",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 980?",
+      "questionType": "single_choice",
+      "options": [
+        "98",
+        "108",
+        "93",
+        "196"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 980 = (10/100) × 980 = 98.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 980 = (10/100) × 980 = 98.",
+      "questionHash": "hash_912610c0"
+    },
+    {
+      "id": "percentage-000009",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 560?",
+      "questionType": "single_choice",
+      "options": [
+        "280",
+        "290",
+        "275",
+        "560"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 560 = (50/100) × 560 = 280.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 560 = (50/100) × 560 = 280.",
+      "questionHash": "hash_a566459e"
+    },
+    {
+      "id": "percentage-000010",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 40% of 580?",
+      "questionType": "single_choice",
+      "options": [
+        "232",
+        "242",
+        "227",
+        "464"
+      ],
+      "correctAnswer": 0,
+      "explanation": "40% of 580 = (40/100) × 580 = 232.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "40% of 580 = (40/100) × 580 = 232.",
+      "questionHash": "hash_ff3c5e33"
+    },
+    {
+      "id": "percentage-000011",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 220?",
+      "questionType": "single_choice",
+      "options": [
+        "110",
+        "120",
+        "105",
+        "220"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 220 = (50/100) × 220 = 110.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 220 = (50/100) × 220 = 110.",
+      "questionHash": "hash_a5ab10a7"
+    },
+    {
+      "id": "percentage-000012",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 30% of 500?",
+      "questionType": "single_choice",
+      "options": [
+        "150",
+        "160",
+        "145",
+        "300"
+      ],
+      "correctAnswer": 0,
+      "explanation": "30% of 500 = (30/100) × 500 = 150.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "30% of 500 = (30/100) × 500 = 150.",
+      "questionHash": "hash_c1f1d00e"
+    },
+    {
+      "id": "percentage-000013",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 25% of 480?",
+      "questionType": "single_choice",
+      "options": [
+        "120",
+        "130",
+        "115",
+        "240"
+      ],
+      "correctAnswer": 0,
+      "explanation": "25% of 480 = (25/100) × 480 = 120.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "25% of 480 = (25/100) × 480 = 120.",
+      "questionHash": "hash_9a2753e7"
+    },
+    {
+      "id": "percentage-000014",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 520?",
+      "questionType": "single_choice",
+      "options": [
+        "52",
+        "62",
+        "47",
+        "104"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 520 = (10/100) × 520 = 52.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 520 = (10/100) × 520 = 52.",
+      "questionHash": "hash_f1f38b2e"
+    },
+    {
+      "id": "percentage-000015",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 25% of 1000?",
+      "questionType": "single_choice",
+      "options": [
+        "250",
+        "260",
+        "245",
+        "500"
+      ],
+      "correctAnswer": 0,
+      "explanation": "25% of 1000 = (25/100) × 1000 = 250.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "25% of 1000 = (25/100) × 1000 = 250.",
+      "questionHash": "hash_c1c7ed48"
+    },
+    {
+      "id": "percentage-000017",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 220?",
+      "questionType": "single_choice",
+      "options": [
+        "22",
+        "32",
+        "17",
+        "44"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 220 = (10/100) × 220 = 22.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 220 = (10/100) × 220 = 22.",
+      "questionHash": "hash_735c2503"
+    },
+    {
+      "id": "percentage-000018",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 320?",
+      "questionType": "single_choice",
+      "options": [
+        "160",
+        "170",
+        "155",
+        "320"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 320 = (50/100) × 320 = 160.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 320 = (50/100) × 320 = 160.",
+      "questionHash": "hash_adccbeb8"
+    },
+    {
+      "id": "percentage-000019",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 640?",
+      "questionType": "single_choice",
+      "options": [
+        "64",
+        "74",
+        "59",
+        "128"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 640 = (10/100) × 640 = 64.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 640 = (10/100) × 640 = 64.",
+      "questionHash": "hash_aa989439"
+    },
+    {
+      "id": "percentage-000020",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 75% of 560?",
+      "questionType": "single_choice",
+      "options": [
+        "420",
+        "430",
+        "415",
+        "840"
+      ],
+      "correctAnswer": 0,
+      "explanation": "75% of 560 = (75/100) × 560 = 420.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "75% of 560 = (75/100) × 560 = 420.",
+      "questionHash": "hash_d13cad69"
+    },
+    {
+      "id": "percentage-000001",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 25% of 940?",
+      "questionType": "single_choice",
+      "options": [
+        "235",
+        "245",
+        "230",
+        "470"
+      ],
+      "correctAnswer": 0,
+      "explanation": "25% of 940 = (25/100) × 940 = 235.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "25% of 940 = (25/100) × 940 = 235.",
+      "questionHash": "hash_10170254"
+    },
+    {
+      "id": "percentage-000002",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 30% of 860?",
+      "questionType": "single_choice",
+      "options": [
+        "258",
+        "268",
+        "253",
+        "516"
+      ],
+      "correctAnswer": 0,
+      "explanation": "30% of 860 = (30/100) × 860 = 258.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "30% of 860 = (30/100) × 860 = 258.",
+      "questionHash": "hash_fa26a8bb"
+    },
+    {
+      "id": "percentage-000005",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 420?",
+      "questionType": "single_choice",
+      "options": [
+        "210",
+        "220",
+        "205",
+        "420"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 420 = (50/100) × 420 = 210.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 420 = (50/100) × 420 = 210.",
+      "questionHash": "hash_13ea0ae1"
+    },
+    {
+      "id": "percentage-000007",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 240?",
+      "questionType": "single_choice",
+      "options": [
+        "24",
+        "34",
+        "19",
+        "48"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 240 = (10/100) × 240 = 24.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 240 = (10/100) × 240 = 24.",
+      "questionHash": "hash_ff617e95"
+    },
+    {
+      "id": "percentage-000008",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 40% of 760?",
+      "questionType": "single_choice",
+      "options": [
+        "304",
+        "314",
+        "299",
+        "608"
+      ],
+      "correctAnswer": 0,
+      "explanation": "40% of 760 = (40/100) × 760 = 304.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "40% of 760 = (40/100) × 760 = 304.",
+      "questionHash": "hash_71a30577"
+    },
+    {
+      "id": "percentage-000010",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 60% of 820?",
+      "questionType": "single_choice",
+      "options": [
+        "492",
+        "502",
+        "487",
+        "984"
+      ],
+      "correctAnswer": 0,
+      "explanation": "60% of 820 = (60/100) × 820 = 492.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "60% of 820 = (60/100) × 820 = 492.",
+      "questionHash": "hash_f80059ac"
+    },
+    {
+      "id": "percentage-000011",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 40% of 300?",
+      "questionType": "single_choice",
+      "options": [
+        "120",
+        "130",
+        "115",
+        "240"
+      ],
+      "correctAnswer": 0,
+      "explanation": "40% of 300 = (40/100) × 300 = 120.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "40% of 300 = (40/100) × 300 = 120.",
+      "questionHash": "hash_28e03e2d"
+    },
+    {
+      "id": "percentage-000012",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 75% of 860?",
+      "questionType": "single_choice",
+      "options": [
+        "645",
+        "655",
+        "640",
+        "1290"
+      ],
+      "correctAnswer": 0,
+      "explanation": "75% of 860 = (75/100) × 860 = 645.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "75% of 860 = (75/100) × 860 = 645.",
+      "questionHash": "hash_c75434c6"
+    },
+    {
+      "id": "percentage-000013",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 580?",
+      "questionType": "single_choice",
+      "options": [
+        "58",
+        "68",
+        "53",
+        "116"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 580 = (10/100) × 580 = 58.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 580 = (10/100) × 580 = 58.",
+      "questionHash": "hash_75dac314"
+    },
+    {
+      "id": "percentage-000014",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 840?",
+      "questionType": "single_choice",
+      "options": [
+        "420",
+        "430",
+        "415",
+        "840"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 840 = (50/100) × 840 = 420.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 840 = (50/100) × 840 = 420.",
+      "questionHash": "hash_4c993143"
+    },
+    {
+      "id": "percentage-000015",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 60% of 580?",
+      "questionType": "single_choice",
+      "options": [
+        "348",
+        "358",
+        "343",
+        "696"
+      ],
+      "correctAnswer": 0,
+      "explanation": "60% of 580 = (60/100) × 580 = 348.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "60% of 580 = (60/100) × 580 = 348.",
+      "questionHash": "hash_b7155605"
+    },
+    {
+      "id": "percentage-000017",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 960?",
+      "questionType": "single_choice",
+      "options": [
+        "480",
+        "490",
+        "475",
+        "960"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 960 = (50/100) × 960 = 480.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 960 = (50/100) × 960 = 480.",
+      "questionHash": "hash_f8c9590a"
+    },
+    {
+      "id": "percentage-000019",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 700?",
+      "questionType": "single_choice",
+      "options": [
+        "350",
+        "360",
+        "345",
+        "700"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 700 = (50/100) × 700 = 350.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 700 = (50/100) × 700 = 350.",
+      "questionHash": "hash_7e85cebe"
+    },
+    {
+      "id": "percentage-000003",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 20% of 720?",
+      "questionType": "single_choice",
+      "options": [
+        "144",
+        "154",
+        "139",
+        "288"
+      ],
+      "correctAnswer": 0,
+      "explanation": "20% of 720 = (20/100) × 720 = 144.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "20% of 720 = (20/100) × 720 = 144.",
+      "questionHash": "hash_e337d469"
+    },
+    {
+      "id": "percentage-000004",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 25% of 420?",
+      "questionType": "single_choice",
+      "options": [
+        "105",
+        "115",
+        "100",
+        "210"
+      ],
+      "correctAnswer": 0,
+      "explanation": "25% of 420 = (25/100) × 420 = 105.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "25% of 420 = (25/100) × 420 = 105.",
+      "questionHash": "hash_1e0e8bcd"
+    },
+    {
+      "id": "percentage-000005",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 40% of 200?",
+      "questionType": "single_choice",
+      "options": [
+        "80",
+        "90",
+        "75",
+        "160"
+      ],
+      "correctAnswer": 0,
+      "explanation": "40% of 200 = (40/100) × 200 = 80.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "40% of 200 = (40/100) × 200 = 80.",
+      "questionHash": "hash_aa48d802"
+    },
+    {
+      "id": "percentage-000007",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 760?",
+      "questionType": "single_choice",
+      "options": [
+        "76",
+        "86",
+        "71",
+        "152"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 760 = (10/100) × 760 = 76.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 760 = (10/100) × 760 = 76.",
+      "questionHash": "hash_50107144"
+    },
+    {
+      "id": "percentage-000008",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 360?",
+      "questionType": "single_choice",
+      "options": [
+        "36",
+        "46",
+        "31",
+        "72"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 360 = (10/100) × 360 = 36.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 360 = (10/100) × 360 = 36.",
+      "questionHash": "hash_03741bd0"
+    },
+    {
+      "id": "percentage-000009",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 75% of 340?",
+      "questionType": "single_choice",
+      "options": [
+        "255",
+        "265",
+        "250",
+        "510"
+      ],
+      "correctAnswer": 0,
+      "explanation": "75% of 340 = (75/100) × 340 = 255.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "75% of 340 = (75/100) × 340 = 255.",
+      "questionHash": "hash_8ee9d96d"
+    },
+    {
+      "id": "percentage-000010",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 40% of 860?",
+      "questionType": "single_choice",
+      "options": [
+        "344",
+        "354",
+        "339",
+        "688"
+      ],
+      "correctAnswer": 0,
+      "explanation": "40% of 860 = (40/100) × 860 = 344.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "40% of 860 = (40/100) × 860 = 344.",
+      "questionHash": "hash_37faccf2"
+    },
+    {
+      "id": "percentage-000011",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 25% of 720?",
+      "questionType": "single_choice",
+      "options": [
+        "180",
+        "190",
+        "175",
+        "360"
+      ],
+      "correctAnswer": 0,
+      "explanation": "25% of 720 = (25/100) × 720 = 180.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "25% of 720 = (25/100) × 720 = 180.",
+      "questionHash": "hash_7ca5bf98"
+    },
+    {
+      "id": "percentage-000012",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 15% of 220?",
+      "questionType": "single_choice",
+      "options": [
+        "33",
+        "43",
+        "28",
+        "66"
+      ],
+      "correctAnswer": 0,
+      "explanation": "15% of 220 = (15/100) × 220 = 33.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "15% of 220 = (15/100) × 220 = 33.",
+      "questionHash": "hash_d96a6d56"
+    },
+    {
+      "id": "percentage-000015",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 40% of 220?",
+      "questionType": "single_choice",
+      "options": [
+        "88",
+        "98",
+        "83",
+        "176"
+      ],
+      "correctAnswer": 0,
+      "explanation": "40% of 220 = (40/100) × 220 = 88.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "40% of 220 = (40/100) × 220 = 88.",
+      "questionHash": "hash_1e437e70"
+    },
+    {
+      "id": "percentage-000017",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 20% of 420?",
+      "questionType": "single_choice",
+      "options": [
+        "84",
+        "94",
+        "79",
+        "168"
+      ],
+      "correctAnswer": 0,
+      "explanation": "20% of 420 = (20/100) × 420 = 84.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "20% of 420 = (20/100) × 420 = 84.",
+      "questionHash": "hash_61cf3a94"
+    },
+    {
+      "id": "percentage-000018",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 20% of 780?",
+      "questionType": "single_choice",
+      "options": [
+        "156",
+        "166",
+        "151",
+        "312"
+      ],
+      "correctAnswer": 0,
+      "explanation": "20% of 780 = (20/100) × 780 = 156.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "20% of 780 = (20/100) × 780 = 156.",
+      "questionHash": "hash_5f509c83"
+    },
+    {
+      "id": "percentage-000019",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 60% of 260?",
+      "questionType": "single_choice",
+      "options": [
+        "156",
+        "166",
+        "151",
+        "312"
+      ],
+      "correctAnswer": 0,
+      "explanation": "60% of 260 = (60/100) × 260 = 156.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "60% of 260 = (60/100) × 260 = 156.",
+      "questionHash": "hash_b2c17a26"
+    },
+    {
+      "id": "percentage-000001",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 25% of 320?",
+      "questionType": "single_choice",
+      "options": [
+        "80",
+        "90",
+        "75",
+        "160"
+      ],
+      "correctAnswer": 0,
+      "explanation": "25% of 320 = (25/100) × 320 = 80.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "25% of 320 = (25/100) × 320 = 80.",
+      "questionHash": "hash_415a3f8c"
+    },
+    {
+      "id": "percentage-000002",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 40% of 940?",
+      "questionType": "single_choice",
+      "options": [
+        "376",
+        "386",
+        "371",
+        "752"
+      ],
+      "correctAnswer": 0,
+      "explanation": "40% of 940 = (40/100) × 940 = 376.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "40% of 940 = (40/100) × 940 = 376.",
+      "questionHash": "hash_aa8da30b"
+    },
+    {
+      "id": "percentage-000004",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 20% of 280?",
+      "questionType": "single_choice",
+      "options": [
+        "56",
+        "66",
+        "51",
+        "112"
+      ],
+      "correctAnswer": 0,
+      "explanation": "20% of 280 = (20/100) × 280 = 56.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "20% of 280 = (20/100) × 280 = 56.",
+      "questionHash": "hash_baef8d34"
+    },
+    {
+      "id": "percentage-000005",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 660?",
+      "questionType": "single_choice",
+      "options": [
+        "330",
+        "340",
+        "325",
+        "660"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 660 = (50/100) × 660 = 330.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 660 = (50/100) × 660 = 330.",
+      "questionHash": "hash_621a5f7f"
+    },
+    {
+      "id": "percentage-000007",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 30% of 1000?",
+      "questionType": "single_choice",
+      "options": [
+        "300",
+        "310",
+        "295",
+        "600"
+      ],
+      "correctAnswer": 0,
+      "explanation": "30% of 1000 = (30/100) × 1000 = 300.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "30% of 1000 = (30/100) × 1000 = 300.",
+      "questionHash": "hash_44ded79e"
+    },
+    {
+      "id": "percentage-000009",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 700?",
+      "questionType": "single_choice",
+      "options": [
+        "70",
+        "80",
+        "65",
+        "140"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 700 = (10/100) × 700 = 70.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 700 = (10/100) × 700 = 70.",
+      "questionHash": "hash_c40b17b2"
+    },
+    {
+      "id": "percentage-000010",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 40% of 920?",
+      "questionType": "single_choice",
+      "options": [
+        "368",
+        "378",
+        "363",
+        "736"
+      ],
+      "correctAnswer": 0,
+      "explanation": "40% of 920 = (40/100) × 920 = 368.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "40% of 920 = (40/100) × 920 = 368.",
+      "questionHash": "hash_b692331d"
+    },
+    {
+      "id": "percentage-000015",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 25% of 240?",
+      "questionType": "single_choice",
+      "options": [
+        "60",
+        "70",
+        "55",
+        "120"
+      ],
+      "correctAnswer": 0,
+      "explanation": "25% of 240 = (25/100) × 240 = 60.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "25% of 240 = (25/100) × 240 = 60.",
+      "questionHash": "hash_43b1ce2d"
+    },
+    {
+      "id": "percentage-000016",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 60% of 640?",
+      "questionType": "single_choice",
+      "options": [
+        "384",
+        "394",
+        "379",
+        "768"
+      ],
+      "correctAnswer": 0,
+      "explanation": "60% of 640 = (60/100) × 640 = 384.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "60% of 640 = (60/100) × 640 = 384.",
+      "questionHash": "hash_7243e3f8"
+    },
+    {
+      "id": "percentage-000019",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 15% of 680?",
+      "questionType": "single_choice",
+      "options": [
+        "102",
+        "112",
+        "97",
+        "204"
+      ],
+      "correctAnswer": 0,
+      "explanation": "15% of 680 = (15/100) × 680 = 102.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "15% of 680 = (15/100) × 680 = 102.",
+      "questionHash": "hash_22062530"
+    },
+    {
+      "id": "percentage-000020",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 340?",
+      "questionType": "single_choice",
+      "options": [
+        "170",
+        "180",
+        "165",
+        "340"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 340 = (50/100) × 340 = 170.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 340 = (50/100) × 340 = 170.",
+      "questionHash": "hash_b1dbcf8e"
+    },
+    {
+      "id": "percentage-000001",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 680?",
+      "questionType": "single_choice",
+      "options": [
+        "340",
+        "350",
+        "335",
+        "680"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 680 = (50/100) × 680 = 340.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 680 = (50/100) × 680 = 340.",
+      "questionHash": "hash_6e1eef91"
+    },
+    {
+      "id": "percentage-000002",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 20% of 500?",
+      "questionType": "single_choice",
+      "options": [
+        "100",
+        "110",
+        "95",
+        "200"
+      ],
+      "correctAnswer": 0,
+      "explanation": "20% of 500 = (20/100) × 500 = 100.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "20% of 500 = (20/100) × 500 = 100.",
+      "questionHash": "hash_4c6bc7f1"
+    },
+    {
+      "id": "percentage-000003",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 15% of 640?",
+      "questionType": "single_choice",
+      "options": [
+        "96",
+        "106",
+        "91",
+        "192"
+      ],
+      "correctAnswer": 0,
+      "explanation": "15% of 640 = (15/100) × 640 = 96.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "15% of 640 = (15/100) × 640 = 96.",
+      "questionHash": "hash_2a2446dc"
+    },
+    {
+      "id": "percentage-000008",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 15% of 800?",
+      "questionType": "single_choice",
+      "options": [
+        "120",
+        "130",
+        "115",
+        "240"
+      ],
+      "correctAnswer": 0,
+      "explanation": "15% of 800 = (15/100) × 800 = 120.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "15% of 800 = (15/100) × 800 = 120.",
+      "questionHash": "hash_53adf7a2"
+    },
+    {
+      "id": "percentage-000010",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 75% of 220?",
+      "questionType": "single_choice",
+      "options": [
+        "165",
+        "175",
+        "160",
+        "330"
+      ],
+      "correctAnswer": 0,
+      "explanation": "75% of 220 = (75/100) × 220 = 165.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "75% of 220 = (75/100) × 220 = 165.",
+      "questionHash": "hash_8c924acc"
+    },
+    {
+      "id": "percentage-000011",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 25% of 980?",
+      "questionType": "single_choice",
+      "options": [
+        "245",
+        "255",
+        "240",
+        "490"
+      ],
+      "correctAnswer": 0,
+      "explanation": "25% of 980 = (25/100) × 980 = 245.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "25% of 980 = (25/100) × 980 = 245.",
+      "questionHash": "hash_8820b998"
+    },
+    {
+      "id": "percentage-000012",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 25% of 660?",
+      "questionType": "single_choice",
+      "options": [
+        "165",
+        "175",
+        "160",
+        "330"
+      ],
+      "correctAnswer": 0,
+      "explanation": "25% of 660 = (25/100) × 660 = 165.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "25% of 660 = (25/100) × 660 = 165.",
+      "questionHash": "hash_5b3dbce3"
+    },
+    {
+      "id": "percentage-000014",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 20% of 200?",
+      "questionType": "single_choice",
+      "options": [
+        "40",
+        "50",
+        "35",
+        "80"
+      ],
+      "correctAnswer": 0,
+      "explanation": "20% of 200 = (20/100) × 200 = 40.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "20% of 200 = (20/100) × 200 = 40.",
+      "questionHash": "hash_ab02fbbc"
+    },
+    {
+      "id": "percentage-000015",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 920?",
+      "questionType": "single_choice",
+      "options": [
+        "92",
+        "102",
+        "87",
+        "184"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 920 = (10/100) × 920 = 92.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 920 = (10/100) × 920 = 92.",
+      "questionHash": "hash_2d3f0b3a"
+    },
+    {
+      "id": "percentage-000018",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 60% of 500?",
+      "questionType": "single_choice",
+      "options": [
+        "300",
+        "310",
+        "295",
+        "600"
+      ],
+      "correctAnswer": 0,
+      "explanation": "60% of 500 = (60/100) × 500 = 300.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "60% of 500 = (60/100) × 500 = 300.",
+      "questionHash": "hash_c701e77d"
+    },
+    {
+      "id": "percentage-000019",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 20% of 400?",
+      "questionType": "single_choice",
+      "options": [
+        "80",
+        "90",
+        "75",
+        "160"
+      ],
+      "correctAnswer": 0,
+      "explanation": "20% of 400 = (20/100) × 400 = 80.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "20% of 400 = (20/100) × 400 = 80.",
+      "questionHash": "hash_cdd461c6"
+    },
+    {
+      "id": "percentage-000020",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 460?",
+      "questionType": "single_choice",
+      "options": [
+        "230",
+        "240",
+        "225",
+        "460"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 460 = (50/100) × 460 = 230.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 460 = (50/100) × 460 = 230.",
+      "questionHash": "hash_8bf3c225"
+    },
+    {
+      "id": "percentage-000001",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 400?",
+      "questionType": "single_choice",
+      "options": [
+        "40",
+        "50",
+        "35",
+        "80"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 400 = (10/100) × 400 = 40.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 400 = (10/100) × 400 = 40.",
+      "questionHash": "hash_64866147"
+    },
+    {
+      "id": "percentage-000002",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 30% of 200?",
+      "questionType": "single_choice",
+      "options": [
+        "60",
+        "70",
+        "55",
+        "120"
+      ],
+      "correctAnswer": 0,
+      "explanation": "30% of 200 = (30/100) × 200 = 60.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "30% of 200 = (30/100) × 200 = 60.",
+      "questionHash": "hash_7ea5e9ef"
+    },
+    {
+      "id": "percentage-000003",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 30% of 640?",
+      "questionType": "single_choice",
+      "options": [
+        "192",
+        "202",
+        "187",
+        "384"
+      ],
+      "correctAnswer": 0,
+      "explanation": "30% of 640 = (30/100) × 640 = 192.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "30% of 640 = (30/100) × 640 = 192.",
+      "questionHash": "hash_db645387"
+    },
+    {
+      "id": "percentage-000006",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 60% of 800?",
+      "questionType": "single_choice",
+      "options": [
+        "480",
+        "490",
+        "475",
+        "960"
+      ],
+      "correctAnswer": 0,
+      "explanation": "60% of 800 = (60/100) × 800 = 480.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "60% of 800 = (60/100) × 800 = 480.",
+      "questionHash": "hash_0404e9be"
+    },
+    {
+      "id": "percentage-000008",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 30% of 260?",
+      "questionType": "single_choice",
+      "options": [
+        "78",
+        "88",
+        "73",
+        "156"
+      ],
+      "correctAnswer": 0,
+      "explanation": "30% of 260 = (30/100) × 260 = 78.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "30% of 260 = (30/100) × 260 = 78.",
+      "questionHash": "hash_7a96d919"
+    },
+    {
+      "id": "percentage-000012",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 20% of 360?",
+      "questionType": "single_choice",
+      "options": [
+        "72",
+        "82",
+        "67",
+        "144"
+      ],
+      "correctAnswer": 0,
+      "explanation": "20% of 360 = (20/100) × 360 = 72.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "20% of 360 = (20/100) × 360 = 72.",
+      "questionHash": "hash_26c88591"
+    },
+    {
+      "id": "percentage-000017",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 75% of 820?",
+      "questionType": "single_choice",
+      "options": [
+        "615",
+        "625",
+        "610",
+        "1230"
+      ],
+      "correctAnswer": 0,
+      "explanation": "75% of 820 = (75/100) × 820 = 615.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "75% of 820 = (75/100) × 820 = 615.",
+      "questionHash": "hash_4f4a7d82"
+    },
+    {
+      "id": "percentage-000018",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 75% of 460?",
+      "questionType": "single_choice",
+      "options": [
+        "345",
+        "355",
+        "340",
+        "690"
+      ],
+      "correctAnswer": 0,
+      "explanation": "75% of 460 = (75/100) × 460 = 345.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "75% of 460 = (75/100) × 460 = 345.",
+      "questionHash": "hash_e971fc62"
+    },
+    {
+      "id": "percentage-000019",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 40% of 540?",
+      "questionType": "single_choice",
+      "options": [
+        "216",
+        "226",
+        "211",
+        "432"
+      ],
+      "correctAnswer": 0,
+      "explanation": "40% of 540 = (40/100) × 540 = 216.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "40% of 540 = (40/100) × 540 = 216.",
+      "questionHash": "hash_8732a6ef"
+    },
+    {
+      "id": "percentage-000020",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 40% of 560?",
+      "questionType": "single_choice",
+      "options": [
+        "224",
+        "234",
+        "219",
+        "448"
+      ],
+      "correctAnswer": 0,
+      "explanation": "40% of 560 = (40/100) × 560 = 224.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "40% of 560 = (40/100) × 560 = 224.",
+      "questionHash": "hash_1b2d7fbd"
+    },
+    {
+      "id": "percentage-000001",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 25% of 900?",
+      "questionType": "single_choice",
+      "options": [
+        "225",
+        "235",
+        "220",
+        "450"
+      ],
+      "correctAnswer": 0,
+      "explanation": "25% of 900 = (25/100) × 900 = 225.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "25% of 900 = (25/100) × 900 = 225.",
+      "questionHash": "hash_780d18b0"
+    },
+    {
+      "id": "percentage-000005",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 540?",
+      "questionType": "single_choice",
+      "options": [
+        "54",
+        "64",
+        "49",
+        "108"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 540 = (10/100) × 540 = 54.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 540 = (10/100) × 540 = 54.",
+      "questionHash": "hash_ede47a58"
+    },
+    {
+      "id": "percentage-000006",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 60% of 480?",
+      "questionType": "single_choice",
+      "options": [
+        "288",
+        "298",
+        "283",
+        "576"
+      ],
+      "correctAnswer": 0,
+      "explanation": "60% of 480 = (60/100) × 480 = 288.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "60% of 480 = (60/100) × 480 = 288.",
+      "questionHash": "hash_587e223a"
+    },
+    {
+      "id": "percentage-000008",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 75% of 680?",
+      "questionType": "single_choice",
+      "options": [
+        "510",
+        "520",
+        "505",
+        "1020"
+      ],
+      "correctAnswer": 0,
+      "explanation": "75% of 680 = (75/100) × 680 = 510.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "75% of 680 = (75/100) × 680 = 510.",
+      "questionHash": "hash_43cf8382"
+    },
+    {
+      "id": "percentage-000010",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 30% of 420?",
+      "questionType": "single_choice",
+      "options": [
+        "126",
+        "136",
+        "121",
+        "252"
+      ],
+      "correctAnswer": 0,
+      "explanation": "30% of 420 = (30/100) × 420 = 126.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "30% of 420 = (30/100) × 420 = 126.",
+      "questionHash": "hash_ad7be00b"
+    },
+    {
+      "id": "percentage-000003",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 940?",
+      "questionType": "single_choice",
+      "options": [
+        "94",
+        "104",
+        "89",
+        "188"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 940 = (10/100) × 940 = 94.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 940 = (10/100) × 940 = 94.",
+      "questionHash": "hash_9944326c"
+    },
+    {
+      "id": "percentage-000006",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 15% of 780?",
+      "questionType": "single_choice",
+      "options": [
+        "117",
+        "127",
+        "112",
+        "234"
+      ],
+      "correctAnswer": 0,
+      "explanation": "15% of 780 = (15/100) × 780 = 117.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "15% of 780 = (15/100) × 780 = 117.",
+      "questionHash": "hash_a09d8b5b"
+    },
+    {
+      "id": "percentage-000007",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 20% of 820?",
+      "questionType": "single_choice",
+      "options": [
+        "164",
+        "174",
+        "159",
+        "328"
+      ],
+      "correctAnswer": 0,
+      "explanation": "20% of 820 = (20/100) × 820 = 164.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "20% of 820 = (20/100) × 820 = 164.",
+      "questionHash": "hash_f4013a38"
+    },
+    {
+      "id": "percentage-000008",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 20% of 640?",
+      "questionType": "single_choice",
+      "options": [
+        "128",
+        "138",
+        "123",
+        "256"
+      ],
+      "correctAnswer": 0,
+      "explanation": "20% of 640 = (20/100) × 640 = 128.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "20% of 640 = (20/100) × 640 = 128.",
+      "questionHash": "hash_87727cf4"
+    },
+    {
+      "id": "percentage-000010",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 50% of 640?",
+      "questionType": "single_choice",
+      "options": [
+        "320",
+        "330",
+        "315",
+        "640"
+      ],
+      "correctAnswer": 0,
+      "explanation": "50% of 640 = (50/100) × 640 = 320.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "50% of 640 = (50/100) × 640 = 320.",
+      "questionHash": "hash_f615384d"
+    },
+    {
+      "id": "percentage-000011",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 20% of 980?",
+      "questionType": "single_choice",
+      "options": [
+        "196",
+        "206",
+        "191",
+        "392"
+      ],
+      "correctAnswer": 0,
+      "explanation": "20% of 980 = (20/100) × 980 = 196.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "20% of 980 = (20/100) × 980 = 196.",
+      "questionHash": "hash_6fc6c40d"
+    },
+    {
+      "id": "percentage-000012",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 40% of 440?",
+      "questionType": "single_choice",
+      "options": [
+        "176",
+        "186",
+        "171",
+        "352"
+      ],
+      "correctAnswer": 0,
+      "explanation": "40% of 440 = (40/100) × 440 = 176.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "40% of 440 = (40/100) × 440 = 176.",
+      "questionHash": "hash_a89aa9a4"
+    },
+    {
+      "id": "percentage-000013",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 40% of 800?",
+      "questionType": "single_choice",
+      "options": [
+        "320",
+        "330",
+        "315",
+        "640"
+      ],
+      "correctAnswer": 0,
+      "explanation": "40% of 800 = (40/100) × 800 = 320.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "40% of 800 = (40/100) × 800 = 320.",
+      "questionHash": "hash_c4002684"
+    },
+    {
+      "id": "percentage-000015",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 30% of 600?",
+      "questionType": "single_choice",
+      "options": [
+        "180",
+        "190",
+        "175",
+        "360"
+      ],
+      "correctAnswer": 0,
+      "explanation": "30% of 600 = (30/100) × 600 = 180.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "30% of 600 = (30/100) × 600 = 180.",
+      "questionHash": "hash_435a69e3"
+    },
+    {
+      "id": "percentage-000017",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 60% of 740?",
+      "questionType": "single_choice",
+      "options": [
+        "444",
+        "454",
+        "439",
+        "888"
+      ],
+      "correctAnswer": 0,
+      "explanation": "60% of 740 = (60/100) × 740 = 444.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "60% of 740 = (60/100) × 740 = 444.",
+      "questionHash": "hash_d2184c43"
+    },
+    {
+      "id": "percentage-000020",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 280?",
+      "questionType": "single_choice",
+      "options": [
+        "28",
+        "38",
+        "23",
+        "56"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 280 = (10/100) × 280 = 28.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 280 = (10/100) × 280 = 28.",
+      "questionHash": "hash_f7435ce9"
+    },
+    {
+      "id": "percentage-000005",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 15% of 620?",
+      "questionType": "single_choice",
+      "options": [
+        "93",
+        "103",
+        "88",
+        "186"
+      ],
+      "correctAnswer": 0,
+      "explanation": "15% of 620 = (15/100) × 620 = 93.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "15% of 620 = (15/100) × 620 = 93.",
+      "questionHash": "hash_be1f1faa"
+    },
+    {
+      "id": "percentage-000007",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 40% of 320?",
+      "questionType": "single_choice",
+      "options": [
+        "128",
+        "138",
+        "123",
+        "256"
+      ],
+      "correctAnswer": 0,
+      "explanation": "40% of 320 = (40/100) × 320 = 128.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "40% of 320 = (40/100) × 320 = 128.",
+      "questionHash": "hash_14e49bdf"
+    },
+    {
+      "id": "percentage-000010",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 75% of 580?",
+      "questionType": "single_choice",
+      "options": [
+        "435",
+        "445",
+        "430",
+        "870"
+      ],
+      "correctAnswer": 0,
+      "explanation": "75% of 580 = (75/100) × 580 = 435.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "75% of 580 = (75/100) × 580 = 435.",
+      "questionHash": "hash_e55f5f27"
+    },
+    {
+      "id": "percentage-000014",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 60% of 840?",
+      "questionType": "single_choice",
+      "options": [
+        "504",
+        "514",
+        "499",
+        "1008"
+      ],
+      "correctAnswer": 0,
+      "explanation": "60% of 840 = (60/100) × 840 = 504.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "60% of 840 = (60/100) × 840 = 504.",
+      "questionHash": "hash_8bfb327a"
+    },
+    {
+      "id": "percentage-000019",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 600?",
+      "questionType": "single_choice",
+      "options": [
+        "60",
+        "70",
+        "55",
+        "120"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 600 = (10/100) × 600 = 60.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 600 = (10/100) × 600 = 60.",
+      "questionHash": "hash_42a27ddd"
+    },
+    {
+      "id": "number-system-000001",
+      "category": "Quantitative Aptitude",
+      "topic": "Number System",
+      "topicId": "number-system",
+      "subtopic": "Core Fundamentals",
+      "question": "What is the expected complexity or outcome when evaluating standard Number System constraints under medium difficulty?",
+      "questionType": "single_choice",
+      "options": [
+        "O(N log N) time complexity with linear space",
+        "Exponential O(2^N) execution without memoization",
+        "Constant O(1) space with zero memory overhead",
+        "Undefined non-computable state"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Placement assessment standards for Number System emphasize scalable asymptotic efficiency.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "number-system",
+        "aptitude",
+        "placement"
+      ],
+      "solution": "Placement assessment standards for Number System emphasize scalable asymptotic efficiency.",
+      "questionHash": "hash_0ddcd970"
+    },
+    {
+      "id": "number-system-000002",
+      "category": "Quantitative Aptitude",
+      "topic": "Number System",
+      "topicId": "number-system",
+      "subtopic": "Core Fundamentals",
+      "question": "Which of the following principles correctly applies to Number System in placement technical evaluation?",
+      "questionType": "single_choice",
+      "options": [
+        "Optimal systematic evaluation of condition state A",
+        "Random non-deterministic distribution",
+        "Linear execution without condition verification",
+        "Redundant memory allocation overhead"
+      ],
+      "correctAnswer": 0,
+      "explanation": "In Number System, applying structured algorithmic constraints produces optimal deterministic accuracy.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "number-system",
+        "aptitude",
+        "placement"
+      ],
+      "solution": "In Number System, applying structured algorithmic constraints produces optimal deterministic accuracy.",
+      "questionHash": "hash_954b8eab"
+    },
+    {
+      "id": "permutation-and-combination-000001",
+      "category": "Quantitative Aptitude",
+      "topic": "Permutation and Combination",
+      "topicId": "permutation-and-combination",
+      "subtopic": "Core Fundamentals",
+      "question": "Which of the following principles correctly applies to Permutation And Combination in placement technical evaluation?",
+      "questionType": "single_choice",
+      "options": [
+        "Optimal systematic evaluation of condition state A",
+        "Random non-deterministic distribution",
+        "Linear execution without condition verification",
+        "Redundant memory allocation overhead"
+      ],
+      "correctAnswer": 0,
+      "explanation": "In Permutation And Combination, applying structured algorithmic constraints produces optimal deterministic accuracy.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "permutation-and-combination",
+        "aptitude",
+        "placement"
+      ],
+      "solution": "In Permutation And Combination, applying structured algorithmic constraints produces optimal deterministic accuracy.",
+      "questionHash": "hash_1e0722f3"
+    },
+    {
+      "id": "permutation-and-combination-000002",
+      "category": "Quantitative Aptitude",
+      "topic": "Permutation and Combination",
+      "topicId": "permutation-and-combination",
+      "subtopic": "Core Fundamentals",
+      "question": "What is the expected complexity or outcome when evaluating standard Permutation And Combination constraints under medium difficulty?",
+      "questionType": "single_choice",
+      "options": [
+        "O(N log N) time complexity with linear space",
+        "Exponential O(2^N) execution without memoization",
+        "Constant O(1) space with zero memory overhead",
+        "Undefined non-computable state"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Placement assessment standards for Permutation And Combination emphasize scalable asymptotic efficiency.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "permutation-and-combination",
+        "aptitude",
+        "placement"
+      ],
+      "solution": "Placement assessment standards for Permutation And Combination emphasize scalable asymptotic efficiency.",
+      "questionHash": "hash_8442cc5c"
+    },
+    {
+      "id": "company-specific-cognizant-000001",
+      "category": "General Placement Aptitude",
+      "topic": "Cognizant GenC Aptitude",
+      "topicId": "company-specific-cognizant",
+      "subtopic": "Core Fundamentals",
+      "question": "Which of the following principles correctly applies to Company Specific Cognizant in placement technical evaluation?",
+      "questionType": "single_choice",
+      "options": [
+        "Optimal systematic evaluation of condition state A",
+        "Random non-deterministic distribution",
+        "Linear execution without condition verification",
+        "Redundant memory allocation overhead"
+      ],
+      "correctAnswer": 0,
+      "explanation": "In Company Specific Cognizant, applying structured algorithmic constraints produces optimal deterministic accuracy.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "company-specific-cognizant",
+        "aptitude",
+        "placement"
+      ],
+      "solution": "In Company Specific Cognizant, applying structured algorithmic constraints produces optimal deterministic accuracy.",
+      "questionHash": "hash_47a0b955"
+    },
+    {
+      "id": "company-specific-cognizant-000002",
+      "category": "General Placement Aptitude",
+      "topic": "Cognizant GenC Aptitude",
+      "topicId": "company-specific-cognizant",
+      "subtopic": "Core Fundamentals",
+      "question": "What is the expected complexity or outcome when evaluating standard Company Specific Cognizant constraints under medium difficulty?",
+      "questionType": "single_choice",
+      "options": [
+        "O(N log N) time complexity with linear space",
+        "Exponential O(2^N) execution without memoization",
+        "Constant O(1) space with zero memory overhead",
+        "Undefined non-computable state"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Placement assessment standards for Company Specific Cognizant emphasize scalable asymptotic efficiency.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "company-specific-cognizant",
+        "aptitude",
+        "placement"
+      ],
+      "solution": "Placement assessment standards for Company Specific Cognizant emphasize scalable asymptotic efficiency.",
+      "questionHash": "hash_7f27e71a"
+    }
+  ]
+}

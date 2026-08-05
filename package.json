@@ -11,9 +11,17 @@
     "build": "vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "prepare": "husky"
+    "prepare": "husky",
+    "seed:topics": "node scripts/seedTopics.js",
+    "seed:aptitude": "node scripts/seedAptitude.js",
+    "generate:questions": "node scripts/generateAptitudeBank.js all",
+    "generate:topic": "node scripts/generateAptitudeBank.js",
+    "generate:aptitude": "node scripts/generateAptitudeBank.js",
+    "validate:questions": "node scripts/validateQuestions.js",
+    "question:stats": "node scripts/validateQuestions.js"
   },
   "dependencies": {
+    "@google/genai": "^2.15.0",
     "@google/generative-ai": "^0.21.0",
     "@supabase/supabase-js": "^2.111.0",
     "bcryptjs": "^2.4.3",
