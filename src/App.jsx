@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Main App Component with AuthProvider, TaskFlowAuth, AuthModal & Navigation", deps: ["lucide-react", "./context/AuthContext", "./components/TaskFlowAuth", "./components/AuthModal", "./components/OnboardingWizard"], state: "active", last: "anti@2026-07-31" }
+// agent-notes: { ctx: "Main App Component with AuthProvider, TaskFlowAuth, AuthModal & Navigation including SkillGapAnalysis", deps: ["lucide-react", "./context/AuthContext", "./components/TaskFlowAuth", "./components/AuthModal", "./components/SkillGapAnalysis"], state: "active", last: "anti@2026-08-06" }
 import React, { useState } from 'react';
 import { 
   LayoutDashboard, 
@@ -26,8 +26,9 @@ import OnboardingWizard from './components/OnboardingWizard';
 import NotificationsDrawer from './components/NotificationsDrawer';
 
 import Dashboard from './components/Dashboard';
-import ResumeAnalyzer from './components/ResumeAnalyzer';
+import ResumeAnalyzer from './pages/ResumeAnalyzer';
 import JobAnalyzer from './components/JobAnalyzer';
+import SkillGapAnalysis from './components/SkillGapAnalysis';
 import LearningRoadmap from './components/LearningRoadmap';
 import CareerMentor from './components/CareerMentor';
 import ProjectRecommender from './components/ProjectRecommender';
@@ -101,13 +102,14 @@ function MainLayout() {
           <ResumeAnalyzer 
             profile={activeProfile} 
             setProfile={handleProfileChange} 
+            onNavigate={setActiveTab}
           />
         );
       case 'job':
         return (
           <JobAnalyzer 
-            profile={activeProfile} 
-            onGenerateRoadmap={handleGenerateRoadmap} 
+            profile={activeProfile}
+            onGenerateRoadmap={handleGenerateRoadmap}
           />
         );
       case 'roadmap':

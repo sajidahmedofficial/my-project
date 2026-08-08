@@ -1,0 +1,18 @@
+/* agent-notes: { ctx: "Custom CSS styles for modular Resume Analyzer components", deps: [], state: "active", last: "anti@2026-08-06" } */
+
+.resume-analyzer-page {
+  font-family: Inter, system-ui, sans-serif;
+  color: #f4f4f8;
+}
+
+.score-badge {
+  transition: all 0.3s ease;
+}
+
+.score-badge:hover {
+  transform: translateY(-2px);
+}
+
+.problem-card {
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
