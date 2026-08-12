@@ -3,7 +3,7 @@ name: scaffold-web-monorepo
 description: Scaffold a web/mobile monorepo
 ---
 
-<!-- agent-notes: { ctx: "web/mobile monorepo scaffold workflow", deps: [AGENTS.md], state: active, last: "sato@2026-02-12" } -->
+<!-- agent-notes: { ctx: "web/mobile monorepo scaffold workflow", deps: [AGENTS.md], state: active, last: "anti@2026-08-11" } -->
 Scaffold a web/mobile monorepo: $ARGUMENTS
 
 You are setting up this repository as a web or mobile monorepo. Follow these steps:

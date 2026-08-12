@@ -3,11 +3,9 @@
 
 ## Project Overview
 
-<!-- TODO: Replace this section with your project's overview after scaffolding -->
-
-**Project Name:** todo
-**Description:** A CLI todo list application for managing tasks
-**Tech Stack:** Python + Click + JSON file storage
+**Project Name:** SkillBridge
+**Description:** AI-powered skill assessment, gap analysis, career mentorship, learning roadmap, and job readiness platform
+**Tech Stack:** React (Vite) + Node.js (Express) + Supabase/MongoDB + Tailwind CSS + Gemini AI API
 
 **Codebase map:** `docs/code-map.md` — read this first to understand the package structure, public APIs, and data flow.
 

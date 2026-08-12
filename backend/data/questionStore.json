@@ -6115,6 +6115,56 @@
       ],
       "solution": "Placement assessment standards for Company Specific Cognizant emphasize scalable asymptotic efficiency.",
       "questionHash": "hash_7f27e71a"
+    },
+    {
+      "id": "percentage-000001",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 10% of 500?",
+      "questionType": "single_choice",
+      "options": [
+        "50",
+        "60",
+        "45",
+        "100"
+      ],
+      "correctAnswer": 0,
+      "explanation": "10% of 500 = (10/100) × 500 = 50.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "10% of 500 = (10/100) × 500 = 50.",
+      "questionHash": "hash_e5eefb1c"
+    },
+    {
+      "id": "percentage-000003",
+      "category": "Quantitative Aptitude",
+      "topic": "Percentage",
+      "topicId": "percentage",
+      "question": "What is 20% of 680?",
+      "questionType": "single_choice",
+      "options": [
+        "136",
+        "146",
+        "131",
+        "272"
+      ],
+      "correctAnswer": 0,
+      "explanation": "20% of 680 = (20/100) × 680 = 136.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "percentage",
+        "arithmetic"
+      ],
+      "solution": "20% of 680 = (20/100) × 680 = 136.",
+      "questionHash": "hash_ff7c3438"
     }
   ]
 }

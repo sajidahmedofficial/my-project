@@ -1,10 +1,10 @@
 ---
 name: doctor
-description: Run a health check on the vteam-hybrid project setup. This command is **read-only** — it inspects but never modifies files, config, or state.
+description: Run a health check on the SkillBridge project setup. This command is **read-only** — it inspects but never modifies files, config, or state.
 ---
 
-<!-- agent-notes: { ctx: "read-only project health check, 8 diagnostics", deps: [AGENTS.md, .agents/agents/, .agents/commands/, docs/methodology/agent-notes.md], state: active, last: "sato@2026-03-21" } -->
-Run a health check on the vteam-hybrid project setup. This command is **read-only** — it inspects but never modifies files, config, or state.
+<!-- agent-notes: { ctx: "read-only project health check, 8 diagnostics", deps: [AGENTS.md, .agents/agents/, .agents/commands/, docs/methodology/agent-notes.md], state: active, last: "anti@2026-08-11" } -->
+Run a health check on the SkillBridge project setup. This command is **read-only** — it inspects but never modifies files, config, or state.
 
 ---
 
@@ -29,8 +29,8 @@ Expected files (19):
 `archie.md`, `cam.md`, `cloud-architect.md`, `cloud-costguard.md`, `cloud-netdiag.md`, `code-reviewer.md`, `dani.md`, `debra.md`, `diego.md`, `grace.md`, `ines.md`, `pat.md`, `pierrot.md`, `prof.md`, `sato.md`, `tara.md`, `user-chorus.md`, `vik.md`, `wei.md`
 
 ```bash
-# List .agents/agents/*.md and compare against expected list
-ls .agents/agents/*.md 2>/dev/null
+# List .agents/agents/*/agent.md or .agents/agents/*.md and compare against expected list
+ls .agents/agents/*/agent.md .agents/agents/*.md 2>/dev/null
 ```
 
 - PASS if all 19 are present.
@@ -39,16 +39,16 @@ ls .agents/agents/*.md 2>/dev/null
 
 ---
 
-## Check 2: Command Files
+## Check 2: Skill Files
 
-Verify that all expected command files exist in `.agents/commands/`.
+Verify that all expected skill definition files exist in `.agents/skills/`.
 
-Expected files (27):
-`adr.md`, `aws-review.md`, `azure-review.md`, `cloud-update.md`, `code-review.md`, `design.md`, `devcontainer.md`, `doctor.md`, `gcp-review.md`, `handoff.md`, `kickoff.md`, `pin-versions.md`, `plan.md`, `quickstart.md`, `restack.md`, `resume.md`, `retro.md`, `review.md`, `scaffold-ai-tool.md`, `scaffold-cli.md`, `scaffold-static-site.md`, `scaffold-web-monorepo.md`, `sprint-boundary.md`, `sync-ghcp.md`, `sync-template.md`, `tdd.md`, `whatsit.md`
+Expected skills (27):
+`adr`, `aws-review`, `azure-review`, `cloud-update`, `code-review`, `design`, `devcontainer`, `doctor`, `gcp-review`, `handoff`, `kickoff`, `pin-versions`, `plan`, `quickstart`, `restack`, `resume`, `retro`, `review`, `scaffold-ai-tool`, `scaffold-cli`, `scaffold-static-site`, `scaffold-web-monorepo`, `sprint-boundary`, `sync-ghcp`, `sync-template`, `tdd`, `whatsit`
 
 ```bash
-# List .agents/commands/*.md and compare against expected list
-ls .agents/commands/*.md 2>/dev/null
+# List .agents/skills/*/SKILL.md and compare against expected list
+ls .agents/skills/*/SKILL.md 2>/dev/null
 ```
 
 - PASS if all 27 are present.
@@ -175,8 +175,8 @@ head -5 <file> | grep -c 'agent-notes:'
 Print the report using this exact structure:
 
 ```
-vteam-hybrid Doctor Report
-==========================
+SkillBridge Doctor Report
+=========================
 
 [STATUS]  Check 1 description
           -> Fix suggestion (only for WARN/FAIL)
