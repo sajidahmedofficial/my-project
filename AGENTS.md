@@ -9,7 +9,7 @@
 
 **Codebase map:** `docs/code-map.md` — read this first to understand the package structure, public APIs, and data flow.
 
-> **Note:** Several paths referenced below (e.g., `docs/code-map.md`, `docs/tech-debt.md`, `docs/test-strategy.md`) live under `docs/scaffolds/` until you run a scaffold command, which moves them to their final locations.
+> **Note:** Several paths referenced below (e.g., `docs/code-map.md`, `docs/tech-debt.md`, `docs/test-strategy.md`) live under `docs/scaffolds/` until you run a scaffold command, which moves them to their final locations.h code automaaticaly
 
 ## First-Run Detection
 
@@ -95,6 +95,7 @@ When the human declares unavailability, Pat answers product questions using `doc
 
 ### Commit Discipline
 Commit and push after every reasonable chunk of work. One commit per issue. Conventional commits format.
+**Auto-Push Mandatory:** Whenever any code changes are made or a task item is completed, automatically stage (`git add .`), commit with a conventional commit message, and push (`git push origin main`) to remote without waiting for an explicit push request from the user.
 
 ## Tracking
 
