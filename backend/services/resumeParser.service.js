@@ -11,8 +11,17 @@ export async function extractResumeText(file) {
   const buffer = fs.readFileSync(file.path);
 
   if (file.mimetype === "application/pdf" || file.originalname?.endsWith('.pdf')) {
-    const result = await pdfParse(buffer);
-    return result.text;
+    try {
+      const result = await pdfParse(buffer);
+      if (result && result.text && result.text.trim()) {
+        return result.text;
+      }
+    } catch (err) {
+      console.warn("pdfParse failed, attempting UTF-8 text extraction fallback:", err.message);
+    }
+    const rawText = buffer.toString('utf-8');
+    if (rawText && rawText.trim()) return rawText;
+    throw new Error("Could not extract readable text from PDF.");
   }
 
   if (
@@ -20,11 +29,18 @@ export async function extractResumeText(file) {
     file.originalname?.endsWith('.docx') ||
     file.originalname?.endsWith('.doc')
   ) {
-    const result = await mammoth.extractRawText({ buffer });
-    return result.value;
+    try {
+      const result = await mammoth.extractRawText({ buffer });
+      if (result && result.value) return result.value;
+    } catch (err) {
+      console.warn("mammoth extraction failed:", err.message);
+    }
+    const rawText = buffer.toString('utf-8');
+    if (rawText && rawText.trim()) return rawText;
+    throw new Error("Could not extract readable text from DOCX.");
   }
 
-  throw new Error("Only PDF and DOCX files are supported.");
+  return buffer.toString('utf-8');
 }
 
 export const parseResumeFile = async (fileOrName) => {
