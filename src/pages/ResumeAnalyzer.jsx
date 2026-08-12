@@ -73,21 +73,82 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
 
   const is100PercentComplete = skillsStatus.length > 0 && skillsStatus.every(s => s.status === 'GAINED' || s.progress === 100);
 
-  const resumeScore = is100PercentComplete ? 100 : Math.min(100, 68 + fixedCount * 8 + gainedCount * 4);
-  const atsScore = is100PercentComplete ? 100 : Math.min(100, 72 + fixedCount * 6);
-  const grammarScore = is100PercentComplete ? 100 : Math.min(100, 84 + (problems[0]?.fixed ? 8 : 0));
-  const skillGapScore = Math.round((gainedCount / skillsStatus.length) * 100);
+  const [apiResumeScore, setApiResumeScore] = useState(null);
+  const [apiAtsScore, setApiAtsScore] = useState(null);
+  const [apiGrammarScore, setApiGrammarScore] = useState(null);
+
+  const resumeScore = is100PercentComplete ? 100 : (apiResumeScore || Math.min(100, 68 + fixedCount * 8 + gainedCount * 4));
+  const atsScore = is100PercentComplete ? 100 : (apiAtsScore || Math.min(100, 72 + fixedCount * 6));
+  const grammarScore = is100PercentComplete ? 100 : (apiGrammarScore || Math.min(100, 84 + (problems[0]?.fixed ? 8 : 0)));
+  const skillGapScore = Math.round((gainedCount / (skillsStatus.length || 1)) * 100);
+
+  const processAnalysisResult = (data) => {
+    if (!data) return;
+    const analysis = data.analysis || data;
+    
+    if (analysis.candidate?.name && setProfile) {
+      setProfile(prev => ({ ...prev, name: analysis.candidate.name }));
+    }
+
+    if (analysis.scores) {
+      if (analysis.scores.overall) setApiResumeScore(analysis.scores.overall);
+      if (analysis.scores.ats) setApiAtsScore(analysis.scores.ats);
+      if (analysis.scores.grammar) setApiGrammarScore(analysis.scores.grammar);
+    }
+
+    if (analysis.resumeProblems && Array.isArray(analysis.resumeProblems) && analysis.resumeProblems.length > 0) {
+      setProblems(analysis.resumeProblems.map((p, idx) => ({
+        id: idx + 1,
+        problem: p.problem || "Resume section needs optimization",
+        original: p.original || p.section || "Original phrasing",
+        suggested: p.suggestion || p.suggested || "Suggested improvement",
+        fixed: false
+      })));
+    }
+
+    if (analysis.skills) {
+      const detected = analysis.skills.detected || [];
+      const missing = analysis.skills.missing || [];
+      const weak = analysis.skills.weak || [];
+
+      const newSkills = [
+        ...detected.map(name => ({ name, status: 'GAINED', progress: 100, certified: true })),
+        ...weak.map(name => ({ name, status: 'LEARNING', progress: 60, certified: false })),
+        ...missing.map(name => ({ name, status: 'MISSING', progress: 20, certified: false }))
+      ];
+
+      if (newSkills.length > 0) {
+        setSkillsStatus(newSkills);
+      }
+    }
+  };
 
   const handleFileSelect = async (file) => {
     setSelectedFile(file);
     setParsing(true);
-    await uploadResume(file);
-    setParsing(false);
+    try {
+      const res = await uploadResume(file, profile?.careerGoal || "Full Stack Developer");
+      if (res) {
+        processAnalysisResult(res);
+      }
+    } catch (err) {
+      console.error("Resume analysis API error:", err);
+    } finally {
+      setParsing(false);
+    }
   };
 
   const handleSelectPreset = (preset) => {
     setSelectedFile({ name: `${preset.name.replace(/\s+/g, '_')}_Resume.pdf` });
     if (setProfile) setProfile(preset);
+    if (preset.skills) {
+      const presetSkills = [
+        ...preset.skills.map(name => ({ name, status: 'GAINED', progress: 100, certified: true })),
+        { name: "Node.js", status: "LEARNING", progress: 60, certified: false },
+        { name: "MongoDB", status: "MISSING", progress: 20, certified: false }
+      ];
+      setSkillsStatus(presetSkills);
+    }
   };
 
   const handleApplyFix = async (problemId) => {

@@ -1,23 +1,29 @@
 // agent-notes: { ctx: "Gemini AI service with raw text and JSON parsing helpers", deps: ["@google/generative-ai"], state: "active", last: "anti@2026-08-06" }
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const genAI = new GoogleGenerativeAI(
-  process.env.GEMINI_API_KEY || ''
-);
-
-const model = genAI.getGenerativeModel({
-  model: "gemini-2.5-flash"
-});
+const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || '';
+const genAI = new GoogleGenerativeAI(apiKey);
 
 export async function analyzeWithGemini(prompt) {
-  try {
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    return response.text();
-  } catch (error) {
-    console.error('Gemini Analysis Error:', error);
+  if (!apiKey) {
+    console.warn('Gemini API key not found in environment (GEMINI_API_KEY or VITE_GEMINI_API_KEY)');
     return null;
   }
+
+  const modelNames = ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro"];
+  
+  for (const modelName of modelNames) {
+    try {
+      const model = genAI.getGenerativeModel({ model: modelName });
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const text = response.text();
+      if (text) return text;
+    } catch (error) {
+      console.warn(`Gemini Model (${modelName}) warning:`, error.message);
+    }
+  }
+  return null;
 }
 
 export async function analyzeJSON(prompt) {

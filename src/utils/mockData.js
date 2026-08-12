@@ -2,6 +2,37 @@
 
 export const RESUME_PRESETS = [
   {
+    id: "preset-sajid",
+    name: "Sajid Ahmed M - Full Stack & AI Developer",
+    description: "Academic score: 8.25 CGPA (82%). Expert in React.js, Node.js, Express.js, Python, SQL, REST APIs & AI Integrations.",
+    skills: ["HTML", "CSS", "JavaScript", "React.js", "Node.js", "Express.js", "Python", "SQL", "Git", "REST APIs", "AI Application Development"],
+    projects: [
+      {
+        title: "AI Voice Assistant",
+        tech: "Conversational AI, Voice Processing, Python",
+        description: "Alexa-inspired assistant featuring conversational AI, speech processing, and smart automation."
+      },
+      {
+        title: "AI Skill Gap Analyzer",
+        tech: "React, Node.js, Gemini API",
+        description: "Application that evaluates resumes, detects structural issues, and provides targeted skill gap recommendations."
+      },
+      {
+        title: "Task Diary",
+        tech: "React, LocalStorage, Vercel",
+        description: "Responsive task-management app for creating, updating, and tracking daily tasks."
+      }
+    ],
+    education: "B.E. Computer Science & Engineering - Vaigai College of Engineering (Graduating 2027)",
+    experience: "Prompt Engineer / Full Stack Web Developer / AI Intern at Celite",
+    scores: {
+      resumeScore: 92,
+      skillScore: 88,
+      placementReadiness: 90,
+      weeklyGoalsProgress: 85
+    }
+  },
+  {
     id: "preset-frontend",
     name: "Aarav Sharma - Frontend Enthusiast",
     description: "Academic score: 8.5 CGPA. Knows basic HTML/CSS/JS, lacks React, state management, and deployment tools.",

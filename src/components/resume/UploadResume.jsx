@@ -89,19 +89,37 @@ function UploadResume({ onAnalysis, onFileSelect, parsing, selectedFile, onSelec
           </span>
           <div className="flex flex-wrap gap-1.5 justify-center">
             <button
-              onClick={() => onSelectPreset({ name: "Aarav Sharma", careerGoal: "Frontend Developer" })}
+              onClick={() => {
+                const preset = { name: "Sajid Ahmed M", careerGoal: "Full Stack Developer · AI Application Development", skills: ["HTML", "CSS", "JavaScript", "React", "Node.js", "Express", "Python", "SQL", "Git", "REST APIs", "AI Application Development"] };
+                if (onSelectPreset) onSelectPreset(preset);
+              }}
+              className="px-2.5 py-1 rounded-lg bg-accent-purple/20 border border-accent-purple/50 hover:bg-accent-purple/30 text-white text-[10px] font-bold transition-all shadow-sm"
+            >
+              Sajid (Full Stack & AI) ★
+            </button>
+            <button
+              onClick={() => {
+                const preset = { name: "Aarav Sharma", careerGoal: "Frontend Developer", skills: ["HTML", "CSS", "JavaScript", "React"] };
+                if (onSelectPreset) onSelectPreset(preset);
+              }}
               className="px-2.5 py-1 rounded-lg bg-gray-900 border border-gray-800 hover:border-accent-purple text-gray-300 hover:text-white text-[10px] font-semibold transition-all"
             >
               Aarav (Frontend)
             </button>
             <button
-              onClick={() => onSelectPreset({ name: "Priya Patel", careerGoal: "Backend Engineer" })}
+              onClick={() => {
+                const preset = { name: "Priya Patel", careerGoal: "Backend Engineer", skills: ["Node.js", "Express", "MongoDB", "Python"] };
+                if (onSelectPreset) onSelectPreset(preset);
+              }}
               className="px-2.5 py-1 rounded-lg bg-gray-900 border border-gray-800 hover:border-accent-purple text-gray-300 hover:text-white text-[10px] font-semibold transition-all"
             >
               Priya (Backend)
             </button>
             <button
-              onClick={() => onSelectPreset({ name: "Rohan Verma", careerGoal: "Full Stack Developer" })}
+              onClick={() => {
+                const preset = { name: "Rohan Verma", careerGoal: "Full Stack Developer", skills: ["HTML", "CSS", "JavaScript", "React", "Node.js", "Express"] };
+                if (onSelectPreset) onSelectPreset(preset);
+              }}
               className="px-2.5 py-1 rounded-lg bg-gray-900 border border-gray-800 hover:border-accent-purple text-gray-300 hover:text-white text-[10px] font-semibold transition-all"
             >
               Rohan (Full Stack)
