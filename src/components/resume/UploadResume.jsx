@@ -45,24 +45,105 @@ function UploadResume({ onAnalysis, onFileSelect, parsing, selectedFile, onSelec
     }
   };
 
+  const [dragActive, setDragActive] = useState(false);
+
+  const handleDrag = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFile(e.dataTransfer.files[0]);
+    }
+  };
+
   const isLoading = loading || parsing;
 
   return (
-    <div className="upload-box glass rounded-2xl p-6 border border-gray-800 space-y-4 flex flex-col justify-between">
-      <div className="upload-icon w-12 h-12 rounded-2xl bg-accent-purple/10 text-accent-purple flex items-center justify-center font-bold text-xl mx-auto">
-        ↑
-      </div>
+    <div 
+      onDragEnter={handleDrag}
+      onDragLeave={handleDrag}
+      onDragOver={handleDrag}
+      onDrop={handleDrop}
+      className={`upload-box glass rounded-2xl p-6 border transition-all space-y-4 flex flex-col justify-between ${
+        dragActive 
+          ? "border-accent-purple bg-accent-purple/10 shadow-lg shadow-accent-purple/20" 
+          : selectedFile 
+            ? "border-emerald-500/40 bg-emerald-500/5" 
+            : "border-gray-800"
+      }`}
+    >
+      {selectedFile ? (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-bold text-lg">
+                ✓
+              </div>
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-wider text-emerald-400 block">
+                  Uploaded & Analyzed
+                </span>
+                <h4 className="text-xs font-bold text-white truncate max-w-[220px]">
+                  {selectedFile.name}
+                </h4>
+              </div>
+            </div>
+            <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-[10px] font-bold">
+              AI Ready ✓
+            </span>
+          </div>
 
-      <div className="text-center space-y-1">
-        <h3 className="text-sm font-bold text-white">
-          {isLoading
-            ? "AI is analyzing your resume..."
-            : "Drag and drop file here"}
-        </h3>
-        <p className="text-xs text-gray-400">
-          PDF or DOCX up to 5MB
-        </p>
-      </div>
+          <div className="p-2.5 rounded-xl bg-gray-900/80 border border-gray-800 flex items-center justify-between text-xs">
+            <span className="text-gray-400 text-[11px]">
+              Ready to replace or re-analyze?
+            </span>
+            <button
+              disabled={isLoading}
+              onClick={() => inputRef.current?.click()}
+              className="px-3 py-1 rounded-lg bg-gray-800 hover:bg-gray-700 text-white font-bold text-[11px] border border-gray-700 transition-all"
+            >
+              {isLoading ? "Analyzing..." : "Change File"}
+            </button>
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className="upload-icon w-12 h-12 rounded-2xl bg-accent-purple/10 text-accent-purple flex items-center justify-center font-bold text-xl mx-auto">
+            ↑
+          </div>
+
+          <div className="text-center space-y-1">
+            <h3 className="text-sm font-bold text-white">
+              {isLoading
+                ? "AI is analyzing your resume..."
+                : "Drag and drop file here"}
+            </h3>
+            <p className="text-xs text-gray-400">
+              PDF or DOCX up to 5MB
+            </p>
+          </div>
+
+          <button
+            disabled={isLoading}
+            onClick={() => inputRef.current?.click()}
+            className="w-full py-2.5 rounded-xl bg-accent-purple hover:bg-accent-purple/90 text-white font-bold text-xs shadow-md transition-all disabled:opacity-50"
+          >
+            {isLoading
+              ? "Analyzing..."
+              : "Select File"}
+          </button>
+        </>
+      )}
 
       <input
         ref={inputRef}
@@ -71,16 +152,6 @@ function UploadResume({ onAnalysis, onFileSelect, parsing, selectedFile, onSelec
         hidden
         onChange={(e) => handleFile(e.target.files?.[0])}
       />
-
-      <button
-        disabled={isLoading}
-        onClick={() => inputRef.current?.click()}
-        className="w-full py-2.5 rounded-xl bg-accent-purple hover:bg-accent-purple/90 text-white font-bold text-xs shadow-md transition-all disabled:opacity-50"
-      >
-        {isLoading
-          ? "Analyzing..."
-          : "Select File"}
-      </button>
 
       {onSelectPreset && (
         <div className="pt-2 border-t border-gray-800/60 text-center space-y-2">
