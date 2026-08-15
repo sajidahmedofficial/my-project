@@ -18,6 +18,7 @@ import { aptitudeApi } from '../../services/aptitudeApi';
 export default function MCQQuizInterface({ session, questions, onComplete, onExit }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState({});
+  const [syntaxInputs, setSyntaxInputs] = useState({});
   const [markedForReview, setMarkedForReview] = useState({});
   const [bookmarks, setBookmarks] = useState({});
   const [submittedFeedback, setSubmittedFeedback] = useState({});
@@ -26,6 +27,12 @@ export default function MCQQuizInterface({ session, questions, onComplete, onExi
   const safeQuestions = Array.isArray(questions) && questions.length > 0 ? questions : [];
   const currentQ = safeQuestions[currentIndex] || {};
   const isPracticeMode = session?.mode === 'practice' || !session?.mode;
+
+  const isSyntaxQuestion = currentQ.type === 'syntax' || 
+    currentQ.questionType === 'syntax' || 
+    Boolean(currentQ.isSyntax) || 
+    (currentQ.category && currentQ.category.toLowerCase().includes('syntax')) ||
+    (currentQ.question && /syntax|keyword|fill in the missing|write the exact/i.test(currentQ.question));
 
   // Timer Countdown
   useEffect(() => {
@@ -55,7 +62,36 @@ export default function MCQQuizInterface({ session, questions, onComplete, onExi
     }));
   };
 
+  const handleSyntaxInputChange = (val) => {
+    setSyntaxInputs(prev => ({
+      ...prev,
+      [currentIndex]: val
+    }));
+  };
+
   const handleSubmitAnswer = async () => {
+    if (isSyntaxQuestion) {
+      const typedVal = syntaxInputs[currentIndex] || '';
+      if (!typedVal.trim()) return;
+
+      const expected = currentQ.correctSyntax || currentQ.answer || (currentQ.options && currentQ.options[currentQ.correctAnswer]);
+      const expectedText = typeof expected === 'string' ? expected : (expected?.text || '');
+      const isCorrect = typedVal.trim().toLowerCase() === expectedText.trim().toLowerCase();
+
+      setSubmittedFeedback(prev => ({
+        ...prev,
+        [currentIndex]: {
+          selectedAnswer: typedVal,
+          isCorrect,
+          correctAnswer: expectedText,
+          correctOptionText: expectedText,
+          explanation: currentQ.explanation || `Correct syntax: ${expectedText}`,
+          solution: currentQ.solution || expectedText
+        }
+      }));
+      return;
+    }
+
     const selectedIdx = answers[currentIndex];
     if (selectedIdx === undefined || selectedIdx === null) return;
 
@@ -222,50 +258,78 @@ export default function MCQQuizInterface({ session, questions, onComplete, onExi
               </div>
             </div>
 
-            {/* Question Text */}
-            <h3 className="text-base font-bold text-white leading-relaxed">{currentQ.question}</h3>
-
-            {/* Options List */}
-            <div className="space-y-3 pt-2">
-              {currentQ.options &&
-                currentQ.options.map((opt, oIdx) => {
-                  const optText = typeof opt === 'string' ? opt : opt.text;
-                  const isSelected = selectedOptIdx === oIdx;
-                  let borderStyle = 'border-gray-800 hover:border-gray-700 bg-gray-900/60';
-
-                  if (isSelected) {
-                    borderStyle = 'border-accent-purple bg-accent-purple/15 text-white shadow-lg shadow-purple-600/20';
-                  }
-
-                  if (isPracticeMode && feedback) {
-                    if (oIdx === feedback.correctAnswer) {
-                      borderStyle = 'border-emerald-500 bg-emerald-500/20 text-emerald-300 font-bold';
-                    } else if (isSelected && !feedback.isCorrect) {
-                      borderStyle = 'border-red-500 bg-red-500/20 text-red-300';
-                    }
-                  }
-
-                  return (
-                    <button
-                      key={oIdx}
-                      onClick={() => handleSelectOption(oIdx)}
-                      disabled={isPracticeMode && Boolean(feedback)}
-                      className={`w-full p-4 rounded-xl border text-left text-xs font-medium flex items-center justify-between transition-all ${borderStyle}`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="w-6 h-6 rounded-lg bg-gray-800 text-gray-300 text-[10px] font-bold flex items-center justify-center border border-gray-700 shrink-0">
-                          {String.fromCharCode(65 + oIdx)}
-                        </span>
-                        <span>{optText}</span>
-                      </div>
-
-                      {isSelected && !feedback && (
-                        <div className="w-2.5 h-2.5 rounded-full bg-accent-pink shadow-md shadow-pink-500" />
-                      )}
-                    </button>
-                  );
-                })}
+            {/* Question Mode Badge & Question Text */}
+            <div className="space-y-2">
+              <span className={`inline-block px-2.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider ${
+                isSyntaxQuestion ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+              }`}>
+                {isSyntaxQuestion ? 'Syntax Question — Write answer on your own (No options)' : 'Coding Question — Select correct answer option'}
+              </span>
+              <h3 className="text-base font-bold text-white leading-relaxed">{currentQ.question}</h3>
             </div>
+
+            {/* Answer Input Section: Syntax (Free-form input, no options) vs Coding (Multiple choice options) */}
+            {isSyntaxQuestion ? (
+              <div className="space-y-3 pt-2">
+                <div className="p-4 rounded-xl bg-gray-950 border border-amber-500/30 space-y-2">
+                  <label className="text-xs font-bold text-amber-300 block">
+                    Type Your Exact Syntax Answer (No Options Provided):
+                  </label>
+                  <input
+                    type="text"
+                    value={syntaxInputs[currentIndex] || ''}
+                    onChange={(e) => handleSyntaxInputChange(e.target.value)}
+                    disabled={isPracticeMode && Boolean(feedback)}
+                    placeholder="Enter syntax code answer here (e.g. const [state, setState] = useState())..."
+                    className="w-full bg-gray-900 border border-gray-700 text-emerald-300 font-mono text-xs rounded-xl p-3 focus:outline-none focus:border-amber-400"
+                  />
+                  <p className="text-[11px] text-gray-400 italic">
+                    Syntax evaluation requires exact code keywords or statement input.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-3 pt-2">
+                {currentQ.options &&
+                  currentQ.options.map((opt, oIdx) => {
+                    const optText = typeof opt === 'string' ? opt : opt.text;
+                    const isSelected = selectedOptIdx === oIdx;
+                    let borderStyle = 'border-gray-800 hover:border-gray-700 bg-gray-900/60';
+
+                    if (isSelected) {
+                      borderStyle = 'border-accent-purple bg-accent-purple/15 text-white shadow-lg shadow-purple-600/20';
+                    }
+
+                    if (isPracticeMode && feedback) {
+                      if (oIdx === feedback.correctAnswer) {
+                        borderStyle = 'border-emerald-500 bg-emerald-500/20 text-emerald-300 font-bold';
+                      } else if (isSelected && !feedback.isCorrect) {
+                        borderStyle = 'border-red-500 bg-red-500/20 text-red-300';
+                      }
+                    }
+
+                    return (
+                      <button
+                        key={oIdx}
+                        onClick={() => handleSelectOption(oIdx)}
+                        disabled={isPracticeMode && Boolean(feedback)}
+                        className={`w-full p-4 rounded-xl border text-left text-xs font-medium flex items-center justify-between transition-all ${borderStyle}`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="w-6 h-6 rounded-lg bg-gray-800 text-gray-300 text-[10px] font-bold flex items-center justify-center border border-gray-700 shrink-0">
+                            {String.fromCharCode(65 + oIdx)}
+                          </span>
+                          <span className="font-mono">{optText}</span>
+                        </div>
+
+                        {isSelected && !feedback && (
+                          <div className="w-2.5 h-2.5 rounded-full bg-accent-pink shadow-md shadow-pink-500" />
+                        )}
+                      </button>
+                    );
+                  })}
+              </div>
+            )}
 
             {/* Instant Feedback & Step Explanation for Practice Mode */}
             {isPracticeMode && feedback && (

@@ -29,6 +29,7 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
   const [verifyingSkillName, setVerifyingSkillName] = useState(null);
+  const [toastMessage, setToastMessage] = useState(null);
   
   // Pending AI Suggestion Review State
   const [pendingSuggestion, setPendingSuggestion] = useState(null);
@@ -153,7 +154,18 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
 
   const handleApplyFix = async (problemId) => {
     await applyProblemFix(problemId);
-    setProblems(prev => prev.map(p => p.id === problemId ? { ...p, fixed: true } : p));
+    setProblems(prev => {
+      const nextProblems = prev.map(p => p.id === problemId ? { ...p, fixed: true } : p);
+      const remainingUnfixed = nextProblems.filter(p => !p.fixed).length;
+      
+      setToastMessage("Fix applied! Automatically advancing to Next Task (Skill Gap & Bridge)...");
+      setTimeout(() => {
+        setActiveTab('skills');
+        setToastMessage(null);
+      }, 1000);
+
+      return nextProblems;
+    });
   };
 
   const handleOpenVerification = (skillName) => {
@@ -190,17 +202,28 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
     if (!pendingSuggestion) return;
     const { skillName, certificateCode } = pendingSuggestion;
 
-    setSkillsStatus(prev => prev.map(s => {
-      if (s.name.toLowerCase() === skillName.toLowerCase()) {
-        return {
-          ...s,
-          progress: 100,
-          status: 'GAINED',
-          certified: true
-        };
-      }
-      return s;
-    }));
+    setSkillsStatus(prev => {
+      const updated = prev.map(s => {
+        if (s.name.toLowerCase() === skillName.toLowerCase()) {
+          return {
+            ...s,
+            progress: 100,
+            status: 'GAINED',
+            certified: true
+          };
+        }
+        return s;
+      });
+
+      const allDone = updated.every(s => s.status === 'GAINED' || s.progress === 100);
+      setToastMessage(allDone ? "All skills verified! Moving to Final Certificates..." : `Applied suggestions for ${skillName}! Moving to next task...`);
+      setTimeout(() => {
+        setActiveTab(allDone ? 'certs' : 'skills');
+        setToastMessage(null);
+      }, 1000);
+
+      return updated;
+    });
 
     setCertificates(prev => [
       ...prev,
@@ -338,6 +361,19 @@ APPLIED RESUME IMPROVEMENTS:
 
       {/* Target Pipeline Flow Banner */}
       <TargetPipelineFlow currentStage={currentStage} />
+
+      {/* Auto Progression Toast Notification Banner */}
+      {toastMessage && (
+        <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-500/20 via-teal-500/20 to-accent-purple/20 border border-emerald-500/40 text-emerald-300 font-bold text-xs flex items-center justify-between shadow-xl animate-pulse">
+          <span className="flex items-center gap-2">
+            <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+            {toastMessage}
+          </span>
+          <span className="px-2.5 py-1 rounded-full bg-emerald-500/30 text-emerald-200 text-[10px] font-black uppercase tracking-wider">
+            AUTO ADVANCING ›
+          </span>
+        </div>
+      )}
 
       {/* Render 100% Final Mastery Dashboard if candidate reaches 100% */}
       {is100PercentComplete && (

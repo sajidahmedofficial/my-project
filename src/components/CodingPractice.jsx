@@ -21,6 +21,11 @@ export default function CodingPractice({ _profile }) {
 
   const [selectedLanguage, setSelectedLanguage] = useState('Python');
   const [selectedDifficulty, setSelectedDifficulty] = useState('Easy');
+  const [questionMode, setQuestionMode] = useState('coding'); // 'coding' | 'syntax'
+  const [selectedOptionIdx, setSelectedOptionIdx] = useState(null);
+  const [userSyntaxInput, setUserSyntaxInput] = useState('');
+  const [submissionFeedback, setSubmissionFeedback] = useState(null);
+
   const [isLoading, setIsLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showSolution, setShowSolution] = useState(false);
@@ -36,7 +41,15 @@ export default function CodingPractice({ _profile }) {
     difficulty: 'Easy',
     starterCode: '# Write your code solution here\ndef twoSum(nums, target):\n    # TODO: Implement solution\n    pass\n\n# Test call\nprint(twoSum([2, 7, 11, 15], 9))',
     sampleSolution: 'def twoSum(nums, target):\n    seen = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in seen:\n            return [seen[complement], i]\n        seen[num] = i\n    return []\n\nprint(twoSum([2, 7, 11, 15], 9)) # Output: [0, 1]',
-    explanation: 'Use a hash map to store complement values for O(n) linear lookup complexity.'
+    explanation: 'Use a hash map to store complement values for O(n) linear lookup complexity.',
+    options: [
+      'def twoSum(nums, target):\n    seen = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in seen: return [seen[complement], i]\n        seen[num] = i',
+      'def twoSum(nums, target):\n    return [nums[0], nums[1]]',
+      'def twoSum(nums, target):\n    for i in nums: for j in nums: return [i, j]',
+      'def twoSum(nums, target):\n    return sorted(nums)[:2]'
+    ],
+    correctOption: 0,
+    correctSyntaxAnswer: 'complement = target - num'
   });
 
   const [editorCode, setEditorCode] = useState(problem.starterCode);
@@ -159,20 +172,27 @@ export default function CodingPractice({ _profile }) {
             </select>
           </div>
 
-          {/* Difficulty Selector */}
+          {/* Question Mode Selector (Coding Options vs Syntax Input) */}
           <div className="space-y-1">
-            <label className="text-[10px] uppercase font-bold text-gray-400 block">Difficulty</label>
-            <select
-              value={selectedDifficulty}
-              onChange={(e) => setSelectedDifficulty(e.target.value)}
-              className="bg-gray-900 border border-gray-700 text-white text-xs font-semibold rounded-xl px-3 py-2 focus:outline-none focus:border-accent-purple"
-            >
-              {difficulties.map((diff) => (
-                <option key={diff} value={diff}>
-                  {diff}
-                </option>
-              ))}
-            </select>
+            <label className="text-[10px] uppercase font-bold text-gray-400 block">Question Mode</label>
+            <div className="flex items-center gap-1 bg-gray-900 p-1 rounded-xl border border-gray-800">
+              <button
+                onClick={() => { setQuestionMode('coding'); setSubmissionFeedback(null); }}
+                className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                  questionMode === 'coding' ? 'bg-accent-purple text-white' : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                Coding (Choose Option)
+              </button>
+              <button
+                onClick={() => { setQuestionMode('syntax'); setSubmissionFeedback(null); }}
+                className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                  questionMode === 'syntax' ? 'bg-amber-500 text-gray-950 font-black' : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                Syntax (Write On Your Own)
+              </button>
+            </div>
           </div>
         </div>
 
@@ -226,6 +246,65 @@ export default function CodingPractice({ _profile }) {
             <div className="text-xs text-gray-300 space-y-3 leading-relaxed whitespace-pre-line font-normal">
               {problem.description}
             </div>
+
+            {/* Answer Input Section: Coding (Options to choose) vs Syntax (Write on your own, no options) */}
+            {questionMode === 'syntax' ? (
+              <div className="p-4 rounded-xl bg-gray-950 border border-amber-500/40 space-y-3">
+                <span className="text-xs font-bold text-amber-300 block">
+                  ✍ Syntax Mode: Write the answer on your own (No options given)
+                </span>
+                <input
+                  type="text"
+                  value={userSyntaxInput}
+                  onChange={(e) => setUserSyntaxInput(e.target.value)}
+                  placeholder="Type syntax answer here on your own..."
+                  className="w-full bg-gray-900 border border-gray-700 text-emerald-300 font-mono text-xs rounded-xl p-3 focus:outline-none focus:border-amber-400"
+                />
+                <button
+                  onClick={() => {
+                    const isCorrect = userSyntaxInput.trim().toLowerCase() === (problem.correctSyntaxAnswer || 'complement = target - num').trim().toLowerCase();
+                    setSubmissionFeedback(isCorrect ? { success: true, msg: 'Correct Syntax Answer!' } : { success: false, msg: `Incorrect syntax. Target answer was: ${problem.correctSyntaxAnswer || 'complement = target - num'}` });
+                  }}
+                  className="w-full py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-gray-950 font-black text-xs transition-all"
+                >
+                  Submit My Syntax Answer
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <span className="text-xs font-bold text-gray-300 block">
+                  Choose Correct Answer Option:
+                </span>
+                <div className="space-y-2">
+                  {(problem.options || []).map((opt, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        setSelectedOptionIdx(idx);
+                        const isCorrect = idx === (problem.correctOption || 0);
+                        setSubmissionFeedback(isCorrect ? { success: true, msg: `Option ${String.fromCharCode(65 + idx)} is Correct!` } : { success: false, msg: `Option ${String.fromCharCode(65 + idx)} is Incorrect.` });
+                      }}
+                      className={`w-full p-3 rounded-xl border text-left text-xs font-mono transition-all ${
+                        selectedOptionIdx === idx
+                          ? 'border-accent-purple bg-accent-purple/20 text-white'
+                          : 'border-gray-800 bg-gray-900/80 text-gray-300 hover:border-gray-700'
+                      }`}
+                    >
+                      <span className="font-bold text-accent-pink mr-2">{String.fromCharCode(65 + idx)}.</span>
+                      <span>{opt}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {submissionFeedback && (
+              <div className={`p-3 rounded-xl text-xs font-bold ${
+                submissionFeedback.success ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'bg-red-500/20 text-red-300 border border-red-500/40'
+              }`}>
+                {submissionFeedback.msg}
+              </div>
+            )}
 
             {problem.explanation && (
               <div className="p-3.5 rounded-xl bg-gray-900/80 border border-gray-800 space-y-1">
