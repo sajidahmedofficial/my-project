@@ -7,16 +7,7 @@ function GrammarIssues({
   isFixed,
   onApply
 }) {
-  const displayIssues = issues.length > 0 ? issues : (
-    isFixed ? [] : [
-      {
-        severity: "medium",
-        original: "Responsible for developing web applications using React.",
-        problem: "Passive tone and weak action verb without quantifiable impact.",
-        correction: "Developed responsive React applications improving user engagement by 35%."
-      }
-    ]
-  );
+  const displayIssues = issues;
 
   return (
     <section className="analysis-section glass rounded-2xl p-6 border border-gray-800 space-y-4">
