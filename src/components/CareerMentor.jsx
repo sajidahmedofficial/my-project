@@ -9,11 +9,13 @@ import {
 import { generateMentorResponse } from '../utils/aiSimulator';
 
 export default function CareerMentor({ profile }) {
+  const candidateName = profile?.name ? profile.name.split(' - ')[0] : 'Developer';
+
   const [messages, setMessages] = React.useState([
     {
       id: "m-welcome",
       sender: "bot",
-      text: `Hi **${profile.name.split(' - ')[0]}**! I am your AI Career Mentor. 💡
+      text: `Hi **${candidateName}**! I am your AI Career Mentor. 💡
 
 I can help you build learning roadmaps, recommend projects, suggest course materials, share placement checklists, and offer salary insights.
 
@@ -35,7 +37,7 @@ How can I help you today?`
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, typing]);
 
-  const handleSend = (textToSend) => {
+  const handleSend = async (textToSend) => {
     const query = textToSend.trim();
     if (!query) return;
 
@@ -49,8 +51,27 @@ How can I help you today?`
     setInputVal("");
     setTyping(true);
 
-    // Simulate AI thinking and reply after 1.2s
-    setTimeout(() => {
+    try {
+      const res = await fetch('/api/ai/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query, messages: [...messages, userMsg] })
+      });
+
+      const data = await res.json();
+      let responseText = data?.response;
+      if (!responseText || responseText.includes("Local Mentor response fallback trigger")) {
+        responseText = generateMentorResponse(messages, query);
+      }
+
+      const botMsg = {
+        id: `bot-${Date.now()}`,
+        sender: "bot",
+        text: responseText
+      };
+      setMessages(prev => [...prev, botMsg]);
+    } catch (err) {
+      console.warn("Career Mentor API fallback:", err);
       const responseText = generateMentorResponse(messages, query);
       const botMsg = {
         id: `bot-${Date.now()}`,
@@ -58,8 +79,9 @@ How can I help you today?`
         text: responseText
       };
       setMessages(prev => [...prev, botMsg]);
+    } finally {
       setTyping(false);
-    }, 1200);
+    }
   };
 
   // Convert simple markdown headings, lists, bold text to basic HTML for premium formatting
