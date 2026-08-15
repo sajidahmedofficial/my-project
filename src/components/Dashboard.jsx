@@ -24,16 +24,23 @@ import {
 } from 'recharts';
 
 export default function Dashboard({ profile, setProfile, onNavigate }) {
+  const hasUploadedResume = Boolean(profile?.hasUploadedResume);
+
   // Local goals checklist
   const initialGoals = [
     { id: 1, text: "Revise HTML structures & CSS Grid layout rules", done: true },
     { id: 2, text: "Complete React components, props, and rendering lists", done: false },
     { id: 3, text: "Learn REST API basics: status codes and HTTP verbs", done: false },
     { id: 4, text: "Conduct a 5-question Frontend Mock Interview", done: false },
-    { id: 5, text: "Upload resume to AI Analyzer for suggestions", done: false }
+    { id: 5, text: "Upload resume to AI Analyzer for suggestions", done: hasUploadedResume }
   ];
 
   const [goals, setGoals] = useState(initialGoals);
+
+  // Sync goal 5 status if resume upload changes
+  React.useEffect(() => {
+    setGoals(prev => prev.map(g => g.id === 5 ? { ...g, done: hasUploadedResume } : g));
+  }, [hasUploadedResume]);
 
   const toggleGoal = (id) => {
     const updated = goals.map(g => g.id === id ? { ...g, done: !g.done } : g);
@@ -46,7 +53,7 @@ export default function Dashboard({ profile, setProfile, onNavigate }) {
       setProfile(prev => ({
         ...prev,
         scores: {
-          ...prev.scores,
+          ...prev?.scores,
           weeklyGoalsProgress: progressPercent,
           placementReadiness: Math.min(100, Math.round((prev?.scores?.placementReadiness || 70) + (progressPercent - (prev?.scores?.weeklyGoalsProgress || 0)) * 0.15))
         }
@@ -70,10 +77,8 @@ export default function Dashboard({ profile, setProfile, onNavigate }) {
     { name: 'Week 2', score: 52, readiness: 45 },
     { name: 'Week 3', score: 60, readiness: 58 },
     { name: 'Week 4', score: 70, readiness: 68 },
-    { name: 'Week 5', score: scores.skillScore, readiness: scores.placementReadiness }
+    { name: 'Week 5', score: hasUploadedResume ? scores.skillScore : 50, readiness: hasUploadedResume ? scores.placementReadiness : 45 }
   ];
-
-
 
   const mockCertificates = [
     { id: 1, title: 'Google Cloud Certified Professional', provider: 'Google', date: '2026' },
@@ -103,7 +108,7 @@ export default function Dashboard({ profile, setProfile, onNavigate }) {
               Welcome back, <span className="gradient-text">{profile?.name?.split(' - ')[0] || 'Student'}</span>
             </h1>
             <p className="text-gray-400 text-xs max-w-xl">
-              Target Role: <strong className="text-white">{profile?.careerGoal || 'Full Stack AI Engineer'}</strong> • {profile?.college || 'Stanford University'}
+              Target Role: <strong className="text-white">{profile?.careerGoal || 'Full Stack Web Developer'}</strong> • {profile?.college || 'Stanford University'}
             </p>
           </div>
 
@@ -123,31 +128,45 @@ export default function Dashboard({ profile, setProfile, onNavigate }) {
         {/* Skill Score */}
         <div className="glass rounded-2xl p-4 space-y-1 hover:border-accent-purple/40 transition-all">
           <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Skill Score</span>
-          <div className="text-2xl font-black text-white">{scores.skillScore}%</div>
-          <span className="text-[10px] text-emerald-400 flex items-center gap-0.5 font-bold">
-            <TrendingUp className="w-3 h-3" /> +5% this week
+          <div className="text-2xl font-black text-white">
+            {hasUploadedResume ? `${scores.skillScore}%` : '--'}
+          </div>
+          <span className={`text-[10px] font-bold flex items-center gap-0.5 ${hasUploadedResume ? 'text-emerald-400' : 'text-gray-500'}`}>
+            {hasUploadedResume ? <><TrendingUp className="w-3 h-3" /> +5% from resume</> : 'Pending Resume Upload'}
           </span>
         </div>
 
         {/* Placement Readiness */}
         <div className="glass rounded-2xl p-4 space-y-1 hover:border-accent-pink/40 transition-all">
           <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Placement Readiness</span>
-          <div className="text-2xl font-black text-white">{scores.placementReadiness}%</div>
-          <span className="text-[10px] text-accent-pink font-bold">Ready for Campus Drives</span>
+          <div className="text-2xl font-black text-white">
+            {hasUploadedResume ? `${scores.placementReadiness}%` : '--'}
+          </div>
+          <span className={`text-[10px] font-bold ${hasUploadedResume ? 'text-accent-pink' : 'text-amber-400/90'}`}>
+            {hasUploadedResume ? 'Ready for Campus Drives' : 'Upload Resume to Calculate'}
+          </span>
         </div>
 
         {/* Resume Score */}
         <div className="glass rounded-2xl p-4 space-y-1 hover:border-indigo-500/40 transition-all">
           <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Resume Score</span>
-          <div className="text-2xl font-black text-white">{scores.resumeScore}/100</div>
-          <span className="text-[10px] text-gray-400 font-bold">AI Extracted</span>
+          <div className="text-2xl font-black text-white">
+            {hasUploadedResume ? `${scores.resumeScore}/100` : '--/100'}
+          </div>
+          <span className={`text-[10px] font-bold ${hasUploadedResume ? 'text-emerald-400' : 'text-amber-400'}`}>
+            {hasUploadedResume ? 'AI Extracted ✓' : 'Upload Resume to Analyze'}
+          </span>
         </div>
 
         {/* Interview Readiness */}
         <div className="glass rounded-2xl p-4 space-y-1 hover:border-blue-500/40 transition-all">
           <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Interview Readiness</span>
-          <div className="text-2xl font-black text-white">{scores.interviewReadiness}%</div>
-          <span className="text-[10px] text-blue-400 font-bold">Mock Practice Ready</span>
+          <div className="text-2xl font-black text-white">
+            {hasUploadedResume ? `${scores.interviewReadiness}%` : '--'}
+          </div>
+          <span className={`text-[10px] font-bold ${hasUploadedResume ? 'text-blue-400' : 'text-gray-500'}`}>
+            {hasUploadedResume ? 'Mock Practice Ready' : 'Pending Resume'}
+          </span>
         </div>
 
         {/* Study Streak */}

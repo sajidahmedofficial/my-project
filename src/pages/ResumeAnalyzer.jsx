@@ -62,10 +62,24 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
 
   const processAnalysisResult = (data) => {
     if (!data) return;
-    const analysis = data.analysis || data;
-    
-    if (analysis.candidate?.name && setProfile) {
-      setProfile(prev => ({ ...prev, name: analysis.candidate.name }));
+    const overallScore = analysis.scores?.overall || 84;
+    const atsScoreVal = analysis.scores?.ats || 81;
+    const grammarScoreVal = analysis.scores?.grammar || 72;
+    const skillScoreVal = analysis.scores?.skills || 78;
+
+    if (setProfile) {
+      setProfile(prev => ({
+        ...prev,
+        hasUploadedResume: true,
+        name: analysis.candidate?.name || prev?.name || 'Aarav Sharma',
+        scores: {
+          ...prev?.scores,
+          resumeScore: overallScore,
+          skillScore: skillScoreVal,
+          placementReadiness: atsScoreVal,
+          interviewReadiness: grammarScoreVal
+        }
+      }));
     }
 
     if (analysis.scores) {
@@ -73,9 +87,9 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
       if (analysis.scores.ats) setApiAtsScore(analysis.scores.ats);
       if (analysis.scores.grammar) setApiGrammarScore(analysis.scores.grammar);
     } else {
-      setApiResumeScore(78);
-      setApiAtsScore(74);
-      setApiGrammarScore(85);
+      setApiResumeScore(overallScore);
+      setApiAtsScore(atsScoreVal);
+      setApiGrammarScore(grammarScoreVal);
     }
 
     if (analysis.grammarIssues && Array.isArray(analysis.grammarIssues) && analysis.grammarIssues.length > 0) {
