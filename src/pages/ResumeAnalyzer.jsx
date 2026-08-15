@@ -62,6 +62,7 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
 
   const processAnalysisResult = (data) => {
     if (!data) return;
+    const analysis = data.analysis || data || {};
     const overallScore = analysis.scores?.overall || 84;
     const atsScoreVal = analysis.scores?.ats || 81;
     const grammarScoreVal = analysis.scores?.grammar || 72;
@@ -72,6 +73,7 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
         ...prev,
         hasUploadedResume: true,
         name: analysis.candidate?.name || prev?.name || 'Aarav Sharma',
+        skills: analysis.skills?.detected || prev?.skills || ["HTML", "CSS", "JavaScript"],
         scores: {
           ...prev?.scores,
           resumeScore: overallScore,
@@ -538,6 +540,7 @@ APPLIED RESUME IMPROVEMENTS:
                       parsing={parsing} 
                       selectedFile={selectedFile} 
                       onSelectPreset={handleSelectPreset} 
+                      analyzed={analyzed}
                     />
                   </div>
                   <div className="lg:col-span-5 glass rounded-2xl p-8 border border-gray-800 flex flex-col justify-center items-center text-center space-y-4">
@@ -570,6 +573,7 @@ APPLIED RESUME IMPROVEMENTS:
                         parsing={parsing} 
                         selectedFile={selectedFile} 
                         onSelectPreset={handleSelectPreset} 
+                        analyzed={analyzed}
                       />
                     </div>
                     <div className="lg:col-span-6 glass rounded-2xl p-6 border border-gray-800 space-y-4 flex flex-col justify-between">
@@ -688,6 +692,7 @@ APPLIED RESUME IMPROVEMENTS:
                 parsing={parsing} 
                 selectedFile={selectedFile} 
                 onSelectPreset={handleSelectPreset} 
+                analyzed={analyzed}
               />
             </div>
           ) : (

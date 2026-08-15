@@ -2,7 +2,7 @@
 import React, { useRef, useState } from "react";
 import { analyzeResume } from "../../services/resumeApi";
 
-function UploadResume({ onAnalysis, onFileSelect, parsing, selectedFile, onSelectPreset }) {
+function UploadResume({ onAnalysis, onFileSelect, parsing, selectedFile, onSelectPreset, analyzed }) {
   const inputRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -77,12 +77,12 @@ function UploadResume({ onAnalysis, onFileSelect, parsing, selectedFile, onSelec
       className={`upload-box glass rounded-2xl p-6 border transition-all space-y-4 flex flex-col justify-between ${
         dragActive 
           ? "border-accent-purple bg-accent-purple/10 shadow-lg shadow-accent-purple/20" 
-          : selectedFile 
+          : selectedFile && analyzed
             ? "border-emerald-500/40 bg-emerald-500/5" 
             : "border-gray-800"
       }`}
     >
-      {selectedFile ? (
+      {selectedFile && analyzed ? (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
