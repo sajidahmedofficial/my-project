@@ -83,7 +83,9 @@ const CATEGORY_LABELS = {
   deployment: "DEPLOYMENT",
 };
 
-export default function JobAnalyzer({ profile, onGenerateRoadmap }) {
+export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate }) {
+  const hasUploadedResume = Boolean(profile?.hasUploadedResume);
+
   // Main Mode Switcher: 'matrix' (Visual Chip Matrix) vs 'analyzer' (AI Job Description Analyzer)
   const [viewMode, setViewMode] = useState('matrix');
 
@@ -103,16 +105,23 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap }) {
   // Matrix View States (New Feature)
   const [targetRoleKey, setTargetRoleKey] = useState("fullstack");
   const [roleSkills, setRoleSkills] = useState(ROLE_PRESETS.fullstack.skills);
-  const [userSkills, setUserSkills] = useState(INITIAL_USER_SKILLS);
+  const [userSkills, setUserSkills] = useState(() => {
+    if (hasUploadedResume && Array.isArray(profile?.skills) && profile.skills.length > 0) {
+      return profile.skills;
+    }
+    return [];
+  });
   const [activeCategory, setActiveCategory] = useState(null);
   const [skillInput, setSkillInput] = useState("");
 
   // Sync profile skills on mount or change
   useEffect(() => {
-    if (profile && Array.isArray(profile.skills) && profile.skills.length > 0) {
+    if (hasUploadedResume && Array.isArray(profile?.skills) && profile.skills.length > 0) {
       setUserSkills(profile.skills);
+    } else if (!hasUploadedResume) {
+      setUserSkills([]);
     }
-  }, [profile]);
+  }, [profile, hasUploadedResume]);
 
   // Initial auto-run for AI analyzer
   useEffect(() => {
@@ -335,10 +344,31 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap }) {
         </div>
       </div>
 
-      {/* ================================================================ */}
-      {/* VIEW MODE 1: INTERACTIVE SKILL MATRIX */}
-      {/* ================================================================ */}
-      {viewMode === 'matrix' && (
+      {/* UPLOAD-FIRST CHECK */}
+      {!hasUploadedResume ? (
+        <div className="glass rounded-2xl p-8 border border-gray-800 text-center space-y-4 animate-fade-in">
+          <div className="w-14 h-14 rounded-2xl bg-accent-purple/15 border border-accent-purple/30 flex items-center justify-center text-accent-purple mx-auto shadow-lg shadow-purple-500/10">
+            <FileText className="w-7 h-7" />
+          </div>
+          <h3 className="text-lg font-black text-white">Upload Your Resume to View Skill Gap & Role Match</h3>
+          <p className="text-xs text-gray-400 leading-relaxed max-w-md mx-auto">
+            Please upload your PDF or DOCX resume to let our AI evaluate your target role competencies, calculate your match score, and identify missing skills.
+          </p>
+          <div className="flex items-center justify-center gap-3 pt-2">
+            <button
+              onClick={() => onNavigate && onNavigate('resume')}
+              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-accent-purple to-accent-pink text-white font-bold text-xs shadow-lg shadow-purple-600/30 flex items-center gap-2 hover:opacity-95"
+            >
+              <Zap className="w-4 h-4" /> Go to Resume Analyzer & Upload Resume ›
+            </button>
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* ================================================================ */}
+          {/* VIEW MODE 1: INTERACTIVE SKILL MATRIX */}
+          {/* ================================================================ */}
+          {viewMode === 'matrix' && (
         <div className="skill-page rounded-2xl border border-gray-800">
 
           {/* ================= TOP SECTION ================= */}
@@ -877,6 +907,8 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap }) {
             )}
           </div>
         </div>
+      )}
+        </>
       )}
     </div>
   );

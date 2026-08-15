@@ -110,6 +110,7 @@ function MainLayout() {
           <JobAnalyzer 
             profile={activeProfile}
             onGenerateRoadmap={handleGenerateRoadmap}
+            onNavigate={setActiveTab}
           />
         );
       case 'roadmap':
