@@ -1,7 +1,8 @@
-// agent-notes: { ctx: "React Auth Context for user session with Supabase Auth integration", deps: ["../services/api", "../services/supabase", "../utils/mockData"], state: "active", last: "anti@2026-07-31" }
+// agent-notes: { ctx: "React Auth Context for user session with Supabase Auth & Supabase Data sync", deps: ["../services/api", "../services/supabase", "../services/supabaseData", "../utils/mockData"], state: "active", last: "anti@2026-08-18" }
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { api } from '../services/api';
 import { supabase } from '../services/supabase';
+import { saveUserDataToSupabase, loadUserDataFromSupabase } from '../services/supabaseData';
 import { RESUME_PRESETS } from '../utils/mockData';
 
 const AuthContext = createContext(null);
@@ -27,8 +28,26 @@ export function AuthProvider({ children }) {
     if (currentUser) {
       const storage = localStorage.getItem('sb_remember') === 'true' ? localStorage : sessionStorage;
       storage.setItem('sb_user', JSON.stringify(currentUser));
+      // Asynchronously sync user data changes to Supabase
+      saveUserDataToSupabase(currentUser);
     }
   }, [currentUser]);
+
+  // Sync latest user progress from Supabase on initial auth mount
+  useEffect(() => {
+    async function restoreFromSupabase() {
+      if (currentUser?.id || currentUser?.email) {
+        const remoteData = await loadUserDataFromSupabase(currentUser.id, currentUser.email);
+        if (remoteData) {
+          setCurrentUser(prev => ({
+            ...prev,
+            ...remoteData
+          }));
+        }
+      }
+    }
+    restoreFromSupabase();
+  }, []);
 
   const login = async (email, password, rememberMe = false) => {
     let supabaseSession = null;
@@ -52,17 +71,27 @@ export function AuthProvider({ children }) {
     storage.setItem('sb_token', activeToken);
     setToken(activeToken);
 
+    const userId = supabaseSession?.user?.id || res.user.id || `usr_${email.replace(/[^a-zA-Z0-9]/g, '_')}`;
+
+    // Attempt to load previous stored progress from Supabase for this User ID / Email
+    const savedSupabaseData = await loadUserDataFromSupabase(userId, email);
+
     const fullUser = {
       ...RESUME_PRESETS[0],
       ...res.user,
-      id: supabaseSession?.user?.id || res.user.id,
+      ...(savedSupabaseData || {}),
+      id: userId,
       email: supabaseSession?.user?.email || res.user.email || email,
-      name: res.user.name || email.split('@')[0]
+      name: savedSupabaseData?.name || res.user.name || email.split('@')[0]
     };
 
     setCurrentUser(fullUser);
     setIsAuthenticated(true);
     setIsOnboarded(Boolean(fullUser.college && fullUser.careerGoal));
+
+    // Save synced user payload to Supabase
+    await saveUserDataToSupabase(fullUser);
+
     return { ...res, token: activeToken };
   };
 
@@ -111,6 +140,9 @@ export function AuthProvider({ children }) {
     setCurrentUser(newUser);
     setIsAuthenticated(true);
     setIsOnboarded(false);
+
+    await saveUserDataToSupabase(newUser);
+
     return { ...res, supabaseUser };
   };
 
@@ -132,14 +164,23 @@ export function AuthProvider({ children }) {
     localStorage.setItem('sb_token', res.token);
     setToken(res.token);
 
+    const userEmail = res.user.email || socialMockMap[provider]?.email;
+    const userId = res.user.id || `usr_${provider}_${Date.now()}`;
+
+    const savedSupabaseData = await loadUserDataFromSupabase(userId, userEmail);
+
     const mergedUser = {
       ...RESUME_PRESETS[0],
-      ...res.user
+      ...res.user,
+      ...(savedSupabaseData || {})
     };
 
     setCurrentUser(mergedUser);
     setIsAuthenticated(true);
     setIsOnboarded(Boolean(mergedUser.college && mergedUser.careerGoal));
+
+    await saveUserDataToSupabase(mergedUser);
+
     return res;
   };
 
@@ -158,6 +199,7 @@ export function AuthProvider({ children }) {
     await api.completeOnboarding({ userId: currentUser.id, ...onboardingData });
     setCurrentUser(updated);
     setIsOnboarded(true);
+    await saveUserDataToSupabase(updated);
   };
 
   const logout = async () => {
@@ -178,7 +220,9 @@ export function AuthProvider({ children }) {
   };
 
   const updateProfile = (newProfile) => {
-    setCurrentUser(newProfile);
+    const updated = typeof newProfile === 'function' ? newProfile(currentUser) : newProfile;
+    setCurrentUser(updated);
+    saveUserDataToSupabase(updated);
   };
 
   return (
