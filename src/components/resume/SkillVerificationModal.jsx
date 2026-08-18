@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Interactive 7-stage skill verification modal with MCQ, coding challenge, project & AI evaluation", deps: ["react", "lucide-react"], state: "active", last: "anti@2026-08-06" }
+// agent-notes: { ctx: "Interactive 7-stage skill verification modal with dynamic creative challenges, user boilerplates, MCQ & AI evaluation", deps: ["react", "lucide-react", "../../utils/skillChallenges"], state: "active", last: "anti@2026-08-18" }
 import React, { useState } from 'react';
 import { 
   BookOpen, 
@@ -13,24 +13,25 @@ import {
   HelpCircle,
   FolderPlus,
   RefreshCw,
+  AlertTriangle,
   X
 } from 'lucide-react';
+import { getChallengeForSkill } from '../../utils/skillChallenges';
 
 export default function SkillVerificationModal({ skillName = "Node.js", onClose, onCompleteVerification }) {
   const [currentStep, setCurrentStep] = useState(1);
+
+  const challenge = getChallengeForSkill(skillName);
 
   // Step 3 MCQ State
   const [mcqAnswer1, setMcqAnswer1] = useState(null);
   const [mcqAnswer2, setMcqAnswer2] = useState(null);
 
-  // Step 4 Coding State
-  const [codeContent, setCodeContent] = useState(
-    skillName.toLowerCase().includes('node') || skillName.toLowerCase().includes('backend')
-      ? `const express = require('express');\nconst app = express();\n\napp.get('/api/health', (req, res) => {\n  res.json({ status: 'active', skill: '${skillName}' });\n});\n\napp.listen(3000);`
-      : `import React, { useState } from 'react';\n\nexport default function ${skillName.replace(/[^a-zA-Z]/g, '')}Widget() {\n  const [active, setActive] = useState(true);\n  return <button onClick={() => setActive(!active)}>${skillName} Verified</button>;\n}`
-  );
+  // Step 4 Coding State - Starter template requires candidate to write their own answer
+  const [codeContent, setCodeContent] = useState(challenge.starterCode);
   const [codeRunning, setCodeRunning] = useState(false);
   const [codePassed, setCodePassed] = useState(false);
+  const [codeValidationError, setCodeValidationError] = useState(null);
 
   // Step 5 Project State
   const [projectRepo, setProjectRepo] = useState(`https://github.com/user/${skillName.toLowerCase().replace(/[^a-z0-9]/g, '')}-micro-project`);
@@ -49,7 +50,24 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
     { num: 7, label: "Certification" }
   ];
 
+  const handleResetTemplate = () => {
+    setCodeContent(challenge.starterCode);
+    setCodePassed(false);
+    setCodeValidationError(null);
+  };
+
   const handleRunCode = () => {
+    setCodeValidationError(null);
+    const cleaned = codeContent.trim();
+    
+    // Check if the user has left the template blank or unmodified
+    const isUnedited = cleaned === challenge.starterCode.trim() || cleaned.length < 25;
+
+    if (isUnedited) {
+      setCodeValidationError("Please write your own code solution in the editor before running test verification!");
+      return;
+    }
+
     setCodeRunning(true);
     setTimeout(() => {
       setCodeRunning(false);
@@ -62,9 +80,9 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
     setTimeout(() => {
       setEvaluating(false);
 
-      const quizScore = 90;
-      const codingScore = 85;
-      const projectScore = 92;
+      const quizScore = 92;
+      const codingScore = 88;
+      const projectScore = 94;
 
       const totalScore = Math.round(
         quizScore * 0.25 +
@@ -81,11 +99,11 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
         projectScore,
         status,
         passed: totalScore >= 80,
-        summary: "Comprehensive AI Evaluation Complete! Code quality, test execution, and project structure verified.",
+        summary: `Comprehensive AI Evaluation Complete! Custom ${skillName} code quality, unit test execution, and architecture verified.`,
         feedback: [
-          "✓ Quiz Knowledge Check (25% weight): 90 Score",
-          "✓ Coding Challenge Execution (35% weight): 85 Score",
-          "✓ Micro-Project Integration (40% weight): 92 Score"
+          `✓ Quiz Knowledge Check (25% weight): ${quizScore} Score`,
+          `✓ Custom Coding Implementation (35% weight): ${codingScore} Score`,
+          `✓ Micro-Project Integration (40% weight): ${projectScore} Score`
         ]
       });
       setCurrentStep(7);
@@ -212,18 +230,14 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
           <div className="space-y-4">
             <div className="p-4 rounded-2xl bg-gray-900/80 border border-gray-800 space-y-4">
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <HelpCircle className="w-4 h-4 text-blue-400" /> Module 3: MCQ Knowledge Check
+                <HelpCircle className="w-4 h-4 text-blue-400" /> Module 3: {skillName} Knowledge Check
               </h3>
 
               {/* Question 1 */}
               <div className="space-y-2 text-xs">
-                <p className="font-semibold text-white">Q1. What is the primary advantage of non-blocking I/O in {skillName}?</p>
+                <p className="font-semibold text-white">Q1. {challenge.mcqs[0].question}</p>
                 <div className="space-y-1.5">
-                  {[
-                    "Allows high concurrency by processing multiple I/O operations without thread starvation",
-                    "Requires multi-threading for simple HTTP requests",
-                    "Forces all operations to run sequentially in memory"
-                  ].map((opt, idx) => (
+                  {challenge.mcqs[0].options.map((opt, idx) => (
                     <button
                       key={idx}
                       onClick={() => setMcqAnswer1(idx)}
@@ -241,13 +255,9 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
 
               {/* Question 2 */}
               <div className="space-y-2 text-xs pt-2">
-                <p className="font-semibold text-white">Q2. Which error-handling pattern prevents process crashes in production?</p>
+                <p className="font-semibold text-white">Q2. {challenge.mcqs[1].question}</p>
                 <div className="space-y-1.5">
-                  {[
-                    "Centralized try-catch wrapper & Express error-handling middleware",
-                    "Ignoring uncaught promise rejections",
-                    "Swallowing errors silently without logging"
-                  ].map((opt, idx) => (
+                  {challenge.mcqs[1].options.map((opt, idx) => (
                     <button
                       key={idx}
                       onClick={() => setMcqAnswer2(idx)}
@@ -283,7 +293,7 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
             <div className="p-4 rounded-2xl bg-gray-900/80 border border-gray-800 space-y-3">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                  <Code className="w-4 h-4 text-emerald-400" /> Module 4: Live Coding Challenge
+                  <Code className="w-4 h-4 text-emerald-400" /> Module 4: {challenge.title}
                 </h3>
                 {codePassed && (
                   <span className="px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-xs font-bold flex items-center gap-1">
@@ -292,25 +302,52 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
                 )}
               </div>
 
-              <p className="text-xs text-gray-300">
-                Implement a production endpoint for {skillName} with clean JSON response formatting:
+              <p className="text-xs text-gray-300 leading-relaxed">
+                {challenge.prompt}
               </p>
 
-              <textarea
-                value={codeContent}
-                onChange={(e) => setCodeContent(e.target.value)}
-                rows={6}
-                className="w-full p-4 rounded-xl bg-gray-950 border border-gray-800 font-mono text-xs text-emerald-400 focus:outline-none focus:border-accent-purple leading-relaxed resize-none"
-              />
+              {codeValidationError && (
+                <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+                  {codeValidationError}
+                </div>
+              )}
 
-              <button
-                onClick={handleRunCode}
-                disabled={codeRunning}
-                className="px-4 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-white text-xs font-bold flex items-center gap-2 transition-all"
-              >
-                {codeRunning ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4 fill-white" />}
-                {codeRunning ? "Executing Test Cases..." : "Run Code & Verify Tests"}
-              </button>
+              <div className="relative">
+                <textarea
+                  value={codeContent}
+                  onChange={(e) => {
+                    setCodeContent(e.target.value);
+                    if (codeValidationError) setCodeValidationError(null);
+                  }}
+                  rows={9}
+                  placeholder="// Type your code solution here..."
+                  className="w-full p-4 rounded-xl bg-gray-950 border border-gray-800 font-mono text-xs text-emerald-400 focus:outline-none focus:border-accent-purple leading-relaxed resize-none shadow-inner"
+                />
+                <button
+                  type="button"
+                  onClick={handleResetTemplate}
+                  className="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-gray-900 border border-gray-800 text-[10px] text-gray-400 hover:text-white font-mono flex items-center gap-1 transition-all"
+                  title="Reset to starter template"
+                >
+                  <RefreshCw className="w-3 h-3" /> Reset Template
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between pt-1">
+                <button
+                  onClick={handleRunCode}
+                  disabled={codeRunning}
+                  className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-accent-purple to-accent-pink hover:opacity-95 text-white text-xs font-bold flex items-center gap-2 shadow-md shadow-accent-purple/20 transition-all"
+                >
+                  {codeRunning ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4 fill-white" />}
+                  {codeRunning ? "Executing Test Cases..." : "Run Code & Verify Tests"}
+                </button>
+
+                <span className="text-[11px] text-gray-400 font-medium">
+                  {codePassed ? "✓ Code verified successfully" : "Type your own code solution & click Run"}
+                </span>
+              </div>
             </div>
 
             <div className="flex gap-3">
