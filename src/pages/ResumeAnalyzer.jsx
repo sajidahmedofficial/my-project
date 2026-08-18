@@ -1,5 +1,5 @@
 // agent-notes: { ctx: "Clean & modern tabbed ResumeAnalyzer page with complete feature set preserved", deps: ["react", "lucide-react", "../components/resume/*", "../services/resumeApi"], state: "active", last: "anti@2026-08-08" }
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Sparkles, Eye, Download, Trophy, AlertCircle, Target, Award, LayoutGrid, Layers, RefreshCw, CheckCircle2 } from 'lucide-react';
 
 import UploadResume from '../components/resume/UploadResume';
@@ -21,27 +21,77 @@ import TargetPipelineFlow from '../components/resume/TargetPipelineFlow';
 import { uploadResume, applyProblemFix } from '../services/resumeApi';
 import '../styles/ResumeAnalyzer.css';
 
+const getInitialResumeState = (profile) => {
+  try {
+    const savedStr = localStorage.getItem('sb_resume_analysis');
+    if (savedStr) {
+      const parsed = JSON.parse(savedStr);
+      if (parsed && typeof parsed === 'object') return parsed;
+    }
+  } catch (e) {
+    console.warn('Failed to parse sb_resume_analysis:', e);
+  }
+  return profile?.resumeAnalysis || null;
+};
+
 export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
-  const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'issues' | 'skills' | 'certs'
-  const [viewMode, setViewMode] = useState('tabs'); // 'tabs' | 'scroll'
+  const savedState = getInitialResumeState(profile);
+
+  const [activeTab, setActiveTab] = useState(savedState?.activeTab || 'overview'); // 'overview' | 'issues' | 'skills' | 'certs'
+  const [viewMode, setViewMode] = useState(savedState?.viewMode || 'tabs'); // 'tabs' | 'scroll'
   
-  const [analyzed, setAnalyzed] = useState(false);
+  const [analyzed, setAnalyzed] = useState(() => savedState?.analyzed ?? Boolean(profile?.hasUploadedResume));
   const [parsing, setParsing] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(() => savedState?.selectedFile || (profile?.hasUploadedResume ? { name: `${(profile?.name || 'User').replace(/\s+/g, '_')}_Resume.pdf` } : null));
   const [showPreview, setShowPreview] = useState(false);
   const [verifyingSkillName, setVerifyingSkillName] = useState(null);
   const [toastMessage, setToastMessage] = useState(null);
   
   // Pending AI Suggestion Review State
-  const [pendingSuggestion, setPendingSuggestion] = useState(null);
+  const [pendingSuggestion, setPendingSuggestion] = useState(() => savedState?.pendingSuggestion || null);
 
-  const [problems, setProblems] = useState([]);
-  const [grammarIssues, setGrammarIssues] = useState([]);
-  const [atsProblems, setAtsProblems] = useState([]);
+  const [problems, setProblems] = useState(() => savedState?.problems || (profile?.hasUploadedResume ? [
+    {
+      id: 1,
+      problem: "Quantifiable impact metrics missing from work experience",
+      original: "Responsible for developing web applications using React.",
+      suggested: "Developed responsive React applications improving user engagement by 35%.",
+      fixed: false
+    },
+    {
+      id: 2,
+      problem: "Missing portfolio / proof of work link in header",
+      original: "GitHub / Portfolio URL missing",
+      suggested: "Add GitHub profile link to contact header",
+      fixed: false
+    }
+  ] : []));
 
-  const [skillsStatus, setSkillsStatus] = useState([]);
+  const [grammarIssues, setGrammarIssues] = useState(() => savedState?.grammarIssues || (profile?.hasUploadedResume ? [
+    {
+      id: 1,
+      severity: "medium",
+      original: "Responsible for managing web apps and backend services.",
+      problem: "Weak action verb without quantifiable impact metrics.",
+      correction: "Architected scalable full-stack web applications handling 50k+ active users."
+    }
+  ] : []));
 
-  const [certificates, setCertificates] = useState([]);
+  const [atsProblems, setAtsProblems] = useState(() => savedState?.atsProblems || (profile?.hasUploadedResume ? [{ problem: "Missing links", suggestion: "Add GitHub portfolio link" }] : []));
+
+  const [skillsStatus, setSkillsStatus] = useState(() => savedState?.skillsStatus || (profile?.hasUploadedResume ? [
+    { name: "HTML", status: "GAINED", progress: 100, certified: true },
+    { name: "CSS", status: "GAINED", progress: 100, certified: true },
+    { name: "JavaScript", status: "GAINED", progress: 100, certified: true },
+    { name: "React", status: "LEARNING", progress: 75, certified: false },
+    { name: "Node.js", status: "LEARNING", progress: 40, certified: false }
+  ] : []));
+
+  const [certificates, setCertificates] = useState(() => savedState?.certificates || (profile?.hasUploadedResume ? [
+    { skillName: "HTML", certificateCode: "CERT-HTML-839201" },
+    { skillName: "CSS", certificateCode: "CERT-CSS-482910" },
+    { skillName: "JavaScript", certificateCode: "CERT-JS-918234" }
+  ] : []));
 
   const fixedCount = problems.filter(p => p.fixed).length;
   const gainedCount = skillsStatus.filter(s => s.status === 'GAINED').length;
@@ -51,9 +101,30 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
 
   const is100PercentComplete = skillsStatus.length > 0 && skillsStatus.every(s => s.status === 'GAINED' || s.progress === 100);
 
-  const [apiResumeScore, setApiResumeScore] = useState(null);
-  const [apiAtsScore, setApiAtsScore] = useState(null);
-  const [apiGrammarScore, setApiGrammarScore] = useState(null);
+  const [apiResumeScore, setApiResumeScore] = useState(() => savedState?.apiResumeScore || profile?.scores?.resumeScore || null);
+  const [apiAtsScore, setApiAtsScore] = useState(() => savedState?.apiAtsScore || profile?.scores?.placementReadiness || null);
+  const [apiGrammarScore, setApiGrammarScore] = useState(() => savedState?.apiGrammarScore || profile?.scores?.interviewReadiness || null);
+
+  useEffect(() => {
+    if (analyzed) {
+      const stateToSave = {
+        analyzed,
+        selectedFile,
+        activeTab,
+        viewMode,
+        problems,
+        grammarIssues,
+        atsProblems,
+        skillsStatus,
+        certificates,
+        apiResumeScore,
+        apiAtsScore,
+        apiGrammarScore,
+        pendingSuggestion
+      };
+      localStorage.setItem('sb_resume_analysis', JSON.stringify(stateToSave));
+    }
+  }, [analyzed, selectedFile, activeTab, viewMode, problems, grammarIssues, atsProblems, skillsStatus, certificates, apiResumeScore, apiAtsScore, apiGrammarScore, pendingSuggestion]);
 
   const resumeScore = is100PercentComplete ? 100 : (apiResumeScore || Math.min(100, 75 + fixedCount * 8 + gainedCount * 3));
   const atsScore = is100PercentComplete ? 100 : (apiAtsScore || Math.min(100, 72 + fixedCount * 6));

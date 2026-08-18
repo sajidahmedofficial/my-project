@@ -88,71 +88,62 @@ function MainLayout() {
       );
     }
 
-    switch (activeTab) {
-      case 'dashboard':
-        return (
+    return (
+      <>
+        <div className={activeTab === 'dashboard' ? 'block' : 'hidden'}>
           <Dashboard 
             profile={activeProfile} 
             setProfile={handleProfileChange} 
             onNavigate={setActiveTab} 
           />
-        );
-      case 'resume':
-        return (
+        </div>
+        <div className={activeTab === 'resume' ? 'block' : 'hidden'}>
           <ResumeAnalyzer 
             profile={activeProfile} 
             setProfile={handleProfileChange} 
             onNavigate={setActiveTab}
           />
-        );
-      case 'job':
-        return (
+        </div>
+        <div className={activeTab === 'job' ? 'block' : 'hidden'}>
           <JobAnalyzer 
             profile={activeProfile}
             onGenerateRoadmap={handleGenerateRoadmap}
             onNavigate={setActiveTab}
           />
-        );
-      case 'roadmap':
-        return (
+        </div>
+        <div className={activeTab === 'roadmap' ? 'block' : 'hidden'}>
           <LearningRoadmap 
             profile={activeProfile} 
             missingSkillsList={missingSkillsList} 
           />
-        );
-      case 'chat':
-        return (
+        </div>
+        <div className={activeTab === 'chat' ? 'block' : 'hidden'}>
           <CareerMentor 
             profile={activeProfile} 
           />
-        );
-      case 'projects':
-        return (
+        </div>
+        <div className={activeTab === 'projects' ? 'block' : 'hidden'}>
           <ProjectRecommender 
             profile={activeProfile} 
           />
-        );
-      case 'interview':
-        return (
+        </div>
+        <div className={activeTab === 'interview' ? 'block' : 'hidden'}>
           <MockInterview 
             profile={activeProfile} 
             setProfile={handleProfileChange} 
             onNavigate={setActiveTab}
           />
-        );
-      case 'coding':
-        return (
+        </div>
+        <div className={activeTab === 'coding' ? 'block' : 'hidden'}>
           <CodingPractice 
             profile={activeProfile} 
           />
-        );
-      case 'aptitude':
-        return (
+        </div>
+        <div className={activeTab === 'aptitude' ? 'block' : 'hidden'}>
           <AptitudeDashboard />
-        );
-      default:
-        return <Dashboard profile={activeProfile} setProfile={handleProfileChange} onNavigate={setActiveTab} />;
-    }
+        </div>
+      </>
+    );
   };
 
   // Gatekeeper: If user is not authenticated, require Task Flow login/signup first
