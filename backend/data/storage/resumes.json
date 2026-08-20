@@ -1,0 +1,33 @@
+[
+  {
+    "createdAt": "2026-08-20T16:52:11.706Z",
+    "resumeId": "res_user_delta_1787244731702",
+    "userId": "user_delta",
+    "fileName": "My_Resume.pdf",
+    "resumeText": "",
+    "skills": [
+      "JavaScript"
+    ],
+    "verifiedSkills": [
+      {
+        "skillName": "JavaScript",
+        "status": "Verified",
+        "verifiedDate": "2026-08-20",
+        "score": 88,
+        "certificateCode": "SBA-JAVASCRIPT-462848",
+        "formattedDisplay": "JavaScript — Verified (88%)"
+      }
+    ],
+    "analysis": {
+      "overallMatchScore": 68,
+      "jobMatchScore": 68,
+      "verifiedSkillsCount": 1,
+      "lastRecalculatedAt": "2026-08-20T16:52:11.706Z"
+    },
+    "targetRole": "Frontend Developer",
+    "versions": [
+      "ver_1787244731702_jkgvh"
+    ],
+    "updatedAt": "2026-08-20T16:52:11.706Z"
+  }
+]

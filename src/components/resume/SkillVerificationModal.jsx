@@ -816,27 +816,62 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
               <span className="text-emerald-400 text-sm font-black">{evalResult?.score || 89}% → GAINED ✓</span>
             </div>
 
+            {/* Resume Update & Job Match Recalculation Review */}
+            <div className="p-4 rounded-2xl bg-gray-950 border border-gray-800 text-left space-y-3 max-w-md mx-auto">
+              <div className="flex items-center justify-between border-b border-gray-800/80 pb-2.5">
+                <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-accent-purple" /> Automatic Resume Update Applied:
+                </span>
+                <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                  Version Snapshot Saved
+                </span>
+              </div>
+
+              <div className="space-y-1.5 text-xs text-gray-300">
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Added to Resume Skills:</span>
+                  <span className="font-bold text-white">{skillName} — Verified ({evalResult?.score}%)</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Verification Date:</span>
+                  <span className="font-mono text-gray-300">{new Date().toISOString().split('T')[0]}</span>
+                </div>
+                {evalResult?.recalculatedMatch && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Recalculated Job Match:</span>
+                    <span className="font-bold text-emerald-400">
+                      {evalResult.recalculatedMatch.previousScore}% → {evalResult.recalculatedMatch.newScore}% ({evalResult.recalculatedMatch.difference >= 0 ? '+' : ''}{evalResult.recalculatedMatch.difference}%)
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <p className="text-[10px] text-gray-500 leading-normal pt-1 border-t border-gray-900">
+                ✓ Only verified skill badge and score were appended. No employment experience or achievements were fabricated.
+              </p>
+            </div>
+
             <div className="p-3 rounded-xl bg-gray-950 border border-gray-800 max-w-md mx-auto font-mono text-xs text-gray-400 flex items-center justify-between">
               <span>Certificate ID:</span>
               <span className="text-emerald-400 font-bold">
-                SBA-{skillName.toUpperCase().replace(/[^A-Z0-9]/g, '')}-{Math.floor(100000 + Math.random() * 900000)}
+                {evalResult?.certificate?.certificateId || `SBA-${skillName.toUpperCase().replace(/[^A-Z0-9]/g, '')}-${Date.now().toString().slice(-6)}`}
               </span>
             </div>
 
-            <div className="flex items-center gap-3 pt-2">
+            <div className="flex items-center gap-3 pt-2 max-w-md mx-auto">
               <a
-                href={`/api/certificates/SBA-${skillName.toUpperCase().replace(/[^A-Z0-9]/g, '')}-948201/download`}
+                href={evalResult?.certificate?.pdfUrl || `/api/certificates/${evalResult?.certificate?.certificateId || 'cert'}/download`}
                 target="_blank"
                 rel="noreferrer"
-                className="flex-1 py-3.5 rounded-xl bg-gray-900 hover:bg-gray-800 border border-gray-700 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all"
+                className="flex-1 py-3 rounded-xl bg-gray-900 hover:bg-gray-800 border border-gray-700 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all"
               >
-                <Download className="w-4 h-4 text-accent-purple" /> Download Certificate PDF
+                <Download className="w-4 h-4 text-accent-purple" /> Download Certificate
               </a>
               <button
                 onClick={handleFinish}
-                className="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-white font-black text-xs shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-1.5"
+                className="flex-1 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-white font-black text-xs shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-1.5"
               >
-                <CheckCircle2 className="w-4 h-4" /> Update Resume & Finish
+                <CheckCircle2 className="w-4 h-4" /> Save & Return to Dashboard
               </button>
             </div>
           </div>

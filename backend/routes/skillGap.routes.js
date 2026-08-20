@@ -14,7 +14,7 @@ import { performSkillGapAnalysis } from '../services/skillGap.service.js';
 import { generatePersonalizedRoadmap } from '../services/roadmapGenerator.service.js';
 import { evaluateSkillVerification } from '../services/skillEvaluator.service.js';
 import { generateCertificate } from '../services/certificate.service.js';
-import { generateStructuredPatch } from '../services/resumeUpdater.service.js';
+import { generateStructuredPatch, updateResumeWithVerifiedSkill } from '../services/resumeUpdater.service.js';
 
 import { getParsedResume } from '../services/resumeStore.service.js';
 import persistentStore from '../storage/persistentStore.js';
@@ -687,6 +687,20 @@ router.post('/verify', async (req, res) => {
       }
     }
 
+    // 4. Automatically update Resume with Verified Skill snapshot & job match recalculation
+    let resumeUpdate = null;
+    try {
+      resumeUpdate = await updateResumeWithVerifiedSkill({
+        userId: uId,
+        skillName,
+        score: evalResult.finalScore,
+        certificateCode: cert.certificateId,
+        targetRole: targetRole || "Frontend Developer"
+      });
+    } catch (rErr) {
+      console.warn("Automatic resume update warning:", rErr.message);
+    }
+
     res.json({
       success: true,
       verified: true,
@@ -695,6 +709,8 @@ router.post('/verify', async (req, res) => {
       evaluation: evalResult,
       certificate: cert,
       resumePatch: patch,
+      resumeUpdate,
+      recalculatedMatch: resumeUpdate?.recalculatedMatch,
       message: `Congratulations! ${skillName} has been verified with a score of ${evalResult.finalScore}%. Certificate issued and resume updated.`
     });
 

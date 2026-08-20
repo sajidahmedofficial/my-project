@@ -616,5 +616,728 @@
     "analyzedAt": "2026-08-20T16:46:21.726Z",
     "savedAt": "2026-08-20T16:46:21.726Z",
     "updatedAt": "2026-08-20T16:46:21.727Z"
+  },
+  {
+    "createdAt": "2026-08-20T16:47:56.293Z",
+    "skillGapId": "sg_preset-sajid_frontend_developer",
+    "userId": "preset-sajid",
+    "resumeId": null,
+    "targetRole": "Frontend Developer",
+    "overallMatchScore": 0,
+    "weightedSummary": {
+      "weightedMatchedRequirements": 0,
+      "weightedTotalRequirements": 49,
+      "formula": "(weightedMatchedRequirements / weightedTotalRequirements) * 100"
+    },
+    "priorityGaps": {
+      "high": [
+        {
+          "skillName": "HTML5",
+          "category": "Programming",
+          "currentProficiency": "None",
+          "requiredProficiency": "Advanced",
+          "gapPercentage": 100,
+          "priority": "High",
+          "evidence": [],
+          "reason": "No evidence of HTML5 found in uploaded resume."
+        },
+        {
+          "skillName": "CSS3",
+          "category": "Programming",
+          "currentProficiency": "None",
+          "requiredProficiency": "Advanced",
+          "gapPercentage": 100,
+          "priority": "High",
+          "evidence": [],
+          "reason": "No evidence of CSS3 found in uploaded resume."
+        },
+        {
+          "skillName": "JavaScript",
+          "category": "Programming",
+          "currentProficiency": "None",
+          "requiredProficiency": "Advanced",
+          "gapPercentage": 100,
+          "priority": "High",
+          "evidence": [],
+          "reason": "No evidence of JavaScript found in uploaded resume."
+        },
+        {
+          "skillName": "React.js",
+          "category": "Programming",
+          "currentProficiency": "None",
+          "requiredProficiency": "Advanced",
+          "gapPercentage": 100,
+          "priority": "High",
+          "evidence": [],
+          "reason": "No evidence of React.js found in uploaded resume."
+        },
+        {
+          "skillName": "Git",
+          "category": "Tools",
+          "currentProficiency": "None",
+          "requiredProficiency": "Advanced",
+          "gapPercentage": 100,
+          "priority": "High",
+          "evidence": [],
+          "reason": "No evidence of Git found in uploaded resume."
+        },
+        {
+          "skillName": "TypeScript",
+          "category": "Programming",
+          "currentProficiency": "None",
+          "requiredProficiency": "Advanced",
+          "gapPercentage": 100,
+          "priority": "High",
+          "evidence": [],
+          "reason": "No evidence of TypeScript found in uploaded resume."
+        }
+      ],
+      "medium": [
+        {
+          "skillName": "Node.js",
+          "category": "Frameworks",
+          "currentProficiency": "None",
+          "requiredProficiency": "Intermediate",
+          "gapPercentage": 100,
+          "priority": "Medium",
+          "evidence": [],
+          "reason": "No evidence of Node.js found in uploaded resume."
+        },
+        {
+          "skillName": "Express.js",
+          "category": "Programming",
+          "currentProficiency": "None",
+          "requiredProficiency": "Intermediate",
+          "gapPercentage": 100,
+          "priority": "Medium",
+          "evidence": [],
+          "reason": "No evidence of Express.js found in uploaded resume."
+        },
+        {
+          "skillName": "Python",
+          "category": "Programming",
+          "currentProficiency": "None",
+          "requiredProficiency": "Intermediate",
+          "gapPercentage": 100,
+          "priority": "Medium",
+          "evidence": [],
+          "reason": "No evidence of Python found in uploaded resume."
+        },
+        {
+          "skillName": "SQL",
+          "category": "Programming",
+          "currentProficiency": "None",
+          "requiredProficiency": "Intermediate",
+          "gapPercentage": 100,
+          "priority": "Medium",
+          "evidence": [],
+          "reason": "No evidence of SQL found in uploaded resume."
+        },
+        {
+          "skillName": "REST API",
+          "category": "Programming",
+          "currentProficiency": "None",
+          "requiredProficiency": "Intermediate",
+          "gapPercentage": 100,
+          "priority": "Medium",
+          "evidence": [],
+          "reason": "No evidence of REST API found in uploaded resume."
+        },
+        {
+          "skillName": "Next.js",
+          "category": "Frameworks",
+          "currentProficiency": "None",
+          "requiredProficiency": "Intermediate",
+          "gapPercentage": 100,
+          "priority": "Medium",
+          "evidence": [],
+          "reason": "No evidence of Next.js found in uploaded resume."
+        },
+        {
+          "skillName": "Redux",
+          "category": "Programming",
+          "currentProficiency": "None",
+          "requiredProficiency": "Intermediate",
+          "gapPercentage": 100,
+          "priority": "Medium",
+          "evidence": [],
+          "reason": "No evidence of Redux found in uploaded resume."
+        },
+        {
+          "skillName": "Tailwind CSS",
+          "category": "Programming",
+          "currentProficiency": "None",
+          "requiredProficiency": "Intermediate",
+          "gapPercentage": 100,
+          "priority": "Medium",
+          "evidence": [],
+          "reason": "No evidence of Tailwind CSS found in uploaded resume."
+        },
+        {
+          "skillName": "GraphQL",
+          "category": "Programming",
+          "currentProficiency": "None",
+          "requiredProficiency": "Intermediate",
+          "gapPercentage": 100,
+          "priority": "Medium",
+          "evidence": [],
+          "reason": "No evidence of GraphQL found in uploaded resume."
+        },
+        {
+          "skillName": "GitHub",
+          "category": "Tools",
+          "currentProficiency": "None",
+          "requiredProficiency": "Intermediate",
+          "gapPercentage": 100,
+          "priority": "Medium",
+          "evidence": [],
+          "reason": "No evidence of GitHub found in uploaded resume."
+        },
+        {
+          "skillName": "Vite",
+          "category": "Tools",
+          "currentProficiency": "None",
+          "requiredProficiency": "Intermediate",
+          "gapPercentage": 100,
+          "priority": "Medium",
+          "evidence": [],
+          "reason": "No evidence of Vite found in uploaded resume."
+        },
+        {
+          "skillName": "Webpack",
+          "category": "Tools",
+          "currentProficiency": "None",
+          "requiredProficiency": "Intermediate",
+          "gapPercentage": 100,
+          "priority": "Medium",
+          "evidence": [],
+          "reason": "No evidence of Webpack found in uploaded resume."
+        },
+        {
+          "skillName": "Jest",
+          "category": "Tools",
+          "currentProficiency": "None",
+          "requiredProficiency": "Intermediate",
+          "gapPercentage": 100,
+          "priority": "Medium",
+          "evidence": [],
+          "reason": "No evidence of Jest found in uploaded resume."
+        },
+        {
+          "skillName": "Vercel",
+          "category": "Programming",
+          "currentProficiency": "None",
+          "requiredProficiency": "Intermediate",
+          "gapPercentage": 100,
+          "priority": "Medium",
+          "evidence": [],
+          "reason": "No evidence of Vercel found in uploaded resume."
+        },
+        {
+          "skillName": "Netlify",
+          "category": "Cloud/DevOps",
+          "currentProficiency": "None",
+          "requiredProficiency": "Intermediate",
+          "gapPercentage": 100,
+          "priority": "Medium",
+          "evidence": [],
+          "reason": "No evidence of Netlify found in uploaded resume."
+        }
+      ],
+      "low": [
+        {
+          "skillName": "Docker",
+          "category": "Programming",
+          "currentProficiency": "None",
+          "requiredProficiency": "Intermediate",
+          "gapPercentage": 100,
+          "priority": "Low",
+          "evidence": [],
+          "reason": "No evidence of Docker found in uploaded resume."
+        }
+      ],
+      "highCount": 6,
+      "mediumCount": 15,
+      "lowCount": 1
+    },
+    "categoryScores": {
+      "technicalSkills": 0,
+      "programming": 0,
+      "frameworks": 0,
+      "databases": 0,
+      "tools": 0,
+      "cloudDevOps": 0
+    },
+    "skills": [
+      {
+        "name": "HTML5",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "evidence": [],
+        "reason": "No evidence of HTML5 found in uploaded resume."
+      },
+      {
+        "name": "CSS3",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "evidence": [],
+        "reason": "No evidence of CSS3 found in uploaded resume."
+      },
+      {
+        "name": "JavaScript",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "evidence": [],
+        "reason": "No evidence of JavaScript found in uploaded resume."
+      },
+      {
+        "name": "React.js",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "evidence": [],
+        "reason": "No evidence of React.js found in uploaded resume."
+      },
+      {
+        "name": "Node.js",
+        "category": "Frameworks",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "evidence": [],
+        "reason": "No evidence of Node.js found in uploaded resume."
+      },
+      {
+        "name": "Express.js",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "evidence": [],
+        "reason": "No evidence of Express.js found in uploaded resume."
+      },
+      {
+        "name": "Python",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "evidence": [],
+        "reason": "No evidence of Python found in uploaded resume."
+      },
+      {
+        "name": "SQL",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "evidence": [],
+        "reason": "No evidence of SQL found in uploaded resume."
+      },
+      {
+        "name": "Git",
+        "category": "Tools",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "evidence": [],
+        "reason": "No evidence of Git found in uploaded resume."
+      },
+      {
+        "name": "REST API",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "evidence": [],
+        "reason": "No evidence of REST API found in uploaded resume."
+      },
+      {
+        "name": "TypeScript",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "evidence": [],
+        "reason": "No evidence of TypeScript found in uploaded resume."
+      },
+      {
+        "name": "Next.js",
+        "category": "Frameworks",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "evidence": [],
+        "reason": "No evidence of Next.js found in uploaded resume."
+      },
+      {
+        "name": "Redux",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "evidence": [],
+        "reason": "No evidence of Redux found in uploaded resume."
+      },
+      {
+        "name": "Tailwind CSS",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "evidence": [],
+        "reason": "No evidence of Tailwind CSS found in uploaded resume."
+      },
+      {
+        "name": "GraphQL",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "evidence": [],
+        "reason": "No evidence of GraphQL found in uploaded resume."
+      },
+      {
+        "name": "GitHub",
+        "category": "Tools",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "evidence": [],
+        "reason": "No evidence of GitHub found in uploaded resume."
+      },
+      {
+        "name": "Vite",
+        "category": "Tools",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "evidence": [],
+        "reason": "No evidence of Vite found in uploaded resume."
+      },
+      {
+        "name": "Webpack",
+        "category": "Tools",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "evidence": [],
+        "reason": "No evidence of Webpack found in uploaded resume."
+      },
+      {
+        "name": "Jest",
+        "category": "Tools",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "evidence": [],
+        "reason": "No evidence of Jest found in uploaded resume."
+      },
+      {
+        "name": "Vercel",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "evidence": [],
+        "reason": "No evidence of Vercel found in uploaded resume."
+      },
+      {
+        "name": "Netlify",
+        "category": "Cloud/DevOps",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "evidence": [],
+        "reason": "No evidence of Netlify found in uploaded resume."
+      },
+      {
+        "name": "Docker",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "low",
+        "evidence": [],
+        "reason": "No evidence of Docker found in uploaded resume."
+      }
+    ],
+    "strongSkills": [],
+    "partialSkills": [],
+    "missingSkills": [
+      {
+        "skillName": "HTML5",
+        "category": "Programming",
+        "currentProficiency": "None",
+        "requiredProficiency": "Advanced",
+        "gapPercentage": 100,
+        "priority": "High",
+        "evidence": [],
+        "reason": "No evidence of HTML5 found in uploaded resume."
+      },
+      {
+        "skillName": "CSS3",
+        "category": "Programming",
+        "currentProficiency": "None",
+        "requiredProficiency": "Advanced",
+        "gapPercentage": 100,
+        "priority": "High",
+        "evidence": [],
+        "reason": "No evidence of CSS3 found in uploaded resume."
+      },
+      {
+        "skillName": "JavaScript",
+        "category": "Programming",
+        "currentProficiency": "None",
+        "requiredProficiency": "Advanced",
+        "gapPercentage": 100,
+        "priority": "High",
+        "evidence": [],
+        "reason": "No evidence of JavaScript found in uploaded resume."
+      },
+      {
+        "skillName": "React.js",
+        "category": "Programming",
+        "currentProficiency": "None",
+        "requiredProficiency": "Advanced",
+        "gapPercentage": 100,
+        "priority": "High",
+        "evidence": [],
+        "reason": "No evidence of React.js found in uploaded resume."
+      },
+      {
+        "skillName": "Node.js",
+        "category": "Frameworks",
+        "currentProficiency": "None",
+        "requiredProficiency": "Intermediate",
+        "gapPercentage": 100,
+        "priority": "Medium",
+        "evidence": [],
+        "reason": "No evidence of Node.js found in uploaded resume."
+      },
+      {
+        "skillName": "Express.js",
+        "category": "Programming",
+        "currentProficiency": "None",
+        "requiredProficiency": "Intermediate",
+        "gapPercentage": 100,
+        "priority": "Medium",
+        "evidence": [],
+        "reason": "No evidence of Express.js found in uploaded resume."
+      },
+      {
+        "skillName": "Python",
+        "category": "Programming",
+        "currentProficiency": "None",
+        "requiredProficiency": "Intermediate",
+        "gapPercentage": 100,
+        "priority": "Medium",
+        "evidence": [],
+        "reason": "No evidence of Python found in uploaded resume."
+      },
+      {
+        "skillName": "SQL",
+        "category": "Programming",
+        "currentProficiency": "None",
+        "requiredProficiency": "Intermediate",
+        "gapPercentage": 100,
+        "priority": "Medium",
+        "evidence": [],
+        "reason": "No evidence of SQL found in uploaded resume."
+      },
+      {
+        "skillName": "Git",
+        "category": "Tools",
+        "currentProficiency": "None",
+        "requiredProficiency": "Advanced",
+        "gapPercentage": 100,
+        "priority": "High",
+        "evidence": [],
+        "reason": "No evidence of Git found in uploaded resume."
+      },
+      {
+        "skillName": "REST API",
+        "category": "Programming",
+        "currentProficiency": "None",
+        "requiredProficiency": "Intermediate",
+        "gapPercentage": 100,
+        "priority": "Medium",
+        "evidence": [],
+        "reason": "No evidence of REST API found in uploaded resume."
+      },
+      {
+        "skillName": "TypeScript",
+        "category": "Programming",
+        "currentProficiency": "None",
+        "requiredProficiency": "Advanced",
+        "gapPercentage": 100,
+        "priority": "High",
+        "evidence": [],
+        "reason": "No evidence of TypeScript found in uploaded resume."
+      },
+      {
+        "skillName": "Next.js",
+        "category": "Frameworks",
+        "currentProficiency": "None",
+        "requiredProficiency": "Intermediate",
+        "gapPercentage": 100,
+        "priority": "Medium",
+        "evidence": [],
+        "reason": "No evidence of Next.js found in uploaded resume."
+      },
+      {
+        "skillName": "Redux",
+        "category": "Programming",
+        "currentProficiency": "None",
+        "requiredProficiency": "Intermediate",
+        "gapPercentage": 100,
+        "priority": "Medium",
+        "evidence": [],
+        "reason": "No evidence of Redux found in uploaded resume."
+      },
+      {
+        "skillName": "Tailwind CSS",
+        "category": "Programming",
+        "currentProficiency": "None",
+        "requiredProficiency": "Intermediate",
+        "gapPercentage": 100,
+        "priority": "Medium",
+        "evidence": [],
+        "reason": "No evidence of Tailwind CSS found in uploaded resume."
+      },
+      {
+        "skillName": "GraphQL",
+        "category": "Programming",
+        "currentProficiency": "None",
+        "requiredProficiency": "Intermediate",
+        "gapPercentage": 100,
+        "priority": "Medium",
+        "evidence": [],
+        "reason": "No evidence of GraphQL found in uploaded resume."
+      },
+      {
+        "skillName": "GitHub",
+        "category": "Tools",
+        "currentProficiency": "None",
+        "requiredProficiency": "Intermediate",
+        "gapPercentage": 100,
+        "priority": "Medium",
+        "evidence": [],
+        "reason": "No evidence of GitHub found in uploaded resume."
+      },
+      {
+        "skillName": "Vite",
+        "category": "Tools",
+        "currentProficiency": "None",
+        "requiredProficiency": "Intermediate",
+        "gapPercentage": 100,
+        "priority": "Medium",
+        "evidence": [],
+        "reason": "No evidence of Vite found in uploaded resume."
+      },
+      {
+        "skillName": "Webpack",
+        "category": "Tools",
+        "currentProficiency": "None",
+        "requiredProficiency": "Intermediate",
+        "gapPercentage": 100,
+        "priority": "Medium",
+        "evidence": [],
+        "reason": "No evidence of Webpack found in uploaded resume."
+      },
+      {
+        "skillName": "Jest",
+        "category": "Tools",
+        "currentProficiency": "None",
+        "requiredProficiency": "Intermediate",
+        "gapPercentage": 100,
+        "priority": "Medium",
+        "evidence": [],
+        "reason": "No evidence of Jest found in uploaded resume."
+      },
+      {
+        "skillName": "Vercel",
+        "category": "Programming",
+        "currentProficiency": "None",
+        "requiredProficiency": "Intermediate",
+        "gapPercentage": 100,
+        "priority": "Medium",
+        "evidence": [],
+        "reason": "No evidence of Vercel found in uploaded resume."
+      },
+      {
+        "skillName": "Netlify",
+        "category": "Cloud/DevOps",
+        "currentProficiency": "None",
+        "requiredProficiency": "Intermediate",
+        "gapPercentage": 100,
+        "priority": "Medium",
+        "evidence": [],
+        "reason": "No evidence of Netlify found in uploaded resume."
+      },
+      {
+        "skillName": "Docker",
+        "category": "Programming",
+        "currentProficiency": "None",
+        "requiredProficiency": "Intermediate",
+        "gapPercentage": 100,
+        "priority": "Low",
+        "evidence": [],
+        "reason": "No evidence of Docker found in uploaded resume."
+      }
+    ],
+    "analyzedAt": "2026-08-20T16:48:07.102Z",
+    "savedAt": "2026-08-20T16:48:07.103Z",
+    "updatedAt": "2026-08-20T16:48:07.103Z"
   }
 ]

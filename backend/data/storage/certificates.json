@@ -9,5 +9,16 @@
     "pdfUrl": "/api/certificates/SBA-JAVASCRIPT-849861/download",
     "issuedAt": "2026-08-20T16:46:25.361Z",
     "updatedAt": "2026-08-20T16:46:25.361Z"
+  },
+  {
+    "createdAt": "2026-08-20T16:52:11.699Z",
+    "certificateId": "SBA-JAVASCRIPT-462848",
+    "userId": "user_delta",
+    "skillName": "JavaScript",
+    "score": 88,
+    "userName": "SkillBridge Student",
+    "pdfUrl": "/api/certificates/SBA-JAVASCRIPT-462848/download",
+    "issuedAt": "2026-08-20T16:52:11.698Z",
+    "updatedAt": "2026-08-20T16:52:11.699Z"
   }
 ]
