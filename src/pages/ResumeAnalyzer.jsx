@@ -733,7 +733,11 @@ APPLIED RESUME IMPROVEMENTS:
                 </div>
               ) : (
                 <>
-                  <SkillGap skillsStatus={skillsStatus} onOpenSkillBridge={() => onNavigate && onNavigate('job')} />
+                  <SkillGap 
+                    skillsStatus={skillsStatus} 
+                    onOpenSkillBridge={() => onNavigate && onNavigate('job')} 
+                    onOpenVerification={handleOpenVerification}
+                  />
                   <SkillBridgeProgress 
                     skillsStatus={skillsStatus} 
                     onOpenVerification={handleOpenVerification} 
