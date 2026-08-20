@@ -1339,5 +1339,506 @@
     "analyzedAt": "2026-08-20T16:48:07.102Z",
     "savedAt": "2026-08-20T16:48:07.103Z",
     "updatedAt": "2026-08-20T16:48:07.103Z"
+  },
+  {
+    "createdAt": "2026-08-20T16:57:37.361Z",
+    "skillGapId": "sg_user_jd_test_custom_role",
+    "userId": "user_jd_test",
+    "resumeId": null,
+    "targetRole": "Custom Role",
+    "isCustomJD": true,
+    "jobDescriptionAnalysis": {
+      "isCustomJD": true,
+      "extractedRole": "Custom Role",
+      "requiredSkills": [
+        "React.js",
+        "Node.js",
+        "SQL",
+        "PostgreSQL",
+        "Docker",
+        "Git",
+        "Problem Solving"
+      ],
+      "preferredSkills": [
+        "Redis",
+        "GraphQL",
+        "AWS"
+      ],
+      "programmingLanguages": [
+        "React.js",
+        "SQL",
+        "PostgreSQL",
+        "Docker",
+        "Problem Solving"
+      ],
+      "frameworks": [
+        "Node.js"
+      ],
+      "databases": [],
+      "tools": [
+        "Git"
+      ],
+      "cloud": [],
+      "softSkills": [],
+      "experienceRequirements": "Demonstrated production experience matching requirements"
+    },
+    "overallMatchScore": 6,
+    "score": 6,
+    "weightedSummary": {
+      "weightedMatchedRequirements": 1.5,
+      "weightedTotalRequirements": 24,
+      "formula": "(weightedMatchedRequirements / weightedTotalRequirements) * 100"
+    },
+    "priorityGaps": {
+      "high": [
+        {
+          "skill": "React.js",
+          "name": "React.js",
+          "category": "Programming",
+          "status": "MISSING",
+          "currentLevel": 0,
+          "progress": 0,
+          "requiredLevel": 100,
+          "gapPercentage": 100,
+          "priority": "high",
+          "requirementType": "Required",
+          "evidence": [],
+          "reason": "No evidence of required skill React.js found in uploaded resume."
+        },
+        {
+          "skill": "Node.js",
+          "name": "Node.js",
+          "category": "Frameworks",
+          "status": "MISSING",
+          "currentLevel": 0,
+          "progress": 0,
+          "requiredLevel": 100,
+          "gapPercentage": 100,
+          "priority": "high",
+          "requirementType": "Required",
+          "evidence": [],
+          "reason": "No evidence of required skill Node.js found in uploaded resume."
+        },
+        {
+          "skill": "SQL",
+          "name": "SQL",
+          "category": "Programming",
+          "status": "MISSING",
+          "currentLevel": 0,
+          "progress": 0,
+          "requiredLevel": 100,
+          "gapPercentage": 100,
+          "priority": "high",
+          "requirementType": "Required",
+          "evidence": [],
+          "reason": "No evidence of required skill SQL found in uploaded resume."
+        },
+        {
+          "skill": "PostgreSQL",
+          "name": "PostgreSQL",
+          "category": "Programming",
+          "status": "MISSING",
+          "currentLevel": 0,
+          "progress": 0,
+          "requiredLevel": 100,
+          "gapPercentage": 100,
+          "priority": "high",
+          "requirementType": "Required",
+          "evidence": [],
+          "reason": "No evidence of required skill PostgreSQL found in uploaded resume."
+        },
+        {
+          "skill": "Docker",
+          "name": "Docker",
+          "category": "Programming",
+          "status": "MISSING",
+          "currentLevel": 0,
+          "progress": 0,
+          "requiredLevel": 100,
+          "gapPercentage": 100,
+          "priority": "high",
+          "requirementType": "Required",
+          "evidence": [],
+          "reason": "No evidence of required skill Docker found in uploaded resume."
+        },
+        {
+          "skill": "Problem Solving",
+          "name": "Problem Solving",
+          "category": "Programming",
+          "status": "MISSING",
+          "currentLevel": 0,
+          "progress": 0,
+          "requiredLevel": 100,
+          "gapPercentage": 100,
+          "priority": "high",
+          "requirementType": "Required",
+          "evidence": [],
+          "reason": "No evidence of required skill Problem Solving found in uploaded resume."
+        }
+      ],
+      "medium": [],
+      "low": [
+        {
+          "skill": "Redis",
+          "name": "Redis",
+          "category": "Programming",
+          "status": "MISSING",
+          "currentLevel": 0,
+          "progress": 0,
+          "requiredLevel": 100,
+          "gapPercentage": 100,
+          "priority": "low",
+          "requirementType": "Preferred",
+          "evidence": [],
+          "reason": "Preferred skill Redis not found in uploaded resume."
+        },
+        {
+          "skill": "GraphQL",
+          "name": "GraphQL",
+          "category": "Programming",
+          "status": "MISSING",
+          "currentLevel": 0,
+          "progress": 0,
+          "requiredLevel": 100,
+          "gapPercentage": 100,
+          "priority": "low",
+          "requirementType": "Preferred",
+          "evidence": [],
+          "reason": "Preferred skill GraphQL not found in uploaded resume."
+        },
+        {
+          "skill": "AWS",
+          "name": "AWS",
+          "category": "Cloud/DevOps",
+          "status": "MISSING",
+          "currentLevel": 0,
+          "progress": 0,
+          "requiredLevel": 100,
+          "gapPercentage": 100,
+          "priority": "low",
+          "requirementType": "Preferred",
+          "evidence": [],
+          "reason": "Preferred skill AWS not found in uploaded resume."
+        }
+      ],
+      "highCount": 6,
+      "mediumCount": 0,
+      "lowCount": 3
+    },
+    "requirementsBreakdown": {
+      "required": {
+        "total": 7,
+        "skills": [
+          "React.js",
+          "Node.js",
+          "SQL",
+          "PostgreSQL",
+          "Docker",
+          "Git",
+          "Problem Solving"
+        ],
+        "missing": [
+          "React.js",
+          "Node.js",
+          "SQL",
+          "PostgreSQL",
+          "Docker",
+          "Problem Solving"
+        ]
+      },
+      "preferred": {
+        "total": 3,
+        "skills": [
+          "Redis",
+          "GraphQL",
+          "AWS"
+        ],
+        "missing": [
+          "Redis",
+          "GraphQL",
+          "AWS"
+        ]
+      }
+    },
+    "categoryScores": {
+      "Programming": 0,
+      "Frameworks": 0,
+      "Tools": 50,
+      "Cloud/DevOps": 0
+    },
+    "skills": [
+      {
+        "name": "React.js",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [],
+        "reason": "No evidence of required skill React.js found in uploaded resume."
+      },
+      {
+        "name": "Node.js",
+        "category": "Frameworks",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [],
+        "reason": "No evidence of required skill Node.js found in uploaded resume."
+      },
+      {
+        "name": "SQL",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [],
+        "reason": "No evidence of required skill SQL found in uploaded resume."
+      },
+      {
+        "name": "PostgreSQL",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [],
+        "reason": "No evidence of required skill PostgreSQL found in uploaded resume."
+      },
+      {
+        "name": "Docker",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [],
+        "reason": "No evidence of required skill Docker found in uploaded resume."
+      },
+      {
+        "name": "Git",
+        "category": "Tools",
+        "status": "partial",
+        "currentLevel": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [
+          "Git listed in Technical Skills"
+        ],
+        "reason": "Git listed in Technical Skills"
+      },
+      {
+        "name": "Problem Solving",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [],
+        "reason": "No evidence of required skill Problem Solving found in uploaded resume."
+      },
+      {
+        "name": "Redis",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "low",
+        "requirementType": "Preferred",
+        "evidence": [],
+        "reason": "Preferred skill Redis not found in uploaded resume."
+      },
+      {
+        "name": "GraphQL",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "low",
+        "requirementType": "Preferred",
+        "evidence": [],
+        "reason": "Preferred skill GraphQL not found in uploaded resume."
+      },
+      {
+        "name": "AWS",
+        "category": "Cloud/DevOps",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "low",
+        "requirementType": "Preferred",
+        "evidence": [],
+        "reason": "Preferred skill AWS not found in uploaded resume."
+      }
+    ],
+    "strongSkills": [],
+    "partialSkills": [
+      {
+        "skill": "Git",
+        "name": "Git",
+        "category": "Tools",
+        "status": "LEARNING",
+        "currentLevel": 50,
+        "progress": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [
+          "Git listed in Technical Skills"
+        ],
+        "reason": "Git listed in Technical Skills"
+      }
+    ],
+    "missingSkills": [
+      {
+        "skill": "React.js",
+        "name": "React.js",
+        "category": "Programming",
+        "status": "MISSING",
+        "currentLevel": 0,
+        "progress": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [],
+        "reason": "No evidence of required skill React.js found in uploaded resume."
+      },
+      {
+        "skill": "Node.js",
+        "name": "Node.js",
+        "category": "Frameworks",
+        "status": "MISSING",
+        "currentLevel": 0,
+        "progress": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [],
+        "reason": "No evidence of required skill Node.js found in uploaded resume."
+      },
+      {
+        "skill": "SQL",
+        "name": "SQL",
+        "category": "Programming",
+        "status": "MISSING",
+        "currentLevel": 0,
+        "progress": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [],
+        "reason": "No evidence of required skill SQL found in uploaded resume."
+      },
+      {
+        "skill": "PostgreSQL",
+        "name": "PostgreSQL",
+        "category": "Programming",
+        "status": "MISSING",
+        "currentLevel": 0,
+        "progress": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [],
+        "reason": "No evidence of required skill PostgreSQL found in uploaded resume."
+      },
+      {
+        "skill": "Docker",
+        "name": "Docker",
+        "category": "Programming",
+        "status": "MISSING",
+        "currentLevel": 0,
+        "progress": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [],
+        "reason": "No evidence of required skill Docker found in uploaded resume."
+      },
+      {
+        "skill": "Problem Solving",
+        "name": "Problem Solving",
+        "category": "Programming",
+        "status": "MISSING",
+        "currentLevel": 0,
+        "progress": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [],
+        "reason": "No evidence of required skill Problem Solving found in uploaded resume."
+      },
+      {
+        "skill": "Redis",
+        "name": "Redis",
+        "category": "Programming",
+        "status": "MISSING",
+        "currentLevel": 0,
+        "progress": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "low",
+        "requirementType": "Preferred",
+        "evidence": [],
+        "reason": "Preferred skill Redis not found in uploaded resume."
+      },
+      {
+        "skill": "GraphQL",
+        "name": "GraphQL",
+        "category": "Programming",
+        "status": "MISSING",
+        "currentLevel": 0,
+        "progress": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "low",
+        "requirementType": "Preferred",
+        "evidence": [],
+        "reason": "Preferred skill GraphQL not found in uploaded resume."
+      },
+      {
+        "skill": "AWS",
+        "name": "AWS",
+        "category": "Cloud/DevOps",
+        "status": "MISSING",
+        "currentLevel": 0,
+        "progress": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "low",
+        "requirementType": "Preferred",
+        "evidence": [],
+        "reason": "Preferred skill AWS not found in uploaded resume."
+      }
+    ],
+    "analyzedAt": "2026-08-20T16:57:37.360Z",
+    "savedAt": "2026-08-20T16:57:37.360Z",
+    "updatedAt": "2026-08-20T16:57:37.361Z"
   }
 ]
