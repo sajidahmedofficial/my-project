@@ -5,7 +5,7 @@ import { Award, ShieldCheck, Download, Sparkles, CheckCircle2, FileCheck } from 
 export default function CertificateList({ certificates = [], candidateName = "Aarav Sharma" }) {
   const [showModal, setShowModal] = useState(false);
 
-  const defaultVerifiedTools = [
+  const verifiedTools = [
     { name: "HTML5", category: "Frontend Core", score: 100 },
     { name: "CSS3", category: "Styling & Responsive UI", score: 100 },
     { name: "JavaScript", category: "Programming & Logic", score: 100 },
