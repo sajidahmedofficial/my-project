@@ -1,7 +1,78 @@
-// agent-notes: { ctx: "Deep AI Skill Gap Analysis service with resume evidence extraction, multi-dimensional section scanning, taxonomy matching, and categorization", deps: ["@google/generative-ai"], state: "active", last: "anti@2026-08-20" }
-import { GoogleGenerativeAI } from '@google/generative-ai';
+// agent-notes: { ctx: "Primary Skill Gap AI evaluation service using central Gemini client, strict schema validation, deterministic skill normalization, and evidence extraction", deps: ["../ai/gemini.js"], state: "active", last: "anti@2026-08-20" }
+import { analyzeJSON } from "../ai/gemini.js";
 
-// Standard Taxonomy Definitions for Target Roles
+// Canonical skill normalization dictionary
+export const SKILL_NORMALIZATION_MAP = {
+  "js": "JavaScript",
+  "javascript": "JavaScript",
+  "vanilla js": "JavaScript",
+  "ts": "TypeScript",
+  "typescript": "TypeScript",
+  "html": "HTML5",
+  "html5": "HTML5",
+  "css": "CSS3",
+  "css3": "CSS3",
+  "react": "React.js",
+  "reactjs": "React.js",
+  "react.js": "React.js",
+  "next": "Next.js",
+  "nextjs": "Next.js",
+  "next.js": "Next.js",
+  "node": "Node.js",
+  "nodejs": "Node.js",
+  "node.js": "Node.js",
+  "express": "Express.js",
+  "expressjs": "Express.js",
+  "express.js": "Express.js",
+  "redux": "Redux",
+  "redux toolkit": "Redux",
+  "rtk": "Redux",
+  "tailwind": "Tailwind CSS",
+  "tailwindcss": "Tailwind CSS",
+  "tailwind css": "Tailwind CSS",
+  "python": "Python",
+  "py": "Python",
+  "django": "Django",
+  "fastapi": "FastAPI",
+  "fast api": "FastAPI",
+  "spring": "Spring Boot",
+  "spring boot": "Spring Boot",
+  "mongodb": "MongoDB",
+  "mongo": "MongoDB",
+  "postgresql": "PostgreSQL",
+  "postgres": "PostgreSQL",
+  "psql": "PostgreSQL",
+  "mysql": "MySQL",
+  "redis": "Redis",
+  "sql": "SQL",
+  "docker": "Docker",
+  "k8s": "Kubernetes",
+  "kubernetes": "Kubernetes",
+  "aws": "AWS",
+  "amazon web services": "AWS",
+  "git": "Git",
+  "github": "GitHub",
+  "vite": "Vite",
+  "webpack": "Webpack",
+  "jest": "Jest",
+  "rest": "REST API",
+  "rest api": "REST API",
+  "rest apis": "REST API",
+  "restful api": "REST API",
+  "graphql": "GraphQL",
+  "vercel": "Vercel",
+  "netlify": "Netlify",
+  "ci/cd": "CI/CD",
+  "cicd": "CI/CD"
+};
+
+export function normalizeSkillName(rawName = "") {
+  if (!rawName || typeof rawName !== "string") return "";
+  const cleaned = rawName.trim().toLowerCase();
+  return SKILL_NORMALIZATION_MAP[cleaned] || rawName.trim();
+}
+
+// Standard Role Taxonomy database
 export const ROLE_TAXONOMY = {
   "Frontend Developer": {
     category: "Web Development",
@@ -13,17 +84,17 @@ export const ROLE_TAXONOMY = {
       "Cloud/DevOps": ["Vercel", "Netlify", "Docker"]
     },
     priorities: {
-      "React.js": "High",
-      "TypeScript": "High",
-      "JavaScript": "High",
-      "HTML5": "High",
-      "CSS3": "High",
-      "Next.js": "Medium",
-      "Redux": "Medium",
-      "Tailwind CSS": "Medium",
-      "Git": "High",
-      "Docker": "Low",
-      "Jest": "Medium"
+      "React.js": "high",
+      "TypeScript": "high",
+      "JavaScript": "high",
+      "HTML5": "high",
+      "CSS3": "high",
+      "Next.js": "medium",
+      "Redux": "medium",
+      "Tailwind CSS": "medium",
+      "Git": "high",
+      "Docker": "low",
+      "Jest": "medium"
     }
   },
   "Backend Engineer": {
@@ -33,18 +104,18 @@ export const ROLE_TAXONOMY = {
       Frameworks: ["Node.js", "Express.js", "Django", "FastAPI", "Spring Boot"],
       Databases: ["PostgreSQL", "MongoDB", "Redis", "MySQL", "SQL"],
       Tools: ["Git", "Postman", "Swagger", "Jest"],
-      "Cloud/DevOps": ["Docker", "Kubernetes", "AWS", "CI/CD Pipelines"]
+      "Cloud/DevOps": ["Docker", "Kubernetes", "AWS", "CI/CD"]
     },
     priorities: {
-      "Node.js": "High",
-      "Express.js": "High",
-      "PostgreSQL": "High",
-      "MongoDB": "High",
-      "Docker": "High",
-      "AWS": "Medium",
-      "Redis": "Medium",
-      "Git": "High",
-      "Kubernetes": "Low"
+      "Node.js": "high",
+      "Express.js": "high",
+      "PostgreSQL": "high",
+      "MongoDB": "high",
+      "Docker": "high",
+      "AWS": "medium",
+      "Redis": "medium",
+      "Git": "high",
+      "Kubernetes": "low"
     }
   },
   "Full Stack Developer": {
@@ -57,15 +128,15 @@ export const ROLE_TAXONOMY = {
       "Cloud/DevOps": ["Docker", "AWS", "Vercel"]
     },
     priorities: {
-      "React.js": "High",
-      "Node.js": "High",
-      "Express.js": "High",
-      "MongoDB": "High",
-      "TypeScript": "High",
-      "PostgreSQL": "Medium",
-      "Docker": "Medium",
-      "AWS": "Medium",
-      "Git": "High"
+      "React.js": "high",
+      "Node.js": "high",
+      "Express.js": "high",
+      "MongoDB": "high",
+      "TypeScript": "high",
+      "PostgreSQL": "medium",
+      "Docker": "medium",
+      "AWS": "medium",
+      "Git": "high"
     }
   },
   "Data Scientist / AI Engineer": {
@@ -78,14 +149,14 @@ export const ROLE_TAXONOMY = {
       "Cloud/DevOps": ["AWS SageMaker", "Docker", "Hugging Face"]
     },
     priorities: {
-      "Python": "High",
-      "SQL": "High",
-      "Pandas": "High",
-      "PyTorch": "High",
-      "Scikit-Learn": "High",
-      "TensorFlow": "Medium",
-      "Docker": "Medium",
-      "Git": "Medium"
+      "Python": "high",
+      "SQL": "high",
+      "Pandas": "high",
+      "PyTorch": "high",
+      "Scikit-Learn": "high",
+      "TensorFlow": "medium",
+      "Docker": "medium",
+      "Git": "medium"
     }
   },
   "DevOps & Cloud Engineer": {
@@ -98,29 +169,19 @@ export const ROLE_TAXONOMY = {
       "Cloud/DevOps": ["Docker", "Kubernetes", "AWS", "GitHub Actions", "CI/CD"]
     },
     priorities: {
-      "Docker": "High",
-      "Kubernetes": "High",
-      "AWS": "High",
-      "Linux": "High",
-      "GitHub Actions": "High",
-      "Terraform": "Medium",
-      "Git": "High"
+      "Docker": "high",
+      "Kubernetes": "high",
+      "AWS": "high",
+      "Linux": "high",
+      "GitHub Actions": "high",
+      "Terraform": "medium",
+      "Git": "high"
     }
   }
 };
 
-const getGenAI = () => {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) return null;
-  return new GoogleGenerativeAI(apiKey);
-};
-
-/**
- * Categorize a skill name into technical domain
- */
 export function categorizeSkill(skillName) {
   const s = skillName.toLowerCase();
-  
   if (["javascript", "typescript", "python", "java", "c++", "c#", "go", "rust", "html", "html5", "css", "css3", "sql", "bash", "r"].some(k => s.includes(k))) {
     return "Programming";
   }
@@ -136,16 +197,16 @@ export function categorizeSkill(skillName) {
   if (["docker", "kubernetes", "aws", "azure", "gcp", "vercel", "netlify", "ci/cd", "terraform", "ansible", "sagemaker", "hugging"].some(k => s.includes(k))) {
     return "Cloud/DevOps";
   }
-  return "Other";
+  return "Technical";
 }
 
 /**
- * Extract contextual evidence snippets for a skill from parsed resume text
+ * Extract direct contextual evidence from the resume text
  */
 export function extractEvidenceForSkill(skillName, resumeText = "") {
-  if (!resumeText || typeof resumeText !== 'string') return [];
-  const text = resumeText.toLowerCase();
-  const skill = skillName.toLowerCase().replace('.js', '').trim();
+  if (!resumeText || typeof resumeText !== "string") return [];
+  const canonical = normalizeSkillName(skillName);
+  const searchPattern = canonical.toLowerCase().replace(".js", "").trim();
   const evidence = [];
 
   const lines = resumeText.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
@@ -153,8 +214,6 @@ export function extractEvidenceForSkill(skillName, resumeText = "") {
 
   lines.forEach(line => {
     const lineLower = line.toLowerCase();
-
-    // Section headers detection
     if (/technical skills|skills|technologies|tools/i.test(lineLower)) {
       currentSection = "Technical Skills";
     } else if (/projects|key projects|academic projects/i.test(lineLower)) {
@@ -167,20 +226,19 @@ export function extractEvidenceForSkill(skillName, resumeText = "") {
       currentSection = "Certifications";
     }
 
-    // Check if line contains skill
-    if (lineLower.includes(skill)) {
+    if (lineLower.includes(searchPattern)) {
       if (currentSection === "Technical Skills") {
-        evidence.push(`${skillName} listed in Technical Skills`);
+        evidence.push(`${canonical} listed in Technical Skills`);
       } else if (currentSection === "Projects") {
-        evidence.push(`Used in Projects section: "${line.slice(0, 80)}"`);
+        evidence.push(`Used in Projects: "${line.slice(0, 90)}"`);
       } else if (currentSection === "Experience") {
-        evidence.push(`Applied in Work/Internship experience: "${line.slice(0, 80)}"`);
+        evidence.push(`Applied in Work/Internship: "${line.slice(0, 90)}"`);
       } else if (currentSection === "Education") {
-        evidence.push(`Studied in Coursework: "${line.slice(0, 80)}"`);
+        evidence.push(`Studied in Coursework: "${line.slice(0, 90)}"`);
       } else if (currentSection === "Certifications") {
-        evidence.push(`Certified in: "${line.slice(0, 80)}"`);
+        evidence.push(`Certified in: "${line.slice(0, 90)}"`);
       } else {
-        evidence.push(`Mentioned in resume: "${line.slice(0, 80)}"`);
+        evidence.push(`Mentioned in resume: "${line.slice(0, 90)}"`);
       }
     }
   });
@@ -189,28 +247,121 @@ export function extractEvidenceForSkill(skillName, resumeText = "") {
 }
 
 /**
- * AI & Heuristic Skill Gap Analysis Engine directly analyzing uploaded resume text
+ * Validate and sanitize skill objects
  */
-export async function performSkillGapAnalysis({ userSkills = [], resumeText = "", targetRole = "Frontend Developer", jobDescription = "" }) {
+function validateAndSanitizeSkills(rawSkills = [], requiredSkillsList = [], resumeText = "") {
+  const seen = new Set();
+  const sanitized = [];
+
+  rawSkills.forEach(item => {
+    if (!item || !item.name) return;
+    const normalizedName = normalizeSkillName(item.name);
+    const key = normalizedName.toLowerCase();
+
+    if (seen.has(key)) return;
+    seen.add(key);
+
+    const category = item.category || categorizeSkill(normalizedName);
+    const extractedEvidence = extractEvidenceForSkill(normalizedName, resumeText);
+    const combinedEvidence = Array.from(new Set([...(Array.isArray(item.evidence) ? item.evidence : []), ...extractedEvidence]));
+
+    let status = (item.status || "").toLowerCase();
+    if (!["strong", "partial", "missing"].includes(status)) {
+      if (combinedEvidence.length >= 2) status = "strong";
+      else if (combinedEvidence.length === 1) status = "partial";
+      else status = "missing";
+    }
+
+    // Safety guard: If status is strong/partial but ZERO evidence exists, classify as missing
+    if (combinedEvidence.length === 0 && status !== "missing") {
+      status = "missing";
+    }
+
+    let currentLevel = 0;
+    let gapPercentage = 100;
+
+    if (status === "strong") {
+      currentLevel = typeof item.currentLevel === "number" && item.currentLevel > 0 ? item.currentLevel : 100;
+      gapPercentage = 0;
+    } else if (status === "partial") {
+      currentLevel = typeof item.currentLevel === "number" && item.currentLevel > 0 ? item.currentLevel : 50;
+      gapPercentage = 50;
+    } else {
+      currentLevel = 0;
+      gapPercentage = 100;
+    }
+
+    const priority = ["high", "medium", "low"].includes((item.priority || "").toLowerCase()) 
+      ? item.priority.toLowerCase() 
+      : "medium";
+
+    sanitized.push({
+      name: normalizedName,
+      category,
+      status,
+      currentLevel,
+      requiredLevel: 100,
+      gapPercentage,
+      priority,
+      evidence: combinedEvidence,
+      reason: combinedEvidence.length > 0 ? combinedEvidence.join("; ") : `No evidence of ${normalizedName} found in uploaded resume.`
+    });
+  });
+
+  // Ensure all required skills for the role are accounted for
+  requiredSkillsList.forEach(reqSkill => {
+    const normReq = normalizeSkillName(reqSkill);
+    const key = normReq.toLowerCase();
+    if (!seen.has(key)) {
+      seen.add(key);
+      const evidence = extractEvidenceForSkill(normReq, resumeText);
+      const status = evidence.length >= 2 ? "strong" : evidence.length === 1 ? "partial" : "missing";
+      sanitized.push({
+        name: normReq,
+        category: categorizeSkill(normReq),
+        status,
+        currentLevel: status === "strong" ? 100 : status === "partial" ? 50 : 0,
+        requiredLevel: 100,
+        gapPercentage: status === "strong" ? 0 : status === "partial" ? 50 : 100,
+        priority: "medium",
+        evidence,
+        reason: evidence.length > 0 ? evidence.join("; ") : `No evidence of ${normReq} found in uploaded resume.`
+      });
+    }
+  });
+
+  return sanitized;
+}
+
+/**
+ * Main AI Skill Gap Service using the central Gemini integration
+ */
+export async function performSkillGapAnalysis({
+  userSkills = [],
+  resumeText = "",
+  targetRole = "Frontend Developer",
+  jobDescription = ""
+}) {
   const taxonomy = ROLE_TAXONOMY[targetRole] || ROLE_TAXONOMY["Frontend Developer"];
-  
-  // Extract all required skills for the target role
   const requiredSkillsFlat = Object.values(taxonomy.coreSkills).flat();
-  const allRequired = [...new Set([...requiredSkillsFlat])];
+  const allRequired = [...new Set(requiredSkillsFlat.map(s => normalizeSkillName(s)))];
 
-  const ai = getGenAI();
-  if (ai && resumeText) {
-    try {
-      const model = ai.getGenerativeModel({ model: "gemini-2.5-flash" });
-      const prompt = `You are a Senior Technical Hiring Manager and AI Skill Gap Evaluator.
-Analyze the candidate's actual resume text against the target role "${targetRole}" and optional Job Description.
+  // Try Gemini AI structured extraction
+  let aiReport = null;
 
-TARGET ROLE: ${targetRole}
-REQUIRED SKILLS: ${JSON.stringify(allRequired)}
+  if (resumeText && resumeText.trim().length > 10) {
+    const prompt = `You are a Senior Technical Career Evaluator and Skill Gap Analyst.
+Analyze the candidate's actual resume against the target role "${targetRole}" and optional Job Description.
+
+TARGET ROLE:
+${targetRole}
+
+REQUIRED ROLE SKILLS:
+${JSON.stringify(allRequired)}
 
 CANDIDATE ACTUAL RESUME TEXT:
 """
-${(resumeText || "").slice(0, 4000)}
+${resumeText.slice(0, 4500)}
 """
 
 JOB DESCRIPTION (if provided):
@@ -219,145 +370,122 @@ ${(jobDescription || "").slice(0, 2000)}
 """
 
 RULES:
-1. Do NOT assume a skill exists simply because the user chose the role "${targetRole}".
-2. Classify each required skill based ONLY on real resume evidence:
-   - "strongSkills": skill is supported by technical skills AND project/work experience evidence.
-   - "partialSkills": skill is mentioned briefly or only listed in keywords without in-depth project bullets.
-   - "missingSkills": skill is NOT mentioned or has NO evidence in resume.
-3. For every skill include an "evidence" array with exact citations/reasons from resume text.
+1. Extract ALL skills mentioned in the resume.
+2. Cross-reference them with the required skills for "${targetRole}".
+3. Do NOT assume a skill exists without resume evidence.
+4. Classify each skill into:
+   - "strong": Candidate demonstrated practical project/work evidence.
+   - "partial": Candidate listed the skill or has basic familiarity with limited project depth.
+   - "missing": Skill has NO evidence in the resume.
+5. Provide concrete citation quotes in "evidence" array for each skill.
 
-Return pure JSON only matching this schema:
+Return ONLY a JSON object with this EXACT structure:
 {
-  "overallMatchScore": number (0-100),
-  "categoryScores": {
-    "technicalSkills": number,
-    "programming": number,
-    "frameworks": number,
-    "databases": number,
-    "tools": number,
-    "cloudDevOps": number
-  },
-  "strongSkills": [
-    { "skillName": "string", "category": "string", "currentProficiency": "Advanced", "requiredProficiency": "Advanced", "gapPercentage": 0, "priority": "High|Medium|Low", "evidence": ["string"], "reason": "string" }
-  ],
-  "partialSkills": [
-    { "skillName": "string", "category": "string", "currentProficiency": "Beginner|Intermediate", "requiredProficiency": "Intermediate|Advanced", "gapPercentage": 45, "priority": "High|Medium|Low", "evidence": ["string"], "reason": "string" }
-  ],
-  "missingSkills": [
-    { "skillName": "string", "category": "string", "currentProficiency": "None", "requiredProficiency": "Intermediate|Advanced", "gapPercentage": 100, "priority": "High|Medium|Low", "evidence": [], "reason": "No evidence found in uploaded resume." }
+  "targetRole": "${targetRole}",
+  "skills": [
+    {
+      "name": "string (canonical name, e.g. React.js, JavaScript, Docker)",
+      "category": "Programming|Frameworks|Databases|Tools|Cloud/DevOps",
+      "status": "strong|partial|missing",
+      "currentLevel": number (100 for strong, 50 for partial, 0 for missing),
+      "requiredLevel": 100,
+      "gapPercentage": number (0 for strong, 50 for partial, 100 for missing),
+      "priority": "high|medium|low",
+      "evidence": ["string citations from resume"]
+    }
   ]
 }`;
 
-      const result = await model.generateContent({
-        contents: [{ role: 'user', parts: [{ text: prompt }] }],
-        generationConfig: { responseMimeType: "application/json" }
-      });
-
-      const parsed = JSON.parse(result.response.text());
-      if (parsed && Array.isArray(parsed.missingSkills) && Array.isArray(parsed.strongSkills)) {
-        return parsed;
-      }
+    try {
+      aiReport = await analyzeJSON(prompt);
     } catch (err) {
-      console.warn("Gemini AI Skill Gap fallback triggered:", err.message);
+      console.warn("Gemini AI Skill Gap evaluation notice:", err.message);
     }
   }
 
-  // Deep Section-Level Evidence Extractor Heuristics
-  const strongSkills = [];
-  const partialSkills = [];
-  const missingSkills = [];
+  let finalSkills = [];
 
-  const normalizedUserSkills = userSkills.map(s => s.toLowerCase().trim());
+  if (aiReport && Array.isArray(aiReport.skills) && aiReport.skills.length > 0) {
+    finalSkills = validateAndSanitizeSkills(aiReport.skills, allRequired, resumeText);
+  } else {
+    // Deterministic Rule-Based Evidence Engine
+    const initialList = userSkills.map(s => ({
+      name: s,
+      category: categorizeSkill(s),
+      status: "partial"
+    }));
+    finalSkills = validateAndSanitizeSkills(initialList, allRequired, resumeText);
+  }
 
-  allRequired.forEach(skill => {
-    const evidence = extractEvidenceForSkill(skill, resumeText);
-    const isDirectSkillInProfile = normalizedUserSkills.includes(skill.toLowerCase());
-    const category = categorizeSkill(skill);
-    const priority = taxonomy.priorities[skill] || "Medium";
+  // Calculate Mathematical Scores (Never Trust AI Scores Blindly)
+  const totalCount = finalSkills.length;
+  const strongSkills = finalSkills.filter(s => s.status === "strong");
+  const partialSkills = finalSkills.filter(s => s.status === "partial");
+  const missingSkills = finalSkills.filter(s => s.status === "missing");
 
-    if (evidence.length >= 2 || (evidence.length >= 1 && isDirectSkillInProfile)) {
-      strongSkills.push({
-        skillName: skill,
-        category,
-        currentProficiency: "Advanced",
-        requiredProficiency: "Advanced",
-        gapPercentage: 0,
-        priority,
-        evidence,
-        reason: evidence.join('; ') || `Demonstrated proficiency in ${skill} verified in resume.`
-      });
-    } else if (evidence.length === 1 || isDirectSkillInProfile) {
-      partialSkills.push({
-        skillName: skill,
-        category,
-        currentProficiency: "Intermediate",
-        requiredProficiency: "Advanced",
-        gapPercentage: 45,
-        priority,
-        evidence,
-        reason: evidence.length ? evidence[0] : `Listed in profile skills, but needs deeper project evidence in resume.`
-      });
-    } else {
-      missingSkills.push({
-        skillName: skill,
-        category,
-        currentProficiency: "None",
-        requiredProficiency: priority === "High" ? "Advanced" : "Intermediate",
-        gapPercentage: 100,
-        priority,
-        evidence: [],
-        reason: `No evidence of ${skill} projects, experience, or coursework found in the uploaded resume.`
-      });
-    }
-  });
+  const totalPoints = (strongSkills.length * 1.0) + (partialSkills.length * 0.5);
+  const overallMatchScore = totalCount > 0 ? Math.round((totalPoints / totalCount) * 100) : 0;
 
-  const totalEvaluated = allRequired.length;
-  const matchPoints = (strongSkills.length * 1.0) + (partialSkills.length * 0.5);
-  const overallMatchScore = totalEvaluated > 0 ? Math.round((matchPoints / totalEvaluated) * 100) : 0;
-
-  const calculateCategoryScore = (catName) => {
-    const inCat = allRequired.filter(s => categorizeSkill(s) === catName);
-    if (!inCat.length) return 0;
-    const strongInCat = strongSkills.filter(s => s.category === catName).length;
-    const partialInCat = partialSkills.filter(s => s.category === catName).length;
-    return Math.round(((strongInCat + partialInCat * 0.5) / inCat.length) * 100);
+  const calculateDomainScore = (categoryName) => {
+    const inDomain = finalSkills.filter(s => s.category.toLowerCase() === categoryName.toLowerCase());
+    if (!inDomain.length) return 0;
+    const strongInDomain = inDomain.filter(s => s.status === "strong").length;
+    const partialInDomain = inDomain.filter(s => s.status === "partial").length;
+    return Math.round(((strongInDomain + partialInDomain * 0.5) / inDomain.length) * 100);
   };
 
+  const categoryScores = {
+    technicalSkills: overallMatchScore,
+    programming: calculateDomainScore("Programming"),
+    frameworks: calculateDomainScore("Frameworks"),
+    databases: calculateDomainScore("Databases"),
+    tools: calculateDomainScore("Tools"),
+    cloudDevOps: calculateDomainScore("Cloud/DevOps")
+  };
+
+  // Convert to legacy structure for full backward compatibility with existing UI components
+  const formatLegacySkill = (s) => ({
+    skillName: s.name,
+    category: s.category,
+    currentProficiency: s.status === "strong" ? "Advanced" : s.status === "partial" ? "Intermediate" : "None",
+    requiredProficiency: s.priority === "high" ? "Advanced" : "Intermediate",
+    gapPercentage: s.gapPercentage,
+    priority: s.priority.charAt(0).toUpperCase() + s.priority.slice(1),
+    evidence: s.evidence,
+    reason: s.reason
+  });
+
   return {
+    targetRole,
     overallMatchScore,
-    categoryScores: {
-      technicalSkills: overallMatchScore,
-      programming: calculateCategoryScore("Programming"),
-      frameworks: calculateCategoryScore("Frameworks"),
-      databases: calculateCategoryScore("Databases"),
-      tools: calculateCategoryScore("Tools"),
-      cloudDevOps: calculateCategoryScore("Cloud/DevOps")
-    },
-    strongSkills,
-    partialSkills,
-    missingSkills,
+    categoryScores,
+    skills: finalSkills,
+    strongSkills: strongSkills.map(formatLegacySkill),
+    partialSkills: partialSkills.map(formatLegacySkill),
+    missingSkills: missingSkills.map(formatLegacySkill),
     analyzedAt: new Date().toISOString()
   };
 }
 
 export function calculateOverallSkillScore(skillGap = []) {
   if (!skillGap || !skillGap.length) return 0;
-  const total = skillGap.reduce((sum, skill) => sum + (skill.currentLevel ?? skill.progress ?? (skill.status === 'GAINED' ? 100 : 0)), 0);
+  const total = skillGap.reduce((sum, skill) => sum + (skill.currentLevel ?? skill.progress ?? (skill.status === "strong" || skill.status === "GAINED" ? 100 : skill.status === "partial" ? 50 : 0)), 0);
   return Math.round(total / skillGap.length);
 }
 
 export async function calculateSkillGap(userSkills = [], roleRequirements = []) {
-  const normalizedUser = (userSkills || []).map(s => (typeof s === 'string' ? s : s.name || s.skill || '').toLowerCase().trim());
+  const normalizedUser = (userSkills || []).map(s => normalizeSkillName(typeof s === "string" ? s : s.name || s.skill || "").toLowerCase());
   const missing = [];
   const strong = [];
 
   (roleRequirements || []).forEach(req => {
-    const reqName = typeof req === 'string' ? req : req.name || req.skill || '';
-    if (!reqName) return;
-    if (normalizedUser.includes(reqName.toLowerCase().trim())) {
-      strong.push({ skill: reqName, status: 'GAINED', currentLevel: 100 });
+    const rawReq = typeof req === "string" ? req : req.name || req.skill || "";
+    if (!rawReq) return;
+    const reqName = normalizeSkillName(rawReq);
+    if (normalizedUser.includes(reqName.toLowerCase())) {
+      strong.push({ skill: reqName, status: "GAINED", currentLevel: 100 });
     } else {
-      missing.push({ skill: reqName, status: 'MISSING', currentLevel: 0 });
+      missing.push({ skill: reqName, status: "MISSING", currentLevel: 0 });
     }
   });
 
@@ -365,6 +493,8 @@ export async function calculateSkillGap(userSkills = [], roleRequirements = []) 
 }
 
 export default {
+  SKILL_NORMALIZATION_MAP,
+  normalizeSkillName,
   ROLE_TAXONOMY,
   categorizeSkill,
   extractEvidenceForSkill,
