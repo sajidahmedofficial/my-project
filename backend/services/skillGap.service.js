@@ -243,11 +243,11 @@ Return pure JSON only.`;
 
   const totalEvaluated = allRequired.length;
   const matchPoints = (strongSkills.length * 1.0) + (partialSkills.length * 0.5);
-  const overallMatchScore = totalEvaluated > 0 ? Math.round((matchPoints / totalEvaluated) * 100) : 70;
+  const overallMatchScore = totalEvaluated > 0 ? Math.round((matchPoints / totalEvaluated) * 100) : 0;
 
   const calculateCategoryScore = (catName) => {
     const inCat = allRequired.filter(s => categorizeSkill(s) === catName);
-    if (!inCat.length) return 75;
+    if (!inCat.length) return 0;
     const strongInCat = strongSkills.filter(s => s.category === catName).length;
     const partialInCat = partialSkills.filter(s => s.category === catName).length;
     return Math.round(((strongInCat + partialInCat * 0.5) / inCat.length) * 100);

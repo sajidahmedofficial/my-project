@@ -27,16 +27,7 @@ function SkillGap({
       status = currentLevel >= 100 ? 'GAINED' : currentLevel > 0 ? 'LEARNING' : 'MISSING';
     }
     return { skill, currentLevel, status: status.toUpperCase() };
-  }) : [
-    { skill: "HTML", currentLevel: 100, status: "GAINED" },
-    { skill: "CSS", currentLevel: 100, status: "GAINED" },
-    { skill: "JavaScript", currentLevel: 100, status: "GAINED" },
-    { skill: "React", currentLevel: 100, status: "GAINED" },
-    { skill: "Node.js", currentLevel: 100, status: "GAINED" },
-    { skill: "Express", currentLevel: 100, status: "GAINED" },
-    { skill: "Python", currentLevel: 100, status: "GAINED" },
-    { skill: "SQL", currentLevel: 100, status: "GAINED" }
-  ];
+  }) : [];
 
   const gainedCount = normalizedSkills.filter(s => s.status === 'GAINED' || s.currentLevel >= 100).length;
   const learningCount = normalizedSkills.filter(s => s.status === 'LEARNING' || (s.currentLevel > 0 && s.currentLevel < 100)).length;
@@ -199,6 +190,12 @@ function SkillGap({
           );
         })}
       </div>
+
+      {filteredSkills.length === 0 && (
+        <div className="p-8 text-center text-gray-500 text-xs italic bg-gray-900/30 rounded-xl border border-gray-800">
+          No skills found under the selected filter.
+        </div>
+      )}
     </section>
   );
 }

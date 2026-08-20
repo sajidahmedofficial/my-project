@@ -20,6 +20,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { getChallengeForSkill } from '../../utils/skillChallenges';
+import { skillGapApi } from '../../services/skillGapApi';
 
 export default function SkillVerificationModal({ skillName = "Node.js", onClose, onCompleteVerification }) {
   const [currentStep, setCurrentStep] = useState(1);
@@ -96,11 +97,11 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
     }, 1000);
   };
 
-  const handleTriggerAiEvaluation = () => {
+  const handleTriggerAiEvaluation = async () => {
     setProjectRepoError(null);
     const cleanedRepo = projectRepo.trim();
 
-    // 1. Mandatory repository URL check (Must not be empty)
+    // 1. Mandatory repository URL check
     if (!cleanedRepo) {
       setProjectRepoError("Please paste your valid GitHub repository or Sandbox URL before triggering AI evaluation!");
       return;
@@ -117,74 +118,79 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
     setCurrentStep(6);
     setEvaluating(true);
 
-    setTimeout(() => {
-      setEvaluating(false);
+    // Compute actual MCQ assessment results
+    let quizCorrectCount = 0;
+    if (mcqAnswer1 === challenge.mcqs[0]?.correct) quizCorrectCount++;
+    if (mcqAnswer2 === challenge.mcqs[1]?.correct) quizCorrectCount++;
+    const quizScore = quizCorrectCount === 2 ? 100 : quizCorrectCount === 1 ? 50 : 0;
 
-      // Real MCQ Evaluation (Step 3)
-      let quizCorrectCount = 0;
-      if (mcqAnswer1 === challenge.mcqs[0].correct) quizCorrectCount++;
-      if (mcqAnswer2 === challenge.mcqs[1].correct) quizCorrectCount++;
-      const quizScore = quizCorrectCount === 2 ? 100 : quizCorrectCount === 1 ? 65 : 30;
+    // Compute actual Coding assessment results
+    const cleanedCode = codeContent.trim();
+    const isUnedited = cleanedCode === challenge.starterCode.trim() || cleanedCode.length < 25;
+    const codingScore = (!isUnedited && codePassed) ? 100 : codePassed ? 60 : 0;
 
-      // Real Coding Evaluation (Step 4)
-      const cleanedCode = codeContent.trim();
-      const hasKeywords = cleanedCode.includes('def') || cleanedCode.includes('function') || cleanedCode.includes('return') || cleanedCode.length > 50;
-      const codingScore = (codePassed && hasKeywords) ? 95 : codePassed ? 75 : 40;
+    try {
+      const res = await skillGapApi.verifySkill({
+        skillName,
+        mcqResults: { score: quizScore, correct: quizCorrectCount, total: 2 },
+        codingResults: { score: codingScore, testsPassed: codePassed ? 1 : 0, testsTotal: 1, code: cleanedCode },
+        projectSubmission: { repoUrl: cleanedRepo, notes: '' },
+        targetRole: "Frontend Developer"
+      });
 
-      // Real Project Repository Link Evaluation (Step 5)
-      const isKnownPlatform = /github|gitlab|codesandbox|replit|stackblitz|bitbucket/i.test(cleanedRepo);
-      const projectScore = isKnownPlatform ? 94 : 70;
-
-      // Weighted score calculation
-      const totalScore = Math.round(
-        quizScore * 0.25 +
-        codingScore * 0.35 +
-        projectScore * 0.40
-      );
-
-      const passed = totalScore >= 75 && quizCorrectCount >= 1 && codePassed;
+      const evalData = res.evaluation;
+      const certData = res.certificate;
+      const passed = evalData.isPassed;
       const status = passed ? "GAINED" : "LEARNING";
 
-      const feedback = [
-        `✓ Quiz Knowledge Check (25% weight): ${quizScore}% (${quizCorrectCount}/2 correct answers)`,
-        `✓ Coding Challenge (35% weight): ${codingScore}% (${codePassed ? 'Unit Tests Verified' : 'Code Execution Pending'})`,
-        `✓ Micro-Project Integration (40% weight): ${projectScore}% (${cleanedRepo})`
-      ];
-
-      if (!passed) {
-        if (quizCorrectCount < 1) feedback.push("⚠ MCQ Assessment: You must answer at least 1 MCQ correctly.");
-        if (!codePassed) feedback.push("⚠ Coding Challenge: You must run your solution and pass unit tests.");
-      }
-
       setEvalResult({
-        score: totalScore,
-        quizScore,
-        codingScore,
-        projectScore,
+        score: evalData.overallScore,
+        quizScore: evalData.mcqScore,
+        codingScore: evalData.codingScore,
+        projectScore: evalData.projectScore,
         status,
         passed,
-        summary: passed
-          ? `✓ Comprehensive AI Evaluation Complete! Custom ${skillName} implementation and repository (${cleanedRepo}) verified successfully.`
-          : `⚠ AI Evaluation Flagged Areas for Improvement: Total Score ${totalScore}% (Passing threshold is 75%). Please review feedback and correct errors below.`,
-        feedback
+        summary: evalData.aiFeedback || (passed
+          ? `✓ Comprehensive AI Evaluation Complete! ${skillName} repository (${cleanedRepo}) verified successfully.`
+          : `⚠ AI Evaluation Flagged Areas for Improvement: Total Score ${evalData.overallScore}% (Passing threshold is 75%).`),
+        feedback: [
+          `✓ Quiz Knowledge Check (25% weight): ${evalData.mcqScore}% (${evalData.detailedBreakdown?.mcqCorrect || quizCorrectCount}/2 correct)`,
+          `✓ Coding Challenge (35% weight): ${evalData.codingScore}% (${codePassed ? 'Unit Tests Verified' : 'Failed Tests'})`,
+          `✓ Micro-Project Integration (40% weight): ${evalData.projectScore}% (${cleanedRepo})`
+        ],
+        certificate: certData
       });
 
       if (passed) {
-        // Automatically progress to Step 7 Certification if passed
         setTimeout(() => {
           setCurrentStep(7);
         }, 1600);
       }
-    }, 1500);
+    } catch (err) {
+      console.error("Skill verification error:", err);
+      setEvalResult({
+        score: 0,
+        quizScore,
+        codingScore,
+        projectScore: 0,
+        status: "FAILED",
+        passed: false,
+        error: true,
+        summary: `Unable to verify skill. ${err.message || 'Please check connection and retry.'}`,
+        feedback: [`⚠ Verification Error: ${err.message || 'Service request failed.'}`]
+      });
+    } finally {
+      setEvaluating(false);
+    }
   };
 
   const handleFinish = () => {
-    const certCode = `CERT-${skillName.toUpperCase().replace(/[^A-Z]/g, '')}-${Math.floor(100000 + Math.random() * 900000)}`;
+    const certCode = evalResult?.certificate?.certificateId || `SBA-${skillName.toUpperCase().replace(/[^A-Z0-9]/g, '')}-${Date.now().toString().slice(-6)}`;
     if (onCompleteVerification) {
       onCompleteVerification({
         skillName,
         certificateCode: certCode,
-        score: evalResult?.score || 94
+        score: evalResult?.score || 100
       });
     }
     onClose();
@@ -561,15 +567,15 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
             <div className="grid grid-cols-3 gap-2 max-w-md mx-auto text-center">
               <div className="p-2.5 rounded-xl bg-gray-900 border border-gray-800 space-y-0.5">
                 <span className="text-[10px] text-gray-400 font-semibold block">Quiz (25%)</span>
-                <span className="text-sm font-bold text-white">{evalResult?.quizScore || 90}%</span>
+                <span className="text-sm font-bold text-white">{evalResult?.quizScore ?? 0}%</span>
               </div>
               <div className="p-2.5 rounded-xl bg-gray-900 border border-gray-800 space-y-0.5">
                 <span className="text-[10px] text-gray-400 font-semibold block">Coding (35%)</span>
-                <span className="text-sm font-bold text-white">{evalResult?.codingScore || 85}%</span>
+                <span className="text-sm font-bold text-white">{evalResult?.codingScore ?? 0}%</span>
               </div>
               <div className="p-2.5 rounded-xl bg-gray-900 border border-gray-800 space-y-0.5">
                 <span className="text-[10px] text-gray-400 font-semibold block">Project (40%)</span>
-                <span className="text-sm font-bold text-white">{evalResult?.projectScore || 92}%</span>
+                <span className="text-sm font-bold text-white">{evalResult?.projectScore ?? 0}%</span>
               </div>
             </div>
 
