@@ -439,6 +439,20 @@ APPLIED RESUME IMPROVEMENTS:
 
   const currentStage = is100PercentComplete ? 9 : (pendingSuggestion ? 7 : (verifyingSkillName ? 5 : (selectedFile ? 3 : 1)));
 
+  const handleStepClick = (step) => {
+    if (step.tab) {
+      setActiveTab(step.tab);
+    }
+    setTimeout(() => {
+      const el = document.getElementById(step.targetId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        window.scrollBy({ top: 380, behavior: 'smooth' });
+      }
+    }, 80);
+  };
+
   return (
     <div className="space-y-6 animate-fade-in pb-12 resume-analyzer-page">
       {/* Header Bar */}
@@ -493,7 +507,7 @@ APPLIED RESUME IMPROVEMENTS:
       </div>
 
       {/* Target Pipeline Flow Banner */}
-      <TargetPipelineFlow currentStage={currentStage} />
+      <TargetPipelineFlow currentStage={currentStage} onStepClick={handleStepClick} />
 
       {/* Auto Progression Toast Notification Banner */}
       {toastMessage && (
@@ -674,6 +688,43 @@ APPLIED RESUME IMPROVEMENTS:
                           {unfixedProblemsCount > 0 ? 'View Fixes ›' : 'Skill Gap ›'}
                         </button>
                       </div>
+                    </div>
+                  </div>
+
+                  {/* Auto Jump / Feature Navigation Bar */}
+                  <div className="glass rounded-2xl p-4 border border-gray-800 bg-gray-950/80 flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-accent-purple animate-ping" />
+                      <span className="text-xs font-bold text-white">Next Available Actions in Pipeline:</span>
+                    </div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <button
+                        onClick={() => {
+                          setActiveTab('issues');
+                          setTimeout(() => window.scrollBy({ top: 350, behavior: 'smooth' }), 50);
+                        }}
+                        className="px-3 py-1.5 rounded-xl bg-gray-900 hover:bg-gray-800 border border-gray-700 text-amber-300 font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm"
+                      >
+                        <AlertCircle className="w-3.5 h-3.5" /> 1. Review Fixes ({unfixedProblemsCount})
+                      </button>
+                      <button
+                        onClick={() => {
+                          setActiveTab('skills');
+                          setTimeout(() => window.scrollBy({ top: 350, behavior: 'smooth' }), 50);
+                        }}
+                        className="px-3 py-1.5 rounded-xl bg-accent-purple/20 hover:bg-accent-purple/30 border border-accent-purple/40 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm"
+                      >
+                        <Target className="w-3.5 h-3.5 text-emerald-400" /> 2. Skill Gap & Bridge
+                      </button>
+                      <button
+                        onClick={() => {
+                          setActiveTab('certs');
+                          setTimeout(() => window.scrollBy({ top: 350, behavior: 'smooth' }), 50);
+                        }}
+                        className="px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm"
+                      >
+                        <Award className="w-3.5 h-3.5" /> 3. Verified Certs & PDF
+                      </button>
                     </div>
                   </div>
                 </>
