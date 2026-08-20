@@ -322,7 +322,13 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
                 </span>
               ))}
             </div>
-            <div className="pt-3 border-t border-gray-800">
+            <div className="pt-3 border-t border-gray-800 space-y-2">
+              <button 
+                onClick={() => onOpenVerification && onOpenVerification("React.js")}
+                className="w-full py-2 rounded-xl bg-amber-500/20 border border-amber-500/30 text-amber-300 hover:bg-amber-500/30 text-xs font-bold flex items-center justify-center gap-1.5 transition-all"
+              >
+                <Zap className="w-3.5 h-3.5 fill-amber-300" /> Start Skill Verification
+              </button>
               <button 
                 onClick={() => onNavigate('interview')}
                 className="w-full py-2.5 rounded-xl bg-gradient-to-r from-accent-purple to-accent-pink hover:opacity-90 font-bold text-xs text-white flex items-center justify-center gap-2 shadow-lg shadow-purple-600/20"
