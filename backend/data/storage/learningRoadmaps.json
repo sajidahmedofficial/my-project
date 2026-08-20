@@ -1107,5 +1107,1298 @@
       }
     ],
     "updatedAt": "2026-08-20T17:02:20.655Z"
+  },
+  {
+    "createdAt": "2026-08-20T17:05:56.335Z",
+    "skillName": "React.js",
+    "targetRole": "Frontend Developer",
+    "currentLevel": "Beginner",
+    "targetLevel": "Advanced",
+    "priority": "High",
+    "prerequisites": [
+      "JavaScript (ES6+)",
+      "HTML5 / DOM",
+      "CSS3 / Flexbox"
+    ],
+    "estimatedLearningHours": 25,
+    "stages": [
+      {
+        "stageNumber": 1,
+        "title": "Stage 1: React Fundamentals & Component Architecture",
+        "level": "Beginner",
+        "topics": [
+          "JSX Syntax & Rules",
+          "Functional Components",
+          "Props & Dynamic Rendering",
+          "Event Handling"
+        ],
+        "practiceTasks": [
+          "Build an interactive Profile Card component",
+          "Pass dynamic prop lists from Parent to Child components"
+        ],
+        "miniProject": "Interactive User Directory with Live Search Filter",
+        "tasks": [
+          {
+            "taskId": "task_rdm_react_js_usr_1787245556225_s1_top0",
+            "roadmapId": "rdm_react_js_usr_1787245556225",
+            "userId": "usr_1787245556225",
+            "title": "JSX Syntax & Rules",
+            "stageNumber": 1,
+            "taskType": "topic",
+            "difficulty": "Beginner",
+            "status": "completed",
+            "completed": true,
+            "score": null,
+            "completedAt": "2026-08-20T17:05:56.349Z"
+          },
+          {
+            "taskId": "task_rdm_react_js_usr_1787245556225_s1_top1",
+            "roadmapId": "rdm_react_js_usr_1787245556225",
+            "userId": "usr_1787245556225",
+            "title": "Functional Components",
+            "stageNumber": 1,
+            "taskType": "topic",
+            "difficulty": "Beginner",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_react_js_usr_1787245556225_s1_top2",
+            "roadmapId": "rdm_react_js_usr_1787245556225",
+            "userId": "usr_1787245556225",
+            "title": "Props & Dynamic Rendering",
+            "stageNumber": 1,
+            "taskType": "topic",
+            "difficulty": "Beginner",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_react_js_usr_1787245556225_s1_top3",
+            "roadmapId": "rdm_react_js_usr_1787245556225",
+            "userId": "usr_1787245556225",
+            "title": "Event Handling",
+            "stageNumber": 1,
+            "taskType": "topic",
+            "difficulty": "Beginner",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          }
+        ],
+        "stageProgress": 25
+      },
+      {
+        "stageNumber": 2,
+        "title": "Stage 2: State Management & Hooks Mastery",
+        "level": "Intermediate",
+        "topics": [
+          "useState Hook for Local State",
+          "useEffect for Side Effects & Lifecycle",
+          "Controlled Form Inputs",
+          "Lifting State Up"
+        ],
+        "practiceTasks": [
+          "Create a controlled multi-step checkout form",
+          "Fetch JSON placeholder posts and render with loading states"
+        ],
+        "miniProject": "TaskFlow Kanban Board with Local Storage Persistence",
+        "tasks": [
+          {
+            "taskId": "task_rdm_react_js_usr_1787245556225_s2_top0",
+            "roadmapId": "rdm_react_js_usr_1787245556225",
+            "userId": "usr_1787245556225",
+            "title": "useState Hook for Local State",
+            "stageNumber": 2,
+            "taskType": "topic",
+            "difficulty": "Intermediate",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_react_js_usr_1787245556225_s2_top1",
+            "roadmapId": "rdm_react_js_usr_1787245556225",
+            "userId": "usr_1787245556225",
+            "title": "useEffect for Side Effects & Lifecycle",
+            "stageNumber": 2,
+            "taskType": "topic",
+            "difficulty": "Intermediate",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_react_js_usr_1787245556225_s2_top2",
+            "roadmapId": "rdm_react_js_usr_1787245556225",
+            "userId": "usr_1787245556225",
+            "title": "Controlled Form Inputs",
+            "stageNumber": 2,
+            "taskType": "topic",
+            "difficulty": "Intermediate",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_react_js_usr_1787245556225_s2_top3",
+            "roadmapId": "rdm_react_js_usr_1787245556225",
+            "userId": "usr_1787245556225",
+            "title": "Lifting State Up",
+            "stageNumber": 2,
+            "taskType": "topic",
+            "difficulty": "Intermediate",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          }
+        ],
+        "stageProgress": 0
+      },
+      {
+        "stageNumber": 3,
+        "title": "Stage 3: Advanced Patterns, Context & Production Deployment",
+        "level": "Advanced",
+        "topics": [
+          "useContext & Global State",
+          "Custom Hooks Architecture",
+          "React Router DOM & Route Guards",
+          "Performance Optimization with useMemo/useCallback"
+        ],
+        "practiceTasks": [
+          "Implement Dark/Light theme toggle using React Context",
+          "Create custom useFetch hook with retry logic"
+        ],
+        "miniProject": "Full React Job & Internship Portal with Authentication",
+        "tasks": [
+          {
+            "taskId": "task_rdm_react_js_usr_1787245556225_s3_top0",
+            "roadmapId": "rdm_react_js_usr_1787245556225",
+            "userId": "usr_1787245556225",
+            "title": "useContext & Global State",
+            "stageNumber": 3,
+            "taskType": "topic",
+            "difficulty": "Advanced",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_react_js_usr_1787245556225_s3_top1",
+            "roadmapId": "rdm_react_js_usr_1787245556225",
+            "userId": "usr_1787245556225",
+            "title": "Custom Hooks Architecture",
+            "stageNumber": 3,
+            "taskType": "topic",
+            "difficulty": "Advanced",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_react_js_usr_1787245556225_s3_top2",
+            "roadmapId": "rdm_react_js_usr_1787245556225",
+            "userId": "usr_1787245556225",
+            "title": "React Router DOM & Route Guards",
+            "stageNumber": 3,
+            "taskType": "topic",
+            "difficulty": "Advanced",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_react_js_usr_1787245556225_s3_top3",
+            "roadmapId": "rdm_react_js_usr_1787245556225",
+            "userId": "usr_1787245556225",
+            "title": "Performance Optimization with useMemo/useCallback",
+            "stageNumber": 3,
+            "taskType": "topic",
+            "difficulty": "Advanced",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          }
+        ],
+        "stageProgress": 0
+      }
+    ],
+    "mcqs": [
+      {
+        "question": "What is the primary purpose of the useEffect hook in React?",
+        "options": [
+          "To create state variables",
+          "To perform side effects like data fetching or DOM mutations",
+          "To render JSX directly",
+          "To style components"
+        ],
+        "correctAnswer": 1
+      },
+      {
+        "question": "Why should state never be mutated directly in React?",
+        "options": [
+          "It causes syntax errors",
+          "React relies on immutability to detect state changes and trigger re-renders",
+          "It deletes component props",
+          "Direct mutation is only allowed in classes"
+        ],
+        "correctAnswer": 1
+      }
+    ],
+    "codingChallenges": [
+      {
+        "title": "Controlled Counter with Bounds",
+        "description": "Implement a counter hook that prevents the count from exceeding max or falling below min.",
+        "starterCode": "function useBoundedCounter(initial, min, max) {\n  // Implement logic\n}"
+      }
+    ],
+    "finalProject": {
+      "title": "Build a Production React Job Portal with Live Filters & Search",
+      "description": "Full-fledged React single page application with routing, global state, API integrations, and responsive UI."
+    },
+    "finalAssessment": {
+      "mcqCount": 10,
+      "codingCount": 2,
+      "passingThreshold": 75
+    },
+    "overallProgress": 8,
+    "status": "IN_PROGRESS",
+    "generatedAt": "2026-08-20T17:05:56.313Z",
+    "roadmapId": "rdm_react_js_usr_1787245556225",
+    "userId": "usr_1787245556225",
+    "tasks": [
+      {
+        "taskId": "task_rdm_react_js_usr_1787245556225_s1_top0",
+        "roadmapId": "rdm_react_js_usr_1787245556225",
+        "userId": "usr_1787245556225",
+        "title": "JSX Syntax & Rules",
+        "stageNumber": 1,
+        "taskType": "topic",
+        "difficulty": "Beginner",
+        "status": "completed",
+        "completed": true,
+        "score": null,
+        "completedAt": "2026-08-20T17:05:56.349Z"
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245556225_s1_top1",
+        "roadmapId": "rdm_react_js_usr_1787245556225",
+        "userId": "usr_1787245556225",
+        "title": "Functional Components",
+        "stageNumber": 1,
+        "taskType": "topic",
+        "difficulty": "Beginner",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245556225_s1_top2",
+        "roadmapId": "rdm_react_js_usr_1787245556225",
+        "userId": "usr_1787245556225",
+        "title": "Props & Dynamic Rendering",
+        "stageNumber": 1,
+        "taskType": "topic",
+        "difficulty": "Beginner",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245556225_s1_top3",
+        "roadmapId": "rdm_react_js_usr_1787245556225",
+        "userId": "usr_1787245556225",
+        "title": "Event Handling",
+        "stageNumber": 1,
+        "taskType": "topic",
+        "difficulty": "Beginner",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245556225_s2_top0",
+        "roadmapId": "rdm_react_js_usr_1787245556225",
+        "userId": "usr_1787245556225",
+        "title": "useState Hook for Local State",
+        "stageNumber": 2,
+        "taskType": "topic",
+        "difficulty": "Intermediate",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245556225_s2_top1",
+        "roadmapId": "rdm_react_js_usr_1787245556225",
+        "userId": "usr_1787245556225",
+        "title": "useEffect for Side Effects & Lifecycle",
+        "stageNumber": 2,
+        "taskType": "topic",
+        "difficulty": "Intermediate",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245556225_s2_top2",
+        "roadmapId": "rdm_react_js_usr_1787245556225",
+        "userId": "usr_1787245556225",
+        "title": "Controlled Form Inputs",
+        "stageNumber": 2,
+        "taskType": "topic",
+        "difficulty": "Intermediate",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245556225_s2_top3",
+        "roadmapId": "rdm_react_js_usr_1787245556225",
+        "userId": "usr_1787245556225",
+        "title": "Lifting State Up",
+        "stageNumber": 2,
+        "taskType": "topic",
+        "difficulty": "Intermediate",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245556225_s3_top0",
+        "roadmapId": "rdm_react_js_usr_1787245556225",
+        "userId": "usr_1787245556225",
+        "title": "useContext & Global State",
+        "stageNumber": 3,
+        "taskType": "topic",
+        "difficulty": "Advanced",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245556225_s3_top1",
+        "roadmapId": "rdm_react_js_usr_1787245556225",
+        "userId": "usr_1787245556225",
+        "title": "Custom Hooks Architecture",
+        "stageNumber": 3,
+        "taskType": "topic",
+        "difficulty": "Advanced",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245556225_s3_top2",
+        "roadmapId": "rdm_react_js_usr_1787245556225",
+        "userId": "usr_1787245556225",
+        "title": "React Router DOM & Route Guards",
+        "stageNumber": 3,
+        "taskType": "topic",
+        "difficulty": "Advanced",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245556225_s3_top3",
+        "roadmapId": "rdm_react_js_usr_1787245556225",
+        "userId": "usr_1787245556225",
+        "title": "Performance Optimization with useMemo/useCallback",
+        "stageNumber": 3,
+        "taskType": "topic",
+        "difficulty": "Advanced",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      }
+    ],
+    "updatedAt": "2026-08-20T17:05:56.350Z"
+  },
+  {
+    "createdAt": "2026-08-20T17:06:38.702Z",
+    "skillName": "React.js",
+    "targetRole": "Frontend Developer",
+    "currentLevel": "Beginner",
+    "targetLevel": "Advanced",
+    "priority": "High",
+    "prerequisites": [
+      "JavaScript (ES6+)",
+      "HTML5 / DOM",
+      "CSS3 / Flexbox"
+    ],
+    "estimatedLearningHours": 25,
+    "stages": [
+      {
+        "stageNumber": 1,
+        "title": "Stage 1: React Fundamentals & Component Architecture",
+        "level": "Beginner",
+        "topics": [
+          "JSX Syntax & Rules",
+          "Functional Components",
+          "Props & Dynamic Rendering",
+          "Event Handling"
+        ],
+        "practiceTasks": [
+          "Build an interactive Profile Card component",
+          "Pass dynamic prop lists from Parent to Child components"
+        ],
+        "miniProject": "Interactive User Directory with Live Search Filter",
+        "tasks": [
+          {
+            "taskId": "task_rdm_react_js_usr_1787245598615_s1_top0",
+            "roadmapId": "rdm_react_js_usr_1787245598615",
+            "userId": "usr_1787245598615",
+            "title": "JSX Syntax & Rules",
+            "stageNumber": 1,
+            "taskType": "topic",
+            "difficulty": "Beginner",
+            "status": "completed",
+            "completed": true,
+            "score": null,
+            "completedAt": "2026-08-20T17:06:38.716Z"
+          },
+          {
+            "taskId": "task_rdm_react_js_usr_1787245598615_s1_top1",
+            "roadmapId": "rdm_react_js_usr_1787245598615",
+            "userId": "usr_1787245598615",
+            "title": "Functional Components",
+            "stageNumber": 1,
+            "taskType": "topic",
+            "difficulty": "Beginner",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_react_js_usr_1787245598615_s1_top2",
+            "roadmapId": "rdm_react_js_usr_1787245598615",
+            "userId": "usr_1787245598615",
+            "title": "Props & Dynamic Rendering",
+            "stageNumber": 1,
+            "taskType": "topic",
+            "difficulty": "Beginner",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_react_js_usr_1787245598615_s1_top3",
+            "roadmapId": "rdm_react_js_usr_1787245598615",
+            "userId": "usr_1787245598615",
+            "title": "Event Handling",
+            "stageNumber": 1,
+            "taskType": "topic",
+            "difficulty": "Beginner",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          }
+        ],
+        "stageProgress": 25
+      },
+      {
+        "stageNumber": 2,
+        "title": "Stage 2: State Management & Hooks Mastery",
+        "level": "Intermediate",
+        "topics": [
+          "useState Hook for Local State",
+          "useEffect for Side Effects & Lifecycle",
+          "Controlled Form Inputs",
+          "Lifting State Up"
+        ],
+        "practiceTasks": [
+          "Create a controlled multi-step checkout form",
+          "Fetch JSON placeholder posts and render with loading states"
+        ],
+        "miniProject": "TaskFlow Kanban Board with Local Storage Persistence",
+        "tasks": [
+          {
+            "taskId": "task_rdm_react_js_usr_1787245598615_s2_top0",
+            "roadmapId": "rdm_react_js_usr_1787245598615",
+            "userId": "usr_1787245598615",
+            "title": "useState Hook for Local State",
+            "stageNumber": 2,
+            "taskType": "topic",
+            "difficulty": "Intermediate",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_react_js_usr_1787245598615_s2_top1",
+            "roadmapId": "rdm_react_js_usr_1787245598615",
+            "userId": "usr_1787245598615",
+            "title": "useEffect for Side Effects & Lifecycle",
+            "stageNumber": 2,
+            "taskType": "topic",
+            "difficulty": "Intermediate",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_react_js_usr_1787245598615_s2_top2",
+            "roadmapId": "rdm_react_js_usr_1787245598615",
+            "userId": "usr_1787245598615",
+            "title": "Controlled Form Inputs",
+            "stageNumber": 2,
+            "taskType": "topic",
+            "difficulty": "Intermediate",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_react_js_usr_1787245598615_s2_top3",
+            "roadmapId": "rdm_react_js_usr_1787245598615",
+            "userId": "usr_1787245598615",
+            "title": "Lifting State Up",
+            "stageNumber": 2,
+            "taskType": "topic",
+            "difficulty": "Intermediate",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          }
+        ],
+        "stageProgress": 0
+      },
+      {
+        "stageNumber": 3,
+        "title": "Stage 3: Advanced Patterns, Context & Production Deployment",
+        "level": "Advanced",
+        "topics": [
+          "useContext & Global State",
+          "Custom Hooks Architecture",
+          "React Router DOM & Route Guards",
+          "Performance Optimization with useMemo/useCallback"
+        ],
+        "practiceTasks": [
+          "Implement Dark/Light theme toggle using React Context",
+          "Create custom useFetch hook with retry logic"
+        ],
+        "miniProject": "Full React Job & Internship Portal with Authentication",
+        "tasks": [
+          {
+            "taskId": "task_rdm_react_js_usr_1787245598615_s3_top0",
+            "roadmapId": "rdm_react_js_usr_1787245598615",
+            "userId": "usr_1787245598615",
+            "title": "useContext & Global State",
+            "stageNumber": 3,
+            "taskType": "topic",
+            "difficulty": "Advanced",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_react_js_usr_1787245598615_s3_top1",
+            "roadmapId": "rdm_react_js_usr_1787245598615",
+            "userId": "usr_1787245598615",
+            "title": "Custom Hooks Architecture",
+            "stageNumber": 3,
+            "taskType": "topic",
+            "difficulty": "Advanced",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_react_js_usr_1787245598615_s3_top2",
+            "roadmapId": "rdm_react_js_usr_1787245598615",
+            "userId": "usr_1787245598615",
+            "title": "React Router DOM & Route Guards",
+            "stageNumber": 3,
+            "taskType": "topic",
+            "difficulty": "Advanced",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_react_js_usr_1787245598615_s3_top3",
+            "roadmapId": "rdm_react_js_usr_1787245598615",
+            "userId": "usr_1787245598615",
+            "title": "Performance Optimization with useMemo/useCallback",
+            "stageNumber": 3,
+            "taskType": "topic",
+            "difficulty": "Advanced",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          }
+        ],
+        "stageProgress": 0
+      }
+    ],
+    "mcqs": [
+      {
+        "question": "What is the primary purpose of the useEffect hook in React?",
+        "options": [
+          "To create state variables",
+          "To perform side effects like data fetching or DOM mutations",
+          "To render JSX directly",
+          "To style components"
+        ],
+        "correctAnswer": 1
+      },
+      {
+        "question": "Why should state never be mutated directly in React?",
+        "options": [
+          "It causes syntax errors",
+          "React relies on immutability to detect state changes and trigger re-renders",
+          "It deletes component props",
+          "Direct mutation is only allowed in classes"
+        ],
+        "correctAnswer": 1
+      }
+    ],
+    "codingChallenges": [
+      {
+        "title": "Controlled Counter with Bounds",
+        "description": "Implement a counter hook that prevents the count from exceeding max or falling below min.",
+        "starterCode": "function useBoundedCounter(initial, min, max) {\n  // Implement logic\n}"
+      }
+    ],
+    "finalProject": {
+      "title": "Build a Production React Job Portal with Live Filters & Search",
+      "description": "Full-fledged React single page application with routing, global state, API integrations, and responsive UI."
+    },
+    "finalAssessment": {
+      "mcqCount": 10,
+      "codingCount": 2,
+      "passingThreshold": 75
+    },
+    "overallProgress": 8,
+    "status": "IN_PROGRESS",
+    "generatedAt": "2026-08-20T17:06:38.683Z",
+    "roadmapId": "rdm_react_js_usr_1787245598615",
+    "userId": "usr_1787245598615",
+    "tasks": [
+      {
+        "taskId": "task_rdm_react_js_usr_1787245598615_s1_top0",
+        "roadmapId": "rdm_react_js_usr_1787245598615",
+        "userId": "usr_1787245598615",
+        "title": "JSX Syntax & Rules",
+        "stageNumber": 1,
+        "taskType": "topic",
+        "difficulty": "Beginner",
+        "status": "completed",
+        "completed": true,
+        "score": null,
+        "completedAt": "2026-08-20T17:06:38.716Z"
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245598615_s1_top1",
+        "roadmapId": "rdm_react_js_usr_1787245598615",
+        "userId": "usr_1787245598615",
+        "title": "Functional Components",
+        "stageNumber": 1,
+        "taskType": "topic",
+        "difficulty": "Beginner",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245598615_s1_top2",
+        "roadmapId": "rdm_react_js_usr_1787245598615",
+        "userId": "usr_1787245598615",
+        "title": "Props & Dynamic Rendering",
+        "stageNumber": 1,
+        "taskType": "topic",
+        "difficulty": "Beginner",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245598615_s1_top3",
+        "roadmapId": "rdm_react_js_usr_1787245598615",
+        "userId": "usr_1787245598615",
+        "title": "Event Handling",
+        "stageNumber": 1,
+        "taskType": "topic",
+        "difficulty": "Beginner",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245598615_s2_top0",
+        "roadmapId": "rdm_react_js_usr_1787245598615",
+        "userId": "usr_1787245598615",
+        "title": "useState Hook for Local State",
+        "stageNumber": 2,
+        "taskType": "topic",
+        "difficulty": "Intermediate",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245598615_s2_top1",
+        "roadmapId": "rdm_react_js_usr_1787245598615",
+        "userId": "usr_1787245598615",
+        "title": "useEffect for Side Effects & Lifecycle",
+        "stageNumber": 2,
+        "taskType": "topic",
+        "difficulty": "Intermediate",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245598615_s2_top2",
+        "roadmapId": "rdm_react_js_usr_1787245598615",
+        "userId": "usr_1787245598615",
+        "title": "Controlled Form Inputs",
+        "stageNumber": 2,
+        "taskType": "topic",
+        "difficulty": "Intermediate",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245598615_s2_top3",
+        "roadmapId": "rdm_react_js_usr_1787245598615",
+        "userId": "usr_1787245598615",
+        "title": "Lifting State Up",
+        "stageNumber": 2,
+        "taskType": "topic",
+        "difficulty": "Intermediate",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245598615_s3_top0",
+        "roadmapId": "rdm_react_js_usr_1787245598615",
+        "userId": "usr_1787245598615",
+        "title": "useContext & Global State",
+        "stageNumber": 3,
+        "taskType": "topic",
+        "difficulty": "Advanced",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245598615_s3_top1",
+        "roadmapId": "rdm_react_js_usr_1787245598615",
+        "userId": "usr_1787245598615",
+        "title": "Custom Hooks Architecture",
+        "stageNumber": 3,
+        "taskType": "topic",
+        "difficulty": "Advanced",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245598615_s3_top2",
+        "roadmapId": "rdm_react_js_usr_1787245598615",
+        "userId": "usr_1787245598615",
+        "title": "React Router DOM & Route Guards",
+        "stageNumber": 3,
+        "taskType": "topic",
+        "difficulty": "Advanced",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245598615_s3_top3",
+        "roadmapId": "rdm_react_js_usr_1787245598615",
+        "userId": "usr_1787245598615",
+        "title": "Performance Optimization with useMemo/useCallback",
+        "stageNumber": 3,
+        "taskType": "topic",
+        "difficulty": "Advanced",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      }
+    ],
+    "updatedAt": "2026-08-20T17:06:38.717Z"
+  },
+  {
+    "createdAt": "2026-08-20T17:08:01.024Z",
+    "skillName": "React.js",
+    "targetRole": "Frontend Developer",
+    "currentLevel": "Beginner",
+    "targetLevel": "Advanced",
+    "priority": "High",
+    "prerequisites": [
+      "JavaScript (ES6+)",
+      "HTML5 / DOM",
+      "CSS3 / Flexbox"
+    ],
+    "estimatedLearningHours": 25,
+    "stages": [
+      {
+        "stageNumber": 1,
+        "title": "Stage 1: React Fundamentals & Component Architecture",
+        "level": "Beginner",
+        "topics": [
+          "JSX Syntax & Rules",
+          "Functional Components",
+          "Props & Dynamic Rendering",
+          "Event Handling"
+        ],
+        "practiceTasks": [
+          "Build an interactive Profile Card component",
+          "Pass dynamic prop lists from Parent to Child components"
+        ],
+        "miniProject": "Interactive User Directory with Live Search Filter",
+        "tasks": [
+          {
+            "taskId": "task_rdm_react_js_usr_1787245680856_s1_top0",
+            "roadmapId": "rdm_react_js_usr_1787245680856",
+            "userId": "usr_1787245680856",
+            "title": "JSX Syntax & Rules",
+            "stageNumber": 1,
+            "taskType": "topic",
+            "difficulty": "Beginner",
+            "status": "completed",
+            "completed": true,
+            "score": null,
+            "completedAt": "2026-08-20T17:08:01.042Z"
+          },
+          {
+            "taskId": "task_rdm_react_js_usr_1787245680856_s1_top1",
+            "roadmapId": "rdm_react_js_usr_1787245680856",
+            "userId": "usr_1787245680856",
+            "title": "Functional Components",
+            "stageNumber": 1,
+            "taskType": "topic",
+            "difficulty": "Beginner",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_react_js_usr_1787245680856_s1_top2",
+            "roadmapId": "rdm_react_js_usr_1787245680856",
+            "userId": "usr_1787245680856",
+            "title": "Props & Dynamic Rendering",
+            "stageNumber": 1,
+            "taskType": "topic",
+            "difficulty": "Beginner",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_react_js_usr_1787245680856_s1_top3",
+            "roadmapId": "rdm_react_js_usr_1787245680856",
+            "userId": "usr_1787245680856",
+            "title": "Event Handling",
+            "stageNumber": 1,
+            "taskType": "topic",
+            "difficulty": "Beginner",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          }
+        ],
+        "stageProgress": 25
+      },
+      {
+        "stageNumber": 2,
+        "title": "Stage 2: State Management & Hooks Mastery",
+        "level": "Intermediate",
+        "topics": [
+          "useState Hook for Local State",
+          "useEffect for Side Effects & Lifecycle",
+          "Controlled Form Inputs",
+          "Lifting State Up"
+        ],
+        "practiceTasks": [
+          "Create a controlled multi-step checkout form",
+          "Fetch JSON placeholder posts and render with loading states"
+        ],
+        "miniProject": "TaskFlow Kanban Board with Local Storage Persistence",
+        "tasks": [
+          {
+            "taskId": "task_rdm_react_js_usr_1787245680856_s2_top0",
+            "roadmapId": "rdm_react_js_usr_1787245680856",
+            "userId": "usr_1787245680856",
+            "title": "useState Hook for Local State",
+            "stageNumber": 2,
+            "taskType": "topic",
+            "difficulty": "Intermediate",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_react_js_usr_1787245680856_s2_top1",
+            "roadmapId": "rdm_react_js_usr_1787245680856",
+            "userId": "usr_1787245680856",
+            "title": "useEffect for Side Effects & Lifecycle",
+            "stageNumber": 2,
+            "taskType": "topic",
+            "difficulty": "Intermediate",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_react_js_usr_1787245680856_s2_top2",
+            "roadmapId": "rdm_react_js_usr_1787245680856",
+            "userId": "usr_1787245680856",
+            "title": "Controlled Form Inputs",
+            "stageNumber": 2,
+            "taskType": "topic",
+            "difficulty": "Intermediate",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_react_js_usr_1787245680856_s2_top3",
+            "roadmapId": "rdm_react_js_usr_1787245680856",
+            "userId": "usr_1787245680856",
+            "title": "Lifting State Up",
+            "stageNumber": 2,
+            "taskType": "topic",
+            "difficulty": "Intermediate",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          }
+        ],
+        "stageProgress": 0
+      },
+      {
+        "stageNumber": 3,
+        "title": "Stage 3: Advanced Patterns, Context & Production Deployment",
+        "level": "Advanced",
+        "topics": [
+          "useContext & Global State",
+          "Custom Hooks Architecture",
+          "React Router DOM & Route Guards",
+          "Performance Optimization with useMemo/useCallback"
+        ],
+        "practiceTasks": [
+          "Implement Dark/Light theme toggle using React Context",
+          "Create custom useFetch hook with retry logic"
+        ],
+        "miniProject": "Full React Job & Internship Portal with Authentication",
+        "tasks": [
+          {
+            "taskId": "task_rdm_react_js_usr_1787245680856_s3_top0",
+            "roadmapId": "rdm_react_js_usr_1787245680856",
+            "userId": "usr_1787245680856",
+            "title": "useContext & Global State",
+            "stageNumber": 3,
+            "taskType": "topic",
+            "difficulty": "Advanced",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_react_js_usr_1787245680856_s3_top1",
+            "roadmapId": "rdm_react_js_usr_1787245680856",
+            "userId": "usr_1787245680856",
+            "title": "Custom Hooks Architecture",
+            "stageNumber": 3,
+            "taskType": "topic",
+            "difficulty": "Advanced",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_react_js_usr_1787245680856_s3_top2",
+            "roadmapId": "rdm_react_js_usr_1787245680856",
+            "userId": "usr_1787245680856",
+            "title": "React Router DOM & Route Guards",
+            "stageNumber": 3,
+            "taskType": "topic",
+            "difficulty": "Advanced",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_react_js_usr_1787245680856_s3_top3",
+            "roadmapId": "rdm_react_js_usr_1787245680856",
+            "userId": "usr_1787245680856",
+            "title": "Performance Optimization with useMemo/useCallback",
+            "stageNumber": 3,
+            "taskType": "topic",
+            "difficulty": "Advanced",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          }
+        ],
+        "stageProgress": 0
+      }
+    ],
+    "mcqs": [
+      {
+        "question": "What is the primary purpose of the useEffect hook in React?",
+        "options": [
+          "To create state variables",
+          "To perform side effects like data fetching or DOM mutations",
+          "To render JSX directly",
+          "To style components"
+        ],
+        "correctAnswer": 1
+      },
+      {
+        "question": "Why should state never be mutated directly in React?",
+        "options": [
+          "It causes syntax errors",
+          "React relies on immutability to detect state changes and trigger re-renders",
+          "It deletes component props",
+          "Direct mutation is only allowed in classes"
+        ],
+        "correctAnswer": 1
+      }
+    ],
+    "codingChallenges": [
+      {
+        "title": "Controlled Counter with Bounds",
+        "description": "Implement a counter hook that prevents the count from exceeding max or falling below min.",
+        "starterCode": "function useBoundedCounter(initial, min, max) {\n  // Implement logic\n}"
+      }
+    ],
+    "finalProject": {
+      "title": "Build a Production React Job Portal with Live Filters & Search",
+      "description": "Full-fledged React single page application with routing, global state, API integrations, and responsive UI."
+    },
+    "finalAssessment": {
+      "mcqCount": 10,
+      "codingCount": 2,
+      "passingThreshold": 75
+    },
+    "overallProgress": 8,
+    "status": "IN_PROGRESS",
+    "generatedAt": "2026-08-20T17:08:00.989Z",
+    "roadmapId": "rdm_react_js_usr_1787245680856",
+    "userId": "usr_1787245680856",
+    "tasks": [
+      {
+        "taskId": "task_rdm_react_js_usr_1787245680856_s1_top0",
+        "roadmapId": "rdm_react_js_usr_1787245680856",
+        "userId": "usr_1787245680856",
+        "title": "JSX Syntax & Rules",
+        "stageNumber": 1,
+        "taskType": "topic",
+        "difficulty": "Beginner",
+        "status": "completed",
+        "completed": true,
+        "score": null,
+        "completedAt": "2026-08-20T17:08:01.042Z"
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245680856_s1_top1",
+        "roadmapId": "rdm_react_js_usr_1787245680856",
+        "userId": "usr_1787245680856",
+        "title": "Functional Components",
+        "stageNumber": 1,
+        "taskType": "topic",
+        "difficulty": "Beginner",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245680856_s1_top2",
+        "roadmapId": "rdm_react_js_usr_1787245680856",
+        "userId": "usr_1787245680856",
+        "title": "Props & Dynamic Rendering",
+        "stageNumber": 1,
+        "taskType": "topic",
+        "difficulty": "Beginner",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245680856_s1_top3",
+        "roadmapId": "rdm_react_js_usr_1787245680856",
+        "userId": "usr_1787245680856",
+        "title": "Event Handling",
+        "stageNumber": 1,
+        "taskType": "topic",
+        "difficulty": "Beginner",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245680856_s2_top0",
+        "roadmapId": "rdm_react_js_usr_1787245680856",
+        "userId": "usr_1787245680856",
+        "title": "useState Hook for Local State",
+        "stageNumber": 2,
+        "taskType": "topic",
+        "difficulty": "Intermediate",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245680856_s2_top1",
+        "roadmapId": "rdm_react_js_usr_1787245680856",
+        "userId": "usr_1787245680856",
+        "title": "useEffect for Side Effects & Lifecycle",
+        "stageNumber": 2,
+        "taskType": "topic",
+        "difficulty": "Intermediate",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245680856_s2_top2",
+        "roadmapId": "rdm_react_js_usr_1787245680856",
+        "userId": "usr_1787245680856",
+        "title": "Controlled Form Inputs",
+        "stageNumber": 2,
+        "taskType": "topic",
+        "difficulty": "Intermediate",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245680856_s2_top3",
+        "roadmapId": "rdm_react_js_usr_1787245680856",
+        "userId": "usr_1787245680856",
+        "title": "Lifting State Up",
+        "stageNumber": 2,
+        "taskType": "topic",
+        "difficulty": "Intermediate",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245680856_s3_top0",
+        "roadmapId": "rdm_react_js_usr_1787245680856",
+        "userId": "usr_1787245680856",
+        "title": "useContext & Global State",
+        "stageNumber": 3,
+        "taskType": "topic",
+        "difficulty": "Advanced",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245680856_s3_top1",
+        "roadmapId": "rdm_react_js_usr_1787245680856",
+        "userId": "usr_1787245680856",
+        "title": "Custom Hooks Architecture",
+        "stageNumber": 3,
+        "taskType": "topic",
+        "difficulty": "Advanced",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245680856_s3_top2",
+        "roadmapId": "rdm_react_js_usr_1787245680856",
+        "userId": "usr_1787245680856",
+        "title": "React Router DOM & Route Guards",
+        "stageNumber": 3,
+        "taskType": "topic",
+        "difficulty": "Advanced",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_react_js_usr_1787245680856_s3_top3",
+        "roadmapId": "rdm_react_js_usr_1787245680856",
+        "userId": "usr_1787245680856",
+        "title": "Performance Optimization with useMemo/useCallback",
+        "stageNumber": 3,
+        "taskType": "topic",
+        "difficulty": "Advanced",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      }
+    ],
+    "updatedAt": "2026-08-20T17:08:01.044Z"
   }
 ]

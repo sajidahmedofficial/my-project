@@ -78,5 +78,85 @@
     "certificateId": "SBA-JAVASCRIPT-167AB0",
     "verifiedAt": "2026-08-20T16:55:30.994Z",
     "updatedAt": "2026-08-20T16:55:30.995Z"
+  },
+  {
+    "createdAt": "2026-08-20T17:06:40.753Z",
+    "verificationId": "ver_1787245600752_sme7gn",
+    "userId": "usr_1787245598615",
+    "skillName": "React.js",
+    "mcqScore": 100,
+    "codingScore": 100,
+    "projectScore": 65,
+    "finalScore": 88,
+    "passingThreshold": 80,
+    "status": "verified",
+    "repositoryUrl": "https://github.com/facebook/react",
+    "repositoryName": "react/react",
+    "evidence": [
+      "Automated unit and integration test documentation present"
+    ],
+    "certificateId": "SBA-REACTJS-348DCD",
+    "verifiedAt": "2026-08-20T17:06:40.752Z",
+    "updatedAt": "2026-08-20T17:06:40.753Z"
+  },
+  {
+    "createdAt": "2026-08-20T17:06:41.680Z",
+    "verificationId": "ver_1787245601680_o873c8",
+    "userId": "usr_1787245598615",
+    "skillName": "React.js",
+    "mcqScore": 100,
+    "codingScore": 100,
+    "projectScore": 65,
+    "finalScore": 88,
+    "passingThreshold": 80,
+    "status": "verified",
+    "repositoryUrl": "https://github.com/facebook/react",
+    "repositoryName": "react/react",
+    "evidence": [
+      "Automated unit and integration test documentation present"
+    ],
+    "certificateId": "SBA-REACTJS-348DCD",
+    "verifiedAt": "2026-08-20T17:06:41.680Z",
+    "updatedAt": "2026-08-20T17:06:41.680Z"
+  },
+  {
+    "createdAt": "2026-08-20T17:08:03.653Z",
+    "verificationId": "ver_1787245683653_v22q96",
+    "userId": "usr_1787245680856",
+    "skillName": "React.js",
+    "mcqScore": 100,
+    "codingScore": 100,
+    "projectScore": 65,
+    "finalScore": 88,
+    "passingThreshold": 80,
+    "status": "verified",
+    "repositoryUrl": "https://github.com/facebook/react",
+    "repositoryName": "react/react",
+    "evidence": [
+      "Automated unit and integration test documentation present"
+    ],
+    "certificateId": "SBA-REACTJS-17B794",
+    "verifiedAt": "2026-08-20T17:08:03.653Z",
+    "updatedAt": "2026-08-20T17:08:03.653Z"
+  },
+  {
+    "createdAt": "2026-08-20T17:08:04.936Z",
+    "verificationId": "ver_1787245684935_u91kpo",
+    "userId": "usr_1787245680856",
+    "skillName": "React.js",
+    "mcqScore": 100,
+    "codingScore": 100,
+    "projectScore": 65,
+    "finalScore": 88,
+    "passingThreshold": 80,
+    "status": "verified",
+    "repositoryUrl": "https://github.com/facebook/react",
+    "repositoryName": "react/react",
+    "evidence": [
+      "Automated unit and integration test documentation present"
+    ],
+    "certificateId": "SBA-REACTJS-17B794",
+    "verifiedAt": "2026-08-20T17:08:04.935Z",
+    "updatedAt": "2026-08-20T17:08:04.936Z"
   }
 ]

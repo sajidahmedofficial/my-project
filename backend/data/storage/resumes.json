@@ -61,5 +61,69 @@
       "ver_1787244931003_8hkb1"
     ],
     "updatedAt": "2026-08-20T16:55:31.008Z"
+  },
+  {
+    "createdAt": "2026-08-20T17:06:40.764Z",
+    "resumeId": "res_usr_1787245598615_1787245600760",
+    "userId": "usr_1787245598615",
+    "fileName": "My_Resume.pdf",
+    "resumeText": "",
+    "skills": [
+      "React.js"
+    ],
+    "verifiedSkills": [
+      {
+        "skillName": "React.js",
+        "status": "Verified",
+        "verifiedDate": "2026-08-20",
+        "score": 88,
+        "certificateCode": "SBA-REACTJS-348DCD",
+        "formattedDisplay": "React.js — Verified (88%)"
+      }
+    ],
+    "analysis": {
+      "overallMatchScore": 5,
+      "jobMatchScore": 5,
+      "verifiedSkillsCount": 1,
+      "lastRecalculatedAt": "2026-08-20T17:06:41.692Z"
+    },
+    "targetRole": "Frontend Developer",
+    "versions": [
+      "ver_1787245600760_a3yy4",
+      "ver_1787245601686_ymqz1"
+    ],
+    "updatedAt": "2026-08-20T17:06:41.693Z"
+  },
+  {
+    "createdAt": "2026-08-20T17:08:03.663Z",
+    "resumeId": "res_usr_1787245680856_1787245683657",
+    "userId": "usr_1787245680856",
+    "fileName": "My_Resume.pdf",
+    "resumeText": "",
+    "skills": [
+      "React.js"
+    ],
+    "verifiedSkills": [
+      {
+        "skillName": "React.js",
+        "status": "Verified",
+        "verifiedDate": "2026-08-20",
+        "score": 88,
+        "certificateCode": "SBA-REACTJS-17B794",
+        "formattedDisplay": "React.js — Verified (88%)"
+      }
+    ],
+    "analysis": {
+      "overallMatchScore": 30,
+      "jobMatchScore": 30,
+      "verifiedSkillsCount": 1,
+      "lastRecalculatedAt": "2026-08-20T17:08:04.957Z"
+    },
+    "targetRole": "Frontend Developer",
+    "versions": [
+      "ver_1787245683657_5ucw9",
+      "ver_1787245684948_m2aq4"
+    ],
+    "updatedAt": "2026-08-20T17:08:04.958Z"
   }
 ]

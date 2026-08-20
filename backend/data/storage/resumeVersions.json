@@ -53,5 +53,89 @@
     "snapshotDate": "2026-08-20T16:55:31.003Z",
     "reason": "Pre-update snapshot before verifying \"JavaScript\"",
     "updatedAt": "2026-08-20T16:55:31.003Z"
+  },
+  {
+    "createdAt": "2026-08-20T17:06:40.761Z",
+    "versionId": "ver_1787245600760_a3yy4",
+    "resumeId": "res_usr_1787245598615_1787245600760",
+    "userId": "usr_1787245598615",
+    "skills": [],
+    "verifiedSkills": [],
+    "analysis": null,
+    "jobMatchScore": 65,
+    "snapshotDate": "2026-08-20T17:06:40.760Z",
+    "reason": "Pre-update snapshot before verifying \"React.js\"",
+    "updatedAt": "2026-08-20T17:06:40.761Z"
+  },
+  {
+    "createdAt": "2026-08-20T17:06:41.686Z",
+    "versionId": "ver_1787245601686_ymqz1",
+    "resumeId": "res_usr_1787245598615_1787245600760",
+    "userId": "usr_1787245598615",
+    "skills": [
+      "React.js"
+    ],
+    "verifiedSkills": [
+      {
+        "skillName": "React.js",
+        "status": "Verified",
+        "verifiedDate": "2026-08-20",
+        "score": 88,
+        "certificateCode": "SBA-REACTJS-348DCD",
+        "formattedDisplay": "React.js — Verified (88%)"
+      }
+    ],
+    "analysis": {
+      "overallMatchScore": 30,
+      "jobMatchScore": 30,
+      "verifiedSkillsCount": 1,
+      "lastRecalculatedAt": "2026-08-20T17:06:40.764Z"
+    },
+    "jobMatchScore": 30,
+    "snapshotDate": "2026-08-20T17:06:41.686Z",
+    "reason": "Pre-update snapshot before verifying \"React.js\"",
+    "updatedAt": "2026-08-20T17:06:41.686Z"
+  },
+  {
+    "createdAt": "2026-08-20T17:08:03.657Z",
+    "versionId": "ver_1787245683657_5ucw9",
+    "resumeId": "res_usr_1787245680856_1787245683657",
+    "userId": "usr_1787245680856",
+    "skills": [],
+    "verifiedSkills": [],
+    "analysis": null,
+    "jobMatchScore": 65,
+    "snapshotDate": "2026-08-20T17:08:03.657Z",
+    "reason": "Pre-update snapshot before verifying \"React.js\"",
+    "updatedAt": "2026-08-20T17:08:03.657Z"
+  },
+  {
+    "createdAt": "2026-08-20T17:08:04.948Z",
+    "versionId": "ver_1787245684948_m2aq4",
+    "resumeId": "res_usr_1787245680856_1787245683657",
+    "userId": "usr_1787245680856",
+    "skills": [
+      "React.js"
+    ],
+    "verifiedSkills": [
+      {
+        "skillName": "React.js",
+        "status": "Verified",
+        "verifiedDate": "2026-08-20",
+        "score": 88,
+        "certificateCode": "SBA-REACTJS-17B794",
+        "formattedDisplay": "React.js — Verified (88%)"
+      }
+    ],
+    "analysis": {
+      "overallMatchScore": 30,
+      "jobMatchScore": 30,
+      "verifiedSkillsCount": 1,
+      "lastRecalculatedAt": "2026-08-20T17:08:03.663Z"
+    },
+    "jobMatchScore": 30,
+    "snapshotDate": "2026-08-20T17:08:04.948Z",
+    "reason": "Pre-update snapshot before verifying \"React.js\"",
+    "updatedAt": "2026-08-20T17:08:04.948Z"
   }
 ]

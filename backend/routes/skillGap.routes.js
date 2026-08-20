@@ -771,7 +771,7 @@ router.post('/verify', async (req, res) => {
  * @route   GET /api/skills/verified
  */
 router.get('/skills/verified', async (req, res) => {
-  const userId = req.query.userId || "guest_user";
+  const userId = getAuthenticatedUserId(req);
 
   if (mongoose.connection.readyState === 1 && mongoose.Types.ObjectId.isValid(userId)) {
     try {

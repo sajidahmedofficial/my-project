@@ -38,5 +38,41 @@
     "issueDate": "2026-08-20T16:55:30.525Z",
     "issuedAt": "2026-08-20T16:55:31.001Z",
     "updatedAt": "2026-08-20T16:55:31.001Z"
+  },
+  {
+    "createdAt": "2026-08-20T17:06:40.750Z",
+    "certificateId": "SBA-REACTJS-348DCD",
+    "userId": "usr_1787245598615",
+    "userName": "SkillBridge Student",
+    "skillName": "React.js",
+    "score": 88,
+    "passingThreshold": 80,
+    "status": "verified",
+    "verificationStatus": "VERIFIED",
+    "verificationId": null,
+    "verificationHash": "5f0b0327bd9ffadd2b1825564d272bea9262f89b1a62d56584455cb700233050",
+    "filePath": "/home/yourname/projects/skillbridge/generated/certificates/SBA-REACTJS-348DCD.pdf",
+    "pdfUrl": "/api/certificates/SBA-REACTJS-348DCD/download",
+    "issueDate": "2026-08-20T17:06:40.622Z",
+    "issuedAt": "2026-08-20T17:06:41.684Z",
+    "updatedAt": "2026-08-20T17:06:41.684Z"
+  },
+  {
+    "createdAt": "2026-08-20T17:08:03.652Z",
+    "certificateId": "SBA-REACTJS-17B794",
+    "userId": "usr_1787245680856",
+    "userName": "SkillBridge Student",
+    "skillName": "React.js",
+    "score": 88,
+    "passingThreshold": 80,
+    "status": "verified",
+    "verificationStatus": "VERIFIED",
+    "verificationId": null,
+    "verificationHash": "dea1325f155f097d61db4e704a71a0203de44fddee993782cc5c2d5439401cab",
+    "filePath": "/home/yourname/projects/skillbridge/generated/certificates/SBA-REACTJS-17B794.pdf",
+    "pdfUrl": "/api/certificates/SBA-REACTJS-17B794/download",
+    "issueDate": "2026-08-20T17:08:03.583Z",
+    "issuedAt": "2026-08-20T17:08:04.945Z",
+    "updatedAt": "2026-08-20T17:08:04.945Z"
   }
 ]

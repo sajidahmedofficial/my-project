@@ -9,7 +9,7 @@ const router = express.Router();
 
 // Helper to generate JWT Token
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET || 'secretkey123', {
+  return jwt.sign({ id }, process.env.JWT_SECRET || 'skillbridge_secure_jwt_secret_key_2026', {
     expiresIn: '30d'
   });
 };
@@ -45,10 +45,11 @@ router.post('/register', async (req, res) => {
     }
 
     // Fallback response if MongoDB is not connected
+    const fallbackId = `usr_${Date.now()}`;
     res.status(201).json({
       message: 'Registration successful!',
-      user: { id: `usr_${Date.now()}`, name, email, isVerified: true },
-      token: `sb_token_${Date.now()}`
+      user: { id: fallbackId, name, email, isVerified: true },
+      token: generateToken(fallbackId)
     });
   } catch (error) {
     res.status(500).json({ error: 'Server error', message: error.message });
@@ -77,10 +78,11 @@ router.post('/login', async (req, res) => {
 
     // Fallback response if MongoDB is not connected
     const mockName = email ? email.split('@')[0].replace('.', ' ').toUpperCase() : 'STUDENT';
+    const fallbackId = 'usr_student_123';
     res.json({
       message: 'Login successful',
       user: {
-        id: 'usr_mock_123',
+        id: fallbackId,
         name: mockName,
         email: email || 'student@example.com',
         college: 'Stanford University',
@@ -88,7 +90,7 @@ router.post('/login', async (req, res) => {
         skills: ['React', 'Node.js', 'Python'],
         isVerified: true
       },
-      token: `sb_token_${Date.now()}`
+      token: generateToken(fallbackId)
     });
   } catch (error) {
     res.status(500).json({ error: 'Server error', message: error.message });
