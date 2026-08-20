@@ -9,6 +9,8 @@ import resumeRoutes from './routes/resume.routes.js';
 import skillRoutes from './routes/skill.routes.js';
 import certificateRoutes from './routes/certificate.routes.js';
 import roadmapRoutes from './routes/roadmap.routes.js';
+import authRoutes from './routes/auth.js';
+import aptitudeRoutes from './routes/aptitude.routes.js';
 
 import aiRoutes from './routes/ai.js';
 
@@ -22,16 +24,30 @@ app.use(
 
 app.use(express.json());
 
+app.use("/api/auth", authRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/resume", resumeRoutes);
 app.use("/api/skills", skillRoutes);
 app.use("/api/certificates", certificateRoutes);
 app.use("/api/roadmap", roadmapRoutes);
+app.use("/api/aptitude", aptitudeRoutes);
+app.use("/api", aptitudeRoutes);
 
 app.get("/api/health", (req, res) => {
   res.json({
     status: "OK",
-    service: "SkillBridge Resume AI"
+    service: "SkillBridge AI API",
+    endpoints: [
+      "/api/auth",
+      "/api/ai",
+      "/api/resume",
+      "/api/skills",
+      "/api/certificates",
+      "/api/roadmap",
+      "/api/aptitude",
+      "/api/topics",
+      "/api/categories"
+    ]
   });
 });
 

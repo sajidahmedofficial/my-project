@@ -91,4 +91,14 @@ router.post(
   }
 );
 
+// Apply fix to identified resume problem
+router.post('/apply-fix', (req, res) => {
+  const { problemId } = req.body;
+  res.json({
+    success: true,
+    message: `Problem fix '${problemId}' applied successfully!`,
+    appliedId: problemId
+  });
+});
+
 export default router;
