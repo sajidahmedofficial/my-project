@@ -20,5 +20,23 @@
     "pdfUrl": "/api/certificates/SBA-JAVASCRIPT-462848/download",
     "issuedAt": "2026-08-20T16:52:11.698Z",
     "updatedAt": "2026-08-20T16:52:11.699Z"
+  },
+  {
+    "createdAt": "2026-08-20T16:55:30.578Z",
+    "certificateId": "SBA-JAVASCRIPT-167AB0",
+    "userId": "user_cert_test",
+    "userName": "Alex Johnson",
+    "skillName": "JavaScript",
+    "score": 88,
+    "passingThreshold": 80,
+    "status": "verified",
+    "verificationStatus": "VERIFIED",
+    "verificationId": null,
+    "verificationHash": "930a6a212802a6e666e436a3ec5d1f324e2b58a2ceaf7a3933bed11e648dd4b7",
+    "filePath": "/home/yourname/projects/skillbridge/generated/certificates/SBA-JAVASCRIPT-167AB0.pdf",
+    "pdfUrl": "/api/certificates/SBA-JAVASCRIPT-167AB0/download",
+    "issueDate": "2026-08-20T16:55:30.525Z",
+    "issuedAt": "2026-08-20T16:55:31.001Z",
+    "updatedAt": "2026-08-20T16:55:31.001Z"
   }
 ]

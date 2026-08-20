@@ -13,7 +13,7 @@ import Certificate from '../models/Certificate.js';
 import { performSkillGapAnalysis } from '../services/skillGap.service.js';
 import { generatePersonalizedRoadmap } from '../services/roadmapGenerator.service.js';
 import { evaluateSkillVerification } from '../services/skillEvaluator.service.js';
-import { generateCertificate } from '../services/certificate.service.js';
+import { issueVerifiedCertificate, generateCertificate } from '../services/certificate.service.js';
 import { generateStructuredPatch, updateResumeWithVerifiedSkill } from '../services/resumeUpdater.service.js';
 
 import { getParsedResume } from '../services/resumeStore.service.js';
@@ -589,16 +589,18 @@ router.post('/verify', async (req, res) => {
       });
     }
 
-    // Passed Verification -> Generate Certificate
-    const cert = await generateCertificate({
-      name: candidateName,
-      skill: skillName,
-      score: evalResult.finalScore,
-      level: "Advanced"
+    // Passed Verification -> Generate Authentic Unique Certificate
+    const cert = await issueVerifiedCertificate({
+      userId: uId,
+      userName: candidateName,
+      skillName,
+      verificationStatus: "verified",
+      finalScore: evalResult.finalScore,
+      passingThreshold: 80
     });
 
     // Generate structured patch for automatic resume update
-    const patch = generateStructuredPatch(skillName, cert.certificateId);
+    const patch = generateStructuredPatch(skillName, cert.certificateId, evalResult.finalScore);
 
     // 1. Save SkillVerification to persistent disk storage
     const verificationRecord = {

@@ -1,36 +1,20 @@
-// agent-notes: { ctx: "PDFKit certificate generator service creating physical PDF files in generated/certificates", deps: ["pdfkit", "fs", "path", "crypto"], state: "active", last: "anti@2026-08-20" }
+// agent-notes: { ctx: "Production Certificate Generator issuing authentic unique PDFKit certificates only upon verified status and score >= threshold", deps: ["pdfkit", "fs", "path", "crypto", "../storage/persistentStore.js"], state: "active", last: "anti@2026-08-20" }
 import PDFDocument from "pdfkit";
 import fs from "fs";
 import path from "path";
 import crypto from "crypto";
+import persistentStore from "../storage/persistentStore.js";
 
-export async function generateCertificate({
-  name = "Aarav Sharma",
-  skill = "React.js",
-  score = 91,
-  level = "Advanced"
-}) {
-  const cleanSkill = (skill || "SKILL").toUpperCase().replace(/[^A-Z0-9]/g, "");
-  const randomSuffix = Math.floor(100000 + Math.random() * 900000);
-  const certificateId = `SBA-${cleanSkill}-${randomSuffix}`;
+const CERTIFICATES_DIR = path.join(process.cwd(), "generated", "certificates");
+if (!fs.existsSync(CERTIFICATES_DIR)) {
+  fs.mkdirSync(CERTIFICATES_DIR, { recursive: true });
+}
 
-  const directory = path.join(
-    process.cwd(),
-    "generated",
-    "certificates"
-  );
-
-  fs.mkdirSync(
-    directory,
-    {
-      recursive: true
-    }
-  );
-
-  const filePath = path.join(
-    directory,
-    `${certificateId}.pdf`
-  );
+/**
+ * Creates physical PDF certificate file on disk
+ */
+function createCertificatePdfFile({ certificateId, userName, skillName, score, issueDate, verificationStatus = "VERIFIED" }) {
+  const filePath = path.join(CERTIFICATES_DIR, `${certificateId}.pdf`);
 
   const doc = new PDFDocument({
     size: "A4",
@@ -40,13 +24,14 @@ export async function generateCertificate({
   const writeStream = fs.createWriteStream(filePath);
   doc.pipe(writeStream);
 
-  // Border frame
+  // Outer Border Frame
   doc
     .rect(20, 20, 555, 802)
     .lineWidth(3)
     .strokeColor('#7c3aed')
     .stroke();
 
+  // Inner Border Frame
   doc
     .rect(26, 26, 543, 790)
     .lineWidth(1)
@@ -58,128 +43,176 @@ export async function generateCertificate({
   doc
     .fillColor('#7c3aed')
     .fontSize(28)
-    .text(
-      "SKILL BRIDGE AI",
-      {
-        align: "center"
-      }
-    );
+    .font('Helvetica-Bold')
+    .text("SKILL BRIDGE AI", { align: "center" });
 
   doc.moveDown(0.5);
 
   doc
     .fillColor('#111827')
     .fontSize(22)
-    .text(
-      "CERTIFICATE OF SKILL VERIFICATION",
-      {
-        align: "center"
-      }
-    );
+    .font('Helvetica-Bold')
+    .text("CERTIFICATE OF SKILL VERIFICATION", { align: "center" });
 
   doc.moveDown(1.5);
 
   doc
     .fillColor('#4b5563')
     .fontSize(16)
-    .text(
-      "This certifies that",
-      {
-        align: "center"
-      }
-    );
+    .font('Helvetica')
+    .text("This certifies that", { align: "center" });
 
   doc.moveDown(0.8);
 
   doc
     .fillColor('#111827')
     .fontSize(28)
-    .text(
-      name,
-      {
-        align: "center"
-      }
-    );
+    .font('Helvetica-Bold')
+    .text(userName, { align: "center" });
 
   doc.moveDown(1);
 
   doc
     .fillColor('#4b5563')
     .fontSize(15)
-    .text(
-      `has successfully demonstrated verified technical competency in`,
-      {
-        align: "center"
-      }
-    );
+    .font('Helvetica')
+    .text("has successfully demonstrated verified technical competency in", { align: "center" });
 
   doc.moveDown(0.5);
 
   doc
     .fillColor('#7c3aed')
     .fontSize(24)
-    .text(
-      skill,
-      {
-        align: "center"
-      }
-    );
+    .font('Helvetica-Bold')
+    .text(skillName, { align: "center" });
 
   doc.moveDown(1.5);
 
   doc
     .fillColor('#111827')
     .fontSize(14)
-    .text(
-      `Verification Score: ${score}%  |  Proficiency Level: ${level}`,
-      {
-        align: "center"
-      }
-    );
+    .font('Helvetica-Bold')
+    .text(`Verification Score: ${score}%  |  Passing Threshold: 80%`, { align: "center" });
 
   doc.moveDown(0.5);
 
   doc
     .fillColor('#059669')
-    .fontSize(12)
-    .text(
-      "Status: VERIFIED & AUTHENTICATED BY SKILL BRIDGE AI",
-      {
-        align: "center"
-      }
-    );
+    .fontSize(13)
+    .font('Helvetica-Bold')
+    .text(`Status: ${verificationStatus.toUpperCase()} & AUTHENTICATED BY SKILL BRIDGE AI`, { align: "center" });
 
   doc.moveDown(3);
 
   doc
     .fillColor('#6b7280')
     .fontSize(11)
-    .text(
-      `Certificate ID: ${certificateId}  •  Issued: ${new Date().toLocaleDateString()}`,
-      {
-        align: "center"
-      }
-    );
+    .font('Helvetica')
+    .text(`Certificate ID: ${certificateId}  •  Issue Date: ${issueDate}`, { align: "center" });
 
   doc.end();
 
-  const payload = `${name}|${skill}|${score}|${certificateId}`;
-  const verificationHash = crypto.createHash('sha256').update(payload).digest('hex');
-
-  return {
-    certificateId,
-    filePath,
-    verificationHash,
-    pdfUrl: `/api/certificates/${certificateId}/download`,
-    issuedAt: new Date().toISOString()
-  };
+  return filePath;
 }
 
-export const issueCertificate = async (userName, skillName, score, level = "Advanced") => {
-  return generateCertificate({ name: userName, skill: skillName, score, level });
+/**
+ * Authoritatively issues a skill certificate ONLY when verification.status === "verified" AND finalScore >= passingThreshold
+ */
+export async function issueVerifiedCertificate({
+  userId = "guest_user",
+  userName = "SkillBridge Student",
+  skillName,
+  verificationStatus = "verified",
+  finalScore,
+  passingThreshold = 80,
+  verificationId = null
+}) {
+  if (!skillName) {
+    throw new Error("skillName is required for certificate generation");
+  }
+
+  // 1. Strict Gate: ONLY issue certificate when status is "verified" AND score >= threshold
+  const isStatusVerified = verificationStatus === "verified" || verificationStatus === "VERIFIED" || verificationStatus === "PASSED";
+  const numScore = Number(finalScore);
+
+  if (!isStatusVerified || isNaN(numScore) || numScore < passingThreshold) {
+    throw new Error(`Certificate rejected: Cannot create certificate for unverified assessment. (Status: "${verificationStatus}", Score: ${numScore}%, Required: >=${passingThreshold}%)`);
+  }
+
+  // 2. Prevent duplicate certificates for the same verification / user skill
+  const existingCert = persistentStore.findOne('certificates', { userId, skillName });
+  if (existingCert) {
+    // If physical file exists, return existing
+    const existingFile = path.join(CERTIFICATES_DIR, `${existingCert.certificateId}.pdf`);
+    if (!fs.existsSync(existingFile)) {
+      createCertificatePdfFile({
+        certificateId: existingCert.certificateId,
+        userName: existingCert.userName || userName,
+        skillName: existingCert.skillName,
+        score: existingCert.score,
+        issueDate: existingCert.issueDate ? new Date(existingCert.issueDate).toLocaleDateString() : new Date().toLocaleDateString(),
+        verificationStatus: "VERIFIED"
+      });
+    }
+    return existingCert;
+  }
+
+  // 3. Generate unique cryptographically random Certificate ID
+  const cleanSkill = skillName.toUpperCase().replace(/[^A-Z0-9]/g, "");
+  const randomToken = crypto.randomBytes(3).toString('hex').toUpperCase();
+  const certificateId = `SBA-${cleanSkill}-${randomToken}`;
+
+  const issueDateFormatted = new Date().toLocaleDateString();
+  const issueDateIso = new Date().toISOString();
+
+  // 4. Generate Physical PDF
+  const filePath = createCertificatePdfFile({
+    certificateId,
+    userName,
+    skillName,
+    score: numScore,
+    issueDate: issueDateFormatted,
+    verificationStatus: "VERIFIED"
+  });
+
+  const payload = `${userName}|${skillName}|${numScore}|${certificateId}`;
+  const verificationHash = crypto.createHash('sha256').update(payload).digest('hex');
+
+  const certRecord = {
+    certificateId,
+    userId,
+    userName,
+    skillName,
+    score: numScore,
+    passingThreshold,
+    status: "verified",
+    verificationStatus: "VERIFIED",
+    verificationId,
+    verificationHash,
+    filePath,
+    pdfUrl: `/api/certificates/${certificateId}/download`,
+    issueDate: issueDateIso,
+    issuedAt: issueDateIso
+  };
+
+  // 5. Store certificate in persistent storage
+  persistentStore.upsert('certificates', 'certificateId', certRecord);
+
+  return certRecord;
+}
+
+export const generateCertificate = async ({ name, skill, score, level, userId, status, threshold }) => {
+  return issueVerifiedCertificate({
+    userId: userId || "guest_user",
+    userName: name,
+    skillName: skill,
+    finalScore: score,
+    verificationStatus: status || "verified",
+    passingThreshold: threshold || 80
+  });
 };
 
 export default {
-  generateCertificate,
-  issueCertificate
+  issueVerifiedCertificate,
+  generateCertificate
 };

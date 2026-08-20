@@ -1,21 +1,60 @@
-// agent-notes: { ctx: "Express controller for certificate generation, verification and PDF download", deps: ["../services/certificate.service.js", "fs", "path"], state: "active", last: "anti@2026-08-20" }
+// agent-notes: { ctx: "Express controller for certificate verification validation and secure PDF streaming", deps: ["../services/certificate.service.js", "../storage/persistentStore.js", "fs", "path"], state: "active", last: "anti@2026-08-20" }
 import fs from 'fs';
 import path from 'path';
-import { issueCertificate, generateCertificate as createCert } from '../services/certificate.service.js';
+import { issueVerifiedCertificate } from '../services/certificate.service.js';
+import persistentStore from '../storage/persistentStore.js';
 
 export const generateCertificate = async (req, res) => {
   try {
-    const { userName = 'SkillBridge Student', skillName = 'React.js', score = 92, level = 'Advanced' } = req.body;
-    const cert = await createCert({ name: userName, skill: skillName, score, level });
+    const { 
+      userId = 'guest_user', 
+      userName = 'SkillBridge Student', 
+      skillName, 
+      score, 
+      verificationStatus, 
+      status, 
+      passingThreshold = 80, 
+      verificationId 
+    } = req.body;
+
+    const currentStatus = verificationStatus || status;
+
+    if (!skillName || typeof score !== 'number') {
+      return res.status(400).json({ error: "skillName and numerical score are required." });
+    }
+
+    if (currentStatus !== 'verified' || score < passingThreshold) {
+      return res.status(400).json({
+        error: "Certificate generation rejected",
+        message: `A certificate can only be created when verification.status === "verified" and finalScore >= ${passingThreshold}%. (Submitted: status="${currentStatus}", score=${score}%)`
+      });
+    }
+
+    const cert = await issueVerifiedCertificate({
+      userId,
+      userName,
+      skillName,
+      verificationStatus: currentStatus,
+      finalScore: score,
+      passingThreshold,
+      verificationId
+    });
+
     return res.status(200).json({ success: true, data: cert, certificate: cert });
   } catch (err) {
-    return res.status(500).json({ error: "Failed to generate certificate", message: err.message });
+    return res.status(400).json({ error: "Failed to generate certificate", message: err.message });
   }
 };
 
 export const downloadCertificatePdf = async (req, res) => {
   try {
     const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({ error: "Certificate ID is required" });
+    }
+
+    // Look up certificate in persistent storage
+    const certRecord = persistentStore.findOne('certificates', { certificateId: id });
     const directory = path.join(process.cwd(), "generated", "certificates");
     const filePath = path.join(directory, `${id}.pdf`);
 
@@ -26,16 +65,30 @@ export const downloadCertificatePdf = async (req, res) => {
       return fileStream.pipe(res);
     }
 
-    // If PDF file does not exist on disk, generate on the fly
-    const skillName = id.split('-')[1] || "Skill";
-    const cert = await createCert({ name: "SkillBridge Student", skill: skillName, score: 90, level: "Advanced" });
-    if (fs.existsSync(cert.filePath)) {
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', `attachment; filename="${id}.pdf"`);
-      return fs.createReadStream(cert.filePath).pipe(res);
+    if (certRecord && certRecord.status === 'verified') {
+      // Re-render PDF if record is authentic
+      const regeneratedPath = await issueVerifiedCertificate({
+        userId: certRecord.userId,
+        userName: certRecord.userName,
+        skillName: certRecord.skillName,
+        verificationStatus: certRecord.status,
+        finalScore: certRecord.score,
+        passingThreshold: certRecord.passingThreshold || 80,
+        verificationId: certRecord.verificationId
+      });
+
+      if (fs.existsSync(regeneratedPath.filePath)) {
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="${id}.pdf"`);
+        return fs.createReadStream(regeneratedPath.filePath).pipe(res);
+      }
     }
 
-    return res.status(404).json({ error: "Certificate PDF not found" });
+    // Do NOT fabricate certificates for non-existent or unverified IDs
+    return res.status(404).json({ 
+      error: "Certificate not found", 
+      message: `No verified certificate exists with ID "${id}".` 
+    });
   } catch (err) {
     return res.status(500).json({ error: "Failed to stream certificate PDF", message: err.message });
   }

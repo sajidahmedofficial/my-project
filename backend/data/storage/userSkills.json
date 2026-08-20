@@ -616,5 +616,19 @@
     "verifiedAt": "2026-08-20T16:52:11.691Z",
     "certificateId": "SBA-JAVASCRIPT-462848",
     "updatedAt": "2026-08-20T16:52:11.692Z"
+  },
+  {
+    "createdAt": "2026-08-20T16:55:30.580Z",
+    "id": "usk_user_cert_test_javascript",
+    "userId": "user_cert_test",
+    "skillName": "JavaScript",
+    "status": "verified",
+    "currentLevel": 100,
+    "gapPercentage": 0,
+    "verified": true,
+    "verifiedScore": 88,
+    "verifiedAt": "2026-08-20T16:55:30.998Z",
+    "certificateId": "SBA-JAVASCRIPT-167AB0",
+    "updatedAt": "2026-08-20T16:55:30.999Z"
   }
 ]

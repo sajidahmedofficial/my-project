@@ -38,5 +38,45 @@
     "certificateId": "SBA-JAVASCRIPT-462848",
     "verifiedAt": "2026-08-20T16:52:11.688Z",
     "updatedAt": "2026-08-20T16:52:11.689Z"
+  },
+  {
+    "createdAt": "2026-08-20T16:55:30.579Z",
+    "verificationId": "ver_1787244930579_afncq9",
+    "userId": "user_cert_test",
+    "skillName": "JavaScript",
+    "mcqScore": 100,
+    "codingScore": 100,
+    "projectScore": 65,
+    "finalScore": 88,
+    "passingThreshold": 80,
+    "status": "verified",
+    "repositoryUrl": "https://github.com/reduxjs/redux",
+    "repositoryName": "reduxjs/redux",
+    "evidence": [
+      "Automated unit and integration test documentation present"
+    ],
+    "certificateId": "SBA-JAVASCRIPT-167AB0",
+    "verifiedAt": "2026-08-20T16:55:30.579Z",
+    "updatedAt": "2026-08-20T16:55:30.579Z"
+  },
+  {
+    "createdAt": "2026-08-20T16:55:30.995Z",
+    "verificationId": "ver_1787244930994_726a8w",
+    "userId": "user_cert_test",
+    "skillName": "JavaScript",
+    "mcqScore": 100,
+    "codingScore": 100,
+    "projectScore": 65,
+    "finalScore": 88,
+    "passingThreshold": 80,
+    "status": "verified",
+    "repositoryUrl": "https://github.com/reduxjs/redux",
+    "repositoryName": "reduxjs/redux",
+    "evidence": [
+      "Automated unit and integration test documentation present"
+    ],
+    "certificateId": "SBA-JAVASCRIPT-167AB0",
+    "verifiedAt": "2026-08-20T16:55:30.994Z",
+    "updatedAt": "2026-08-20T16:55:30.995Z"
   }
 ]
