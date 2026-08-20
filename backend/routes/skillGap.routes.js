@@ -1,7 +1,15 @@
-// agent-notes: { ctx: "Skill Gap Express router providing analyze, roadmap, verify & certificate endpoints", deps: ["express", "multer", "pdf-parse"], state: "active", last: "anti@2026-08-20" }
+// agent-notes: { ctx: "Skill Gap Express router providing analyze, roadmap, verify & certificate endpoints with direct MongoDB persistence", deps: ["express", "multer", "pdf-parse", "mongoose", "../models/*"], state: "active", last: "anti@2026-08-20" }
 import express from 'express';
 import multer from 'multer';
 import pdfParse from 'pdf-parse';
+import mongoose from 'mongoose';
+
+import SkillGap from '../models/SkillGap.js';
+import SkillProgress from '../models/SkillProgress.js';
+import SkillAssessment from '../models/SkillAssessment.js';
+import LearningRoadmap from '../models/LearningRoadmap.js';
+import Certificate from '../models/Certificate.js';
+
 import { performSkillGapAnalysis } from '../services/skillGap.service.js';
 import { generatePersonalizedRoadmap } from '../services/roadmapGenerator.service.js';
 import { evaluateSkillVerification } from '../services/skillEvaluator.service.js';
@@ -60,6 +68,28 @@ router.post('/analyze', upload.single('resume'), async (req, res) => {
       savedAt: new Date().toISOString()
     });
 
+    // Persist to MongoDB if connected
+    if (mongoose.connection.readyState === 1 && mongoose.Types.ObjectId.isValid(userId)) {
+      try {
+        await SkillGap.findOneAndUpdate(
+          { userId, targetRole },
+          {
+            userId,
+            targetRole,
+            overallMatchScore: gapReport.overallMatchScore,
+            categoryScores: gapReport.categoryScores,
+            strongSkills: gapReport.strongSkills,
+            partialSkills: gapReport.partialSkills,
+            missingSkills: gapReport.missingSkills,
+            updatedAt: new Date()
+          },
+          { upsert: true, new: true }
+        );
+      } catch (dbErr) {
+        console.warn("MongoDB SkillGap save warning:", dbErr.message);
+      }
+    }
+
     res.json({
       success: true,
       targetRole,
@@ -75,10 +105,23 @@ router.post('/analyze', upload.single('resume'), async (req, res) => {
  * @desc    Get user's latest skill gap report
  * @route   GET /api/skill-gap/:userId
  */
-router.get('/:userId', (req, res) => {
+router.get('/:userId', async (req, res) => {
   const { userId } = req.params;
-  const saved = userSkillGapStore.get(userId);
 
+  // Try DB first
+  if (mongoose.connection.readyState === 1 && mongoose.Types.ObjectId.isValid(userId)) {
+    try {
+      const dbReport = await SkillGap.findOne({ userId }).sort({ updatedAt: -1 });
+      if (dbReport) {
+        return res.json({
+          success: true,
+          report: dbReport
+        });
+      }
+    } catch (e) {}
+  }
+
+  const saved = userSkillGapStore.get(userId);
   if (!saved) {
     return res.json({
       success: true,
@@ -118,6 +161,28 @@ router.post('/roadmap', async (req, res) => {
     const filtered = userRoadmaps.filter(r => r.skillName.toLowerCase() !== skillName.toLowerCase());
     userRoadmapsStore.set(uId, [...filtered, roadmap]);
 
+    // Persist to MongoDB if connected
+    if (mongoose.connection.readyState === 1 && mongoose.Types.ObjectId.isValid(uId)) {
+      try {
+        await LearningRoadmap.findOneAndUpdate(
+          { userId: uId, skillName },
+          {
+            userId: uId,
+            targetRole: targetRole || "Frontend Developer",
+            skillName,
+            currentLevel: currentLevel || "Beginner",
+            targetLevel: targetLevel || "Advanced",
+            stages: roadmap.stages,
+            finalProject: roadmap.finalProject,
+            updatedAt: new Date()
+          },
+          { upsert: true, new: true }
+        );
+      } catch (dbErr) {
+        console.warn("MongoDB LearningRoadmap save warning:", dbErr.message);
+      }
+    }
+
     res.json({
       success: true,
       roadmap
@@ -154,9 +219,9 @@ router.post('/verify', async (req, res) => {
     // Run backend evaluation
     const evalResult = await evaluateSkillVerification({
       skillName,
-      mcqResults: mcqResults || { score: 85, correct: 9, total: 10 },
-      codingResults: codingResults || { score: 90, testsPassed: 3, testsTotal: 3 },
-      projectSubmission: projectSubmission || { repoUrl: "https://github.com/user/project" },
+      mcqResults: mcqResults || { score: 0, correct: 0, total: 2 },
+      codingResults: codingResults || { score: 0, testsPassed: 0, testsTotal: 1 },
+      projectSubmission: projectSubmission || { repoUrl: "" },
       passingThreshold: 75
     });
 
@@ -194,7 +259,7 @@ router.post('/verify', async (req, res) => {
       ]);
     }
 
-    // Save certificate
+    // Save certificate in memory
     const userCerts = userCertificatesStore.get(uId) || [];
     userCertificatesStore.set(uId, [
       ...userCerts,
@@ -207,6 +272,48 @@ router.post('/verify', async (req, res) => {
         pdfUrl: cert.pdfUrl
       }
     ]);
+
+    // Persist to MongoDB if connected
+    if (mongoose.connection.readyState === 1 && mongoose.Types.ObjectId.isValid(uId)) {
+      try {
+        await SkillAssessment.create({
+          userId: uId,
+          skillName,
+          mcqScore: evalResult.mcqScore,
+          codingScore: evalResult.codingScore,
+          projectScore: evalResult.projectScore,
+          overallScore: evalResult.overallScore,
+          passingThreshold: 75,
+          status: "PASSED",
+          detailedBreakdown: evalResult.detailedBreakdown,
+          certificateId: cert.certificateId
+        });
+
+        await SkillProgress.findOneAndUpdate(
+          { userId: uId, skillName },
+          {
+            userId: uId,
+            skillName,
+            status: "GAINED",
+            progress: 100,
+            certified: true,
+            updatedAt: new Date()
+          },
+          { upsert: true }
+        );
+
+        await Certificate.create({
+          userId: uId,
+          skillName,
+          score: evalResult.overallScore,
+          certificateId: cert.certificateId,
+          verificationHash: cert.verificationHash || `hash_${Date.now()}`,
+          pdfPath: cert.pdfUrl
+        });
+      } catch (dbErr) {
+        console.warn("MongoDB Verification persistence warning:", dbErr.message);
+      }
+    }
 
     res.json({
       success: true,
@@ -227,12 +334,26 @@ router.post('/verify', async (req, res) => {
  * @desc    Get user's verified skills
  * @route   GET /api/skills/verified
  */
-router.get('/skills/verified', (req, res) => {
+router.get('/skills/verified', async (req, res) => {
   const userId = req.query.userId || "guest_user";
-  const verified = userVerifiedSkillsStore.get(userId) || [
-    { skillName: "HTML", score: 95, verifiedAt: new Date().toISOString() },
-    { skillName: "CSS", score: 92, verifiedAt: new Date().toISOString() }
-  ];
+
+  if (mongoose.connection.readyState === 1 && mongoose.Types.ObjectId.isValid(userId)) {
+    try {
+      const dbProgress = await SkillProgress.find({ userId, status: 'GAINED' });
+      if (dbProgress && dbProgress.length) {
+        return res.json({
+          success: true,
+          verifiedSkills: dbProgress.map(p => ({
+            skillName: p.skillName,
+            score: 100,
+            verifiedAt: p.updatedAt
+          }))
+        });
+      }
+    } catch (e) {}
+  }
+
+  const verified = userVerifiedSkillsStore.get(userId) || [];
   res.json({
     success: true,
     verifiedSkills: verified
