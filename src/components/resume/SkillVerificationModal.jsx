@@ -1,5 +1,6 @@
 // agent-notes: { ctx: "Interactive 7-stage skill verification modal with dynamic creative challenges, user boilerplates, MCQ & AI evaluation", deps: ["react", "lucide-react", "../../utils/skillChallenges"], state: "active", last: "anti@2026-08-18" }
 import React, { useState, useEffect, useRef } from 'react';
+import ReactDOM from 'react-dom';
 import { 
   BookOpen, 
   CheckCircle, 
@@ -187,11 +188,11 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
     onClose();
   };
 
-  return (
-    <div className="fixed inset-0 bg-black/85 backdrop-blur-md z-[9999] flex items-center justify-center p-4">
+  const modalUI = (
+    <div className="fixed inset-0 top-0 left-0 w-screen h-screen bg-black/90 backdrop-blur-md z-[99999] flex items-center justify-center p-4 overflow-y-auto">
       <div 
         ref={modalContainerRef}
-        className="glass max-w-3xl w-full max-h-[90vh] overflow-y-auto rounded-3xl p-6 border border-gray-800 space-y-6 shadow-2xl relative"
+        className="bg-[#0d1117] text-white max-w-3xl w-full max-h-[90vh] overflow-y-auto rounded-3xl p-6 border border-gray-800 space-y-6 shadow-2xl relative"
       >
         
         {/* Header */}
@@ -590,4 +591,6 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
       </div>
     </div>
   );
+
+  return ReactDOM.createPortal(modalUI, document.body);
 }

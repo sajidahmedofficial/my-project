@@ -1,14 +1,15 @@
 // agent-notes: { ctx: "Resume preview modal component displaying updated resume content", deps: ["react", "lucide-react"], state: "active", last: "anti@2026-08-06" }
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { FileText, Download } from 'lucide-react';
 
 export default function ResumePreview({ profile, skillsStatus = [], problems = [], onClose, onDownload }) {
   const gained = skillsStatus.filter(s => s.status === 'GAINED');
   const fixed = problems.filter(p => p.fixed);
 
-  return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="glass max-w-2xl w-full max-h-[85vh] overflow-y-auto rounded-2xl p-6 border border-gray-800 space-y-6">
+  return ReactDOM.createPortal(
+    <div className="fixed inset-0 top-0 left-0 w-screen h-screen bg-black/90 backdrop-blur-md z-[99999] flex items-center justify-center p-4">
+      <div className="bg-[#0d1117] text-white max-w-2xl w-full max-h-[85vh] overflow-y-auto rounded-2xl p-6 border border-gray-800 space-y-6 shadow-2xl relative">
         <div className="flex items-center justify-between pb-4 border-b border-gray-800">
           <h3 className="text-base font-bold text-white flex items-center gap-2">
             <FileText className="w-5 h-5 text-accent-purple" /> Auto-Generated Resume Preview
@@ -42,6 +43,7 @@ export default function ResumePreview({ profile, skillsStatus = [], problems = [
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
