@@ -19,6 +19,7 @@ import FinalMasteryDashboard from '../components/resume/FinalMasteryDashboard';
 import TargetPipelineFlow from '../components/resume/TargetPipelineFlow';
 
 import { uploadResume, applyProblemFix } from '../services/resumeApi';
+import { downloadResumeAsPdf } from '../utils/resumePdfGenerator';
 import '../styles/ResumeAnalyzer.css';
 
 const getInitialResumeState = (profile) => {
@@ -408,33 +409,12 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
   };
 
   const handleDownload = () => {
-    const content = `
-====================================================
-           SKILLBRIDGE AI AUTO-UPDATED RESUME
-====================================================
-Candidate Name: ${profile?.name || 'Aarav Sharma'}
-Target Role: Full Stack Developer
-Resume Score: ${resumeScore}% | ATS Score: ${atsScore}% | Grammar: ${grammarScore}%
-
-VERIFIED SKILLS (100% MASTERY ✓):
-${skillsStatus.filter(s => s.status === 'GAINED').map(s => `• ${s.name} (Certified ✓)`).join('\n')}
-
-APPLIED RESUME IMPROVEMENTS:
-✓ Grammar corrected
-✓ ATS optimized
-✓ Formatting improved
-✓ Skills updated
-✓ Verified skills added
-✓ Projects improved
-====================================================
-`;
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${(profile?.name || 'User').replace(/\s+/g, '_')}_Final_Resume.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
+    downloadResumeAsPdf({
+      profile,
+      skillsStatus,
+      problems,
+      certificates
+    });
   };
 
   const currentStage = is100PercentComplete ? 9 : (pendingSuggestion ? 7 : (verifyingSkillName ? 5 : (selectedFile ? 3 : 1)));
