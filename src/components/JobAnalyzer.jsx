@@ -299,10 +299,12 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate }) 
         )
     );
 
+    const targetRoleTitle = ROLE_PRESETS[targetRoleKey]?.title || "Frontend Developer";
+
     if (onGenerateRoadmap) {
-      onGenerateRoadmap(missing);
+      onGenerateRoadmap(missing, targetRoleTitle);
     } else {
-      alert(`Roadmap generated!\n\nMissing skills:\n${missing.join("\n")}`);
+      alert(`Roadmap generated for ${targetRoleTitle}!\n\nMissing skills:\n${missing.join("\n")}`);
     }
   };
 

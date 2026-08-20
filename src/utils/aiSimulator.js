@@ -298,12 +298,17 @@ export function normalizeJobTitle(text) {
 // Normalize skill names
 function normalizeSkill(skill) {
   const s = skill.toLowerCase().trim();
-  if (s === "react" || s === "react.js" || s === "reactjs") return "React";
+  if (s === "react" || s === "react.js" || s === "reactjs") return "React.js";
   if (s === "node" || s === "node.js" || s === "nodejs") return "Node.js";
   if (s === "express" || s === "express.js" || s === "expressjs") return "Express.js";
   if (s === "mongodb" || s === "mongo") return "MongoDB";
   if (s === "sql" || s === "mysql" || s === "postgresql" || s === "postgres") return "SQL";
   if (s === "git" || s === "github" || s === "gitlab") return "Git";
+  if (s === "typescript" || s === "ts") return "TypeScript";
+  if (s === "redux" || s === "redux toolkit") return "Redux";
+  if (s === "tailwindcss" || s === "tailwind" || s === "tailwind css") return "TailwindCSS";
+  if (s === "python" || s === "py") return "Python";
+  if (s === "docker") return "Docker";
   if (s === "rest api" || s === "rest apis" || s === "restful api" || s === "restful apis") return "REST API";
   
   const found = TECH_KEYWORDS.find(keyword => keyword.toLowerCase() === s);
@@ -586,7 +591,7 @@ export function detectSkillGap(studentSkills, jobSkills, jobProfileDetails) {
 /**
  * Generates personalized learning roadmap based on missing skills and role context
  */
-export function generateRoadmap(missingSkills, targetRole = "Full Stack Developer", userSkills = []) {
+export function generateRoadmap(missingSkills, targetRole = "Frontend Developer", userSkills = []) {
   const userSkillsNormalized = (userSkills || []).map(s => s.toLowerCase().trim());
   
   // Filter out any skills the user already knows (preventing starting from HTML/CSS if user has them)

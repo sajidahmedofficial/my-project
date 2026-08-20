@@ -225,6 +225,70 @@ export const SKILL_LIBRARY = {
       { title: "Week 3: Aggregates & Groups", topics: ["SUM, AVG, MIN, MAX, COUNT", "GROUP BY syntax", "HAVING clauses for groups", "String functions"] },
       { title: "Week 4: Subqueries & DDL", topics: ["Nested subqueries", "CREATE, ALTER, DROP tables", "Primary & Foreign keys", "Transaction syntax"] }
     ]
+  },
+  "TypeScript": {
+    category: "Frontend",
+    description: "Strongly typed programming language that builds on JavaScript, giving you better tooling at any scale.",
+    difficulty: "Medium",
+    courses: [
+      { name: "TypeScript Official Handbook", provider: "TypeScriptLang", link: "https://www.typescriptlang.org/docs/" },
+      { name: "Execute Program: TypeScript Core", provider: "ExecuteProgram", link: "https://www.executeprogram.com/courses/typescript" }
+    ],
+    weeks: [
+      { title: "Week 1: Types & Interfaces", topics: ["Primitive types & Type inference", "Interface vs Type aliases", "Union & Intersection types", "Function type annotations"] },
+      { title: "Week 2: Advanced Typing", topics: ["Generics & Type Constraints", "Utility types (Partial, Pick, Omit, Record)", "Literal types & Type guards", "Enums vs const assertions"] },
+      { title: "Week 3: React + TypeScript Integration", topics: ["Typing React props & state", "Event handlers & Form events", "Custom hooks with TypeScript generics", "Ref object typing"] }
+    ]
+  },
+  "Redux": {
+    category: "Frontend",
+    description: "Predictable state container for JavaScript apps, commonly used with React for global state management.",
+    difficulty: "Medium",
+    courses: [
+      { name: "Redux Essentials Official Tutorial", provider: "Redux.js.org", link: "https://redux.js.org/tutorials/essentials/part-1-overview-concepts" },
+      { name: "FreeCodeCamp Redux Toolkit Guide", provider: "FreeCodeCamp", link: "https://www.freecodecamp.org/news/redux-and-redux-toolkit-overview/" }
+    ],
+    weeks: [
+      { title: "Week 1: Redux Toolkit Fundamentals", topics: ["Store setup with configureStore", "Creating slices with createSlice", "Reducers & Action dispatching", "useSelector & useDispatch hooks"] },
+      { title: "Week 2: Async State & RTK Query", topics: ["createAsyncThunk for API calls", "Loading, fulfilled & rejected states", "RTK Query data fetching & caching", "Normalized state structures"] }
+    ]
+  },
+  "TailwindCSS": {
+    category: "Frontend",
+    description: "A utility-first CSS framework packed with classes that can be composed to build any design, directly in your markup.",
+    difficulty: "Easy",
+    courses: [
+      { name: "Tailwind CSS Official Documentation", provider: "TailwindCSS", link: "https://tailwindcss.com/docs" },
+      { name: "Tailwind CSS Full Course", provider: "Traversy Media", link: "https://www.youtube.com/watch?v=dFgzHOX84xQ" }
+    ],
+    weeks: [
+      { title: "Week 1: Utility Fundamentals & Layout", topics: ["Flexbox & Grid utilities", "Spacing, sizing & color palette", "Typography & responsive breakpoints (sm, md, lg)", "Hover & focus state variants"] },
+      { title: "Week 2: Component Design & Dark Mode", topics: ["Reusable component classes with @apply", "Dark mode configuration", "Custom colors & font configuration in tailwind.config.js", "Animations & transitions"] }
+    ]
+  },
+  "Python": {
+    category: "Backend",
+    description: "High-level programming language known for clean syntax, data analytics, web services, and AI integration.",
+    difficulty: "Easy",
+    courses: [
+      { name: "Python.org Official Tutorial", provider: "Python.org", link: "https://docs.python.org/3/tutorial/" },
+      { name: "Python for Beginners", provider: "Programming with Mosh", link: "https://www.youtube.com/watch?v=_uQrJ0TkZlc" }
+    ],
+    weeks: [
+      { title: "Week 1: Python Core Syntax", topics: ["Data types, lists, tuples & dicts", "Control flow & loops", "Functions & args/kwargs", "List comprehensions"] },
+      { title: "Week 2: OOP & Modules", topics: ["Classes, objects & inheritance", "File handling & JSON parsing", "Virtual environments (venv)", "PIP package management"] }
+    ]
+  },
+  "Docker": {
+    category: "Tools",
+    description: "OS-level virtualization deliver software in packages called containers for consistent deployment.",
+    difficulty: "Medium",
+    courses: [
+      { name: "Docker for Beginners", provider: "Docker.com", link: "https://docs.docker.com/get-started/" }
+    ],
+    weeks: [
+      { title: "Week 1: Containers & Dockerfiles", topics: ["Images vs Containers", "Writing multi-stage Dockerfiles", "Building & running images", "Environment variables"] }
+    ]
   }
 };
 

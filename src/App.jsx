@@ -43,6 +43,7 @@ function MainLayout() {
   
   const [activeTab, setActiveTab] = useState('dashboard');
   const [missingSkillsList, setMissingSkillsList] = useState([]);
+  const [targetRole, setTargetRole] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Modals & Overlays
@@ -59,8 +60,11 @@ function MainLayout() {
     updateProfile(newProfile);
   };
 
-  const handleGenerateRoadmap = (missingSkills) => {
-    setMissingSkillsList(missingSkills);
+  const handleGenerateRoadmap = (missingSkills, role) => {
+    setMissingSkillsList(missingSkills || []);
+    if (role) {
+      setTargetRole(role);
+    }
     setActiveTab('roadmap');
   };
 
@@ -115,6 +119,7 @@ function MainLayout() {
           <LearningRoadmap 
             profile={activeProfile} 
             missingSkillsList={missingSkillsList} 
+            targetRole={targetRole || activeProfile?.careerGoal || "Frontend Developer"}
           />
         </div>
         <div className={activeTab === 'chat' ? 'block' : 'hidden'}>
