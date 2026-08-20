@@ -1,11 +1,6 @@
-// agent-notes: { ctx: "Personalized multi-stage Roadmap Generator service creating dynamic tasks, projects & assessment milestones", deps: ["@google/generative-ai"], state: "active", last: "anti@2026-08-20" }
-import { GoogleGenerativeAI } from '@google/generative-ai';
-
-const getGenAI = () => {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) return null;
-  return new GoogleGenerativeAI(apiKey);
-};
+// agent-notes: { ctx: "Personalized multi-stage Roadmap Generator service with Gemini AI structured generation, MCQs, coding challenges, and capstone blueprints", deps: ["../ai/gemini.js", "./skillGap.service.js"], state: "active", last: "anti@2026-08-20" }
+import { analyzeJSON } from "../ai/gemini.js";
+import { normalizeSkillName } from "./skillGap.service.js";
 
 // Curated curriculum blueprints for popular skills
 const SKILL_CURRICULUM_BLUEPRINTS = {
@@ -36,6 +31,25 @@ const SKILL_CURRICULUM_BLUEPRINTS = {
         topics: ["useContext & Global State", "Custom Hooks Architecture", "React Router DOM & Route Guards", "Performance Optimization with useMemo/useCallback"],
         practiceTasks: ["Implement Dark/Light theme toggle using React Context", "Create custom useFetch hook with retry logic"],
         miniProject: "Full React Job & Internship Portal with Authentication"
+      }
+    ],
+    mcqs: [
+      {
+        question: "What is the primary purpose of the useEffect hook in React?",
+        options: ["To create state variables", "To perform side effects like data fetching or DOM mutations", "To render JSX directly", "To style components"],
+        correctAnswer: 1
+      },
+      {
+        question: "Why should state never be mutated directly in React?",
+        options: ["It causes syntax errors", "React relies on immutability to detect state changes and trigger re-renders", "It deletes component props", "Direct mutation is only allowed in classes"],
+        correctAnswer: 1
+      }
+    ],
+    codingChallenges: [
+      {
+        title: "Controlled Counter with Bounds",
+        description: "Implement a counter hook that prevents the count from exceeding max or falling below min.",
+        starterCode: "function useBoundedCounter(initial, min, max) {\n  // Implement logic\n}"
       }
     ],
     finalProject: {
@@ -72,6 +86,20 @@ const SKILL_CURRICULUM_BLUEPRINTS = {
         miniProject: "Production Enterprise Dashboard with Typed Context & Custom Hooks"
       }
     ],
+    mcqs: [
+      {
+        question: "Which TypeScript keyword is used to create a type that cannot be reassigned?",
+        options: ["readonly", "static", "const", "final"],
+        correctAnswer: 0
+      }
+    ],
+    codingChallenges: [
+      {
+        title: "Generic Array Filter",
+        description: "Write a type-safe generic filter function that accepts an array of type T and a predicate returning boolean.",
+        starterCode: "function safeFilter<T>(arr: T[], predicate: (item: T) => boolean): T[] {\n  // Implement logic\n}"
+      }
+    ],
     finalProject: {
       title: "Type-Safe Component Design System",
       description: "Reusable UI component library built with strict TypeScript generics and comprehensive unit tests."
@@ -106,43 +134,23 @@ const SKILL_CURRICULUM_BLUEPRINTS = {
         miniProject: "Production SaaS Landing & Dashboard Platform with Next.js"
       }
     ],
-    finalProject: {
-      title: "Full-Stack Next.js AI Career Platform",
-      description: "Server-rendered SaaS application with App Router, server actions, authentication, and Vercel cloud deployment."
-    }
-  },
-  "Node.js": {
-    prerequisites: ["JavaScript ES6+", "Asynchronous Programming (Promises, async/await)"],
-    estimatedHours: 25,
-    stages: [
+    mcqs: [
       {
-        stageNumber: 1,
-        title: "Stage 1: Node Core, Modules & Asynchronous I/O",
-        level: "Beginner",
-        topics: ["Event Loop Architecture", "CommonJS vs ESM Modules", "File System (fs) & Path Modules", "Creating Native HTTP Servers"],
-        practiceTasks: ["Build a CLI file organizer using Node fs module", "Create a basic HTTP server returning JSON"],
-        miniProject: "Command-Line File Analyzer & Logger"
-      },
+        question: "In Next.js App Router, which directive marks a component to execute on the client?",
+        options: ["'use client'", "'use client-side'", "'use dom'", "'client-only'"],
+        correctAnswer: 0
+      }
+    ],
+    codingChallenges: [
       {
-        stageNumber: 2,
-        title: "Stage 2: Express.js Framework & Middleware",
-        level: "Intermediate",
-        topics: ["Express App Setup", "Middleware Stack & Pipeline", "Routing & Controllers", "Error Handling Middleware"],
-        practiceTasks: ["Build a custom rate-limiting and request-logging middleware", "Structure clean router modules for CRUD"],
-        miniProject: "RESTful API Server with Input Validation (Joi/Zod)"
-      },
-      {
-        stageNumber: 3,
-        title: "Stage 3: Databases, Authentication & Production Deployment",
-        level: "Advanced",
-        topics: ["Database Integration (MongoDB / PostgreSQL)", "JWT & Bcrypt Authentication", "Environment Configuration (.env)", "Dockerization & Cloud Deploy"],
-        practiceTasks: ["Implement secure JWT login and protected route guards", "Connect Mongoose / Prisma ORM with connection pooling"],
-        miniProject: "Production Microservice Backend with MongoDB & JWT Auth"
+        title: "Next.js Route Handler",
+        description: "Create a route handler returning JSON response with custom HTTP status code.",
+        starterCode: "import { NextResponse } from 'next/server';\nexport async function GET() {\n  // Return Response\n}"
       }
     ],
     finalProject: {
-      title: "Enterprise REST API Backend Service",
-      description: "Robust Express backend service featuring token authentication, database persistence, unit tests, and Docker support."
+      title: "Full-Stack Next.js AI Career Platform",
+      description: "Server-rendered SaaS application with App Router, server actions, authentication, and Vercel cloud deployment."
     }
   },
   "Docker": {
@@ -169,9 +177,23 @@ const SKILL_CURRICULUM_BLUEPRINTS = {
         stageNumber: 3,
         title: "Stage 3: Docker Compose & Microservice Orchestration",
         level: "Advanced",
-        topics: ["Docker Compose YAML Syntax", "Multi-Container Networks", "Database Service Containers with Persistent Volumes", "Deploying to AWS ECS / Render"],
+        topics: ["Docker Compose YAML Syntax", "Multi-Container Networks", "Database Service Containers with Persistent Volumes", "Deploying to Cloud ECS / Kubernetes"],
         practiceTasks: ["Create docker-compose.yml linking Frontend, Backend, and MongoDB", "Configure container restart policies and environment files"],
         miniProject: "Full-Stack Multi-Container Orchestration with Docker Compose"
+      }
+    ],
+    mcqs: [
+      {
+        question: "Which Dockerfile instruction specifies the base image to build upon?",
+        options: ["BASE", "FROM", "ORIGIN", "IMAGE"],
+        correctAnswer: 1
+      }
+    ],
+    codingChallenges: [
+      {
+        title: "Dockerfile Multi-Stage",
+        description: "Write Dockerfile instructions for building a lightweight Node.js production image.",
+        starterCode: "# Write Dockerfile stages\nFROM node:20-alpine AS build"
       }
     ],
     finalProject: {
@@ -182,14 +204,21 @@ const SKILL_CURRICULUM_BLUEPRINTS = {
 };
 
 /**
- * Generate structured roadmap for a specific skill and target role
+ * Generate structured roadmap for a specific skill and target role using backend AI
  */
-export async function generatePersonalizedRoadmap({ skillName, targetRole = "Frontend Developer", currentLevel = "Beginner", targetLevel = "Advanced", priority = "High" }) {
-  const blueprint = SKILL_CURRICULUM_BLUEPRINTS[skillName];
+export async function generatePersonalizedRoadmap({
+  skillName,
+  targetRole = "Frontend Developer",
+  currentLevel = "Beginner",
+  targetLevel = "Advanced",
+  priority = "High"
+}) {
+  const canonicalSkill = normalizeSkillName(skillName);
+  const blueprint = SKILL_CURRICULUM_BLUEPRINTS[canonicalSkill];
 
   if (blueprint) {
     return {
-      skillName,
+      skillName: canonicalSkill,
       targetRole,
       currentLevel,
       targetLevel,
@@ -197,124 +226,157 @@ export async function generatePersonalizedRoadmap({ skillName, targetRole = "Fro
       prerequisites: blueprint.prerequisites,
       estimatedLearningHours: blueprint.estimatedHours,
       stages: blueprint.stages,
+      mcqs: blueprint.mcqs || [],
+      codingChallenges: blueprint.codingChallenges || [],
       finalProject: blueprint.finalProject,
-      assessmentInfo: {
+      finalAssessment: {
         mcqCount: 10,
         codingCount: 2,
         passingThreshold: 75
       },
       overallProgress: 0,
-      status: "IN_PROGRESS"
+      status: "IN_PROGRESS",
+      generatedAt: new Date().toISOString()
     };
   }
 
-  // Generative AI or Generic Blueprint Fallback
-  const ai = getGenAI();
-  if (ai) {
-    try {
-      const model = ai.getGenerativeModel({ model: "gemini-2.5-flash" });
-      const prompt = `Generate a rigorous 3-stage personalized learning roadmap for learning "${skillName}" as a ${targetRole}.
-Target Level: ${targetLevel}.
-Return JSON matching this exact structure:
+  // Use Central Gemini API integration
+  const prompt = `You are a Principal Software Engineering Educator and Curriculum Architect.
+Generate a rigorous 3-stage personalized learning roadmap for learning "${canonicalSkill}" for the role of "${targetRole}".
+Current Level: "${currentLevel}". Target Level: "${targetLevel}".
+
+Return ONLY a JSON object with this EXACT structure:
 {
-  "skillName": "${skillName}",
+  "skillName": "${canonicalSkill}",
   "targetRole": "${targetRole}",
   "currentLevel": "${currentLevel}",
   "targetLevel": "${targetLevel}",
   "priority": "${priority}",
-  "prerequisites": ["Prereq 1", "Prereq 2"],
+  "prerequisites": ["Prerequisite 1", "Prerequisite 2"],
   "estimatedLearningHours": 20,
   "stages": [
     {
       "stageNumber": 1,
-      "title": "Stage 1: ${skillName} Fundamentals & Core Syntax",
+      "title": "Stage 1: ${canonicalSkill} Fundamentals & Core Syntax",
       "level": "Beginner",
-      "topics": ["Topic 1", "Topic 2", "Topic 3"],
+      "topics": ["Topic 1", "Topic 2", "Topic 3", "Topic 4"],
       "practiceTasks": ["Task 1", "Task 2"],
-      "miniProject": "Beginner Project Name & Brief"
+      "miniProject": "Beginner Project Title & Scope"
     },
     {
       "stageNumber": 2,
-      "title": "Stage 2: Core Patterns & Real-World Implementation",
+      "title": "Stage 2: Core Patterns & Real-World Application",
       "level": "Intermediate",
-      "topics": ["Topic 4", "Topic 5", "Topic 6"],
+      "topics": ["Topic 5", "Topic 6", "Topic 7", "Topic 8"],
       "practiceTasks": ["Task 3", "Task 4"],
-      "miniProject": "Intermediate Project Name & Brief"
+      "miniProject": "Intermediate Project Title & Scope"
     },
     {
       "stageNumber": 3,
-      "title": "Stage 3: Advanced Architecture & Production Mastery",
+      "title": "Stage 3: Production Architecture, Optimization & Testing",
       "level": "Advanced",
-      "topics": ["Topic 7", "Topic 8", "Topic 9"],
+      "topics": ["Topic 9", "Topic 10", "Topic 11", "Topic 12"],
       "practiceTasks": ["Task 5", "Task 6"],
-      "miniProject": "Advanced Project Name & Brief"
+      "miniProject": "Advanced Project Title & Scope"
+    }
+  ],
+  "mcqs": [
+    {
+      "question": "Question testing fundamental knowledge of ${canonicalSkill}?",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "correctAnswer": 0
+    }
+  ],
+  "codingChallenges": [
+    {
+      "title": "${canonicalSkill} Practical Problem",
+      "description": "Problem description",
+      "starterCode": "// Starter code here"
     }
   ],
   "finalProject": {
-    "title": "Production ${skillName} Application",
-    "description": "Comprehensive capstone project description"
+    "title": "Production ${canonicalSkill} Full-Stack Application",
+    "description": "Comprehensive capstone project integrating ${canonicalSkill} with clean architecture and tests."
   },
-  "assessmentInfo": { "mcqCount": 10, "codingCount": 2, "passingThreshold": 75 },
-  "overallProgress": 0,
-  "status": "IN_PROGRESS"
+  "finalAssessment": {
+    "mcqCount": 10,
+    "codingCount": 2,
+    "passingThreshold": 75
+  }
 }`;
 
-      const res = await model.generateContent({
-        contents: [{ role: 'user', parts: [{ text: prompt }] }],
-        generationConfig: { responseMimeType: "application/json" }
-      });
-
-      const parsed = JSON.parse(res.response.text());
-      if (parsed && Array.isArray(parsed.stages)) {
-        return parsed;
-      }
-    } catch (err) {
-      console.warn(`Gemini AI roadmap generation for ${skillName} fallback:`, err.message);
+  try {
+    const aiResult = await analyzeJSON(prompt);
+    if (aiResult && Array.isArray(aiResult.stages) && aiResult.stages.length > 0) {
+      return {
+        ...aiResult,
+        skillName: canonicalSkill,
+        overallProgress: 0,
+        status: "IN_PROGRESS",
+        generatedAt: new Date().toISOString()
+      };
     }
+  } catch (err) {
+    console.warn(`Gemini AI roadmap generation for ${canonicalSkill} error:`, err.message);
   }
 
-  // Generic fallback blueprint
+  // Fallback blueprint
   return {
-    skillName,
+    skillName: canonicalSkill,
     targetRole,
     currentLevel,
     targetLevel,
     priority,
-    prerequisites: ["Core Computer Science Fundamentals"],
+    prerequisites: ["Core Computer Science Fundamentals", "Modern Web Architecture"],
     estimatedLearningHours: 20,
     stages: [
       {
         stageNumber: 1,
-        title: `Stage 1: ${skillName} Fundamentals & Core Syntax`,
+        title: `Stage 1: ${canonicalSkill} Fundamentals & Core Syntax`,
         level: "Beginner",
-        topics: [`Core ${skillName} Syntax & Setup`, `Standard Library & Idioms`, `Data Structures & Flow Control`],
-        practiceTasks: [`Write basic ${skillName} boilerplate scripts`, `Solve 5 algorithmic challenges using ${skillName}`],
-        miniProject: `${skillName} Starter Utility Script`
+        topics: [`Core ${canonicalSkill} Syntax & Setup`, `Standard Library & Idioms`, `Data Structures & Flow Control`],
+        practiceTasks: [`Write basic ${canonicalSkill} boilerplate scripts`, `Solve algorithmic challenges using ${canonicalSkill}`],
+        miniProject: `${canonicalSkill} Starter Utility Script`
       },
       {
         stageNumber: 2,
-        title: `Stage 2: ${skillName} Application Architecture & Error Handling`,
+        title: `Stage 2: ${canonicalSkill} Application Architecture & Error Handling`,
         level: "Intermediate",
-        topics: [`Modular Architecture in ${skillName}`, `Asynchronous Workflows & Exception Handling`, `Testing & Debugging Strategies`],
-        practiceTasks: [`Write unit tests with mock fixtures for ${skillName}`, `Implement robust error-recovery middleware`],
-        miniProject: `${skillName} Production Microservice`
+        topics: [`Modular Architecture in ${canonicalSkill}`, `Asynchronous Workflows & Exception Handling`, `Testing & Debugging Strategies`],
+        practiceTasks: [`Write unit tests with mock fixtures for ${canonicalSkill}`, `Implement robust error-recovery middleware`],
+        miniProject: `${canonicalSkill} Production Microservice`
       },
       {
         stageNumber: 3,
         title: `Stage 3: Production Mastery, Optimization & Cloud Integration`,
         level: "Advanced",
         topics: [`Performance Tuning & Memory Profiling`, `Security Hardening & Best Practices`, `CI/CD Automation & Deployment`],
-        practiceTasks: [`Benchmark performance and eliminate bottlenecks in ${skillName}`, `Configure automated GitHub Actions pipeline`],
-        miniProject: `Enterprise ${skillName} Production Application`
+        practiceTasks: [`Benchmark performance and eliminate bottlenecks in ${canonicalSkill}`, `Configure automated GitHub Actions pipeline`],
+        miniProject: `Enterprise ${canonicalSkill} Production Application`
+      }
+    ],
+    mcqs: [
+      {
+        question: `What is a primary architectural best practice when developing with ${canonicalSkill}?`,
+        options: ["Writing monolithic scripts", "Maintaining modular, testable components with error handling", "Ignoring types and testing", "Disabling production logging"],
+        correctAnswer: 1
+      }
+    ],
+    codingChallenges: [
+      {
+        title: `${canonicalSkill} Implementation Challenge`,
+        description: `Implement a modular function in ${canonicalSkill} that processes data with error validation.`,
+        starterCode: `// Implement ${canonicalSkill} function\nfunction processData(input) {\n  // Logic\n}`
       }
     ],
     finalProject: {
-      title: `Full-Featured ${skillName} Cloud Application`,
-      description: `Production-ready application implementing ${skillName} with automated tests, security checks, and cloud deployment.`
+      title: `Full-Featured ${canonicalSkill} Cloud Application`,
+      description: `Production-ready application implementing ${canonicalSkill} with automated tests, security checks, and cloud deployment.`
     },
-    assessmentInfo: { mcqCount: 10, codingCount: 2, passingThreshold: 75 },
+    finalAssessment: { mcqCount: 10, codingCount: 2, passingThreshold: 75 },
     overallProgress: 0,
-    status: "IN_PROGRESS"
+    status: "IN_PROGRESS",
+    generatedAt: new Date().toISOString()
   };
 }
 

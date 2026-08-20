@@ -67,18 +67,28 @@ export const skillGapApi = {
   },
 
   /**
-   * Generate multi-stage roadmap for missing skill
+   * Generate or retrieve multi-stage roadmap for missing skill
    */
-  generateRoadmap: async ({ skillName, targetRole = "Frontend Developer", currentLevel = "Beginner", targetLevel = "Advanced", priority = "High", userId = "guest_user" }) => {
+  generateRoadmap: async ({ skillGapId, skill, skillName, targetRole = "Frontend Developer", currentLevel = "Beginner", targetLevel = "Advanced", priority = "High", userId = "guest_user", forceRefresh = false }) => {
     const res = await fetch(`${API_BASE_URL}/skill-gap/roadmap`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ skillName, targetRole, currentLevel, targetLevel, priority, userId })
+      body: JSON.stringify({
+        skillGapId,
+        skill: skill || skillName,
+        skillName: skillName || skill,
+        targetRole,
+        currentLevel,
+        targetLevel,
+        priority,
+        userId,
+        forceRefresh
+      })
     });
 
     if (!res.ok) {
       const errorData = await res.json().catch(() => ({}));
-      throw new Error(errorData.error || errorData.message || `Roadmap generation failed with status: ${res.status}`);
+      throw new Error(errorData.error || errorData.message || "Failed to generate roadmap from backend.");
     }
 
     const data = await res.json();
@@ -86,6 +96,15 @@ export const skillGapApi = {
       throw new Error("Invalid roadmap response from server.");
     }
     return data;
+  },
+
+  /**
+   * Get stored roadmap for a specific skill
+   */
+  getStoredRoadmap: async (userId = "guest_user", skillName = "") => {
+    const res = await fetch(`${API_BASE_URL}/skill-gap/roadmap/${encodeURIComponent(userId)}/${encodeURIComponent(skillName)}`);
+    if (!res.ok) return null;
+    return await res.json();
   },
 
   /**

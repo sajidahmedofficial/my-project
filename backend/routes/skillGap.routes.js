@@ -152,43 +152,74 @@ router.get('/:userId', async (req, res) => {
 });
 
 /**
- * @desc    Generate Personalized Multi-Stage Learning Roadmap
+ * @desc    Generate or Retrieve Stored Personalized Multi-Stage Learning Roadmap
  * @route   POST /api/skill-gap/roadmap
  */
 router.post('/roadmap', async (req, res) => {
   try {
-    const { skillName, targetRole, currentLevel, targetLevel, priority, userId } = req.body;
+    const { skillGapId, skill, skillName, targetRole, currentLevel, targetLevel, priority, userId, forceRefresh } = req.body;
+    const skillToLearn = skill || skillName;
 
-    if (!skillName) {
-      return res.status(400).json({ error: "skillName is required" });
+    if (!skillToLearn) {
+      return res.status(400).json({ error: "skill or skillName is required" });
     }
 
+    const uId = userId || skillGapId || "guest_user";
+
+    // 1. Check if roadmap is already stored and cached unless forceRefresh is requested
+    if (!forceRefresh) {
+      if (mongoose.connection.readyState === 1 && mongoose.Types.ObjectId.isValid(uId)) {
+        try {
+          const dbRoadmap = await LearningRoadmap.findOne({ userId: uId, skillName: skillToLearn });
+          if (dbRoadmap) {
+            return res.json({
+              success: true,
+              roadmap: dbRoadmap,
+              cached: true
+            });
+          }
+        } catch (e) {}
+      }
+
+      const userRoadmaps = userRoadmapsStore.get(uId) || [];
+      const memRoadmap = userRoadmaps.find(r => r.skillName?.toLowerCase() === skillToLearn.toLowerCase());
+      if (memRoadmap) {
+        return res.json({
+          success: true,
+          roadmap: memRoadmap,
+          cached: true
+        });
+      }
+    }
+
+    // 2. Generate roadmap through backend generator
     const roadmap = await generatePersonalizedRoadmap({
-      skillName,
+      skillName: skillToLearn,
       targetRole: targetRole || "Frontend Developer",
       currentLevel: currentLevel || "Beginner",
       targetLevel: targetLevel || "Advanced",
       priority: priority || "High"
     });
 
-    const uId = userId || "guest_user";
     const userRoadmaps = userRoadmapsStore.get(uId) || [];
-    const filtered = userRoadmaps.filter(r => r.skillName.toLowerCase() !== skillName.toLowerCase());
+    const filtered = userRoadmaps.filter(r => r.skillName?.toLowerCase() !== skillToLearn.toLowerCase());
     userRoadmapsStore.set(uId, [...filtered, roadmap]);
 
     // Persist to MongoDB if connected
     if (mongoose.connection.readyState === 1 && mongoose.Types.ObjectId.isValid(uId)) {
       try {
         await LearningRoadmap.findOneAndUpdate(
-          { userId: uId, skillName },
+          { userId: uId, skillName: skillToLearn },
           {
             userId: uId,
             targetRole: targetRole || "Frontend Developer",
-            skillName,
+            skillName: skillToLearn,
             currentLevel: currentLevel || "Beginner",
             targetLevel: targetLevel || "Advanced",
             stages: roadmap.stages,
+            prerequisites: roadmap.prerequisites,
             finalProject: roadmap.finalProject,
+            assessmentInfo: roadmap.finalAssessment || roadmap.assessmentInfo,
             updatedAt: new Date()
           },
           { upsert: true, new: true }
@@ -200,12 +231,48 @@ router.post('/roadmap', async (req, res) => {
 
     res.json({
       success: true,
-      roadmap
+      roadmap,
+      cached: false
     });
   } catch (error) {
     console.error("Roadmap Generation Route Error:", error);
     res.status(500).json({ error: "Failed to generate roadmap", message: error.message });
   }
+});
+
+/**
+ * @desc    Get user's stored learning roadmap for a specific skill
+ * @route   GET /api/skill-gap/roadmap/:userId/:skillName
+ */
+router.get('/roadmap/:userId/:skillName', async (req, res) => {
+  const { userId, skillName } = req.params;
+
+  if (mongoose.connection.readyState === 1 && mongoose.Types.ObjectId.isValid(userId)) {
+    try {
+      const dbRoadmap = await LearningRoadmap.findOne({ userId, skillName });
+      if (dbRoadmap) {
+        return res.json({
+          success: true,
+          roadmap: dbRoadmap
+        });
+      }
+    } catch (e) {}
+  }
+
+  const userRoadmaps = userRoadmapsStore.get(userId) || [];
+  const found = userRoadmaps.find(r => r.skillName?.toLowerCase() === skillName.toLowerCase());
+  
+  if (!found) {
+    return res.status(404).json({
+      success: false,
+      message: `No stored roadmap found for skill ${skillName}.`
+    });
+  }
+
+  res.json({
+    success: true,
+    roadmap: found
+  });
 });
 
 /**
