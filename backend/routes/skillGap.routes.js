@@ -425,6 +425,26 @@ router.post('/assessment/run-code', async (req, res) => {
   }
 });
 
+import { verifyProjectRepository } from '../services/projectVerification.service.js';
+
+/**
+ * @desc    Verify and inspect GitHub Project Repository Evidence
+ * @route   POST /api/skill-gap/assessment/verify-project
+ */
+router.post('/assessment/verify-project', async (req, res) => {
+  try {
+    const { repoUrl, skillName, targetRole } = req.body;
+    const result = await verifyProjectRepository({ repoUrl, skillName, targetRole });
+    res.json({
+      success: true,
+      ...result
+    });
+  } catch (error) {
+    console.error("Project Verification Route Error:", error);
+    res.status(500).json({ error: "Failed to verify project repository", message: error.message });
+  }
+});
+
 /**
  * @desc    Verify Skill through Multi-Modal Assessments (MCQ + Code + Project)
  * @route   POST /api/skill-gap/verify
@@ -502,12 +522,34 @@ router.post('/verify', async (req, res) => {
       passingThreshold: 75
     });
 
+    // Persist assessment result in MongoDB if connected
+    if (mongoose.connection.readyState === 1) {
+      try {
+        await SkillAssessment.create({
+          userId: uId,
+          skillName,
+          mcqScore: evalResult.mcqScore,
+          codingScore: evalResult.codingScore,
+          projectScore: evalResult.projectScore,
+          overallScore: evalResult.overallScore,
+          projectUrl: projectSubmission?.repoUrl || "",
+          repositoryInfo: evalResult.repositoryInfo,
+          passingThreshold: 75,
+          status: evalResult.status,
+          aiFeedback: evalResult.aiFeedback,
+          detailedBreakdown: evalResult.detailedBreakdown
+        });
+      } catch (dbErr) {
+        console.warn("MongoDB SkillAssessment save error:", dbErr.message);
+      }
+    }
+
     if (!evalResult.isPassed) {
       return res.json({
         success: false,
         verified: false,
         evaluation: evalResult,
-        message: "Verification score below 75% or invalid project submission. Please review feedback and retry."
+        message: evalResult.aiFeedback || "Verification score below 75% or repository evidence insufficient. Please review feedback and retry."
       });
     }
 

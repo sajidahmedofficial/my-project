@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Skill Assessment model for recording multi-modal MCQ, Code & Project verification results", deps: ["mongoose"], state: "active", last: "anti@2026-08-20" }
+// agent-notes: { ctx: "Skill Assessment model for recording multi-modal MCQ, Code & Project verification results and GitHub technology evidence", deps: ["mongoose"], state: "active", last: "anti@2026-08-20" }
 import mongoose from 'mongoose';
 
 const skillAssessmentSchema = new mongoose.Schema({
@@ -9,10 +9,17 @@ const skillAssessmentSchema = new mongoose.Schema({
   projectScore: { type: Number, required: true, default: 0 },
   overallScore: { type: Number, required: true, default: 0 },
   projectUrl: { type: String, default: '' },
+  repositoryInfo: {
+    repoUrl: { type: String, default: '' },
+    repoName: { type: String, default: '' },
+    evidence: [{ type: String }],
+    projectScore: { type: Number, default: 0 },
+    verificationDate: { type: Date, default: Date.now }
+  },
   passingThreshold: { type: Number, default: 75 },
   status: { 
     type: String, 
-    enum: ['PENDING', 'PASSED', 'FAILED', 'VERIFIED'], 
+    enum: ['PENDING', 'PASSED', 'FAILED', 'VERIFIED', 'UNABLE_TO_VERIFY'], 
     default: 'PENDING' 
   },
   aiFeedback: { type: String, default: '' },

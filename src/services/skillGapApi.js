@@ -200,6 +200,28 @@ export const skillGapApi = {
   },
 
   /**
+   * Verify and inspect GitHub repository metadata and evidence
+   */
+  verifyProjectRepository: async ({ repoUrl, skillName, targetRole = "Frontend Developer" }) => {
+    const res = await fetch(`${API_BASE_URL}/skill-gap/assessment/verify-project`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        repoUrl,
+        skillName,
+        targetRole
+      })
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData.error || errorData.message || "Failed to verify project repository.");
+    }
+
+    return await res.json();
+  },
+
+  /**
    * Verify skill through multi-modal assessments
    */
   verifySkill: async ({ skillName, userName = "SkillBridge Student", userId = "guest_user", assessmentId, answers, userCode, code, mcqResults, codingResults, projectSubmission, targetRole = "Frontend Developer" }) => {

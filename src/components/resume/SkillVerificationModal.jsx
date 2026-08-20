@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Interactive 7-stage skill verification modal with backend VM sandbox code execution, real test-case evaluation, and authoritative certification", deps: ["react", "lucide-react", "../../utils/skillChallenges", "../../services/skillGapApi"], state: "active", last: "anti@2026-08-20" }
+// agent-notes: { ctx: "Interactive 7-stage skill verification modal with live GitHub repository evidence extraction, sandbox VM coding evaluation, and authoritative certification", deps: ["react", "lucide-react", "../../utils/skillChallenges", "../../services/skillGapApi"], state: "active", last: "anti@2026-08-20" }
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { 
@@ -18,7 +18,9 @@ import {
   CheckCircle2, 
   Terminal,
   Clock,
-  XCircle
+  XCircle,
+  Github,
+  Check
 } from 'lucide-react';
 import { skillGapApi } from '../../services/skillGapApi';
 
@@ -56,6 +58,26 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
   const [codePassed, setCodePassed] = useState(false);
   const [codeValidationError, setCodeValidationError] = useState(null);
 
+  // Step 5 Project State (Live GitHub Inspection & Technology Evidence)
+  const [projectRepo, setProjectRepo] = useState('');
+  const [projectRepoError, setProjectRepoError] = useState(null);
+  const [inspectingRepo, setInspectingRepo] = useState(false);
+  const [repoInspectionResult, setRepoInspectionResult] = useState(null);
+
+  // Step 6 AI Evaluation State
+  const [evaluating, setEvaluating] = useState(false);
+  const [evalResult, setEvalResult] = useState(null);
+
+  const steps = [
+    { num: 1, label: "Notes & Video" },
+    { num: 2, label: "Practice" },
+    { num: 3, label: "MCQ Check" },
+    { num: 4, label: "Coding Sandbox" },
+    { num: 5, label: "Micro-Project" },
+    { num: 6, label: "AI Evaluation" },
+    { num: 7, label: "Certification" }
+  ];
+
   // Fetch MCQ Questions & Coding Challenge from Backend on mount or skill change
   useEffect(() => {
     let isMounted = true;
@@ -85,24 +107,6 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
     loadVerificationAssets();
     return () => { isMounted = false; };
   }, [skillName, userId]);
-
-  // Step 5 Project State
-  const [projectRepo, setProjectRepo] = useState('');
-  const [projectRepoError, setProjectRepoError] = useState(null);
-
-  // Step 6 AI Evaluation State
-  const [evaluating, setEvaluating] = useState(false);
-  const [evalResult, setEvalResult] = useState(null);
-
-  const steps = [
-    { num: 1, label: "Notes & Video" },
-    { num: 2, label: "Practice" },
-    { num: 3, label: "MCQ Check" },
-    { num: 4, label: "Coding Sandbox" },
-    { num: 5, label: "Micro-Project" },
-    { num: 6, label: "AI Evaluation" },
-    { num: 7, label: "Certification" }
-  ];
 
   const handleResetTemplate = () => {
     if (challengeData) {
@@ -154,6 +158,35 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
     }
   };
 
+  const handleInspectRepo = async () => {
+    setProjectRepoError(null);
+    setRepoInspectionResult(null);
+    const cleanedRepo = projectRepo.trim();
+
+    if (!cleanedRepo) {
+      setProjectRepoError("Please enter your GitHub repository URL (e.g. https://github.com/username/project)");
+      return;
+    }
+
+    setInspectingRepo(true);
+    try {
+      const result = await skillGapApi.verifyProjectRepository({
+        repoUrl: cleanedRepo,
+        skillName
+      });
+
+      setRepoInspectionResult(result);
+      if (!result.isAccessible || result.status === 'unable_to_verify') {
+        setProjectRepoError(result.feedback || "Repository is private or inaccessible on GitHub.");
+      }
+    } catch (err) {
+      console.error("Repo Inspection Error:", err);
+      setProjectRepoError(err.message || "Unable to inspect GitHub repository.");
+    } finally {
+      setInspectingRepo(false);
+    }
+  };
+
   const handleSelectOption = (questionId, optionKey) => {
     setMcqAnswers(prev => ({
       ...prev,
@@ -165,24 +198,20 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
     setProjectRepoError(null);
     const cleanedRepo = projectRepo.trim();
 
-    // 1. Mandatory repository URL check
     if (!cleanedRepo) {
-      setProjectRepoError("Please paste your valid GitHub repository or Sandbox URL before triggering AI evaluation!");
+      setProjectRepoError("Please paste your valid GitHub repository URL before triggering AI evaluation!");
       return;
     }
 
-    // 2. Format validation check
-    const isValidUrl = /^(https?:\/\/)?(www\.)?(github\.com|gitlab\.com|bitbucket\.org|codesandbox\.io|replit\.com|stackblitz\.com|gist\.github\.com)\/.+/i.test(cleanedRepo) || (cleanedRepo.startsWith('http://') || cleanedRepo.startsWith('https://'));
-
-    if (!isValidUrl || cleanedRepo.length < 12) {
-      setProjectRepoError("Please enter a valid code repository URL (e.g. https://github.com/your-username/python-micro-project).");
+    const isValidUrl = /github\.com\/([a-zA-Z0-9_\-\.]+)\/([a-zA-Z0-9_\-\.]+)/i.test(cleanedRepo);
+    if (!isValidUrl) {
+      setProjectRepoError("Please enter a valid GitHub repository URL (e.g. https://github.com/your-username/my-project).");
       return;
     }
 
     setCurrentStep(6);
     setEvaluating(true);
 
-    // Format submitted answers array for backend evaluation
     const answersPayload = Object.entries(mcqAnswers).map(([questionId, answer]) => ({
       questionId,
       answer
@@ -191,7 +220,7 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
     const cleanedCode = codeContent.trim();
 
     try {
-      // Send raw code and MCQ answers to backend (backend authoritatively executes and computes scores)
+      // Send raw code, MCQ answers, and GitHub repository to backend
       const res = await skillGapApi.verifySkill({
         skillName,
         userName: "SkillBridge Student",
@@ -206,7 +235,7 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
       const evalData = res.evaluation;
       const certData = res.certificate;
       const passed = evalData.isPassed;
-      const status = passed ? "GAINED" : "LEARNING";
+      const status = passed ? "GAINED" : (evalData.status === "UNABLE_TO_VERIFY" ? "UNABLE_TO_VERIFY" : "LEARNING");
 
       setEvalResult({
         score: evalData.overallScore,
@@ -217,12 +246,13 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
         passed,
         summary: evalData.aiFeedback || (passed
           ? `✓ Comprehensive AI Evaluation Complete! ${skillName} repository (${cleanedRepo}) verified successfully.`
-          : `⚠ AI Evaluation Flagged Areas for Improvement: Total Score ${evalData.overallScore}% (Passing threshold is 75%).`),
+          : `⚠ AI Evaluation Flagged Issues: Total Score ${evalData.overallScore}% (Passing threshold is 75%).`),
         feedback: [
           `✓ Quiz Knowledge Check (30% weight): ${evalData.mcqScore}% (${evalData.detailedBreakdown?.mcqCorrect || 0}/${evalData.detailedBreakdown?.mcqTotal || mcqQuestions.length} correct - Backend Authoritative)`,
           `✓ Coding Sandbox Evaluation (35% weight): ${evalData.codingScore}% (${evalData.detailedBreakdown?.codeTestsPassed || 0}/${evalData.detailedBreakdown?.codeTestsTotal || challengeData?.testCases?.length || 1} test cases passed in isolated VM)`,
-          `✓ Micro-Project Integration (35% weight): ${evalData.projectScore}% (${cleanedRepo})`
+          `✓ Live GitHub Evidence Evaluation (35% weight): ${evalData.projectScore}% (${evalData.repositoryInfo?.repoName || cleanedRepo})`
         ],
+        evidence: evalData.repositoryInfo?.evidence || [],
         certificate: certData
       });
 
@@ -242,7 +272,8 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
         passed: false,
         error: true,
         summary: `Unable to verify skill. ${err.message || 'Please check connection and retry.'}`,
-        feedback: [`⚠ Verification Error: ${err.message || 'Service request failed.'}`]
+        feedback: [`⚠ Verification Error: ${err.message || 'Service request failed.'}`],
+        evidence: []
       });
     } finally {
       setEvaluating(false);
@@ -575,15 +606,21 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
           </div>
         )}
 
-        {/* ================= STEP 5: MICRO-PROJECT ================= */}
+        {/* ================= STEP 5: LIVE GITHUB PROJECT VERIFICATION ================= */}
         {currentStep === 5 && (
           <div className="space-y-4">
             <div className="p-4 rounded-2xl bg-gray-900/80 border border-gray-800 space-y-3">
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <FolderPlus className="w-4 h-4 text-accent-pink" /> Module 5: Micro-Project Submission
-              </h3>
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                  <FolderPlus className="w-4 h-4 text-accent-pink" /> Module 5: GitHub Micro-Project Verification
+                </h3>
+                <span className="px-2.5 py-0.5 rounded bg-accent-pink/20 text-accent-pink text-[10px] font-bold border border-accent-pink/30 flex items-center gap-1">
+                  <Github className="w-3 h-3" /> Live GitHub Inspection
+                </span>
+              </div>
+
               <p className="text-xs text-gray-300">
-                Submit your project repository URL showcasing practical {skillName} integration:
+                Submit a public GitHub repository link demonstrating real practical implementation of {skillName}:
               </p>
 
               {projectRepoError && (
@@ -594,21 +631,68 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
               )}
 
               <div className="space-y-2">
-                <label className="text-[11px] font-semibold text-gray-400">GitHub Repository / Sandbox Link:</label>
-                <input
-                  type="url"
-                  value={projectRepo}
-                  onChange={(e) => {
-                    setProjectRepo(e.target.value);
-                    if (projectRepoError) setProjectRepoError(null);
-                  }}
-                  placeholder={`https://github.com/username/${skillName.toLowerCase().replace(/[^a-z0-9]/g, '')}-project`}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-gray-950 border border-gray-800 text-xs text-white focus:outline-none focus:border-accent-purple font-mono placeholder:text-gray-600"
-                />
+                <label className="text-[11px] font-semibold text-gray-400">Public GitHub Repository URL:</label>
+                <div className="flex gap-2">
+                  <input
+                    type="url"
+                    value={projectRepo}
+                    onChange={(e) => {
+                      setProjectRepo(e.target.value);
+                      if (projectRepoError) setProjectRepoError(null);
+                    }}
+                    placeholder={`https://github.com/username/${skillName.toLowerCase().replace(/[^a-z0-9]/g, '')}-project`}
+                    className="flex-1 px-3.5 py-2.5 rounded-xl bg-gray-950 border border-gray-800 text-xs text-white focus:outline-none focus:border-accent-purple font-mono placeholder:text-gray-600"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleInspectRepo}
+                    disabled={inspectingRepo}
+                    className="px-3 py-2 rounded-xl bg-gray-900 hover:bg-gray-800 border border-gray-700 text-gray-300 text-xs font-bold flex items-center gap-1.5 shrink-0"
+                  >
+                    {inspectingRepo ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Github className="w-3.5 h-3.5" />}
+                    Inspect Repo
+                  </button>
+                </div>
                 <p className="text-[10px] text-gray-500">
-                  Paste your actual project URL (GitHub, GitLab, CodeSandbox, or Replit) for AI verification.
+                  Backend will inspect repository metadata, package.json dependencies, and README documentation for {skillName} evidence.
                 </p>
               </div>
+
+              {/* Repo Inspection Output */}
+              {repoInspectionResult && (
+                <div className={`p-4 rounded-xl border space-y-2.5 ${
+                  repoInspectionResult.isAccessible && repoInspectionResult.evidence?.length > 0
+                    ? 'bg-emerald-950/20 border-emerald-500/30'
+                    : 'bg-rose-950/20 border-rose-500/30'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                      <Github className="w-3.5 h-3.5 text-accent-purple" /> {repoInspectionResult.repoName || "GitHub Repository"}
+                    </span>
+                    <span className={`text-xs font-extrabold ${repoInspectionResult.isAccessible && repoInspectionResult.evidence?.length > 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                      {repoInspectionResult.isAccessible && repoInspectionResult.evidence?.length > 0 ? `Evidence Score: ${repoInspectionResult.projectScore}%` : 'Unable to Verify'}
+                    </span>
+                  </div>
+
+                  {repoInspectionResult.evidence && repoInspectionResult.evidence.length > 0 ? (
+                    <div className="space-y-1">
+                      <span className="text-[10px] uppercase font-bold text-gray-400 block tracking-wider">
+                        Detected Technical Evidence:
+                      </span>
+                      {repoInspectionResult.evidence.map((ev, idx) => (
+                        <div key={idx} className="flex items-start gap-1.5 text-[11px] text-emerald-300">
+                          <Check className="w-3 h-3 text-emerald-400 shrink-0 mt-0.5" />
+                          <span>{ev}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-[11px] text-rose-300">
+                      {repoInspectionResult.feedback || "No concrete technology markers or dependencies for this skill were found in the repository."}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="flex gap-3">
@@ -617,7 +701,7 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
                 onClick={handleTriggerAiEvaluation} 
                 className="flex-1 py-3 rounded-xl bg-gradient-to-r from-accent-purple to-accent-pink text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-lg shadow-accent-purple/20"
               >
-                <Sparkles className="w-4 h-4" /> Trigger AI Evaluation
+                <Sparkles className="w-4 h-4" /> Trigger Final AI Verification
               </button>
             </div>
           </div>
@@ -631,7 +715,7 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
                 <div className="w-14 h-14 rounded-full border-4 border-accent-purple border-t-transparent animate-spin" />
                 <div>
                   <h3 className="text-base font-bold text-white">AI Evaluator is Reviewing Submission...</h3>
-                  <p className="text-xs text-gray-400 mt-1">Executing code in sandbox, checking MCQs, and validating repository architecture</p>
+                  <p className="text-xs text-gray-400 mt-1">Executing code in sandbox, checking MCQs, and validating live GitHub repository architecture</p>
                 </div>
               </div>
             ) : evalResult ? (
@@ -647,7 +731,7 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
                   <span className={`px-3 py-1 rounded text-xs font-bold ${
                     evalResult.passed ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'
                   }`}>
-                    {evalResult.passed ? 'PASSED ✓' : 'NEEDS IMPROVEMENT ⚠'}
+                    {evalResult.passed ? 'PASSED ✓' : (evalResult.status === "UNABLE_TO_VERIFY" ? 'UNABLE TO VERIFY ⚠' : 'NEEDS IMPROVEMENT ⚠')}
                   </span>
                 </div>
                 <p className="text-xs text-gray-200">{evalResult.summary}</p>
@@ -659,13 +743,27 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
                   ))}
                 </div>
 
+                {evalResult.evidence && evalResult.evidence.length > 0 && (
+                  <div className="p-3 rounded-xl bg-gray-950 border border-gray-800 space-y-1 text-xs">
+                    <span className="text-[10px] uppercase font-bold text-gray-400 block tracking-wider">
+                      Verified Repository Evidence:
+                    </span>
+                    {evalResult.evidence.map((ev, i) => (
+                      <div key={i} className="flex items-center gap-1.5 text-gray-300 text-[11px]">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
+                        <span>{ev}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 <div className="pt-3 flex gap-3">
                   {!evalResult.passed ? (
                     <button
-                      onClick={() => setCurrentStep(4)}
+                      onClick={() => setCurrentStep(5)}
                       className="w-full py-3 rounded-xl bg-amber-500 text-black font-bold text-xs flex items-center justify-center gap-2 shadow-md"
                     >
-                      <RefreshCw className="w-4 h-4" /> Retake & Fix Code / MCQ Errors
+                      <RefreshCw className="w-4 h-4" /> Retake & Fix Code / Repository
                     </button>
                   ) : (
                     <button
@@ -694,7 +792,7 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
               </span>
               <h3 className="text-2xl font-black text-white">{skillName} Certified</h3>
               <p className="text-xs text-gray-300 max-w-md mx-auto">
-                Verified through backend-scored MCQ assessment, sandbox test cases, and repository evaluation.
+                Verified through backend-scored MCQ assessment, sandbox test cases, and real GitHub repository evidence.
               </p>
             </div>
 
