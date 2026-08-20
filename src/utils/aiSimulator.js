@@ -594,7 +594,7 @@ export function detectSkillGap(studentSkills, jobSkills, jobProfileDetails) {
 export function generateRoadmap(missingSkills, targetRole = "Frontend Developer", userSkills = []) {
   const userSkillsNormalized = (userSkills || []).map(s => s.toLowerCase().trim());
   
-  // Filter out any skills the user already knows (preventing starting from HTML/CSS if user has them)
+  // Filter out any skills the user already knows
   const actualGaps = (missingSkills || []).filter(skill => {
     const lower = skill.toLowerCase().trim();
     return !userSkillsNormalized.some(u => u === lower || (u.includes("react") && lower.includes("react")) || (u.includes("node") && lower.includes("node")));
@@ -603,29 +603,42 @@ export function generateRoadmap(missingSkills, targetRole = "Frontend Developer"
   if (actualGaps.length === 0) {
     return [
       {
+        id: "roadmap-mastery-1",
+        skillName: "Advanced Architecture",
+        level: "Advanced",
         week: "Week 1",
-        title: `${targetRole}: Advanced Specialization`,
-        topics: ["System Design Architecture", "Design Patterns & Microservices", "CI/CD & Cloud Infrastructure"],
+        title: `${targetRole}: Advanced Specialization & Master Class`,
+        topics: ["System Design Architecture", "Design Patterns & Microservices", "CI/CD & Cloud Infrastructure", "Performance Auditing & Security Hardening"],
+        practiceTasks: ["Design scalable load-balanced architecture diagram", "Implement automated GitHub Actions CI/CD pipeline"],
+        recommendedProject: `Enterprise ${targetRole} Production Suite`,
         resources: [{ name: "System Design Primer", provider: "GitHub", link: "https://github.com/donnemartin/system-design-primer" }]
       }
     ];
   }
 
   const roadmap = [];
-  
-  actualGaps.forEach((skill, _index) => {
+  const levels = ["Beginner", "Intermediate", "Advanced"];
+
+  actualGaps.forEach((skill) => {
     const normalizedName = normalizeSkill(skill);
     const skillData = SKILL_LIBRARY[normalizedName];
     
-    if (skillData) {
+    if (skillData && skillData.weeks) {
       skillData.weeks.forEach((w, wIdx) => {
+        const currentLevel = levels[Math.min(wIdx, levels.length - 1)];
         roadmap.push({
           id: `roadmap-${skill}-${wIdx}`,
           week: `Week ${roadmap.length + 1}`,
           skillName: skill,
-          title: `${skill}: ${w.title}`,
+          level: currentLevel,
+          title: `${skill} (${currentLevel}): ${w.title}`,
           topics: w.topics,
-          resources: skillData.courses.slice(0, 2)
+          practiceTasks: [
+            `Implement hands-on ${skill} code exercise for ${w.topics[0] || 'core concepts'}`,
+            `Build modular ${skill} helper utility covering ${w.topics[1] || 'state & logic'}`
+          ],
+          recommendedProject: `Build a production-grade ${skill} ${currentLevel} micro-project with automated tests`,
+          resources: skillData.courses ? skillData.courses.slice(0, 2) : [{ name: `Learn ${skill}`, provider: "Docs", link: `https://react.dev` }]
         });
       });
     } else {
@@ -633,9 +646,24 @@ export function generateRoadmap(missingSkills, targetRole = "Frontend Developer"
         id: `roadmap-${skill}-generic-1`,
         week: `Week ${roadmap.length + 1}`,
         skillName: skill,
-        title: `${skill} Mastery for ${targetRole}`,
-        topics: [`Core ${skill} principles and syntax`, `Building real-world features using ${skill}`, `Integration, error handling & deployment`],
+        level: "Beginner",
+        title: `${skill} (Beginner): Core Syntax & Principles for ${targetRole}`,
+        topics: [`Core ${skill} principles and syntax`, `Building real-world features using ${skill}`, `Integration & state management`],
+        practiceTasks: [`Create a minimal ${skill} starter boilerplate`, `Connect ${skill} logic with REST API endpoint`],
+        recommendedProject: `Build a clean ${skill} micro-service project`,
         resources: [{ name: `Learn ${skill}`, provider: "Docs", link: `https://www.google.com/search?q=learn+${encodeURIComponent(skill)}` }]
+      });
+
+      roadmap.push({
+        id: `roadmap-${skill}-generic-2`,
+        week: `Week ${roadmap.length + 1}`,
+        skillName: skill,
+        level: "Intermediate",
+        title: `${skill} (Intermediate): Production Patterns & Error Handling`,
+        topics: [`Advanced ${skill} architectural patterns`, `Asynchronous operations & error propagation`, `Testing & deployment optimization`],
+        practiceTasks: [`Write automated test suites for ${skill} handlers`, `Deploy ${skill} application to cloud sandbox`],
+        recommendedProject: `Full ${skill} integration micro-project with CI/CD`,
+        resources: [{ name: `${skill} Best Practices`, provider: "Developer Portal", link: `https://dev.to/search?q=${encodeURIComponent(skill)}` }]
       });
     }
   });

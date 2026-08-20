@@ -23,7 +23,7 @@ import {
   ResponsiveContainer
 } from 'recharts';
 
-export default function Dashboard({ profile, setProfile, onNavigate }) {
+export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerification }) {
   const hasUploadedResume = Boolean(profile?.hasUploadedResume);
 
   // Local goals checklist

@@ -35,6 +35,7 @@ import ProjectRecommender from './components/ProjectRecommender';
 import MockInterview from './components/MockInterview';
 import CodingPractice from './components/CodingPractice';
 import AptitudeDashboard from './components/aptitude/AptitudeDashboard';
+import SkillVerificationModal from './components/resume/SkillVerificationModal';
 
 import { RESUME_PRESETS } from './utils/mockData';
 
@@ -45,6 +46,7 @@ function MainLayout() {
   const [missingSkillsList, setMissingSkillsList] = useState([]);
   const [targetRole, setTargetRole] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [globalVerifyingSkill, setGlobalVerifyingSkill] = useState(null);
 
   // Modals & Overlays
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -66,6 +68,25 @@ function MainLayout() {
       setTargetRole(role);
     }
     setActiveTab('roadmap');
+  };
+
+  const handleOpenGlobalVerification = (skillName) => {
+    setGlobalVerifyingSkill(skillName);
+  };
+
+  const handleCompleteGlobalVerification = ({ skillName, certificateCode, score }) => {
+    const updatedSkills = Array.from(new Set([...(activeProfile.skills || []), skillName]));
+    const updatedCertificates = [
+      ...(activeProfile.certificates || []),
+      { skillName, certificateCode, score: score || 95, date: new Date().toLocaleDateString() }
+    ];
+    handleProfileChange({
+      ...activeProfile,
+      skills: updatedSkills,
+      certificates: updatedCertificates
+    });
+    setGlobalVerifyingSkill(null);
+    setActiveTab('resume');
   };
 
   const navigationItems = [
@@ -99,6 +120,7 @@ function MainLayout() {
             profile={activeProfile} 
             setProfile={handleProfileChange} 
             onNavigate={setActiveTab} 
+            onOpenVerification={handleOpenGlobalVerification}
           />
         </div>
         <div className={activeTab === 'resume' ? 'block' : 'hidden'}>
@@ -113,6 +135,7 @@ function MainLayout() {
             profile={activeProfile}
             onGenerateRoadmap={handleGenerateRoadmap}
             onNavigate={setActiveTab}
+            onOpenVerification={handleOpenGlobalVerification}
           />
         </div>
         <div className={activeTab === 'roadmap' ? 'block' : 'hidden'}>
@@ -120,6 +143,7 @@ function MainLayout() {
             profile={activeProfile} 
             missingSkillsList={missingSkillsList} 
             targetRole={targetRole || activeProfile?.careerGoal || "Frontend Developer"}
+            onOpenVerification={handleOpenGlobalVerification}
           />
         </div>
         <div className={activeTab === 'chat' ? 'block' : 'hidden'}>
@@ -393,6 +417,14 @@ function MainLayout() {
         onClose={() => setIsNotificationsOpen(false)} 
       />
 
+      {/* Global Skill Verification Modal */}
+      {globalVerifyingSkill && (
+        <SkillVerificationModal
+          skillName={globalVerifyingSkill}
+          onClose={() => setGlobalVerifyingSkill(null)}
+          onCompleteVerification={handleCompleteGlobalVerification}
+        />
+      )}
     </div>
   );
 }

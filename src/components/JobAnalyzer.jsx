@@ -83,7 +83,7 @@ const CATEGORY_LABELS = {
   deployment: "DEPLOYMENT",
 };
 
-export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate }) {
+export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, onOpenVerification }) {
   const hasUploadedResume = Boolean(profile?.hasUploadedResume);
 
   // Main Mode Switcher: 'matrix' (Visual Chip Matrix) vs 'analyzer' (AI Job Description Analyzer)
@@ -552,6 +552,48 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate }) 
                   Add Skill
                 </button>
               </div>
+            </div>
+          </section>
+
+          {/* ================= MISSING SKILLS & VERIFICATION PIPELINE ================= */}
+          <section className="mt-6 pt-4 border-t border-gray-800">
+            <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+              <div className="section-title text-amber-400 flex items-center gap-2">
+                <span>⚠</span>
+                IDENTIFIED MISSING SKILLS GAP ({allRoleSkills.filter(s => !userSkills.some(u => u.toLowerCase().trim() === s.toLowerCase().trim())).length})
+              </div>
+              <button
+                onClick={() => triggerGenerateRoadmap()}
+                className="px-3.5 py-1.5 rounded-xl bg-accent-purple/20 border border-accent-purple/30 text-accent-purple hover:bg-accent-purple/30 text-xs font-bold transition-all flex items-center gap-1.5"
+              >
+                View Full AI Roadmap ›
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+              {allRoleSkills.filter(s => !userSkills.some(u => u.toLowerCase().trim() === s.toLowerCase().trim())).map((missingSkill) => (
+                <div 
+                  key={missingSkill}
+                  className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between gap-2"
+                >
+                  <div className="overflow-hidden">
+                    <span className="font-bold text-white text-xs block truncate">{missingSkill}</span>
+                    <span className="text-[10px] text-amber-300/80 block">Missing for {ROLE_PRESETS[targetRoleKey]?.title}</span>
+                  </div>
+                  <button
+                    onClick={() => onOpenVerification && onOpenVerification(missingSkill)}
+                    className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-[11px] shrink-0 transition-all flex items-center gap-1 shadow-md shadow-amber-500/20"
+                    title={`Start verification pipeline for ${missingSkill}`}
+                  >
+                    ⚡ Verify
+                  </button>
+                </div>
+              ))}
+              {allRoleSkills.filter(s => !userSkills.some(u => u.toLowerCase().trim() === s.toLowerCase().trim())).length === 0 && (
+                <div className="col-span-full p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold text-center">
+                  🎉 100% Match! Zero missing skills for {ROLE_PRESETS[targetRoleKey]?.title}!
+                </div>
+              )}
             </div>
           </section>
 
