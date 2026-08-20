@@ -24,4 +24,6 @@ dist-ssr
 *.ntvs*
 *.njsproj
 *.sln
+# Uploads
+uploads/
 *.sw?

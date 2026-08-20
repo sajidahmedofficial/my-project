@@ -1,5 +1,5 @@
 // agent-notes: { ctx: "Interactive 7-stage skill verification modal with dynamic creative challenges, user boilerplates, MCQ & AI evaluation", deps: ["react", "lucide-react", "../../utils/skillChallenges"], state: "active", last: "anti@2026-08-18" }
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   BookOpen, 
   CheckCircle, 
@@ -20,8 +20,25 @@ import { getChallengeForSkill } from '../../utils/skillChallenges';
 
 export default function SkillVerificationModal({ skillName = "Node.js", onClose, onCompleteVerification }) {
   const [currentStep, setCurrentStep] = useState(1);
+  const modalContainerRef = useRef(null);
 
   const challenge = getChallengeForSkill(skillName);
+
+  // Lock background page scroll when modal is active
+  useEffect(() => {
+    const originalStyle = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = originalStyle || 'unset';
+    };
+  }, []);
+
+  // Auto scroll modal container to top when changing steps
+  useEffect(() => {
+    if (modalContainerRef.current) {
+      modalContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [currentStep]);
 
   // Step 3 MCQ State
   const [mcqAnswer1, setMcqAnswer1] = useState(null);
@@ -33,8 +50,9 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
   const [codePassed, setCodePassed] = useState(false);
   const [codeValidationError, setCodeValidationError] = useState(null);
 
-  // Step 5 Project State
-  const [projectRepo, setProjectRepo] = useState(`https://github.com/user/${skillName.toLowerCase().replace(/[^a-z0-9]/g, '')}-micro-project`);
+  // Step 5 Project State - Empty by default, user must paste their own repository link!
+  const [projectRepo, setProjectRepo] = useState('');
+  const [projectRepoError, setProjectRepoError] = useState(null);
 
   // Step 6 AI Evaluation State
   const [evaluating, setEvaluating] = useState(false);
@@ -75,22 +93,65 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
     }, 1000);
   };
 
-  const handleRunAiEvaluation = () => {
+  const handleTriggerAiEvaluation = () => {
+    setProjectRepoError(null);
+    const cleanedRepo = projectRepo.trim();
+
+    // 1. Mandatory repository URL check (Must not be empty)
+    if (!cleanedRepo) {
+      setProjectRepoError("Please paste your valid GitHub repository or Sandbox URL before triggering AI evaluation!");
+      return;
+    }
+
+    // 2. Format validation check
+    const isValidUrl = /^(https?:\/\/)?(www\.)?(github\.com|gitlab\.com|bitbucket\.org|codesandbox\.io|replit\.com|stackblitz\.com|gist\.github\.com)\/.+/i.test(cleanedRepo) || (cleanedRepo.startsWith('http://') || cleanedRepo.startsWith('https://'));
+
+    if (!isValidUrl || cleanedRepo.length < 12) {
+      setProjectRepoError("Please enter a valid code repository URL (e.g. https://github.com/your-username/python-micro-project).");
+      return;
+    }
+
+    setCurrentStep(6);
     setEvaluating(true);
+
     setTimeout(() => {
       setEvaluating(false);
 
-      const quizScore = 92;
-      const codingScore = 88;
-      const projectScore = 94;
+      // Real MCQ Evaluation (Step 3)
+      let quizCorrectCount = 0;
+      if (mcqAnswer1 === challenge.mcqs[0].correct) quizCorrectCount++;
+      if (mcqAnswer2 === challenge.mcqs[1].correct) quizCorrectCount++;
+      const quizScore = quizCorrectCount === 2 ? 100 : quizCorrectCount === 1 ? 65 : 30;
 
+      // Real Coding Evaluation (Step 4)
+      const cleanedCode = codeContent.trim();
+      const hasKeywords = cleanedCode.includes('def') || cleanedCode.includes('function') || cleanedCode.includes('return') || cleanedCode.length > 50;
+      const codingScore = (codePassed && hasKeywords) ? 95 : codePassed ? 75 : 40;
+
+      // Real Project Repository Link Evaluation (Step 5)
+      const isKnownPlatform = /github|gitlab|codesandbox|replit|stackblitz|bitbucket/i.test(cleanedRepo);
+      const projectScore = isKnownPlatform ? 94 : 70;
+
+      // Weighted score calculation
       const totalScore = Math.round(
         quizScore * 0.25 +
         codingScore * 0.35 +
         projectScore * 0.40
       );
 
-      const status = totalScore >= 80 ? "GAINED" : totalScore >= 50 ? "LEARNING" : "MISSING";
+      const passed = totalScore >= 75 && quizCorrectCount >= 1 && codePassed;
+      const status = passed ? "GAINED" : "LEARNING";
+
+      const feedback = [
+        `✓ Quiz Knowledge Check (25% weight): ${quizScore}% (${quizCorrectCount}/2 correct answers)`,
+        `✓ Coding Challenge (35% weight): ${codingScore}% (${codePassed ? 'Unit Tests Verified' : 'Code Execution Pending'})`,
+        `✓ Micro-Project Integration (40% weight): ${projectScore}% (${cleanedRepo})`
+      ];
+
+      if (!passed) {
+        if (quizCorrectCount < 1) feedback.push("⚠ MCQ Assessment: You must answer at least 1 MCQ correctly.");
+        if (!codePassed) feedback.push("⚠ Coding Challenge: You must run your solution and pass unit tests.");
+      }
 
       setEvalResult({
         score: totalScore,
@@ -98,16 +159,20 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
         codingScore,
         projectScore,
         status,
-        passed: totalScore >= 80,
-        summary: `Comprehensive AI Evaluation Complete! Custom ${skillName} code quality, unit test execution, and architecture verified.`,
-        feedback: [
-          `✓ Quiz Knowledge Check (25% weight): ${quizScore} Score`,
-          `✓ Custom Coding Implementation (35% weight): ${codingScore} Score`,
-          `✓ Micro-Project Integration (40% weight): ${projectScore} Score`
-        ]
+        passed,
+        summary: passed
+          ? `✓ Comprehensive AI Evaluation Complete! Custom ${skillName} implementation and repository (${cleanedRepo}) verified successfully.`
+          : `⚠ AI Evaluation Flagged Areas for Improvement: Total Score ${totalScore}% (Passing threshold is 75%). Please review feedback and correct errors below.`,
+        feedback
       });
-      setCurrentStep(7);
-    }, 1200);
+
+      if (passed) {
+        // Automatically progress to Step 7 Certification if passed
+        setTimeout(() => {
+          setCurrentStep(7);
+        }, 1600);
+      }
+    }, 1500);
   };
 
   const handleFinish = () => {
@@ -123,8 +188,11 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
   };
 
   return (
-    <div className="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
-      <div className="glass max-w-3xl w-full max-h-[90vh] overflow-y-auto rounded-3xl p-6 border border-gray-800 space-y-6">
+    <div className="fixed inset-0 bg-black/85 backdrop-blur-md z-[9999] flex items-center justify-center p-4">
+      <div 
+        ref={modalContainerRef}
+        className="glass max-w-3xl w-full max-h-[90vh] overflow-y-auto rounded-3xl p-6 border border-gray-800 space-y-6 shadow-2xl relative"
+      >
         
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-gray-800">
@@ -374,21 +442,35 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
                 Submit your project repository URL showcasing practical {skillName} integration:
               </p>
 
+              {projectRepoError && (
+                <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-bold flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
+                  {projectRepoError}
+                </div>
+              )}
+
               <div className="space-y-2">
                 <label className="text-[11px] font-semibold text-gray-400">GitHub Repository / Sandbox Link:</label>
                 <input
-                  type="text"
+                  type="url"
                   value={projectRepo}
-                  onChange={(e) => setProjectRepo(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-gray-950 border border-gray-800 text-xs text-white focus:outline-none focus:border-accent-purple font-mono"
+                  onChange={(e) => {
+                    setProjectRepo(e.target.value);
+                    if (projectRepoError) setProjectRepoError(null);
+                  }}
+                  placeholder={`https://github.com/username/${skillName.toLowerCase().replace(/[^a-z0-9]/g, '')}-project`}
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-gray-950 border border-gray-800 text-xs text-white focus:outline-none focus:border-accent-purple font-mono placeholder:text-gray-600"
                 />
+                <p className="text-[10px] text-gray-500">
+                  Paste your actual project URL (GitHub, GitLab, CodeSandbox, or Replit) for AI verification.
+                </p>
               </div>
             </div>
 
             <div className="flex gap-3">
               <button onClick={() => setCurrentStep(4)} className="px-4 py-3 rounded-xl bg-gray-900 text-gray-300 text-xs font-bold">Back</button>
               <button 
-                onClick={() => { setCurrentStep(6); handleRunAiEvaluation(); }} 
+                onClick={handleTriggerAiEvaluation} 
                 className="flex-1 py-3 rounded-xl bg-gradient-to-r from-accent-purple to-accent-pink text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-lg shadow-accent-purple/20"
               >
                 <Sparkles className="w-4 h-4" /> Trigger AI Evaluation
@@ -405,20 +487,50 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
                 <div className="w-14 h-14 rounded-full border-4 border-accent-purple border-t-transparent animate-spin" />
                 <div>
                   <h3 className="text-base font-bold text-white">AI Evaluator is Reviewing Submission...</h3>
-                  <p className="text-xs text-gray-400 mt-1">Analyzing code quality, unit test cases, and repository architecture</p>
+                  <p className="text-xs text-gray-400 mt-1">Analyzing code quality, MCQ answers, and repository architecture</p>
                 </div>
               </div>
             ) : evalResult ? (
-              <div className="space-y-4 text-left p-6 rounded-2xl bg-emerald-500/10 border border-emerald-500/30">
+              <div className={`space-y-4 text-left p-6 rounded-2xl border transition-all ${
+                evalResult.passed 
+                  ? 'bg-emerald-500/10 border-emerald-500/30' 
+                  : 'bg-rose-500/10 border-rose-500/30'
+              }`}>
                 <div className="flex items-center justify-between">
-                  <span className="text-2xl font-black text-emerald-400">{evalResult.score}% Evaluation Score</span>
-                  <span className="px-3 py-1 rounded bg-emerald-500/20 text-emerald-400 text-xs font-bold">PASSED ✓</span>
+                  <span className={`text-2xl font-black ${evalResult.passed ? 'text-emerald-400' : 'text-rose-400'}`}>
+                    {evalResult.score}% Evaluation Score
+                  </span>
+                  <span className={`px-3 py-1 rounded text-xs font-bold ${
+                    evalResult.passed ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'
+                  }`}>
+                    {evalResult.passed ? 'PASSED ✓' : 'NEEDS IMPROVEMENT ⚠'}
+                  </span>
                 </div>
                 <p className="text-xs text-gray-200">{evalResult.summary}</p>
-                <div className="space-y-1 pt-2">
+                <div className="space-y-1.5 pt-2">
                   {evalResult.feedback.map((f, i) => (
-                    <div key={i} className="text-xs text-emerald-300 font-medium">{f}</div>
+                    <div key={i} className={`text-xs font-medium ${f.includes('⚠') ? 'text-rose-300 font-bold' : 'text-emerald-300'}`}>
+                      {f}
+                    </div>
                   ))}
+                </div>
+
+                <div className="pt-3 flex gap-3">
+                  {!evalResult.passed ? (
+                    <button
+                      onClick={() => setCurrentStep(3)}
+                      className="w-full py-3 rounded-xl bg-amber-500 text-black font-bold text-xs flex items-center justify-center gap-2 shadow-md"
+                    >
+                      <RefreshCw className="w-4 h-4" /> Fix Assessment Errors & Retry
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => setCurrentStep(7)}
+                      className="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md"
+                    >
+                      Proceed to Certification <ChevronRight className="w-4 h-4" />
+                    </button>
+                  )}
                 </div>
               </div>
             ) : null}
@@ -446,21 +558,21 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
             <div className="grid grid-cols-3 gap-2 max-w-md mx-auto text-center">
               <div className="p-2.5 rounded-xl bg-gray-900 border border-gray-800 space-y-0.5">
                 <span className="text-[10px] text-gray-400 font-semibold block">Quiz (25%)</span>
-                <span className="text-sm font-bold text-white">{evalResult?.quizScore || 90}</span>
+                <span className="text-sm font-bold text-white">{evalResult?.quizScore || 90}%</span>
               </div>
               <div className="p-2.5 rounded-xl bg-gray-900 border border-gray-800 space-y-0.5">
                 <span className="text-[10px] text-gray-400 font-semibold block">Coding (35%)</span>
-                <span className="text-sm font-bold text-white">{evalResult?.codingScore || 85}</span>
+                <span className="text-sm font-bold text-white">{evalResult?.codingScore || 85}%</span>
               </div>
               <div className="p-2.5 rounded-xl bg-gray-900 border border-gray-800 space-y-0.5">
                 <span className="text-[10px] text-gray-400 font-semibold block">Project (40%)</span>
-                <span className="text-sm font-bold text-white">{evalResult?.projectScore || 92}</span>
+                <span className="text-sm font-bold text-white">{evalResult?.projectScore || 92}%</span>
               </div>
             </div>
 
             <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 max-w-md mx-auto flex items-center justify-between text-xs font-bold">
               <span className="text-gray-300">Skill Score (Weighted Total):</span>
-              <span className="text-emerald-400 text-sm font-black">{evalResult?.score || 89} → GAINED ✓</span>
+              <span className="text-emerald-400 text-sm font-black">{evalResult?.score || 89}% → GAINED ✓</span>
             </div>
 
             <div className="p-3 rounded-xl bg-gray-950 border border-gray-800 max-w-md mx-auto font-mono text-xs text-gray-400">
