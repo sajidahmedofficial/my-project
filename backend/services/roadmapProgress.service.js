@@ -1,9 +1,7 @@
-// agent-notes: { ctx: "Roadmap Task Progress management service with authoritative backend calculation and MongoDB persistence", deps: ["mongoose", "../models/LearningRoadmap.js"], state: "active", last: "anti@2026-08-20" }
+// agent-notes: { ctx: "Roadmap Task Progress management service with authoritative backend calculation and disk-backed persistent storage", deps: ["mongoose", "../models/LearningRoadmap.js", "../models/RoadmapTask.js", "../storage/persistentStore.js"], state: "active", last: "anti@2026-08-20" }
 import mongoose from 'mongoose';
 import LearningRoadmap from '../models/LearningRoadmap.js';
-
-// In-memory store for fallback
-export const roadmapMemoryStore = new Map();
+import persistentStore from '../storage/persistentStore.js';
 
 /**
  * Hydrate roadmap object with structured task IDs and server progress
@@ -19,7 +17,7 @@ export function hydrateRoadmapTasks(roadmap, userId = "guest_user") {
 
     (stage.topics || []).forEach((topic, tIdx) => {
       const taskId = `task_${roadmapId}_s${stageNumber}_top${tIdx}`;
-      const existingTask = (roadmap.tasks || []).find(t => t.taskId === taskId);
+      const existingTask = (roadmap.tasks || []).find(t => t.taskId === taskId) || persistentStore.findOne('roadmapTasks', { taskId, userId });
       
       const taskObj = {
         taskId,
@@ -30,13 +28,16 @@ export function hydrateRoadmapTasks(roadmap, userId = "guest_user") {
         taskType: 'topic',
         difficulty: stage.level || 'Beginner',
         status: existingTask ? existingTask.status : 'pending',
-        completed: existingTask ? existingTask.completed : false,
+        completed: existingTask ? (existingTask.completed || existingTask.status === 'completed') : false,
         score: existingTask ? existingTask.score : null,
         completedAt: existingTask ? existingTask.completedAt : null
       };
 
       stageTasks.push(taskObj);
       allTasks.push(taskObj);
+
+      // Persist individual task record to persistent store
+      persistentStore.upsert('roadmapTasks', 'taskId', taskObj);
     });
 
     // Calculate stage progress
@@ -57,7 +58,7 @@ export function hydrateRoadmapTasks(roadmap, userId = "guest_user") {
   const completedTotal = allTasks.filter(t => t.status === 'completed' || t.completed).length;
   const overallProgress = totalTasks > 0 ? Math.round((completedTotal / totalTasks) * 100) : 0;
 
-  return {
+  const hydrated = {
     ...roadmap,
     roadmapId,
     userId,
@@ -66,6 +67,11 @@ export function hydrateRoadmapTasks(roadmap, userId = "guest_user") {
     overallProgress,
     status: overallProgress === 100 ? 'COMPLETED' : overallProgress > 0 ? 'IN_PROGRESS' : 'NOT_STARTED'
   };
+
+  // Persist roadmap record
+  persistentStore.upsert('learningRoadmaps', 'roadmapId', hydrated);
+
+  return hydrated;
 }
 
 /**
@@ -77,142 +83,110 @@ export async function updateTaskProgress({ taskId, roadmapId, userId = "guest_us
   }
 
   const isCompleted = status === "completed";
-  const completedAt = isCompleted ? new Date() : null;
+  const completedAt = isCompleted ? new Date().toISOString() : null;
 
-  let matchedRoadmap = null;
+  // 1. Update in Persistent Disk Storage
+  const allRoadmaps = persistentStore.find('learningRoadmaps', { userId });
+  let matchedRoadmap = allRoadmaps.find(r => (r.tasks || []).some(t => t.taskId === taskId));
 
-  // 1. Try DB first
-  if (mongoose.connection.readyState === 1) {
-    try {
-      let query = { "tasks.taskId": taskId };
-      if (userId && userId !== "guest_user" && mongoose.Types.ObjectId.isValid(userId)) {
-        query.userId = userId;
-      }
+  if (!matchedRoadmap && roadmapId) {
+    matchedRoadmap = persistentStore.findOne('learningRoadmaps', { roadmapId, userId });
+  }
 
-      matchedRoadmap = await LearningRoadmap.findOne(query);
-
-      if (matchedRoadmap) {
-        let taskFound = false;
-
-        // Update top-level tasks
-        matchedRoadmap.tasks = (matchedRoadmap.tasks || []).map(t => {
-          if (t.taskId === taskId) {
-            taskFound = true;
-            return {
-              ...t.toObject(),
-              status,
-              completed: isCompleted,
-              score: score !== null ? score : t.score,
-              completedAt
-            };
-          }
-          return t;
-        });
-
-        // Update tasks within stages
-        matchedRoadmap.stages = (matchedRoadmap.stages || []).map(stg => {
-          const updatedStageTasks = (stg.tasks || []).map(st => {
-            if (st.taskId === taskId) {
-              return {
-                ...st.toObject(),
-                status,
-                completed: isCompleted,
-                score: score !== null ? score : st.score,
-                completedAt
-              };
-            }
-            return st;
-          });
-
-          const completedCount = updatedStageTasks.filter(t => t.status === 'completed' || t.completed).length;
-          const stageProgress = updatedStageTasks.length > 0 ? Math.round((completedCount / updatedStageTasks.length) * 100) : 0;
-
-          return {
-            ...stg.toObject(),
-            tasks: updatedStageTasks,
-            stageProgress
-          };
-        });
-
-        // Calculate authoritative overall progress on backend
-        const total = matchedRoadmap.tasks.length;
-        const completed = matchedRoadmap.tasks.filter(t => t.status === 'completed' || t.completed).length;
-        matchedRoadmap.overallProgress = total > 0 ? Math.round((completed / total) * 100) : 0;
-        matchedRoadmap.status = matchedRoadmap.overallProgress === 100 ? 'COMPLETED' : matchedRoadmap.overallProgress > 0 ? 'IN_PROGRESS' : 'NOT_STARTED';
-
-        await matchedRoadmap.save();
-
+  if (matchedRoadmap) {
+    // Update top-level tasks
+    matchedRoadmap.tasks = (matchedRoadmap.tasks || []).map(t => {
+      if (t.taskId === taskId) {
         return {
-          success: true,
-          taskId,
-          roadmapId: matchedRoadmap.roadmapId || matchedRoadmap._id,
-          userId: matchedRoadmap.userId,
+          ...t,
           status,
           completed: isCompleted,
-          completedAt,
-          overallProgress: matchedRoadmap.overallProgress,
-          completedCount: completed,
-          totalCount: total,
-          stages: matchedRoadmap.stages
+          score: score !== null ? score : t.score,
+          completedAt
         };
       }
-    } catch (dbErr) {
-      console.warn("DB updateTaskProgress warning:", dbErr.message);
-    }
-  }
+      return t;
+    });
 
-  // 2. Memory Store Fallback
-  for (const [key, rdm] of roadmapMemoryStore.entries()) {
-    const task = (rdm.tasks || []).find(t => t.taskId === taskId);
-    if (task) {
-      // Verify user if applicable
-      if (userId && userId !== "guest_user" && rdm.userId && rdm.userId !== userId) {
-        throw new Error("Unauthorized: Task does not belong to the authenticated user");
-      }
-
-      task.status = status;
-      task.completed = isCompleted;
-      task.score = score !== null ? score : task.score;
-      task.completedAt = completedAt;
-
-      // Recalculate stage progress
-      rdm.stages.forEach(stg => {
-        (stg.tasks || []).forEach(st => {
-          if (st.taskId === taskId) {
-            st.status = status;
-            st.completed = isCompleted;
-            st.completedAt = completedAt;
-          }
-        });
-        const completedStg = (stg.tasks || []).filter(t => t.status === 'completed' || t.completed).length;
-        stg.stageProgress = stg.tasks?.length ? Math.round((completedStg / stg.tasks.length) * 100) : 0;
+    // Update tasks in stages
+    matchedRoadmap.stages = (matchedRoadmap.stages || []).map(stg => {
+      const updatedStageTasks = (stg.tasks || []).map(st => {
+        if (st.taskId === taskId) {
+          return {
+            ...st,
+            status,
+            completed: isCompleted,
+            score: score !== null ? score : st.score,
+            completedAt
+          };
+        }
+        return st;
       });
 
-      // Recalculate overall progress
-      const total = rdm.tasks.length;
-      const completed = rdm.tasks.filter(t => t.status === 'completed' || t.completed).length;
-      rdm.overallProgress = total > 0 ? Math.round((completed / total) * 100) : 0;
-      rdm.status = rdm.overallProgress === 100 ? 'COMPLETED' : rdm.overallProgress > 0 ? 'IN_PROGRESS' : 'NOT_STARTED';
-
-      roadmapMemoryStore.set(key, rdm);
+      const completedCount = updatedStageTasks.filter(t => t.status === 'completed' || t.completed).length;
+      const stageProgress = updatedStageTasks.length > 0 ? Math.round((completedCount / updatedStageTasks.length) * 100) : 0;
 
       return {
-        success: true,
-        taskId,
-        roadmapId: rdm.roadmapId,
-        userId: rdm.userId,
-        status,
-        completed: isCompleted,
-        completedAt,
-        overallProgress: rdm.overallProgress,
-        completedCount: completed,
-        totalCount: total,
-        stages: rdm.stages
+        ...stg,
+        tasks: updatedStageTasks,
+        stageProgress
       };
+    });
+
+    const total = matchedRoadmap.tasks.length;
+    const completed = matchedRoadmap.tasks.filter(t => t.status === 'completed' || t.completed).length;
+    matchedRoadmap.overallProgress = total > 0 ? Math.round((completed / total) * 100) : 0;
+    matchedRoadmap.status = matchedRoadmap.overallProgress === 100 ? 'COMPLETED' : matchedRoadmap.overallProgress > 0 ? 'IN_PROGRESS' : 'NOT_STARTED';
+
+    // Persist updated roadmap & task to disk
+    persistentStore.upsert('learningRoadmaps', 'roadmapId', matchedRoadmap);
+    persistentStore.upsert('roadmapTasks', 'taskId', {
+      taskId,
+      roadmapId: matchedRoadmap.roadmapId,
+      userId,
+      status,
+      completed: isCompleted,
+      score,
+      completedAt
+    });
+
+    // 2. Persist to MongoDB if connected
+    if (mongoose.connection.readyState === 1) {
+      try {
+        await LearningRoadmap.findOneAndUpdate(
+          { roadmapId: matchedRoadmap.roadmapId, userId },
+          matchedRoadmap,
+          { upsert: true }
+        ).catch(() => {});
+      } catch {}
     }
+
+    return {
+      success: true,
+      taskId,
+      roadmapId: matchedRoadmap.roadmapId,
+      userId: matchedRoadmap.userId,
+      status,
+      completed: isCompleted,
+      completedAt,
+      overallProgress: matchedRoadmap.overallProgress,
+      completedCount: completed,
+      totalCount: total,
+      stages: matchedRoadmap.stages
+    };
   }
 
-  // If task not yet in structured store, create a record
+  // If roadmap not yet registered, update task standalone
+  persistentStore.upsert('roadmapTasks', 'taskId', {
+    taskId,
+    roadmapId: roadmapId || `rdm_${userId}`,
+    userId,
+    status,
+    completed: isCompleted,
+    score,
+    completedAt
+  });
+
   return {
     success: true,
     taskId,
@@ -227,6 +201,5 @@ export async function updateTaskProgress({ taskId, roadmapId, userId = "guest_us
 
 export default {
   hydrateRoadmapTasks,
-  updateTaskProgress,
-  roadmapMemoryStore
+  updateTaskProgress
 };

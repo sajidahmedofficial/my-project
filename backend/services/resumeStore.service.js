@@ -1,8 +1,7 @@
-// agent-notes: { ctx: "Centralized in-memory and database resume store linking parsed resume text, metadata, and resumeId", deps: ["mongoose"], state: "active", last: "anti@2026-08-20" }
+// agent-notes: { ctx: "Production-grade persistent resume store maintaining disk persistence and strict user data isolation", deps: ["../storage/persistentStore.js", "../models/Resume.js", "mongoose"], state: "active", last: "anti@2026-08-20" }
 import mongoose from 'mongoose';
-
-const resumeStore = new Map();
-const userActiveResumeStore = new Map();
+import persistentStore from '../storage/persistentStore.js';
+import Resume from '../models/Resume.js';
 
 export function saveParsedResume({ resumeId, userId = "guest_user", fileName, resumeText, analysis = null, targetRole = "Frontend Developer" }) {
   const id = resumeId || `res_${Date.now()}_${Math.random().toString(36).substr(2, 7)}`;
@@ -16,27 +15,49 @@ export function saveParsedResume({ resumeId, userId = "guest_user", fileName, re
     updatedAt: new Date().toISOString()
   };
 
-  resumeStore.set(id, record);
-  if (userId) {
-    userActiveResumeStore.set(userId, id);
+  // 1. Save to persistent disk storage
+  persistentStore.upsert('resumes', 'resumeId', record);
+
+  // 2. Persist to MongoDB if connected
+  if (mongoose.connection.readyState === 1) {
+    try {
+      Resume.findOneAndUpdate(
+        { userId, fileName: record.fileName },
+        {
+          userId,
+          fileName: record.fileName,
+          resumeScore: analysis?.atsScore || 70,
+          atsScore: analysis?.atsScore || 70,
+          parsedSkills: analysis?.extractedSkills || [],
+          updatedAt: new Date()
+        },
+        { upsert: true, new: true }
+      ).catch(() => {});
+    } catch {}
   }
 
   return record;
 }
 
 export function getParsedResume(resumeId, userId = null) {
-  if (resumeId && resumeStore.has(resumeId)) {
-    return resumeStore.get(resumeId);
+  // Query persistent disk store ensuring user ownership
+  if (resumeId) {
+    const filter = { resumeId };
+    if (userId) filter.userId = userId;
+    return persistentStore.findOne('resumes', filter);
   }
-  if (userId && userActiveResumeStore.has(userId)) {
-    const activeId = userActiveResumeStore.get(userId);
-    return resumeStore.get(activeId);
+
+  if (userId) {
+    const userResumes = persistentStore.find('resumes', { userId });
+    return userResumes.length > 0 ? userResumes[userResumes.length - 1] : null;
   }
+
   return null;
 }
 
-export function getAllResumes() {
-  return Array.from(resumeStore.values());
+export function getAllResumes(userId = null) {
+  const filter = userId ? { userId } : {};
+  return persistentStore.find('resumes', filter);
 }
 
 export default {

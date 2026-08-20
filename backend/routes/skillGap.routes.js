@@ -17,15 +17,14 @@ import { generateCertificate } from '../services/certificate.service.js';
 import { generateStructuredPatch } from '../services/resumeUpdater.service.js';
 
 import { getParsedResume } from '../services/resumeStore.service.js';
+import persistentStore from '../storage/persistentStore.js';
+import UserSkill from '../models/UserSkill.js';
+import RoadmapTask from '../models/RoadmapTask.js';
+import SkillVerification from '../models/SkillVerification.js';
+import AssessmentResult from '../models/AssessmentResult.js';
 
 const router = express.Router();
 const upload = multer({ limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB max
-
-// In-memory store fallback when MongoDB is not connected
-const userSkillGapStore = new Map();
-const userRoadmapsStore = new Map();
-const userVerifiedSkillsStore = new Map();
-const userCertificatesStore = new Map();
 
 /**
  * @desc    Analyze Skill Gap from resume and target role / JD
@@ -41,12 +40,14 @@ router.post('/analyze', upload.single('resume'), async (req, res) => {
     let resumeText = req.body.resumeText || "";
     let userSkills = [];
 
-    // 1. If resumeId or userId is provided, look up in central parsed resume store
+    // 1. If resumeId or userId is provided, look up in persistent resume store
     if (!resumeText && (resumeId || userId)) {
       const stored = getParsedResume(resumeId, userId);
-      if (stored && stored.resumeText) {
+      if (stored) {
         resumeText = stored.resumeText;
-        if (stored.analysis?.skills?.detected) {
+        if (stored.analysis?.extractedSkills?.length) {
+          userSkills = stored.analysis.extractedSkills;
+        } else if (stored.analysis?.skills?.detected?.length) {
           userSkills = stored.analysis.skills.detected;
         }
       }
@@ -64,7 +65,8 @@ router.post('/analyze', upload.single('resume'), async (req, res) => {
         ? JSON.parse(req.body.verifiedSkills)
         : req.body.verifiedSkills;
     } else {
-      verifiedSkills = userVerifiedSkillsStore.get(userId) || [];
+      const storedSkills = persistentStore.find('userSkills', { userId, status: 'verified' });
+      verifiedSkills = storedSkills.map(s => s.skillName);
     }
 
     const gapReport = await performSkillGapAnalysis({
@@ -75,12 +77,34 @@ router.post('/analyze', upload.single('resume'), async (req, res) => {
       verifiedSkills
     });
 
-    // Store in memory
-    userSkillGapStore.set(userId, {
-      ...gapReport,
-      targetRole,
+    const skillGapId = `sg_${userId}_${targetRole.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
+
+    // Store in persistent disk storage
+    const persistentRecord = {
+      skillGapId,
       userId,
+      resumeId: resumeId || null,
+      targetRole,
+      ...gapReport,
       savedAt: new Date().toISOString()
+    };
+    persistentStore.upsert('skillGaps', 'skillGapId', persistentRecord);
+
+    // Persist individual skills to userSkills collection
+    (gapReport.skills || []).forEach(s => {
+      persistentStore.upsert('userSkills', 'id', {
+        id: `usk_${userId}_${s.name.toLowerCase().replace(/[^a-z0-9]/g, '_')}`,
+        userId,
+        resumeId: resumeId || null,
+        skillGapId,
+        skillName: s.name,
+        category: s.category,
+        status: s.status,
+        currentLevel: s.currentLevel,
+        requiredLevel: s.requiredLevel,
+        gapPercentage: s.gapPercentage,
+        priority: s.priority
+      });
     });
 
     // Persist to MongoDB if connected
@@ -136,7 +160,8 @@ router.get('/:userId', async (req, res) => {
     } catch (e) {}
   }
 
-  const saved = userSkillGapStore.get(userId);
+  const savedReports = persistentStore.find('skillGaps', { userId });
+  const saved = savedReports.length > 0 ? savedReports[savedReports.length - 1] : null;
   if (!saved) {
     return res.json({
       success: true,
@@ -151,7 +176,7 @@ router.get('/:userId', async (req, res) => {
   });
 });
 
-import { hydrateRoadmapTasks, updateTaskProgress, roadmapMemoryStore } from '../services/roadmapProgress.service.js';
+import { hydrateRoadmapTasks, updateTaskProgress } from '../services/roadmapProgress.service.js';
 
 /**
  * @desc    Generate or Retrieve Stored Personalized Multi-Stage Learning Roadmap
@@ -184,9 +209,10 @@ router.post('/roadmap', async (req, res) => {
         } catch (e) {}
       }
 
-      const memRoadmap = roadmapMemoryStore.get(`${uId}_${skillToLearn.toLowerCase()}`) || (userRoadmapsStore.get(uId) || []).find(r => r.skillName?.toLowerCase() === skillToLearn.toLowerCase());
-      if (memRoadmap) {
-        const hydrated = hydrateRoadmapTasks(memRoadmap, uId);
+      // Check persistent disk storage for cached roadmap for this user and skill
+      const storedRoadmap = persistentStore.findOne('learningRoadmaps', { skillName: skillToLearn, userId: uId });
+      if (storedRoadmap) {
+        const hydrated = hydrateRoadmapTasks(storedRoadmap, uId);
         return res.json({
           success: true,
           roadmap: hydrated,
@@ -195,21 +221,18 @@ router.post('/roadmap', async (req, res) => {
       }
     }
 
-    // 2. Generate roadmap through backend generator
-    const generated = await generatePersonalizedRoadmap({
+    // 2. Generate new roadmap with Gemini
+    const rawRoadmap = await generatePersonalizedRoadmap({
       skillName: skillToLearn,
       targetRole: targetRole || "Frontend Developer",
       currentLevel: currentLevel || "Beginner",
-      targetLevel: targetLevel || "Advanced",
-      priority: priority || "High"
+      targetLevel: targetLevel || "Advanced"
     });
 
-    const roadmap = hydrateRoadmapTasks(generated, uId);
+    const roadmap = hydrateRoadmapTasks(rawRoadmap, uId);
 
-    const userRoadmaps = userRoadmapsStore.get(uId) || [];
-    const filtered = userRoadmaps.filter(r => r.skillName?.toLowerCase() !== skillToLearn.toLowerCase());
-    userRoadmapsStore.set(uId, [...filtered, roadmap]);
-    roadmapMemoryStore.set(`${uId}_${skillToLearn.toLowerCase()}`, roadmap);
+    // Save to persistent storage
+    persistentStore.upsert('learningRoadmaps', 'roadmapId', roadmap);
 
     // Persist to MongoDB if connected
     if (mongoose.connection.readyState === 1 && mongoose.Types.ObjectId.isValid(uId)) {
@@ -269,16 +292,16 @@ router.get('/roadmap/:userId/:skillName', async (req, res) => {
     } catch (e) {}
   }
 
-  const memRoadmap = roadmapMemoryStore.get(`${userId}_${skillName.toLowerCase()}`) || (userRoadmapsStore.get(userId) || []).find(r => r.skillName?.toLowerCase() === skillName.toLowerCase());
+  const storedRoadmap = persistentStore.findOne('learningRoadmaps', { skillName, userId });
   
-  if (!memRoadmap) {
+  if (!storedRoadmap) {
     return res.status(404).json({
       success: false,
       message: `No stored roadmap found for skill ${skillName}.`
     });
   }
 
-  const hydrated = hydrateRoadmapTasks(memRoadmap, userId);
+  const hydrated = hydrateRoadmapTasks(storedRoadmap, userId);
   res.json({
     success: true,
     roadmap: hydrated
@@ -577,33 +600,50 @@ router.post('/verify', async (req, res) => {
     // Generate structured patch for automatic resume update
     const patch = generateStructuredPatch(skillName, cert.certificateId);
 
-    // Save in verified store
-    const currentVerified = userVerifiedSkillsStore.get(uId) || [];
-    if (!currentVerified.some(v => v.skillName.toLowerCase() === skillName.toLowerCase())) {
-      userVerifiedSkillsStore.set(uId, [
-        ...currentVerified,
-        {
-          skillName,
-          score: evalResult.finalScore,
-          certificateId: cert.certificateId,
-          verifiedAt: new Date().toISOString()
-        }
-      ]);
-    }
+    // 1. Save SkillVerification to persistent disk storage
+    const verificationRecord = {
+      verificationId: `ver_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
+      userId: uId,
+      skillName,
+      mcqScore: evalResult.mcqScore,
+      codingScore: evalResult.codingScore,
+      projectScore: evalResult.projectScore,
+      finalScore: evalResult.finalScore,
+      passingThreshold: 80,
+      status: 'verified',
+      repositoryUrl: evalResult.repositoryInfo?.repoUrl || "",
+      repositoryName: evalResult.repositoryInfo?.repoName || "",
+      evidence: evalResult.repositoryInfo?.evidence || [],
+      certificateId: cert.certificateId,
+      verifiedAt: new Date().toISOString()
+    };
+    persistentStore.upsert('skillVerifications', 'verificationId', verificationRecord);
 
-    // Save certificate in memory
-    const userCerts = userCertificatesStore.get(uId) || [];
-    userCertificatesStore.set(uId, [
-      ...userCerts,
-      {
-        skillName,
-        certificateId: cert.certificateId,
-        score: evalResult.overallScore,
-        userName: candidateName,
-        issuedAt: new Date().toISOString(),
-        pdfUrl: cert.pdfUrl
-      }
-    ]);
+    // 2. Save UserSkill to persistent disk storage
+    persistentStore.upsert('userSkills', 'id', {
+      id: `usk_${uId}_${skillName.toLowerCase().replace(/[^a-z0-9]/g, '_')}`,
+      userId: uId,
+      skillName,
+      status: 'verified',
+      currentLevel: 100,
+      gapPercentage: 0,
+      verified: true,
+      verifiedScore: evalResult.finalScore,
+      verifiedAt: new Date().toISOString(),
+      certificateId: cert.certificateId
+    });
+
+    // 3. Save Certificate to persistent disk storage
+    const certRecord = {
+      certificateId: cert.certificateId,
+      userId: uId,
+      skillName,
+      score: evalResult.finalScore,
+      userName: candidateName,
+      pdfUrl: cert.pdfUrl,
+      issuedAt: new Date().toISOString()
+    };
+    persistentStore.upsert('certificates', 'certificateId', certRecord);
 
     // Persist to MongoDB if connected
     if (mongoose.connection.readyState === 1 && mongoose.Types.ObjectId.isValid(uId)) {
@@ -614,8 +654,8 @@ router.post('/verify', async (req, res) => {
           mcqScore: evalResult.mcqScore,
           codingScore: evalResult.codingScore,
           projectScore: evalResult.projectScore,
-          overallScore: evalResult.overallScore,
-          passingThreshold: 75,
+          overallScore: evalResult.finalScore,
+          passingThreshold: 80,
           status: "PASSED",
           detailedBreakdown: evalResult.detailedBreakdown,
           certificateId: cert.certificateId
@@ -637,7 +677,7 @@ router.post('/verify', async (req, res) => {
         await Certificate.create({
           userId: uId,
           skillName,
-          score: evalResult.overallScore,
+          score: evalResult.finalScore,
           certificateId: cert.certificateId,
           verificationHash: cert.verificationHash || `hash_${Date.now()}`,
           pdfPath: cert.pdfUrl
@@ -687,10 +727,15 @@ router.get('/skills/verified', async (req, res) => {
     } catch (e) {}
   }
 
-  const verified = userVerifiedSkillsStore.get(userId) || [];
+  const storedVerified = persistentStore.find('userSkills', { userId, status: 'verified' });
   res.json({
     success: true,
-    verifiedSkills: verified
+    verifiedSkills: storedVerified.map(s => ({
+      skillName: s.skillName,
+      score: s.verifiedScore || 100,
+      certificateId: s.certificateId,
+      verifiedAt: s.verifiedAt
+    }))
   });
 });
 

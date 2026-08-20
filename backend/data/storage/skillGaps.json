@@ -1,0 +1,620 @@
+[
+  {
+    "createdAt": "2026-08-20T16:46:21.727Z",
+    "skillGapId": "sg_user_alpha_full_stack_engineer",
+    "userId": "user_alpha",
+    "resumeId": null,
+    "targetRole": "Full Stack Engineer",
+    "overallMatchScore": 11,
+    "weightedSummary": {
+      "weightedMatchedRequirements": 4.5,
+      "weightedTotalRequirements": 41,
+      "formula": "(weightedMatchedRequirements / weightedTotalRequirements) * 100"
+    },
+    "priorityGaps": {
+      "high": [
+        {
+          "skillName": "JavaScript",
+          "category": "Programming",
+          "currentProficiency": "Intermediate",
+          "requiredProficiency": "Advanced",
+          "gapPercentage": 50,
+          "priority": "High",
+          "evidence": [
+            "Applied in Work/Internship: \"Experienced JavaScript and HTML5 web developer with 3 years building React web application\""
+          ],
+          "reason": "Applied in Work/Internship: \"Experienced JavaScript and HTML5 web developer with 3 years building React web application\""
+        },
+        {
+          "skillName": "TypeScript",
+          "category": "Programming",
+          "currentProficiency": "None",
+          "requiredProficiency": "Advanced",
+          "gapPercentage": 100,
+          "priority": "High",
+          "evidence": [],
+          "reason": "No evidence of TypeScript found in uploaded resume."
+        },
+        {
+          "skillName": "HTML5",
+          "category": "Programming",
+          "currentProficiency": "Intermediate",
+          "requiredProficiency": "Advanced",
+          "gapPercentage": 50,
+          "priority": "High",
+          "evidence": [
+            "Applied in Work/Internship: \"Experienced JavaScript and HTML5 web developer with 3 years building React web application\""
+          ],
+          "reason": "Applied in Work/Internship: \"Experienced JavaScript and HTML5 web developer with 3 years building React web application\""
+        },
+        {
+          "skillName": "CSS3",
+          "category": "Programming",
+          "currentProficiency": "None",
+          "requiredProficiency": "Advanced",
+          "gapPercentage": 100,
+          "priority": "High",
+          "evidence": [],
+          "reason": "No evidence of CSS3 found in uploaded resume."
+        },
+        {
+          "skillName": "React.js",
+          "category": "Programming",
+          "currentProficiency": "Intermediate",
+          "requiredProficiency": "Advanced",
+          "gapPercentage": 50,
+          "priority": "High",
+          "evidence": [
+            "Applied in Work/Internship: \"Experienced JavaScript and HTML5 web developer with 3 years building React web application\""
+          ],
+          "reason": "Applied in Work/Internship: \"Experienced JavaScript and HTML5 web developer with 3 years building React web application\""
+        },
+        {
+          "skillName": "Git",
+          "category": "Tools",
+          "currentProficiency": "None",
+          "requiredProficiency": "Advanced",
+          "gapPercentage": 100,
+          "priority": "High",
+          "evidence": [],
+          "reason": "No evidence of Git found in uploaded resume."
+        }
+      ],
+      "medium": [
+        {
+          "skillName": "Next.js",
+          "category": "Frameworks",
+          "currentProficiency": "None",
+          "requiredProficiency": "Intermediate",
+          "gapPercentage": 100,
+          "priority": "Medium",
+          "evidence": [],
+          "reason": "No evidence of Next.js found in uploaded resume."
+        },
+        {
+          "skillName": "Redux",
+          "category": "Programming",
+          "currentProficiency": "None",
+          "requiredProficiency": "Intermediate",
+          "gapPercentage": 100,
+          "priority": "Medium",
+          "evidence": [],
+          "reason": "No evidence of Redux found in uploaded resume."
+        },
+        {
+          "skillName": "Tailwind CSS",
+          "category": "Programming",
+          "currentProficiency": "None",
+          "requiredProficiency": "Intermediate",
+          "gapPercentage": 100,
+          "priority": "Medium",
+          "evidence": [],
+          "reason": "No evidence of Tailwind CSS found in uploaded resume."
+        },
+        {
+          "skillName": "REST API",
+          "category": "Programming",
+          "currentProficiency": "None",
+          "requiredProficiency": "Intermediate",
+          "gapPercentage": 100,
+          "priority": "Medium",
+          "evidence": [],
+          "reason": "No evidence of REST API found in uploaded resume."
+        },
+        {
+          "skillName": "GraphQL",
+          "category": "Programming",
+          "currentProficiency": "None",
+          "requiredProficiency": "Intermediate",
+          "gapPercentage": 100,
+          "priority": "Medium",
+          "evidence": [],
+          "reason": "No evidence of GraphQL found in uploaded resume."
+        },
+        {
+          "skillName": "GitHub",
+          "category": "Tools",
+          "currentProficiency": "None",
+          "requiredProficiency": "Intermediate",
+          "gapPercentage": 100,
+          "priority": "Medium",
+          "evidence": [],
+          "reason": "No evidence of GitHub found in uploaded resume."
+        },
+        {
+          "skillName": "Vite",
+          "category": "Tools",
+          "currentProficiency": "None",
+          "requiredProficiency": "Intermediate",
+          "gapPercentage": 100,
+          "priority": "Medium",
+          "evidence": [],
+          "reason": "No evidence of Vite found in uploaded resume."
+        },
+        {
+          "skillName": "Webpack",
+          "category": "Tools",
+          "currentProficiency": "None",
+          "requiredProficiency": "Intermediate",
+          "gapPercentage": 100,
+          "priority": "Medium",
+          "evidence": [],
+          "reason": "No evidence of Webpack found in uploaded resume."
+        },
+        {
+          "skillName": "Jest",
+          "category": "Tools",
+          "currentProficiency": "None",
+          "requiredProficiency": "Intermediate",
+          "gapPercentage": 100,
+          "priority": "Medium",
+          "evidence": [],
+          "reason": "No evidence of Jest found in uploaded resume."
+        },
+        {
+          "skillName": "Vercel",
+          "category": "Programming",
+          "currentProficiency": "None",
+          "requiredProficiency": "Intermediate",
+          "gapPercentage": 100,
+          "priority": "Medium",
+          "evidence": [],
+          "reason": "No evidence of Vercel found in uploaded resume."
+        },
+        {
+          "skillName": "Netlify",
+          "category": "Cloud/DevOps",
+          "currentProficiency": "None",
+          "requiredProficiency": "Intermediate",
+          "gapPercentage": 100,
+          "priority": "Medium",
+          "evidence": [],
+          "reason": "No evidence of Netlify found in uploaded resume."
+        }
+      ],
+      "low": [
+        {
+          "skillName": "Docker",
+          "category": "Programming",
+          "currentProficiency": "None",
+          "requiredProficiency": "Intermediate",
+          "gapPercentage": 100,
+          "priority": "Low",
+          "evidence": [],
+          "reason": "No evidence of Docker found in uploaded resume."
+        }
+      ],
+      "highCount": 6,
+      "mediumCount": 11,
+      "lowCount": 1
+    },
+    "categoryScores": {
+      "technicalSkills": 11,
+      "programming": 17,
+      "frameworks": 0,
+      "databases": 0,
+      "tools": 0,
+      "cloudDevOps": 0
+    },
+    "skills": [
+      {
+        "name": "JavaScript",
+        "category": "Programming",
+        "status": "partial",
+        "currentLevel": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "high",
+        "evidence": [
+          "Applied in Work/Internship: \"Experienced JavaScript and HTML5 web developer with 3 years building React web application\""
+        ],
+        "reason": "Applied in Work/Internship: \"Experienced JavaScript and HTML5 web developer with 3 years building React web application\""
+      },
+      {
+        "name": "TypeScript",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "evidence": [],
+        "reason": "No evidence of TypeScript found in uploaded resume."
+      },
+      {
+        "name": "HTML5",
+        "category": "Programming",
+        "status": "partial",
+        "currentLevel": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "high",
+        "evidence": [
+          "Applied in Work/Internship: \"Experienced JavaScript and HTML5 web developer with 3 years building React web application\""
+        ],
+        "reason": "Applied in Work/Internship: \"Experienced JavaScript and HTML5 web developer with 3 years building React web application\""
+      },
+      {
+        "name": "CSS3",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "evidence": [],
+        "reason": "No evidence of CSS3 found in uploaded resume."
+      },
+      {
+        "name": "React.js",
+        "category": "Programming",
+        "status": "partial",
+        "currentLevel": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "high",
+        "evidence": [
+          "Applied in Work/Internship: \"Experienced JavaScript and HTML5 web developer with 3 years building React web application\""
+        ],
+        "reason": "Applied in Work/Internship: \"Experienced JavaScript and HTML5 web developer with 3 years building React web application\""
+      },
+      {
+        "name": "Next.js",
+        "category": "Frameworks",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "evidence": [],
+        "reason": "No evidence of Next.js found in uploaded resume."
+      },
+      {
+        "name": "Redux",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "evidence": [],
+        "reason": "No evidence of Redux found in uploaded resume."
+      },
+      {
+        "name": "Tailwind CSS",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "evidence": [],
+        "reason": "No evidence of Tailwind CSS found in uploaded resume."
+      },
+      {
+        "name": "REST API",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "evidence": [],
+        "reason": "No evidence of REST API found in uploaded resume."
+      },
+      {
+        "name": "GraphQL",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "evidence": [],
+        "reason": "No evidence of GraphQL found in uploaded resume."
+      },
+      {
+        "name": "Git",
+        "category": "Tools",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "evidence": [],
+        "reason": "No evidence of Git found in uploaded resume."
+      },
+      {
+        "name": "GitHub",
+        "category": "Tools",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "evidence": [],
+        "reason": "No evidence of GitHub found in uploaded resume."
+      },
+      {
+        "name": "Vite",
+        "category": "Tools",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "evidence": [],
+        "reason": "No evidence of Vite found in uploaded resume."
+      },
+      {
+        "name": "Webpack",
+        "category": "Tools",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "evidence": [],
+        "reason": "No evidence of Webpack found in uploaded resume."
+      },
+      {
+        "name": "Jest",
+        "category": "Tools",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "evidence": [],
+        "reason": "No evidence of Jest found in uploaded resume."
+      },
+      {
+        "name": "Vercel",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "evidence": [],
+        "reason": "No evidence of Vercel found in uploaded resume."
+      },
+      {
+        "name": "Netlify",
+        "category": "Cloud/DevOps",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "evidence": [],
+        "reason": "No evidence of Netlify found in uploaded resume."
+      },
+      {
+        "name": "Docker",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "low",
+        "evidence": [],
+        "reason": "No evidence of Docker found in uploaded resume."
+      }
+    ],
+    "strongSkills": [],
+    "partialSkills": [
+      {
+        "skillName": "JavaScript",
+        "category": "Programming",
+        "currentProficiency": "Intermediate",
+        "requiredProficiency": "Advanced",
+        "gapPercentage": 50,
+        "priority": "High",
+        "evidence": [
+          "Applied in Work/Internship: \"Experienced JavaScript and HTML5 web developer with 3 years building React web application\""
+        ],
+        "reason": "Applied in Work/Internship: \"Experienced JavaScript and HTML5 web developer with 3 years building React web application\""
+      },
+      {
+        "skillName": "HTML5",
+        "category": "Programming",
+        "currentProficiency": "Intermediate",
+        "requiredProficiency": "Advanced",
+        "gapPercentage": 50,
+        "priority": "High",
+        "evidence": [
+          "Applied in Work/Internship: \"Experienced JavaScript and HTML5 web developer with 3 years building React web application\""
+        ],
+        "reason": "Applied in Work/Internship: \"Experienced JavaScript and HTML5 web developer with 3 years building React web application\""
+      },
+      {
+        "skillName": "React.js",
+        "category": "Programming",
+        "currentProficiency": "Intermediate",
+        "requiredProficiency": "Advanced",
+        "gapPercentage": 50,
+        "priority": "High",
+        "evidence": [
+          "Applied in Work/Internship: \"Experienced JavaScript and HTML5 web developer with 3 years building React web application\""
+        ],
+        "reason": "Applied in Work/Internship: \"Experienced JavaScript and HTML5 web developer with 3 years building React web application\""
+      }
+    ],
+    "missingSkills": [
+      {
+        "skillName": "TypeScript",
+        "category": "Programming",
+        "currentProficiency": "None",
+        "requiredProficiency": "Advanced",
+        "gapPercentage": 100,
+        "priority": "High",
+        "evidence": [],
+        "reason": "No evidence of TypeScript found in uploaded resume."
+      },
+      {
+        "skillName": "CSS3",
+        "category": "Programming",
+        "currentProficiency": "None",
+        "requiredProficiency": "Advanced",
+        "gapPercentage": 100,
+        "priority": "High",
+        "evidence": [],
+        "reason": "No evidence of CSS3 found in uploaded resume."
+      },
+      {
+        "skillName": "Next.js",
+        "category": "Frameworks",
+        "currentProficiency": "None",
+        "requiredProficiency": "Intermediate",
+        "gapPercentage": 100,
+        "priority": "Medium",
+        "evidence": [],
+        "reason": "No evidence of Next.js found in uploaded resume."
+      },
+      {
+        "skillName": "Redux",
+        "category": "Programming",
+        "currentProficiency": "None",
+        "requiredProficiency": "Intermediate",
+        "gapPercentage": 100,
+        "priority": "Medium",
+        "evidence": [],
+        "reason": "No evidence of Redux found in uploaded resume."
+      },
+      {
+        "skillName": "Tailwind CSS",
+        "category": "Programming",
+        "currentProficiency": "None",
+        "requiredProficiency": "Intermediate",
+        "gapPercentage": 100,
+        "priority": "Medium",
+        "evidence": [],
+        "reason": "No evidence of Tailwind CSS found in uploaded resume."
+      },
+      {
+        "skillName": "REST API",
+        "category": "Programming",
+        "currentProficiency": "None",
+        "requiredProficiency": "Intermediate",
+        "gapPercentage": 100,
+        "priority": "Medium",
+        "evidence": [],
+        "reason": "No evidence of REST API found in uploaded resume."
+      },
+      {
+        "skillName": "GraphQL",
+        "category": "Programming",
+        "currentProficiency": "None",
+        "requiredProficiency": "Intermediate",
+        "gapPercentage": 100,
+        "priority": "Medium",
+        "evidence": [],
+        "reason": "No evidence of GraphQL found in uploaded resume."
+      },
+      {
+        "skillName": "Git",
+        "category": "Tools",
+        "currentProficiency": "None",
+        "requiredProficiency": "Advanced",
+        "gapPercentage": 100,
+        "priority": "High",
+        "evidence": [],
+        "reason": "No evidence of Git found in uploaded resume."
+      },
+      {
+        "skillName": "GitHub",
+        "category": "Tools",
+        "currentProficiency": "None",
+        "requiredProficiency": "Intermediate",
+        "gapPercentage": 100,
+        "priority": "Medium",
+        "evidence": [],
+        "reason": "No evidence of GitHub found in uploaded resume."
+      },
+      {
+        "skillName": "Vite",
+        "category": "Tools",
+        "currentProficiency": "None",
+        "requiredProficiency": "Intermediate",
+        "gapPercentage": 100,
+        "priority": "Medium",
+        "evidence": [],
+        "reason": "No evidence of Vite found in uploaded resume."
+      },
+      {
+        "skillName": "Webpack",
+        "category": "Tools",
+        "currentProficiency": "None",
+        "requiredProficiency": "Intermediate",
+        "gapPercentage": 100,
+        "priority": "Medium",
+        "evidence": [],
+        "reason": "No evidence of Webpack found in uploaded resume."
+      },
+      {
+        "skillName": "Jest",
+        "category": "Tools",
+        "currentProficiency": "None",
+        "requiredProficiency": "Intermediate",
+        "gapPercentage": 100,
+        "priority": "Medium",
+        "evidence": [],
+        "reason": "No evidence of Jest found in uploaded resume."
+      },
+      {
+        "skillName": "Vercel",
+        "category": "Programming",
+        "currentProficiency": "None",
+        "requiredProficiency": "Intermediate",
+        "gapPercentage": 100,
+        "priority": "Medium",
+        "evidence": [],
+        "reason": "No evidence of Vercel found in uploaded resume."
+      },
+      {
+        "skillName": "Netlify",
+        "category": "Cloud/DevOps",
+        "currentProficiency": "None",
+        "requiredProficiency": "Intermediate",
+        "gapPercentage": 100,
+        "priority": "Medium",
+        "evidence": [],
+        "reason": "No evidence of Netlify found in uploaded resume."
+      },
+      {
+        "skillName": "Docker",
+        "category": "Programming",
+        "currentProficiency": "None",
+        "requiredProficiency": "Intermediate",
+        "gapPercentage": 100,
+        "priority": "Low",
+        "evidence": [],
+        "reason": "No evidence of Docker found in uploaded resume."
+      }
+    ],
+    "analyzedAt": "2026-08-20T16:46:21.726Z",
+    "savedAt": "2026-08-20T16:46:21.726Z",
+    "updatedAt": "2026-08-20T16:46:21.727Z"
+  }
+]

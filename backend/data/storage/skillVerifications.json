@@ -1,0 +1,22 @@
+[
+  {
+    "createdAt": "2026-08-20T16:46:25.360Z",
+    "verificationId": "ver_1787244385359_deziei",
+    "userId": "user_alpha",
+    "skillName": "JavaScript",
+    "mcqScore": 100,
+    "codingScore": 100,
+    "projectScore": 65,
+    "finalScore": 88,
+    "passingThreshold": 80,
+    "status": "verified",
+    "repositoryUrl": "https://github.com/reduxjs/redux",
+    "repositoryName": "reduxjs/redux",
+    "evidence": [
+      "Automated unit and integration test documentation present"
+    ],
+    "certificateId": "SBA-JAVASCRIPT-849861",
+    "verifiedAt": "2026-08-20T16:46:25.359Z",
+    "updatedAt": "2026-08-20T16:46:25.360Z"
+  }
+]

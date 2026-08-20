@@ -1,0 +1,341 @@
+[
+  {
+    "createdAt": "2026-08-20T16:46:21.798Z",
+    "skillName": "Node.js",
+    "targetRole": "Full Stack Engineer",
+    "currentLevel": "Beginner",
+    "targetLevel": "Advanced",
+    "priority": "High",
+    "prerequisites": [
+      "Core Computer Science Fundamentals",
+      "Modern Web Architecture"
+    ],
+    "estimatedLearningHours": 20,
+    "stages": [
+      {
+        "stageNumber": 1,
+        "title": "Stage 1: Node.js Fundamentals & Core Syntax",
+        "level": "Beginner",
+        "topics": [
+          "Core Node.js Syntax & Setup",
+          "Standard Library & Idioms",
+          "Data Structures & Flow Control"
+        ],
+        "practiceTasks": [
+          "Write basic Node.js boilerplate scripts",
+          "Solve algorithmic challenges using Node.js"
+        ],
+        "miniProject": "Node.js Starter Utility Script",
+        "tasks": [
+          {
+            "taskId": "task_rdm_node_js_user_alpha_s1_top0",
+            "roadmapId": "rdm_node_js_user_alpha",
+            "userId": "user_alpha",
+            "title": "Core Node.js Syntax & Setup",
+            "stageNumber": 1,
+            "taskType": "topic",
+            "difficulty": "Beginner",
+            "status": "completed",
+            "completed": true,
+            "score": null,
+            "completedAt": "2026-08-20T16:46:21.810Z"
+          },
+          {
+            "taskId": "task_rdm_node_js_user_alpha_s1_top1",
+            "roadmapId": "rdm_node_js_user_alpha",
+            "userId": "user_alpha",
+            "title": "Standard Library & Idioms",
+            "stageNumber": 1,
+            "taskType": "topic",
+            "difficulty": "Beginner",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_node_js_user_alpha_s1_top2",
+            "roadmapId": "rdm_node_js_user_alpha",
+            "userId": "user_alpha",
+            "title": "Data Structures & Flow Control",
+            "stageNumber": 1,
+            "taskType": "topic",
+            "difficulty": "Beginner",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          }
+        ],
+        "stageProgress": 33
+      },
+      {
+        "stageNumber": 2,
+        "title": "Stage 2: Node.js Application Architecture & Error Handling",
+        "level": "Intermediate",
+        "topics": [
+          "Modular Architecture in Node.js",
+          "Asynchronous Workflows & Exception Handling",
+          "Testing & Debugging Strategies"
+        ],
+        "practiceTasks": [
+          "Write unit tests with mock fixtures for Node.js",
+          "Implement robust error-recovery middleware"
+        ],
+        "miniProject": "Node.js Production Microservice",
+        "tasks": [
+          {
+            "taskId": "task_rdm_node_js_user_alpha_s2_top0",
+            "roadmapId": "rdm_node_js_user_alpha",
+            "userId": "user_alpha",
+            "title": "Modular Architecture in Node.js",
+            "stageNumber": 2,
+            "taskType": "topic",
+            "difficulty": "Intermediate",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_node_js_user_alpha_s2_top1",
+            "roadmapId": "rdm_node_js_user_alpha",
+            "userId": "user_alpha",
+            "title": "Asynchronous Workflows & Exception Handling",
+            "stageNumber": 2,
+            "taskType": "topic",
+            "difficulty": "Intermediate",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_node_js_user_alpha_s2_top2",
+            "roadmapId": "rdm_node_js_user_alpha",
+            "userId": "user_alpha",
+            "title": "Testing & Debugging Strategies",
+            "stageNumber": 2,
+            "taskType": "topic",
+            "difficulty": "Intermediate",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          }
+        ],
+        "stageProgress": 0
+      },
+      {
+        "stageNumber": 3,
+        "title": "Stage 3: Production Mastery, Optimization & Cloud Integration",
+        "level": "Advanced",
+        "topics": [
+          "Performance Tuning & Memory Profiling",
+          "Security Hardening & Best Practices",
+          "CI/CD Automation & Deployment"
+        ],
+        "practiceTasks": [
+          "Benchmark performance and eliminate bottlenecks in Node.js",
+          "Configure automated GitHub Actions pipeline"
+        ],
+        "miniProject": "Enterprise Node.js Production Application",
+        "tasks": [
+          {
+            "taskId": "task_rdm_node_js_user_alpha_s3_top0",
+            "roadmapId": "rdm_node_js_user_alpha",
+            "userId": "user_alpha",
+            "title": "Performance Tuning & Memory Profiling",
+            "stageNumber": 3,
+            "taskType": "topic",
+            "difficulty": "Advanced",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_node_js_user_alpha_s3_top1",
+            "roadmapId": "rdm_node_js_user_alpha",
+            "userId": "user_alpha",
+            "title": "Security Hardening & Best Practices",
+            "stageNumber": 3,
+            "taskType": "topic",
+            "difficulty": "Advanced",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          },
+          {
+            "taskId": "task_rdm_node_js_user_alpha_s3_top2",
+            "roadmapId": "rdm_node_js_user_alpha",
+            "userId": "user_alpha",
+            "title": "CI/CD Automation & Deployment",
+            "stageNumber": 3,
+            "taskType": "topic",
+            "difficulty": "Advanced",
+            "status": "pending",
+            "completed": false,
+            "score": null,
+            "completedAt": null
+          }
+        ],
+        "stageProgress": 0
+      }
+    ],
+    "mcqs": [
+      {
+        "question": "What is a primary architectural best practice when developing with Node.js?",
+        "options": [
+          "Writing monolithic scripts",
+          "Maintaining modular, testable components with error handling",
+          "Ignoring types and testing",
+          "Disabling production logging"
+        ],
+        "correctAnswer": 1
+      }
+    ],
+    "codingChallenges": [
+      {
+        "title": "Node.js Implementation Challenge",
+        "description": "Implement a modular function in Node.js that processes data with error validation.",
+        "starterCode": "// Implement Node.js function\nfunction processData(input) {\n  // Logic\n}"
+      }
+    ],
+    "finalProject": {
+      "title": "Full-Featured Node.js Cloud Application",
+      "description": "Production-ready application implementing Node.js with automated tests, security checks, and cloud deployment."
+    },
+    "finalAssessment": {
+      "mcqCount": 10,
+      "codingCount": 2,
+      "passingThreshold": 75
+    },
+    "overallProgress": 11,
+    "status": "IN_PROGRESS",
+    "generatedAt": "2026-08-20T16:46:21.786Z",
+    "roadmapId": "rdm_node_js_user_alpha",
+    "userId": "user_alpha",
+    "tasks": [
+      {
+        "taskId": "task_rdm_node_js_user_alpha_s1_top0",
+        "roadmapId": "rdm_node_js_user_alpha",
+        "userId": "user_alpha",
+        "title": "Core Node.js Syntax & Setup",
+        "stageNumber": 1,
+        "taskType": "topic",
+        "difficulty": "Beginner",
+        "status": "completed",
+        "completed": true,
+        "score": null,
+        "completedAt": "2026-08-20T16:46:21.810Z"
+      },
+      {
+        "taskId": "task_rdm_node_js_user_alpha_s1_top1",
+        "roadmapId": "rdm_node_js_user_alpha",
+        "userId": "user_alpha",
+        "title": "Standard Library & Idioms",
+        "stageNumber": 1,
+        "taskType": "topic",
+        "difficulty": "Beginner",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_node_js_user_alpha_s1_top2",
+        "roadmapId": "rdm_node_js_user_alpha",
+        "userId": "user_alpha",
+        "title": "Data Structures & Flow Control",
+        "stageNumber": 1,
+        "taskType": "topic",
+        "difficulty": "Beginner",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_node_js_user_alpha_s2_top0",
+        "roadmapId": "rdm_node_js_user_alpha",
+        "userId": "user_alpha",
+        "title": "Modular Architecture in Node.js",
+        "stageNumber": 2,
+        "taskType": "topic",
+        "difficulty": "Intermediate",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_node_js_user_alpha_s2_top1",
+        "roadmapId": "rdm_node_js_user_alpha",
+        "userId": "user_alpha",
+        "title": "Asynchronous Workflows & Exception Handling",
+        "stageNumber": 2,
+        "taskType": "topic",
+        "difficulty": "Intermediate",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_node_js_user_alpha_s2_top2",
+        "roadmapId": "rdm_node_js_user_alpha",
+        "userId": "user_alpha",
+        "title": "Testing & Debugging Strategies",
+        "stageNumber": 2,
+        "taskType": "topic",
+        "difficulty": "Intermediate",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_node_js_user_alpha_s3_top0",
+        "roadmapId": "rdm_node_js_user_alpha",
+        "userId": "user_alpha",
+        "title": "Performance Tuning & Memory Profiling",
+        "stageNumber": 3,
+        "taskType": "topic",
+        "difficulty": "Advanced",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_node_js_user_alpha_s3_top1",
+        "roadmapId": "rdm_node_js_user_alpha",
+        "userId": "user_alpha",
+        "title": "Security Hardening & Best Practices",
+        "stageNumber": 3,
+        "taskType": "topic",
+        "difficulty": "Advanced",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      },
+      {
+        "taskId": "task_rdm_node_js_user_alpha_s3_top2",
+        "roadmapId": "rdm_node_js_user_alpha",
+        "userId": "user_alpha",
+        "title": "CI/CD Automation & Deployment",
+        "stageNumber": 3,
+        "taskType": "topic",
+        "difficulty": "Advanced",
+        "status": "pending",
+        "completed": false,
+        "score": null,
+        "completedAt": null
+      }
+    ],
+    "updatedAt": "2026-08-20T16:46:21.811Z"
+  }
+]
