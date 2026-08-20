@@ -313,6 +313,58 @@ router.patch('/roadmap/tasks/:taskId', async (req, res) => {
   }
 });
 
+import { getSanitizedQuestionsForSkill, evaluateMcqSubmission } from '../services/skillVerification.service.js';
+
+/**
+ * @desc    Get Sanitized MCQ Questions for Skill Verification (No answers exposed to client)
+ * @route   GET /api/skill-gap/assessment/questions/:skillName
+ */
+router.get('/assessment/questions/:skillName', (req, res) => {
+  try {
+    const { skillName } = req.params;
+    const userId = req.query.userId || "guest_user";
+    const data = getSanitizedQuestionsForSkill(skillName, userId);
+    res.json({
+      success: true,
+      ...data
+    });
+  } catch (error) {
+    console.error("Fetch Questions Error:", error);
+    res.status(500).json({ error: "Failed to load assessment questions", message: error.message });
+  }
+});
+
+/**
+ * @desc    Authoritatively Evaluate MCQ Answers on Backend (Score never accepted from frontend)
+ * @route   POST /api/skill-gap/assessment/submit-mcq
+ */
+router.post('/assessment/submit-mcq', async (req, res) => {
+  try {
+    const { assessmentId, skillName, userId, answers = [], passingThreshold = 75 } = req.body;
+
+    if (!answers || !Array.isArray(answers)) {
+      return res.status(400).json({ error: "answers array is required" });
+    }
+
+    const uId = userId || req.user?.id || "guest_user";
+    const evaluation = await evaluateMcqSubmission({
+      assessmentId,
+      skillName,
+      userId: uId,
+      answers,
+      passingThreshold
+    });
+
+    res.json({
+      success: true,
+      ...evaluation
+    });
+  } catch (error) {
+    console.error("Evaluate MCQ Error:", error);
+    res.status(500).json({ error: "Failed to evaluate assessment submission", message: error.message });
+  }
+});
+
 /**
  * @desc    Verify Skill through Multi-Modal Assessments (MCQ + Code + Project)
  * @route   POST /api/skill-gap/verify
@@ -323,6 +375,9 @@ router.post('/verify', async (req, res) => {
       skillName,
       userName,
       userId,
+      assessmentId,
+      answers,
+      mcqAnswers,
       mcqResults,
       codingResults,
       projectSubmission,
@@ -336,10 +391,29 @@ router.post('/verify', async (req, res) => {
     const candidateName = userName || "SkillBridge Student";
     const uId = userId || "guest_user";
 
+    // 1. Authoritatively calculate MCQ score from answers if provided
+    let calculatedMcqResults = mcqResults || { score: 0, correct: 0, total: 2 };
+    const submittedAnswers = answers || mcqAnswers;
+
+    if (submittedAnswers && Array.isArray(submittedAnswers) && submittedAnswers.length > 0) {
+      const mcqEval = await evaluateMcqSubmission({
+        assessmentId,
+        skillName,
+        userId: uId,
+        answers: submittedAnswers
+      });
+
+      calculatedMcqResults = {
+        score: mcqEval.score,
+        correct: mcqEval.correctCount,
+        total: mcqEval.totalQuestions
+      };
+    }
+
     // Run backend evaluation
     const evalResult = await evaluateSkillVerification({
       skillName,
-      mcqResults: mcqResults || { score: 0, correct: 0, total: 2 },
+      mcqResults: calculatedMcqResults,
       codingResults: codingResults || { score: 0, testsPassed: 0, testsTotal: 1 },
       projectSubmission: projectSubmission || { repoUrl: "" },
       passingThreshold: 75

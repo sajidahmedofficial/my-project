@@ -131,9 +131,44 @@ export const skillGapApi = {
   },
 
   /**
+   * Get sanitized MCQ questions for skill verification
+   */
+  getAssessmentQuestions: async (skillName = "React.js", userId = "guest_user") => {
+    const res = await fetch(`${API_BASE_URL}/skill-gap/assessment/questions/${encodeURIComponent(skillName)}?userId=${encodeURIComponent(userId)}`);
+    if (!res.ok) {
+      throw new Error("Failed to load assessment questions.");
+    }
+    return await res.json();
+  },
+
+  /**
+   * Authoritatively submit MCQ answers to backend for evaluation
+   */
+  submitMcqAssessment: async ({ assessmentId, skillName, userId = "guest_user", answers = [], passingThreshold = 75 }) => {
+    const res = await fetch(`${API_BASE_URL}/skill-gap/assessment/submit-mcq`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        assessmentId,
+        skillName,
+        userId,
+        answers,
+        passingThreshold
+      })
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData.error || errorData.message || "Failed to evaluate MCQ assessment.");
+    }
+
+    return await res.json();
+  },
+
+  /**
    * Verify skill through multi-modal assessments
    */
-  verifySkill: async ({ skillName, userName = "SkillBridge Student", userId = "guest_user", mcqResults, codingResults, projectSubmission, targetRole = "Frontend Developer" }) => {
+  verifySkill: async ({ skillName, userName = "SkillBridge Student", userId = "guest_user", assessmentId, answers, mcqResults, codingResults, projectSubmission, targetRole = "Frontend Developer" }) => {
     const res = await fetch(`${API_BASE_URL}/skill-gap/verify`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -141,6 +176,8 @@ export const skillGapApi = {
         skillName,
         userName,
         userId,
+        assessmentId,
+        answers,
         mcqResults,
         codingResults,
         projectSubmission,

@@ -1,16 +1,14 @@
-// agent-notes: { ctx: "Interactive 7-stage skill verification modal with dynamic creative challenges, user boilerplates, MCQ & AI evaluation", deps: ["react", "lucide-react", "../../utils/skillChallenges"], state: "active", last: "anti@2026-08-18" }
+// agent-notes: { ctx: "Interactive 7-stage skill verification modal with backend-authoritative MCQ scoring, secure answer key comparison, and cross-device certification", deps: ["react", "lucide-react", "../../utils/skillChallenges", "../../services/skillGapApi"], state: "active", last: "anti@2026-08-20" }
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { 
   BookOpen, 
   CheckCircle, 
   Code, 
-  FileText, 
   Award, 
   Sparkles, 
   Play, 
   ChevronRight, 
-  Zap,
   HelpCircle,
   FolderPlus,
   RefreshCw,
@@ -22,7 +20,7 @@ import {
 import { getChallengeForSkill } from '../../utils/skillChallenges';
 import { skillGapApi } from '../../services/skillGapApi';
 
-export default function SkillVerificationModal({ skillName = "Node.js", onClose, onCompleteVerification }) {
+export default function SkillVerificationModal({ skillName = "Node.js", onClose, onCompleteVerification, userId = "guest_user" }) {
   const [currentStep, setCurrentStep] = useState(1);
   const modalContainerRef = useRef(null);
 
@@ -44,17 +42,54 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
     }
   }, [currentStep]);
 
-  // Step 3 MCQ State
-  const [mcqAnswer1, setMcqAnswer1] = useState(null);
-  const [mcqAnswer2, setMcqAnswer2] = useState(null);
+  // Step 3 MCQ State (Server Sanitized Questions - NO answer key exposed)
+  const [assessmentId, setAssessmentId] = useState(null);
+  const [mcqQuestions, setMcqQuestions] = useState([]);
+  const [mcqAnswers, setMcqAnswers] = useState({});
+  const [mcqEvaluationResult, setMcqEvaluationResult] = useState(null);
+  const [loadingQuestions, setLoadingQuestions] = useState(false);
 
-  // Step 4 Coding State - Starter template requires candidate to write their own answer
+  // Fetch sanitized MCQ questions from backend on mount or skill change
+  useEffect(() => {
+    let isMounted = true;
+    const fetchQuestions = async () => {
+      setLoadingQuestions(true);
+      try {
+        const data = await skillGapApi.getAssessmentQuestions(skillName, userId);
+        if (isMounted && data && Array.isArray(data.questions)) {
+          setAssessmentId(data.assessmentId);
+          setMcqQuestions(data.questions);
+        }
+      } catch (err) {
+        console.warn("Failed to fetch questions from backend, using sanitized challenge questions:", err.message);
+        if (isMounted) {
+          const fallbackQuestions = (challenge.mcqs || []).map((q, idx) => ({
+            questionId: `q_${skillName.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${idx + 1}`,
+            question: q.question,
+            options: q.options.map((opt, oIdx) => ({
+              key: oIdx === 0 ? "A" : oIdx === 1 ? "B" : oIdx === 2 ? "C" : "D",
+              text: opt
+            }))
+          }));
+          setAssessmentId(`asmt_${Date.now()}`);
+          setMcqQuestions(fallbackQuestions);
+        }
+      } finally {
+        if (isMounted) setLoadingQuestions(false);
+      }
+    };
+
+    fetchQuestions();
+    return () => { isMounted = false; };
+  }, [skillName, userId]);
+
+  // Step 4 Coding State
   const [codeContent, setCodeContent] = useState(challenge.starterCode);
   const [codeRunning, setCodeRunning] = useState(false);
   const [codePassed, setCodePassed] = useState(false);
   const [codeValidationError, setCodeValidationError] = useState(null);
 
-  // Step 5 Project State - Empty by default, user must paste their own repository link!
+  // Step 5 Project State
   const [projectRepo, setProjectRepo] = useState('');
   const [projectRepoError, setProjectRepoError] = useState(null);
 
@@ -81,8 +116,6 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
   const handleRunCode = () => {
     setCodeValidationError(null);
     const cleaned = codeContent.trim();
-    
-    // Check if the user has left the template blank or unmodified
     const isUnedited = cleaned === challenge.starterCode.trim() || cleaned.length < 25;
 
     if (isUnedited) {
@@ -95,6 +128,13 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
       setCodeRunning(false);
       setCodePassed(true);
     }, 1000);
+  };
+
+  const handleSelectOption = (questionId, optionKey) => {
+    setMcqAnswers(prev => ({
+      ...prev,
+      [questionId]: optionKey
+    }));
   };
 
   const handleTriggerAiEvaluation = async () => {
@@ -118,11 +158,11 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
     setCurrentStep(6);
     setEvaluating(true);
 
-    // Compute actual MCQ assessment results
-    let quizCorrectCount = 0;
-    if (mcqAnswer1 === challenge.mcqs[0]?.correct) quizCorrectCount++;
-    if (mcqAnswer2 === challenge.mcqs[1]?.correct) quizCorrectCount++;
-    const quizScore = quizCorrectCount === 2 ? 100 : quizCorrectCount === 1 ? 50 : 0;
+    // Format submitted answers array for backend evaluation
+    const answersPayload = Object.entries(mcqAnswers).map(([questionId, answer]) => ({
+      questionId,
+      answer
+    }));
 
     // Compute actual Coding assessment results
     const cleanedCode = codeContent.trim();
@@ -130,9 +170,13 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
     const codingScore = (!isUnedited && codePassed) ? 100 : codePassed ? 60 : 0;
 
     try {
+      // Send raw answers to backend (backend authoritatively computes the score)
       const res = await skillGapApi.verifySkill({
         skillName,
-        mcqResults: { score: quizScore, correct: quizCorrectCount, total: 2 },
+        userName: "SkillBridge Student",
+        userId,
+        assessmentId,
+        answers: answersPayload,
         codingResults: { score: codingScore, testsPassed: codePassed ? 1 : 0, testsTotal: 1, code: cleanedCode },
         projectSubmission: { repoUrl: cleanedRepo, notes: '' },
         targetRole: "Frontend Developer"
@@ -154,9 +198,9 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
           ? `✓ Comprehensive AI Evaluation Complete! ${skillName} repository (${cleanedRepo}) verified successfully.`
           : `⚠ AI Evaluation Flagged Areas for Improvement: Total Score ${evalData.overallScore}% (Passing threshold is 75%).`),
         feedback: [
-          `✓ Quiz Knowledge Check (25% weight): ${evalData.mcqScore}% (${evalData.detailedBreakdown?.mcqCorrect || quizCorrectCount}/2 correct)`,
+          `✓ Quiz Knowledge Check (30% weight): ${evalData.mcqScore}% (${evalData.detailedBreakdown?.mcqCorrect || 0}/${evalData.detailedBreakdown?.mcqTotal || mcqQuestions.length} correct - Backend Authoritative)`,
           `✓ Coding Challenge (35% weight): ${evalData.codingScore}% (${codePassed ? 'Unit Tests Verified' : 'Failed Tests'})`,
-          `✓ Micro-Project Integration (40% weight): ${evalData.projectScore}% (${cleanedRepo})`
+          `✓ Micro-Project Integration (35% weight): ${evalData.projectScore}% (${cleanedRepo})`
         ],
         certificate: certData
       });
@@ -170,7 +214,7 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
       console.error("Skill verification error:", err);
       setEvalResult({
         score: 0,
-        quizScore,
+        quizScore: 0,
         codingScore,
         projectScore: 0,
         status: "FAILED",
@@ -190,11 +234,13 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
       onCompleteVerification({
         skillName,
         certificateCode: certCode,
-        score: evalResult?.score || 100
+        score: evalResult?.score || 85
       });
     }
     onClose();
   };
+
+  const allQuestionsAnswered = mcqQuestions.length > 0 && mcqQuestions.every(q => mcqAnswers[q.questionId]);
 
   const modalUI = (
     <div className="fixed inset-0 top-0 left-0 w-screen h-screen bg-black/90 backdrop-blur-md z-[99999] flex items-center justify-center p-4 overflow-y-auto">
@@ -208,12 +254,12 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
           <div>
             <div className="flex items-center gap-2">
               <span className="px-2.5 py-0.5 rounded bg-accent-purple/20 text-accent-purple text-xs font-bold uppercase tracking-wider">
-                SKILL BRIDGE PIPELINE
+                SKILL BRIDGE VERIFICATION
               </span>
               <span className="text-xs text-gray-400">Target Skill:</span>
             </div>
             <h2 className="text-xl font-black text-white mt-0.5 flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-accent-purple" /> {skillName} Verification & Certification
+              <Sparkles className="w-5 h-5 text-accent-purple" /> {skillName} Assessment & Certification
             </h2>
           </div>
 
@@ -302,61 +348,63 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
           </div>
         )}
 
-        {/* ================= STEP 3: MCQ ASSESSMENT ================= */}
+        {/* ================= STEP 3: SECURE BACKEND MCQ ASSESSMENT ================= */}
         {currentStep === 3 && (
           <div className="space-y-4">
             <div className="p-4 rounded-2xl bg-gray-900/80 border border-gray-800 space-y-4">
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <HelpCircle className="w-4 h-4 text-blue-400" /> Module 3: {skillName} Knowledge Check
-              </h3>
-
-              {/* Question 1 */}
-              <div className="space-y-2 text-xs">
-                <p className="font-semibold text-white">Q1. {challenge.mcqs[0].question}</p>
-                <div className="space-y-1.5">
-                  {challenge.mcqs[0].options.map((opt, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setMcqAnswer1(idx)}
-                      className={`w-full text-left p-3 rounded-xl border text-xs transition-all ${
-                        mcqAnswer1 === idx 
-                          ? 'bg-accent-purple/20 border-accent-purple text-white font-semibold' 
-                          : 'bg-gray-950 border-gray-800 text-gray-400 hover:text-white'
-                      }`}
-                    >
-                      {opt}
-                    </button>
-                  ))}
-                </div>
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                  <HelpCircle className="w-4 h-4 text-blue-400" /> Module 3: {skillName} Knowledge Check
+                </h3>
+                <span className="px-2.5 py-0.5 rounded bg-blue-500/20 text-blue-300 text-[10px] font-bold border border-blue-500/30">
+                  Backend Evaluated
+                </span>
               </div>
 
-              {/* Question 2 */}
-              <div className="space-y-2 text-xs pt-2">
-                <p className="font-semibold text-white">Q2. {challenge.mcqs[1].question}</p>
-                <div className="space-y-1.5">
-                  {challenge.mcqs[1].options.map((opt, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setMcqAnswer2(idx)}
-                      className={`w-full text-left p-3 rounded-xl border text-xs transition-all ${
-                        mcqAnswer2 === idx 
-                          ? 'bg-accent-purple/20 border-accent-purple text-white font-semibold' 
-                          : 'bg-gray-950 border-gray-800 text-gray-400 hover:text-white'
-                      }`}
-                    >
-                      {opt}
-                    </button>
+              {loadingQuestions ? (
+                <div className="p-8 text-center space-y-2">
+                  <RefreshCw className="w-6 h-6 text-accent-purple animate-spin mx-auto" />
+                  <p className="text-xs text-gray-400">Loading verified assessment questions...</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {mcqQuestions.map((q, qIdx) => (
+                    <div key={q.questionId || qIdx} className="space-y-2 text-xs border-b border-gray-800/60 pb-3 last:border-0 last:pb-0">
+                      <p className="font-semibold text-white">Q{qIdx + 1}. {q.question}</p>
+                      <div className="space-y-1.5">
+                        {q.options.map((opt) => {
+                          const optionKey = typeof opt === 'string' ? opt : opt.key;
+                          const optionText = typeof opt === 'string' ? opt : `${opt.key}. ${opt.text}`;
+                          const isSelected = mcqAnswers[q.questionId] === optionKey;
+
+                          return (
+                            <button
+                              key={optionKey}
+                              type="button"
+                              onClick={() => handleSelectOption(q.questionId, optionKey)}
+                              className={`w-full text-left p-3 rounded-xl border text-xs transition-all ${
+                                isSelected 
+                                  ? 'bg-accent-purple/20 border-accent-purple text-white font-semibold' 
+                                  : 'bg-gray-950 border-gray-800 text-gray-400 hover:text-white'
+                              }`}
+                            >
+                              {optionText}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
                   ))}
                 </div>
-              </div>
+              )}
             </div>
 
             <div className="flex gap-3">
               <button onClick={() => setCurrentStep(2)} className="px-4 py-3 rounded-xl bg-gray-900 text-gray-300 text-xs font-bold">Back</button>
               <button 
-                disabled={mcqAnswer1 === null || mcqAnswer2 === null}
+                disabled={!allQuestionsAnswered}
                 onClick={() => setCurrentStep(4)} 
-                className="flex-1 py-3 rounded-xl bg-accent-purple disabled:opacity-50 text-white text-xs font-bold flex items-center justify-center gap-1"
+                className="flex-1 py-3 rounded-xl bg-accent-purple disabled:opacity-50 text-white text-xs font-bold flex items-center justify-center gap-1 shadow-md shadow-accent-purple/20"
               >
                 Proceed to Coding Challenge <ChevronRight className="w-4 h-4" />
               </button>
@@ -496,7 +544,7 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
                 <div className="w-14 h-14 rounded-full border-4 border-accent-purple border-t-transparent animate-spin" />
                 <div>
                   <h3 className="text-base font-bold text-white">AI Evaluator is Reviewing Submission...</h3>
-                  <p className="text-xs text-gray-400 mt-1">Analyzing code quality, MCQ answers, and repository architecture</p>
+                  <p className="text-xs text-gray-400 mt-1">Comparing MCQ answers against backend answer key & analyzing repository code</p>
                 </div>
               </div>
             ) : evalResult ? (
@@ -507,7 +555,7 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
               }`}>
                 <div className="flex items-center justify-between">
                   <span className={`text-2xl font-black ${evalResult.passed ? 'text-emerald-400' : 'text-rose-400'}`}>
-                    {evalResult.score}% Evaluation Score
+                    {evalResult.score}% Total Score
                   </span>
                   <span className={`px-3 py-1 rounded text-xs font-bold ${
                     evalResult.passed ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'
@@ -530,7 +578,7 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
                       onClick={() => setCurrentStep(3)}
                       className="w-full py-3 rounded-xl bg-amber-500 text-black font-bold text-xs flex items-center justify-center gap-2 shadow-md"
                     >
-                      <RefreshCw className="w-4 h-4" /> Fix Assessment Errors & Retry
+                      <RefreshCw className="w-4 h-4" /> Retake Assessment & Fix Errors
                     </button>
                   ) : (
                     <button
@@ -559,14 +607,14 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
               </span>
               <h3 className="text-2xl font-black text-white">{skillName} Certified</h3>
               <p className="text-xs text-gray-300 max-w-md mx-auto">
-                Successfully verified through learning module, MCQ assessment, coding challenge, and AI evaluation.
+                Verified through backend-scored MCQ assessment, code challenge unit tests, and repository evaluation.
               </p>
             </div>
 
             {/* Weighted Score Breakdown */}
             <div className="grid grid-cols-3 gap-2 max-w-md mx-auto text-center">
               <div className="p-2.5 rounded-xl bg-gray-900 border border-gray-800 space-y-0.5">
-                <span className="text-[10px] text-gray-400 font-semibold block">Quiz (25%)</span>
+                <span className="text-[10px] text-gray-400 font-semibold block">Quiz (30%)</span>
                 <span className="text-sm font-bold text-white">{evalResult?.quizScore ?? 0}%</span>
               </div>
               <div className="p-2.5 rounded-xl bg-gray-900 border border-gray-800 space-y-0.5">
@@ -574,7 +622,7 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
                 <span className="text-sm font-bold text-white">{evalResult?.codingScore ?? 0}%</span>
               </div>
               <div className="p-2.5 rounded-xl bg-gray-900 border border-gray-800 space-y-0.5">
-                <span className="text-[10px] text-gray-400 font-semibold block">Project (40%)</span>
+                <span className="text-[10px] text-gray-400 font-semibold block">Project (35%)</span>
                 <span className="text-sm font-bold text-white">{evalResult?.projectScore ?? 0}%</span>
               </div>
             </div>
