@@ -1,5 +1,12 @@
-// agent-notes: { ctx: "Primary Skill Gap AI evaluation service using central Gemini client, strict schema validation, deterministic skill normalization, and evidence extraction", deps: ["../ai/gemini.js"], state: "active", last: "anti@2026-08-20" }
+// agent-notes: { ctx: "Primary Skill Gap AI evaluation service using weighted priority scoring (High=3, Med=2, Low=1), verified skill promotion, and central Gemini integration", deps: ["../ai/gemini.js"], state: "active", last: "anti@2026-08-20" }
 import { analyzeJSON } from "../ai/gemini.js";
+
+// Priority weights configuration
+export const PRIORITY_WEIGHTS = {
+  high: 3,
+  medium: 2,
+  low: 1
+};
 
 // Canonical skill normalization dictionary
 export const SKILL_NORMALIZATION_MAP = {
@@ -94,7 +101,14 @@ export const ROLE_TAXONOMY = {
       "Tailwind CSS": "medium",
       "Git": "high",
       "Docker": "low",
-      "Jest": "medium"
+      "Jest": "medium",
+      "Vercel": "medium",
+      "Netlify": "medium",
+      "Webpack": "medium",
+      "REST API": "medium",
+      "GraphQL": "medium",
+      "GitHub": "medium",
+      "Vite": "medium"
     }
   },
   "Backend Engineer": {
@@ -115,7 +129,11 @@ export const ROLE_TAXONOMY = {
       "AWS": "medium",
       "Redis": "medium",
       "Git": "high",
-      "Kubernetes": "low"
+      "Kubernetes": "low",
+      "Python": "high",
+      "SQL": "high",
+      "Postman": "medium",
+      "Jest": "medium"
     }
   },
   "Full Stack Developer": {
@@ -133,10 +151,16 @@ export const ROLE_TAXONOMY = {
       "Express.js": "high",
       "MongoDB": "high",
       "TypeScript": "high",
+      "JavaScript": "high",
+      "HTML5": "high",
+      "CSS3": "high",
       "PostgreSQL": "medium",
       "Docker": "medium",
       "AWS": "medium",
-      "Git": "high"
+      "Git": "high",
+      "REST API": "high",
+      "Tailwind CSS": "medium",
+      "Next.js": "medium"
     }
   },
   "Data Scientist / AI Engineer": {
@@ -156,7 +180,9 @@ export const ROLE_TAXONOMY = {
       "Scikit-Learn": "high",
       "TensorFlow": "medium",
       "Docker": "medium",
-      "Git": "medium"
+      "Git": "medium",
+      "Jupyter": "medium",
+      "Vector DBs": "medium"
     }
   },
   "DevOps & Cloud Engineer": {
@@ -175,7 +201,9 @@ export const ROLE_TAXONOMY = {
       "Linux": "high",
       "GitHub Actions": "high",
       "Terraform": "medium",
-      "Git": "high"
+      "Git": "high",
+      "CI/CD": "high",
+      "Python": "medium"
     }
   }
 };
@@ -247,11 +275,16 @@ export function extractEvidenceForSkill(skillName, resumeText = "") {
 }
 
 /**
- * Validate and sanitize skill objects
+ * Validate and sanitize skill objects with priority weights & verified status
  */
-function validateAndSanitizeSkills(rawSkills = [], requiredSkillsList = [], resumeText = "") {
+function validateAndSanitizeSkills(rawSkills = [], requiredSkillsList = [], resumeText = "", taxonomy = {}, verifiedSkills = []) {
   const seen = new Set();
   const sanitized = [];
+
+  const normalizedVerified = (verifiedSkills || []).map(v => {
+    const raw = typeof v === 'string' ? v : v.skillName || v.skill || v.name || '';
+    return normalizeSkillName(raw).toLowerCase();
+  });
 
   rawSkills.forEach(item => {
     if (!item || !item.name) return;
@@ -263,17 +296,25 @@ function validateAndSanitizeSkills(rawSkills = [], requiredSkillsList = [], resu
 
     const category = item.category || categorizeSkill(normalizedName);
     const extractedEvidence = extractEvidenceForSkill(normalizedName, resumeText);
-    const combinedEvidence = Array.from(new Set([...(Array.isArray(item.evidence) ? item.evidence : []), ...extractedEvidence]));
+    const isVerified = normalizedVerified.includes(key);
+
+    const combinedEvidence = Array.from(new Set([
+      ...(Array.isArray(item.evidence) ? item.evidence : []),
+      ...extractedEvidence,
+      ...(isVerified ? [`Certified & Verified via SkillBridge Assessment`] : [])
+    ]));
 
     let status = (item.status || "").toLowerCase();
-    if (!["strong", "partial", "missing"].includes(status)) {
+    if (isVerified) {
+      status = "strong";
+    } else if (!["strong", "partial", "missing"].includes(status)) {
       if (combinedEvidence.length >= 2) status = "strong";
       else if (combinedEvidence.length === 1) status = "partial";
       else status = "missing";
     }
 
-    // Safety guard: If status is strong/partial but ZERO evidence exists, classify as missing
-    if (combinedEvidence.length === 0 && status !== "missing") {
+    // Safety guard: If status is strong/partial but ZERO evidence exists and not verified, classify as missing
+    if (combinedEvidence.length === 0 && !isVerified && status !== "missing") {
       status = "missing";
     }
 
@@ -281,19 +322,22 @@ function validateAndSanitizeSkills(rawSkills = [], requiredSkillsList = [], resu
     let gapPercentage = 100;
 
     if (status === "strong") {
-      currentLevel = typeof item.currentLevel === "number" && item.currentLevel > 0 ? item.currentLevel : 100;
+      currentLevel = 100;
       gapPercentage = 0;
     } else if (status === "partial") {
-      currentLevel = typeof item.currentLevel === "number" && item.currentLevel > 0 ? item.currentLevel : 50;
+      currentLevel = 50;
       gapPercentage = 50;
     } else {
       currentLevel = 0;
       gapPercentage = 100;
     }
 
-    const priority = ["high", "medium", "low"].includes((item.priority || "").toLowerCase()) 
-      ? item.priority.toLowerCase() 
-      : "medium";
+    const rolePriority = taxonomy?.priorities?.[normalizedName];
+    const priority = rolePriority 
+      ? rolePriority.toLowerCase() 
+      : ["high", "medium", "low"].includes((item.priority || "").toLowerCase()) 
+        ? item.priority.toLowerCase() 
+        : "medium";
 
     sanitized.push({
       name: normalizedName,
@@ -314,8 +358,15 @@ function validateAndSanitizeSkills(rawSkills = [], requiredSkillsList = [], resu
     const key = normReq.toLowerCase();
     if (!seen.has(key)) {
       seen.add(key);
+      const isVerified = normalizedVerified.includes(key);
       const evidence = extractEvidenceForSkill(normReq, resumeText);
-      const status = evidence.length >= 2 ? "strong" : evidence.length === 1 ? "partial" : "missing";
+      if (isVerified) {
+        evidence.push("Certified & Verified via SkillBridge Assessment");
+      }
+
+      const status = isVerified ? "strong" : evidence.length >= 2 ? "strong" : evidence.length === 1 ? "partial" : "missing";
+      const priority = (taxonomy?.priorities?.[normReq] || "medium").toLowerCase();
+
       sanitized.push({
         name: normReq,
         category: categorizeSkill(normReq),
@@ -323,7 +374,7 @@ function validateAndSanitizeSkills(rawSkills = [], requiredSkillsList = [], resu
         currentLevel: status === "strong" ? 100 : status === "partial" ? 50 : 0,
         requiredLevel: 100,
         gapPercentage: status === "strong" ? 0 : status === "partial" ? 50 : 100,
-        priority: "medium",
+        priority,
         evidence,
         reason: evidence.length > 0 ? evidence.join("; ") : `No evidence of ${normReq} found in uploaded resume.`
       });
@@ -334,13 +385,19 @@ function validateAndSanitizeSkills(rawSkills = [], requiredSkillsList = [], resu
 }
 
 /**
- * Main AI Skill Gap Service using the central Gemini integration
+ * Main AI Skill Gap Service using Weighted Scoring:
+ * High = weight 3
+ * Medium = weight 2
+ * Low = weight 1
+ *
+ * overallMatchScore = (weightedMatchedRequirements / weightedTotalRequirements) * 100
  */
 export async function performSkillGapAnalysis({
   userSkills = [],
   resumeText = "",
   targetRole = "Frontend Developer",
-  jobDescription = ""
+  jobDescription = "",
+  verifiedSkills = []
 }) {
   const taxonomy = ROLE_TAXONOMY[targetRole] || ROLE_TAXONOMY["Frontend Developer"];
   const requiredSkillsFlat = Object.values(taxonomy.coreSkills).flat();
@@ -406,7 +463,7 @@ Return ONLY a JSON object with this EXACT structure:
   let finalSkills = [];
 
   if (aiReport && Array.isArray(aiReport.skills) && aiReport.skills.length > 0) {
-    finalSkills = validateAndSanitizeSkills(aiReport.skills, allRequired, resumeText);
+    finalSkills = validateAndSanitizeSkills(aiReport.skills, allRequired, resumeText, taxonomy, verifiedSkills);
   } else {
     // Deterministic Rule-Based Evidence Engine
     const initialList = userSkills.map(s => ({
@@ -414,24 +471,56 @@ Return ONLY a JSON object with this EXACT structure:
       category: categorizeSkill(s),
       status: "partial"
     }));
-    finalSkills = validateAndSanitizeSkills(initialList, allRequired, resumeText);
+    finalSkills = validateAndSanitizeSkills(initialList, allRequired, resumeText, taxonomy, verifiedSkills);
   }
 
-  // Calculate Mathematical Scores (Never Trust AI Scores Blindly)
-  const totalCount = finalSkills.length;
+  // --- Weighted Scoring Engine ---
+  // High = 3, Medium = 2, Low = 1
+  let weightedMatchedRequirements = 0;
+  let weightedTotalRequirements = 0;
+
+  finalSkills.forEach(skill => {
+    const priorityKey = (skill.priority || "medium").toLowerCase();
+    const weight = PRIORITY_WEIGHTS[priorityKey] || 2;
+    weightedTotalRequirements += weight;
+
+    if (skill.status === "strong") {
+      weightedMatchedRequirements += weight * 1.0;
+    } else if (skill.status === "partial") {
+      weightedMatchedRequirements += weight * 0.5;
+    } else {
+      weightedMatchedRequirements += weight * 0.0;
+    }
+  });
+
+  const overallMatchScore = weightedTotalRequirements > 0 
+    ? Math.round((weightedMatchedRequirements / weightedTotalRequirements) * 100) 
+    : 0;
+
   const strongSkills = finalSkills.filter(s => s.status === "strong");
   const partialSkills = finalSkills.filter(s => s.status === "partial");
   const missingSkills = finalSkills.filter(s => s.status === "missing");
 
-  const totalPoints = (strongSkills.length * 1.0) + (partialSkills.length * 0.5);
-  const overallMatchScore = totalCount > 0 ? Math.round((totalPoints / totalCount) * 100) : 0;
+  // Priority Gaps
+  const highPriorityGaps = finalSkills.filter(s => s.status !== "strong" && s.priority?.toLowerCase() === "high");
+  const mediumPriorityGaps = finalSkills.filter(s => s.status !== "strong" && s.priority?.toLowerCase() === "medium");
+  const lowPriorityGaps = finalSkills.filter(s => s.status !== "strong" && s.priority?.toLowerCase() === "low");
 
+  // Category Domain Scores (Weighted)
   const calculateDomainScore = (categoryName) => {
     const inDomain = finalSkills.filter(s => s.category.toLowerCase() === categoryName.toLowerCase());
     if (!inDomain.length) return 0;
-    const strongInDomain = inDomain.filter(s => s.status === "strong").length;
-    const partialInDomain = inDomain.filter(s => s.status === "partial").length;
-    return Math.round(((strongInDomain + partialInDomain * 0.5) / inDomain.length) * 100);
+    let domainEarned = 0;
+    let domainTotal = 0;
+
+    inDomain.forEach(s => {
+      const weight = PRIORITY_WEIGHTS[s.priority?.toLowerCase()] || 2;
+      domainTotal += weight;
+      if (s.status === "strong") domainEarned += weight * 1.0;
+      else if (s.status === "partial") domainEarned += weight * 0.5;
+    });
+
+    return domainTotal > 0 ? Math.round((domainEarned / domainTotal) * 100) : 0;
   };
 
   const categoryScores = {
@@ -443,7 +532,7 @@ Return ONLY a JSON object with this EXACT structure:
     cloudDevOps: calculateDomainScore("Cloud/DevOps")
   };
 
-  // Convert to legacy structure for full backward compatibility with existing UI components
+  // Convert to legacy structure for full backward compatibility
   const formatLegacySkill = (s) => ({
     skillName: s.name,
     category: s.category,
@@ -458,6 +547,19 @@ Return ONLY a JSON object with this EXACT structure:
   return {
     targetRole,
     overallMatchScore,
+    weightedSummary: {
+      weightedMatchedRequirements,
+      weightedTotalRequirements,
+      formula: "(weightedMatchedRequirements / weightedTotalRequirements) * 100"
+    },
+    priorityGaps: {
+      high: highPriorityGaps.map(formatLegacySkill),
+      medium: mediumPriorityGaps.map(formatLegacySkill),
+      low: lowPriorityGaps.map(formatLegacySkill),
+      highCount: highPriorityGaps.length,
+      mediumCount: mediumPriorityGaps.length,
+      lowCount: lowPriorityGaps.length
+    },
     categoryScores,
     skills: finalSkills,
     strongSkills: strongSkills.map(formatLegacySkill),
@@ -469,8 +571,20 @@ Return ONLY a JSON object with this EXACT structure:
 
 export function calculateOverallSkillScore(skillGap = []) {
   if (!skillGap || !skillGap.length) return 0;
-  const total = skillGap.reduce((sum, skill) => sum + (skill.currentLevel ?? skill.progress ?? (skill.status === "strong" || skill.status === "GAINED" ? 100 : skill.status === "partial" ? 50 : 0)), 0);
-  return Math.round(total / skillGap.length);
+  let earned = 0;
+  let total = 0;
+
+  skillGap.forEach(s => {
+    const prio = (s.priority || "medium").toLowerCase();
+    const weight = PRIORITY_WEIGHTS[prio] || 2;
+    total += weight;
+    const isStrong = s.status === "strong" || s.status === "GAINED" || (s.currentLevel >= 100) || (s.progress >= 100);
+    const isPartial = s.status === "partial" || s.status === "LEARNING" || (s.currentLevel > 0 && s.currentLevel < 100);
+    if (isStrong) earned += weight * 1.0;
+    else if (isPartial) earned += weight * 0.5;
+  });
+
+  return total > 0 ? Math.round((earned / total) * 100) : 0;
 }
 
 export async function calculateSkillGap(userSkills = [], roleRequirements = []) {
@@ -493,6 +607,7 @@ export async function calculateSkillGap(userSkills = [], roleRequirements = []) 
 }
 
 export default {
+  PRIORITY_WEIGHTS,
   SKILL_NORMALIZATION_MAP,
   normalizeSkillName,
   ROLE_TAXONOMY,

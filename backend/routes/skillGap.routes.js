@@ -58,20 +58,21 @@ router.post('/analyze', upload.single('resume'), async (req, res) => {
         : req.body.userSkills;
     }
 
-    if (req.file) {
-      if (req.file.mimetype === 'application/pdf') {
-        const parsedPdf = await pdfParse(req.file.buffer);
-        resumeText = parsedPdf.text;
-      } else {
-        resumeText = req.file.buffer.toString('utf-8');
-      }
+    let verifiedSkills = [];
+    if (req.body.verifiedSkills) {
+      verifiedSkills = typeof req.body.verifiedSkills === 'string'
+        ? JSON.parse(req.body.verifiedSkills)
+        : req.body.verifiedSkills;
+    } else {
+      verifiedSkills = userVerifiedSkillsStore.get(userId) || [];
     }
 
     const gapReport = await performSkillGapAnalysis({
       userSkills,
       resumeText,
       targetRole,
-      jobDescription
+      jobDescription,
+      verifiedSkills
     });
 
     // Store in memory

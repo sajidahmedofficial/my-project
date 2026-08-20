@@ -6,7 +6,7 @@ export const skillGapApi = {
   /**
    * Run AI Skill Gap Analysis
    */
-  analyzeSkillGap: async ({ resumeId, resumeFile, resumeText, userSkills = [], targetRole = "Frontend Developer", jobDescription = "", userId = "guest_user" }) => {
+  analyzeSkillGap: async ({ resumeId, resumeFile, resumeText, userSkills = [], targetRole = "Frontend Developer", jobDescription = "", verifiedSkills = [], userId = "guest_user" }) => {
     let res;
     if (resumeFile) {
       const formData = new FormData();
@@ -17,6 +17,9 @@ export const skillGapApi = {
       formData.append('userId', userId);
       if (userSkills && userSkills.length) {
         formData.append('userSkills', JSON.stringify(userSkills));
+      }
+      if (verifiedSkills && verifiedSkills.length) {
+        formData.append('verifiedSkills', JSON.stringify(verifiedSkills));
       }
 
       res = await fetch(`${API_BASE_URL}/skill-gap/analyze`, {
@@ -33,6 +36,7 @@ export const skillGapApi = {
           userSkills,
           targetRole,
           jobDescription,
+          verifiedSkills,
           userId
         })
       });

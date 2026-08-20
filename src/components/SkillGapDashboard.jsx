@@ -47,10 +47,10 @@ export default function SkillGapDashboard({
   const [report, setReport] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
-  // Auto-run analysis whenever target role, resume, or profile skills change
+  // Auto-run analysis whenever target role, resume, or profile verified skills change
   useEffect(() => {
     runAnalysis(selectedRole, customJd);
-  }, [profile?.skills, profile?.resumeId, profile?.resumeText, selectedRole]);
+  }, [profile?.skills, profile?.verifiedSkills, profile?.resumeId, profile?.resumeText, selectedRole]);
 
   const runAnalysis = async (targetRole, jdText) => {
     setStatus('LOADING');
@@ -58,6 +58,7 @@ export default function SkillGapDashboard({
 
     try {
       const userSkills = profile?.skills || [];
+      const verifiedSkills = profile?.verifiedSkills || [];
       const resumeId = profile?.resumeId || localStorage.getItem('sb_active_resume_id') || "";
       const resumeText = profile?.resumeText || localStorage.getItem('sb_resume_text') || "";
       const activeFileName = profile?.resumeFileName || localStorage.getItem('sb_resume_filename') || "";
@@ -68,6 +69,7 @@ export default function SkillGapDashboard({
         userSkills,
         targetRole,
         jobDescription: jdText,
+        verifiedSkills,
         userId: profile?.id || profile?.email || "guest_user"
       });
 
@@ -392,6 +394,74 @@ export default function SkillGapDashboard({
                     </div>
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* Priority Gaps Breakdown (Weighted Scoring: High=3, Medium=2, Low=1) */}
+          {report?.priorityGaps && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="p-4 rounded-2xl bg-rose-950/20 border border-rose-500/30 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-black text-rose-400 uppercase tracking-wider flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" /> High Priority Gaps (Weight: 3)
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 font-extrabold text-[11px]">
+                    {report.priorityGaps.highCount ?? report.priorityGaps.high?.length ?? 0}
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {(report.priorityGaps.high || []).map((g, idx) => (
+                    <span key={idx} className="px-2 py-1 rounded-lg bg-rose-900/40 text-rose-200 border border-rose-700/40 text-[11px] font-bold">
+                      {g.skillName}
+                    </span>
+                  ))}
+                  {(!report.priorityGaps.high || report.priorityGaps.high.length === 0) && (
+                    <span className="text-xs text-emerald-400 font-semibold italic">✓ All high-priority skills satisfied!</span>
+                  )}
+                </div>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-amber-950/20 border border-amber-500/30 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-black text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-amber-500" /> Medium Priority Gaps (Weight: 2)
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-extrabold text-[11px]">
+                    {report.priorityGaps.mediumCount ?? report.priorityGaps.medium?.length ?? 0}
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {(report.priorityGaps.medium || []).map((g, idx) => (
+                    <span key={idx} className="px-2 py-1 rounded-lg bg-amber-900/40 text-amber-200 border border-amber-700/40 text-[11px] font-bold">
+                      {g.skillName}
+                    </span>
+                  ))}
+                  {(!report.priorityGaps.medium || report.priorityGaps.medium.length === 0) && (
+                    <span className="text-xs text-emerald-400 font-semibold italic">✓ All medium-priority skills satisfied!</span>
+                  )}
+                </div>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-blue-950/20 border border-blue-500/30 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-black text-blue-400 uppercase tracking-wider flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-blue-500" /> Low Priority Gaps (Weight: 1)
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 font-extrabold text-[11px]">
+                    {report.priorityGaps.lowCount ?? report.priorityGaps.low?.length ?? 0}
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {(report.priorityGaps.low || []).map((g, idx) => (
+                    <span key={idx} className="px-2 py-1 rounded-lg bg-blue-900/40 text-blue-200 border border-blue-700/40 text-[11px] font-bold">
+                      {g.skillName}
+                    </span>
+                  ))}
+                  {(!report.priorityGaps.low || report.priorityGaps.low.length === 0) && (
+                    <span className="text-xs text-emerald-400 font-semibold italic">✓ All low-priority skills satisfied!</span>
+                  )}
+                </div>
               </div>
             </div>
           )}
