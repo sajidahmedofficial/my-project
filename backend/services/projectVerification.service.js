@@ -1,16 +1,16 @@
 // agent-notes: { ctx: "GitHub Repository inspection service fetching live repository metadata, package manifests, README, and evaluating technology evidence", deps: ["../ai/gemini.js"], state: "active", last: "anti@2026-08-20" }
 import { analyzeJSON } from "../ai/gemini.js";
+import { validateGitHubUrl } from "../utils/security.js";
 
 /**
- * Parses GitHub Owner & Repo name from URL
+ * Parses GitHub Owner & Repo name from URL with SSRF protection
  */
 export function parseGitHubUrl(url) {
-  if (!url || typeof url !== 'string') return null;
-  const match = url.trim().match(/github\.com\/([a-zA-Z0-9_\-\.]+)\/([a-zA-Z0-9_\-\.]+)/i);
-  if (!match) return null;
+  const check = validateGitHubUrl(url);
+  if (!check.valid) return null;
   return {
-    owner: match[1],
-    repo: match[2].replace(/\.git$/i, '')
+    owner: check.owner,
+    repo: check.repo
   };
 }
 

@@ -23,7 +23,12 @@ import RoadmapTask from '../models/RoadmapTask.js';
 import SkillVerification from '../models/SkillVerification.js';
 import AssessmentResult from '../models/AssessmentResult.js';
 
+import { authenticateUser, getAuthenticatedUserId, enforceUserOwnership } from '../middleware/auth.js';
+import { validateUploadedFile, sanitizePromptInput, validateGitHubUrl } from '../utils/security.js';
+
 const router = express.Router();
+router.use(authenticateUser);
+
 const upload = multer({ limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB max
 
 /**
@@ -32,12 +37,20 @@ const upload = multer({ limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB max
  */
 router.post('/analyze', upload.single('resume'), async (req, res) => {
   try {
-    const resumeId = req.body.resumeId;
-    const userId = req.body.userId || req.user?.id || "guest_user";
-    const targetRole = req.body.targetRole || "Frontend Developer";
-    const jobDescription = req.body.jobDescription || "";
+    // 1. Validate File Upload Security
+    if (req.file) {
+      const fileValidation = validateUploadedFile(req.file);
+      if (!fileValidation.valid) {
+        return res.status(400).json({ error: "File validation failed", message: fileValidation.error });
+      }
+    }
 
-    let resumeText = req.body.resumeText || "";
+    const resumeId = req.body.resumeId;
+    const userId = getAuthenticatedUserId(req);
+    const targetRole = req.body.targetRole || "Frontend Developer";
+    const jobDescription = sanitizePromptInput(req.body.jobDescription || "");
+
+    let resumeText = sanitizePromptInput(req.body.resumeText || "");
     let userSkills = [];
 
     // 1. If resumeId or userId is provided, look up in persistent resume store
@@ -146,6 +159,15 @@ router.post('/analyze', upload.single('resume'), async (req, res) => {
  */
 router.get('/:userId', async (req, res) => {
   const { userId } = req.params;
+  const authUserId = getAuthenticatedUserId(req);
+
+  // Enforce user ownership
+  if (authUserId !== 'guest_user' && userId !== authUserId) {
+    return res.status(403).json({
+      error: "Access Denied",
+      message: "You cannot access another user's Skill Gap report."
+    });
+  }
 
   // Try DB first
   if (mongoose.connection.readyState === 1 && mongoose.Types.ObjectId.isValid(userId)) {
@@ -184,14 +206,14 @@ import { hydrateRoadmapTasks, updateTaskProgress } from '../services/roadmapProg
  */
 router.post('/roadmap', async (req, res) => {
   try {
-    const { skillGapId, skill, skillName, targetRole, currentLevel, targetLevel, priority, userId, forceRefresh } = req.body;
+    const { skill, skillName, targetRole, currentLevel, targetLevel, forceRefresh } = req.body;
     const skillToLearn = skill || skillName;
 
     if (!skillToLearn) {
       return res.status(400).json({ error: "skill or skillName is required" });
     }
 
-    const uId = userId || skillGapId || "guest_user";
+    const uId = getAuthenticatedUserId(req);
 
     // 1. Check if roadmap is already stored and cached unless forceRefresh is requested
     if (!forceRefresh) {
@@ -278,6 +300,15 @@ router.post('/roadmap', async (req, res) => {
  */
 router.get('/roadmap/:userId/:skillName', async (req, res) => {
   const { userId, skillName } = req.params;
+  const authUserId = getAuthenticatedUserId(req);
+
+  // Enforce user ownership
+  if (authUserId !== 'guest_user' && userId !== authUserId) {
+    return res.status(403).json({
+      error: "Access Denied",
+      message: "You cannot access another user's Learning Roadmap."
+    });
+  }
 
   if (mongoose.connection.readyState === 1 && mongoose.Types.ObjectId.isValid(userId)) {
     try {
@@ -315,8 +346,17 @@ router.get('/roadmap/:userId/:skillName', async (req, res) => {
 router.patch('/roadmap/tasks/:taskId', async (req, res) => {
   try {
     const { taskId } = req.params;
-    const { status = "completed", score = null, roadmapId, userId } = req.body;
-    const uId = userId || req.user?.id || "guest_user";
+    const { status = "completed", score = null, roadmapId } = req.body;
+    const uId = getAuthenticatedUserId(req);
+
+    // Enforce task ownership
+    const existingTask = persistentStore.findOne('roadmapTasks', { taskId });
+    if (existingTask && existingTask.userId !== uId && uId !== 'guest_user') {
+      return res.status(403).json({
+        error: "Access Denied",
+        message: "You cannot modify another user's roadmap task."
+      });
+    }
 
     const updateResult = await updateTaskProgress({
       taskId,
@@ -493,8 +533,8 @@ router.post('/verify', async (req, res) => {
       return res.status(400).json({ error: "skillName is required" });
     }
 
-    const candidateName = userName || "SkillBridge Student";
-    const uId = userId || "guest_user";
+    const candidateName = userName || req.user?.name || "SkillBridge Student";
+    const uId = getAuthenticatedUserId(req);
 
     // 1. Authoritatively calculate MCQ score from answers if provided
     let calculatedMcqResults = null;
@@ -540,11 +580,15 @@ router.post('/verify', async (req, res) => {
       calculatedCodingResults = codingResults;
     }
 
-    // 3. Project submission validation
+    // 3. Project submission validation & SSRF Defense
     let cleanProjectSubmission = null;
     const submittedRepoUrl = projectSubmission?.repoUrl || (typeof projectSubmission === 'string' ? projectSubmission : "");
     if (submittedRepoUrl && typeof submittedRepoUrl === 'string' && submittedRepoUrl.trim()) {
-      cleanProjectSubmission = { repoUrl: submittedRepoUrl.trim() };
+      const ghCheck = validateGitHubUrl(submittedRepoUrl);
+      if (!ghCheck.valid) {
+        return res.status(400).json({ error: "Invalid repository URL", message: ghCheck.error });
+      }
+      cleanProjectSubmission = { repoUrl: ghCheck.cleanUrl };
     }
 
     // Run backend authoritative evaluation (returns status: "pending" with exact reason if any component is missing)
