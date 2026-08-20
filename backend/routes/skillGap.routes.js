@@ -474,7 +474,7 @@ router.post('/verify', async (req, res) => {
     const uId = userId || "guest_user";
 
     // 1. Authoritatively calculate MCQ score from answers if provided
-    let calculatedMcqResults = mcqResults || { score: 0, correct: 0, total: 2 };
+    let calculatedMcqResults = null;
     const submittedAnswers = answers || mcqAnswers;
 
     if (submittedAnswers && Array.isArray(submittedAnswers) && submittedAnswers.length > 0) {
@@ -490,13 +490,15 @@ router.post('/verify', async (req, res) => {
         correct: mcqEval.correctCount,
         total: mcqEval.totalQuestions
       };
+    } else if (mcqResults && typeof mcqResults.score === 'number') {
+      calculatedMcqResults = mcqResults;
     }
 
     // 2. Authoritatively calculate Coding score from sandbox execution if code is provided
-    let calculatedCodingResults = codingResults || { score: 0, testsPassed: 0, testsTotal: 1 };
+    let calculatedCodingResults = null;
     const codeToTest = userCode || code || codingResults?.code;
 
-    if (codeToTest && typeof codeToTest === 'string') {
+    if (codeToTest && typeof codeToTest === 'string' && codeToTest.trim()) {
       const challenge = getChallengeForSkill(skillName);
       const codeExec = await executeInSandbox({
         userCode: codeToTest,
@@ -511,14 +513,23 @@ router.post('/verify', async (req, res) => {
         testsTotal: codeExec.totalTests,
         code: codeToTest
       };
+    } else if (codingResults && typeof codingResults.score === 'number') {
+      calculatedCodingResults = codingResults;
     }
 
-    // Run backend authoritative evaluation
+    // 3. Project submission validation
+    let cleanProjectSubmission = null;
+    const submittedRepoUrl = projectSubmission?.repoUrl || (typeof projectSubmission === 'string' ? projectSubmission : "");
+    if (submittedRepoUrl && typeof submittedRepoUrl === 'string' && submittedRepoUrl.trim()) {
+      cleanProjectSubmission = { repoUrl: submittedRepoUrl.trim() };
+    }
+
+    // Run backend authoritative evaluation (returns status: "pending" with exact reason if any component is missing)
     const evalResult = await evaluateSkillVerification({
       skillName,
       mcqResults: calculatedMcqResults,
       codingResults: calculatedCodingResults,
-      projectSubmission: projectSubmission || { repoUrl: "" },
+      projectSubmission: cleanProjectSubmission,
       passingThreshold: 80
     });
 

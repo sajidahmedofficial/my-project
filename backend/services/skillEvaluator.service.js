@@ -31,14 +31,20 @@ export async function evaluateSkillVerification({
 
   // If any required verification component is missing, status MUST be 'pending'
   if (!hasMcq || !hasCoding || !hasProject) {
+    let reason = "Verification assessment not completed";
+    if (!hasMcq) reason = "MCQ assessment not completed";
+    else if (!hasCoding) reason = "Coding assessment not completed";
+    else if (!hasProject) reason = "Project verification not completed";
+
     const missingComponents = [];
-    if (!hasMcq) missingComponents.push("MCQ Knowledge Assessment");
-    if (!hasCoding) missingComponents.push("Coding Sandbox Challenge");
-    if (!hasProject) missingComponents.push("Public GitHub Project Repository");
+    if (!hasMcq) missingComponents.push("MCQ assessment not completed");
+    if (!hasCoding) missingComponents.push("Coding assessment not completed");
+    if (!hasProject) missingComponents.push("Project verification not completed");
 
     return {
       skillName,
       status: "pending",
+      reason,
       verified: false,
       finalScore: 0,
       passingThreshold,
@@ -53,7 +59,7 @@ export async function evaluateSkillVerification({
         projectWeight: "35%"
       },
       missingComponents,
-      feedback: `Verification pending: Please complete ${missingComponents.join(', ')}.`,
+      feedback: `Verification pending: ${reason}.`,
       evaluatedAt: new Date().toISOString()
     };
   }
