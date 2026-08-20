@@ -513,13 +513,13 @@ router.post('/verify', async (req, res) => {
       };
     }
 
-    // Run backend evaluation
+    // Run backend authoritative evaluation
     const evalResult = await evaluateSkillVerification({
       skillName,
       mcqResults: calculatedMcqResults,
       codingResults: calculatedCodingResults,
       projectSubmission: projectSubmission || { repoUrl: "" },
-      passingThreshold: 75
+      passingThreshold: 80
     });
 
     // Persist assessment result in MongoDB if connected
@@ -531,12 +531,12 @@ router.post('/verify', async (req, res) => {
           mcqScore: evalResult.mcqScore,
           codingScore: evalResult.codingScore,
           projectScore: evalResult.projectScore,
-          overallScore: evalResult.overallScore,
+          overallScore: evalResult.finalScore,
           projectUrl: projectSubmission?.repoUrl || "",
           repositoryInfo: evalResult.repositoryInfo,
-          passingThreshold: 75,
-          status: evalResult.status,
-          aiFeedback: evalResult.aiFeedback,
+          passingThreshold: 80,
+          status: evalResult.status === 'verified' ? 'VERIFIED' : (evalResult.status === 'pending' ? 'PENDING' : 'FAILED'),
+          aiFeedback: evalResult.feedback,
           detailedBreakdown: evalResult.detailedBreakdown
         });
       } catch (dbErr) {
@@ -544,12 +544,14 @@ router.post('/verify', async (req, res) => {
       }
     }
 
-    if (!evalResult.isPassed) {
+    if (evalResult.status !== 'verified' || !evalResult.verified) {
       return res.json({
         success: false,
         verified: false,
+        status: evalResult.status,
+        finalScore: evalResult.finalScore,
         evaluation: evalResult,
-        message: evalResult.aiFeedback || "Verification score below 75% or repository evidence insufficient. Please review feedback and retry."
+        message: evalResult.feedback || "Verification threshold (80%) not met or component pending. Please review feedback and retry."
       });
     }
 
@@ -557,7 +559,7 @@ router.post('/verify', async (req, res) => {
     const cert = await generateCertificate({
       name: candidateName,
       skill: skillName,
-      score: evalResult.overallScore,
+      score: evalResult.finalScore,
       level: "Advanced"
     });
 
@@ -571,7 +573,7 @@ router.post('/verify', async (req, res) => {
         ...currentVerified,
         {
           skillName,
-          score: evalResult.overallScore,
+          score: evalResult.finalScore,
           certificateId: cert.certificateId,
           verifiedAt: new Date().toISOString()
         }
@@ -637,10 +639,12 @@ router.post('/verify', async (req, res) => {
     res.json({
       success: true,
       verified: true,
+      status: evalResult.status,
+      finalScore: evalResult.finalScore,
       evaluation: evalResult,
       certificate: cert,
       resumePatch: patch,
-      message: `Congratulations! ${skillName} has been verified with a score of ${evalResult.overallScore}%. Certificate issued and resume updated.`
+      message: `Congratulations! ${skillName} has been verified with a score of ${evalResult.finalScore}%. Certificate issued and resume updated.`
     });
 
   } catch (error) {

@@ -234,29 +234,28 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
 
       const evalData = res.evaluation;
       const certData = res.certificate;
-      const passed = evalData.isPassed;
-      const status = passed ? "GAINED" : (evalData.status === "UNABLE_TO_VERIFY" ? "UNABLE_TO_VERIFY" : "LEARNING");
+      const isVerified = evalData.status === 'verified';
 
       setEvalResult({
-        score: evalData.overallScore,
-        quizScore: evalData.mcqScore,
-        codingScore: evalData.codingScore,
-        projectScore: evalData.projectScore,
-        status,
-        passed,
-        summary: evalData.aiFeedback || (passed
-          ? `✓ Comprehensive AI Evaluation Complete! ${skillName} repository (${cleanedRepo}) verified successfully.`
-          : `⚠ AI Evaluation Flagged Issues: Total Score ${evalData.overallScore}% (Passing threshold is 75%).`),
+        score: evalData.finalScore ?? evalData.overallScore,
+        quizScore: evalData.mcqScore ?? evalData.componentScores?.mcqScore ?? 0,
+        codingScore: evalData.codingScore ?? evalData.componentScores?.codingScore ?? 0,
+        projectScore: evalData.projectScore ?? evalData.componentScores?.projectScore ?? 0,
+        status: evalData.status,
+        passed: isVerified,
+        summary: evalData.feedback || (isVerified
+          ? `✓ Comprehensive Verification Complete! ${skillName} has been certified at ${evalData.finalScore}%.`
+          : `⚠ Verification Incomplete: Final Score ${evalData.finalScore}% did not reach the ${evalData.passingThreshold || 80}% requirement.`),
         feedback: [
-          `✓ Quiz Knowledge Check (30% weight): ${evalData.mcqScore}% (${evalData.detailedBreakdown?.mcqCorrect || 0}/${evalData.detailedBreakdown?.mcqTotal || mcqQuestions.length} correct - Backend Authoritative)`,
-          `✓ Coding Sandbox Evaluation (35% weight): ${evalData.codingScore}% (${evalData.detailedBreakdown?.codeTestsPassed || 0}/${evalData.detailedBreakdown?.codeTestsTotal || challengeData?.testCases?.length || 1} test cases passed in isolated VM)`,
-          `✓ Live GitHub Evidence Evaluation (35% weight): ${evalData.projectScore}% (${evalData.repositoryInfo?.repoName || cleanedRepo})`
+          `✓ Quiz Knowledge Check (30% weight): ${evalData.mcqScore ?? 0}% (${evalData.detailedBreakdown?.mcqCorrect || 0}/${evalData.detailedBreakdown?.mcqTotal || mcqQuestions.length} correct)`,
+          `✓ Coding Sandbox Challenge (35% weight): ${evalData.codingScore ?? 0}% (${evalData.detailedBreakdown?.codeTestsPassed || 0}/${evalData.detailedBreakdown?.codeTestsTotal || challengeData?.testCases?.length || 1} test cases passed)`,
+          `✓ GitHub Project Repository (35% weight): ${evalData.projectScore ?? 0}% (${evalData.repositoryInfo?.repoName || cleanedRepo})`
         ],
         evidence: evalData.repositoryInfo?.evidence || [],
         certificate: certData
       });
 
-      if (passed) {
+      if (isVerified) {
         setTimeout(() => {
           setCurrentStep(7);
         }, 1600);
@@ -268,7 +267,7 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
         quizScore: 0,
         codingScore: 0,
         projectScore: 0,
-        status: "FAILED",
+        status: "failed",
         passed: false,
         error: true,
         summary: `Unable to verify skill. ${err.message || 'Please check connection and retry.'}`,
@@ -286,7 +285,7 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
       onCompleteVerification({
         skillName,
         certificateCode: certCode,
-        score: evalResult?.score || 85
+        score: evalResult?.score || 80
       });
     }
     onClose();
