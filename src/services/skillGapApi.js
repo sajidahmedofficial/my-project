@@ -108,6 +108,29 @@ export const skillGapApi = {
   },
 
   /**
+   * Update roadmap task progress on the backend
+   */
+  updateRoadmapTaskProgress: async ({ taskId, roadmapId, userId = "guest_user", status = "completed", score = null }) => {
+    const res = await fetch(`${API_BASE_URL}/skill-gap/roadmap/tasks/${encodeURIComponent(taskId)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        status,
+        score,
+        roadmapId,
+        userId
+      })
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData.error || errorData.message || "Failed to update task progress on backend.");
+    }
+
+    return await res.json();
+  },
+
+  /**
    * Verify skill through multi-modal assessments
    */
   verifySkill: async ({ skillName, userName = "SkillBridge Student", userId = "guest_user", mcqResults, codingResults, projectSubmission, targetRole = "Frontend Developer" }) => {

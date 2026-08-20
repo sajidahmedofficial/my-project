@@ -1,15 +1,19 @@
-// agent-notes: { ctx: "Learning Roadmap model tracking stage progression, tasks, and dynamic completion", deps: ["mongoose"], state: "active", last: "anti@2026-08-20" }
+// agent-notes: { ctx: "Learning Roadmap model tracking structured tasks, taskIds, completion status, and dynamic server-calculated progress", deps: ["mongoose"], state: "active", last: "anti@2026-08-20" }
 import mongoose from 'mongoose';
 
 const roadmapTaskSchema = new mongoose.Schema({
-  id: { type: String, required: true },
+  taskId: { type: String, required: true },
+  roadmapId: { type: String, default: '' },
+  userId: { type: String, default: '' },
   title: { type: String, required: true },
+  stageNumber: { type: Number, default: 1 },
   taskType: { 
     type: String, 
     enum: ['topic', 'practice', 'coding', 'project', 'assessment'], 
     default: 'topic' 
   },
-  difficulty: { type: String, enum: ['Easy', 'Medium', 'Hard'], default: 'Medium' },
+  difficulty: { type: String, enum: ['Easy', 'Medium', 'Hard', 'Beginner', 'Intermediate', 'Advanced'], default: 'Beginner' },
+  status: { type: String, enum: ['pending', 'in_progress', 'completed'], default: 'pending' },
   completed: { type: Boolean, default: false },
   score: { type: Number, default: null },
   completedAt: { type: Date, default: null }
@@ -27,15 +31,17 @@ const roadmapStageSchema = new mongoose.Schema({
 }, { _id: false });
 
 const learningRoadmapSchema = new mongoose.Schema({
+  roadmapId: { type: String, index: true },
   userId: { type: String, required: true, index: true },
   targetRole: { type: String, required: true },
   skillName: { type: String, required: true },
   currentLevel: { type: String, default: 'Beginner' },
   targetLevel: { type: String, default: 'Advanced' },
-  priority: { type: String, enum: ['High', 'Medium', 'Low'], default: 'Medium' },
+  priority: { type: String, enum: ['High', 'Medium', 'Low', 'high', 'medium', 'low'], default: 'Medium' },
   prerequisites: [{ type: String }],
   estimatedLearningHours: { type: Number, default: 20 },
   stages: [roadmapStageSchema],
+  tasks: [roadmapTaskSchema],
   finalProject: {
     title: { type: String, default: '' },
     description: { type: String, default: '' },

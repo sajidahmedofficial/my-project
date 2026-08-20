@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Personalized Learning Roadmap connected strictly to backend API with MongoDB caching, topics, practice tasks, MCQs, and capstone project rendering", deps: ["react", "lucide-react", "../services/skillGapApi"], state: "active", last: "anti@2026-08-20" }
+// agent-notes: { ctx: "Personalized Learning Roadmap component with backend-authoritative task progress, PATCH /api/skill-gap/roadmap/tasks/:taskId integration, and cross-device persistence", deps: ["react", "lucide-react", "../services/skillGapApi"], state: "active", last: "anti@2026-08-20" }
 import React, { useState, useEffect } from 'react';
 import { 
   Map, 
@@ -10,14 +10,14 @@ import {
   RefreshCw, 
   AlertCircle, 
   FolderOpen,
-  HelpCircle,
-  Sparkles,
-  BookOpen
+  BookOpen,
+  Sparkles
 } from 'lucide-react';
 import { skillGapApi } from '../services/skillGapApi';
 
 export default function LearningRoadmap({ profile, missingSkillsList = [], targetRole, onOpenVerification, onNavigate }) {
   const activeTargetRole = targetRole || profile?.careerGoal || "Frontend Developer";
+  const userId = profile?.id || profile?.email || "guest_user";
 
   // State: 'LOADING' | 'SUCCESS' | 'EMPTY' | 'ERROR'
   const [status, setStatus] = useState('LOADING');
@@ -26,15 +26,8 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
   const [errorMessage, setErrorMessage] = useState(null);
   const [expandedStage, setExpandedStage] = useState(0);
 
-  // Restore checked topics from localStorage
-  const [checkedTopics, setCheckedTopics] = useState(() => {
-    try {
-      const saved = localStorage.getItem('sb_checked_roadmap_topics');
-      return saved ? JSON.parse(saved) : {};
-    } catch {
-      return {};
-    }
-  });
+  // Map of taskId -> boolean completed status loaded from backend
+  const [taskCompletionMap, setTaskCompletionMap] = useState({});
 
   const availableSkills = (missingSkillsList && missingSkillsList.length > 0)
     ? missingSkillsList
@@ -68,12 +61,22 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
         currentLevel: "Beginner",
         targetLevel: "Advanced",
         priority: "High",
-        userId: profile?.id || profile?.email || "guest_user",
+        userId,
         forceRefresh
       });
 
       if (res && res.roadmap && res.roadmap.stages) {
         setRoadmapData(res.roadmap);
+        
+        // Sync task completion map from backend stored tasks
+        const initialMap = {};
+        (res.roadmap.tasks || []).forEach(t => {
+          if (t.taskId) {
+            initialMap[t.taskId] = t.status === 'completed' || t.completed === true;
+          }
+        });
+        setTaskCompletionMap(initialMap);
+
         setStatus('SUCCESS');
         setExpandedStage(0);
       } else {
@@ -86,39 +89,43 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
     }
   };
 
-  const handleToggleTopic = (stageNumber, topicIdx) => {
-    const key = `${activeSkill}-stage-${stageNumber}-${topicIdx}`;
-    setCheckedTopics(prev => {
-      const next = { ...prev, [key]: !prev[key] };
-      try {
-        localStorage.setItem('sb_checked_roadmap_topics', JSON.stringify(next));
-      } catch {}
-      return next;
-    });
-  };
+  const handleToggleTask = async (task) => {
+    if (!task || !task.taskId) return;
+    const taskId = task.taskId;
+    const currentCompleted = !!taskCompletionMap[taskId];
+    const nextCompleted = !currentCompleted;
+    const nextStatus = nextCompleted ? "completed" : "pending";
 
-  const getStageProgress = (stage) => {
-    const topics = stage.topics || [];
-    if (!topics.length) return 0;
-    const checkedCount = topics.filter((_, idx) => checkedTopics[`${activeSkill}-stage-${stage.stageNumber}-${idx}`]).length;
-    return Math.round((checkedCount / topics.length) * 100);
-  };
+    // Optimistically update UI
+    setTaskCompletionMap(prev => ({
+      ...prev,
+      [taskId]: nextCompleted
+    }));
 
-  const getOverallProgress = () => {
-    if (!roadmapData?.stages?.length) return 0;
-    const totalTopics = roadmapData.stages.reduce((acc, s) => acc + (s.topics?.length || 0), 0);
-    if (!totalTopics) return 0;
-    
-    let checkedTotal = 0;
-    roadmapData.stages.forEach(stage => {
-      (stage.topics || []).forEach((_, idx) => {
-        if (checkedTopics[`${activeSkill}-stage-${stage.stageNumber}-${idx}`]) {
-          checkedTotal += 1;
-        }
+    try {
+      // Send to Backend Authoritative Progress API
+      const result = await skillGapApi.updateRoadmapTaskProgress({
+        taskId,
+        roadmapId: roadmapData?.roadmapId,
+        userId,
+        status: nextStatus
       });
-    });
 
-    return Math.min(100, Math.round((checkedTotal / totalTopics) * 100));
+      if (result && result.data) {
+        setRoadmapData(prev => ({
+          ...prev,
+          overallProgress: result.data.overallProgress ?? prev.overallProgress,
+          stages: result.data.stages || prev.stages
+        }));
+      }
+    } catch (err) {
+      console.error("Failed to update task progress on backend:", err);
+      // Revert optimistic state on network error
+      setTaskCompletionMap(prev => ({
+        ...prev,
+        [taskId]: currentCompleted
+      }));
+    }
   };
 
   return (
@@ -137,7 +144,7 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
                   Target: {activeTargetRole}
                 </span>
               </div>
-              <p className="text-xs text-gray-400">AI-engineered multi-stage curriculum and project checkpoints from backend database</p>
+              <p className="text-xs text-gray-400">Server-calculated task completion, cross-device persistence, and capstone milestones</p>
             </div>
           </div>
         </div>
@@ -169,9 +176,9 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
             <button
               onClick={() => loadRoadmap(activeSkill, true)}
               title="Regenerate from AI"
-              className="p-2 rounded-xl bg-gray-900 hover:bg-gray-800 border border-gray-800 text-gray-400 hover:text-white transition-all"
+              className="p-2 rounded-xl bg-gray-900 hover:bg-gray-800 border border-gray-800 text-gray-400 hover:text-white transition-all flex items-center gap-1.5 text-xs font-semibold"
             >
-              <RefreshCw className="w-4 h-4" />
+              <RefreshCw className="w-3.5 h-3.5" /> Refresh
             </button>
           )}
         </div>
@@ -184,8 +191,8 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
             <RefreshCw className="w-6 h-6 animate-spin" />
           </div>
           <div className="space-y-1">
-            <h4 className="text-base font-bold text-white">Retrieving Roadmap for {activeSkill}...</h4>
-            <p className="text-xs text-gray-400">Loading learning stages, topics, practice tasks, and assessment milestones...</p>
+            <h4 className="text-base font-bold text-white">Loading Roadmap for {activeSkill}...</h4>
+            <p className="text-xs text-gray-400">Synchronizing persistent progress and task statuses from database...</p>
           </div>
         </div>
       )}
@@ -195,7 +202,7 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
         <div className="glass rounded-2xl p-12 border border-rose-500/30 bg-rose-950/10 text-center space-y-4 flex flex-col items-center justify-center min-h-[300px]">
           <AlertCircle className="w-10 h-10 text-rose-400" />
           <div className="space-y-1">
-            <h4 className="text-base font-bold text-white">Unable to retrieve learning roadmap.</h4>
+            <h4 className="text-base font-bold text-white">Unable to load learning roadmap.</h4>
             <p className="text-xs text-rose-300 max-w-md mx-auto">{errorMessage || "Roadmap service encountered an issue. Please retry."}</p>
           </div>
           <button
@@ -228,15 +235,15 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
         </div>
       )}
 
-      {/* 4. SUCCESS STATE: STORED ROADMAP CONTENT */}
+      {/* 4. SUCCESS STATE: PERSISTENT ROADMAP CONTENT */}
       {status === 'SUCCESS' && roadmapData && (
         <>
-          {/* Top Roadmap Overview Card */}
+          {/* Top Overview & Server-Calculated Progress Bar */}
           <div className="glass rounded-2xl p-5 border border-gray-800 space-y-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <h3 className="text-lg font-black text-white">{roadmapData.skillName} Mastery Curriculum</h3>
+                  <h3 className="text-lg font-black text-white">{roadmapData.skillName} Curriculum</h3>
                   <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-extrabold text-[10px] border border-emerald-500/30">
                     Est. {roadmapData.estimatedLearningHours || 20} Hours
                   </span>
@@ -246,16 +253,16 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
                 </p>
               </div>
 
-              {/* Overall Progress Widget */}
-              <div className="flex items-center gap-3 self-start md:self-center bg-gray-900/90 border border-gray-800 px-4 py-2 rounded-xl">
+              {/* Authoritative Overall Progress Widget */}
+              <div className="flex items-center gap-3 self-start md:self-center bg-gray-900/90 border border-gray-800 px-4 py-2.5 rounded-xl">
                 <div>
-                  <span className="text-[10px] uppercase font-bold text-gray-400 block">Roadmap Progress</span>
-                  <span className="text-sm font-extrabold text-white">{getOverallProgress()}%</span>
+                  <span className="text-[10px] uppercase font-bold text-gray-400 block">Verified Progress</span>
+                  <span className="text-sm font-black text-white">{roadmapData.overallProgress || 0}%</span>
                 </div>
-                <div className="w-24 h-2 bg-gray-800 rounded-full overflow-hidden">
+                <div className="w-28 h-2.5 bg-gray-800 rounded-full overflow-hidden">
                   <div 
-                    className="h-full bg-gradient-to-r from-accent-purple to-emerald-400 transition-all duration-500" 
-                    style={{ width: `${getOverallProgress()}%` }}
+                    className="h-full bg-gradient-to-r from-accent-purple via-accent-pink to-emerald-400 transition-all duration-500" 
+                    style={{ width: `${roadmapData.overallProgress || 0}%` }}
                   />
                 </div>
               </div>
@@ -281,7 +288,16 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
             <div className="space-y-4 lg:col-span-2">
               {(roadmapData.stages || []).map((stage, sIdx) => {
                 const isExpanded = expandedStage === sIdx;
-                const progress = getStageProgress(stage);
+                const stageTasks = stage.tasks || (stage.topics || []).map((t, idx) => ({
+                  taskId: `task_${roadmapData.roadmapId || 'rdm'}_s${stage.stageNumber || sIdx + 1}_top${idx}`,
+                  title: t
+                }));
+
+                const completedStageCount = stageTasks.filter(t => taskCompletionMap[t.taskId]).length;
+                const stageProgress = stageTasks.length > 0 
+                  ? Math.round((completedStageCount / stageTasks.length) * 100) 
+                  : (stage.stageProgress || 0);
+
                 const levelBadge = stage.level === "Advanced"
                   ? "bg-purple-500/20 text-purple-300 border-purple-500/30"
                   : stage.level === "Intermediate"
@@ -295,7 +311,7 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
                       isExpanded ? 'border-accent-purple/40 shadow-lg shadow-purple-500/5' : 'border-gray-800 hover:border-gray-700'
                     }`}
                   >
-                    {/* Header */}
+                    {/* Stage Header */}
                     <button
                       onClick={() => setExpandedStage(isExpanded ? -1 : sIdx)}
                       className="w-full text-left p-4 flex items-center justify-between gap-4"
@@ -313,11 +329,11 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
                       </div>
 
                       <div className="flex items-center gap-3 shrink-0">
-                        {progress === 100 ? (
+                        {stageProgress === 100 ? (
                           <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                         ) : (
                           <span className="text-xs font-bold px-2.5 py-1 rounded bg-gray-900 border border-gray-800 text-gray-300">
-                            {progress}%
+                            {stageProgress}%
                           </span>
                         )}
                       </div>
@@ -326,18 +342,17 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
                     {/* Stage Body */}
                     {isExpanded && (
                       <div className="px-5 pb-5 pt-2 border-t border-gray-800/60 space-y-4">
-                        {/* Topics Checkbox List */}
+                        {/* Tasks / Topics List */}
                         <div className="space-y-2">
                           <span className="text-[10px] uppercase font-bold text-gray-400 block tracking-wider">
-                            1. Core Theoretical Topics ({stage.level || "Beginner"})
+                            1. Theoretical Core Modules ({stage.level || "Beginner"})
                           </span>
-                          {(stage.topics || []).map((topic, tIdx) => {
-                            const key = `${activeSkill}-stage-${stage.stageNumber}-${tIdx}`;
-                            const isChecked = !!checkedTopics[key];
+                          {stageTasks.map((task, tIdx) => {
+                            const isChecked = !!taskCompletionMap[task.taskId];
 
                             return (
                               <label
-                                key={tIdx}
+                                key={task.taskId || tIdx}
                                 className={`flex items-start gap-3 p-3 rounded-xl border transition-all cursor-pointer ${
                                   isChecked 
                                     ? 'bg-emerald-950/20 border-emerald-500/30 text-gray-300' 
@@ -347,12 +362,19 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
                                 <input
                                   type="checkbox"
                                   checked={isChecked}
-                                  onChange={() => handleToggleTopic(stage.stageNumber, tIdx)}
+                                  onChange={() => handleToggleTask(task)}
                                   className="mt-0.5 w-4 h-4 rounded border-gray-700 bg-gray-950 text-accent-purple focus:ring-accent-purple"
                                 />
-                                <span className={`text-xs ${isChecked ? 'line-through text-gray-400' : 'font-medium'}`}>
-                                  {topic}
-                                </span>
+                                <div className="space-y-0.5">
+                                  <span className={`text-xs block ${isChecked ? 'line-through text-gray-400' : 'font-medium'}`}>
+                                    {task.title}
+                                  </span>
+                                  {task.taskId && (
+                                    <span className="text-[9px] text-gray-600 font-mono block">
+                                      ID: {task.taskId}
+                                    </span>
+                                  )}
+                                </div>
                               </label>
                             );
                           })}
@@ -394,9 +416,8 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
               })}
             </div>
 
-            {/* Right Column: Capstone Final Project & Assessment Trigger */}
+            {/* Right Column: Capstone Milestone Project & Assessment Trigger */}
             <div className="space-y-4">
-              {/* Capstone Project */}
               {roadmapData.finalProject && (
                 <div className="glass rounded-2xl p-5 border border-gray-800 space-y-3">
                   <div className="flex items-center gap-2">
@@ -414,19 +435,15 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
                 </div>
               )}
 
-              {/* Verification & MCQ Assessment */}
+              {/* Direct Verification Trigger */}
               <div className="glass rounded-2xl p-5 border border-emerald-500/30 bg-emerald-950/10 space-y-3">
                 <div className="flex items-center gap-2">
                   <Zap className="w-4 h-4 text-emerald-400" />
                   <h4 className="text-xs font-extrabold uppercase tracking-wider text-white">Ready for Certification?</h4>
                 </div>
                 <p className="text-[11px] text-gray-300 leading-relaxed">
-                  Prove your competency in <span className="text-white font-bold">{roadmapData.skillName}</span> through MCQ evaluation, code challenges, and project verification.
+                  Completed the modules above? Prove your competency in <span className="text-white font-bold">{roadmapData.skillName}</span> to earn verified badges.
                 </p>
-                <div className="text-[10px] text-gray-400 space-y-1 bg-gray-900/70 p-2.5 rounded-lg border border-gray-800">
-                  <div className="flex justify-between"><span>Passing Threshold:</span><span className="font-bold text-emerald-400">75%</span></div>
-                  <div className="flex justify-between"><span>Format:</span><span>MCQ (25%) + Code (35%) + Project (40%)</span></div>
-                </div>
                 <button
                   onClick={() => onOpenVerification && onOpenVerification(roadmapData.skillName)}
                   className="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-extrabold shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-1.5"

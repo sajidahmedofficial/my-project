@@ -151,6 +151,8 @@ router.get('/:userId', async (req, res) => {
   });
 });
 
+import { hydrateRoadmapTasks, updateTaskProgress, roadmapMemoryStore } from '../services/roadmapProgress.service.js';
+
 /**
  * @desc    Generate or Retrieve Stored Personalized Multi-Stage Learning Roadmap
  * @route   POST /api/skill-gap/roadmap
@@ -172,28 +174,29 @@ router.post('/roadmap', async (req, res) => {
         try {
           const dbRoadmap = await LearningRoadmap.findOne({ userId: uId, skillName: skillToLearn });
           if (dbRoadmap) {
+            const hydrated = hydrateRoadmapTasks(dbRoadmap.toObject(), uId);
             return res.json({
               success: true,
-              roadmap: dbRoadmap,
+              roadmap: hydrated,
               cached: true
             });
           }
         } catch (e) {}
       }
 
-      const userRoadmaps = userRoadmapsStore.get(uId) || [];
-      const memRoadmap = userRoadmaps.find(r => r.skillName?.toLowerCase() === skillToLearn.toLowerCase());
+      const memRoadmap = roadmapMemoryStore.get(`${uId}_${skillToLearn.toLowerCase()}`) || (userRoadmapsStore.get(uId) || []).find(r => r.skillName?.toLowerCase() === skillToLearn.toLowerCase());
       if (memRoadmap) {
+        const hydrated = hydrateRoadmapTasks(memRoadmap, uId);
         return res.json({
           success: true,
-          roadmap: memRoadmap,
+          roadmap: hydrated,
           cached: true
         });
       }
     }
 
     // 2. Generate roadmap through backend generator
-    const roadmap = await generatePersonalizedRoadmap({
+    const generated = await generatePersonalizedRoadmap({
       skillName: skillToLearn,
       targetRole: targetRole || "Frontend Developer",
       currentLevel: currentLevel || "Beginner",
@@ -201,9 +204,12 @@ router.post('/roadmap', async (req, res) => {
       priority: priority || "High"
     });
 
+    const roadmap = hydrateRoadmapTasks(generated, uId);
+
     const userRoadmaps = userRoadmapsStore.get(uId) || [];
     const filtered = userRoadmaps.filter(r => r.skillName?.toLowerCase() !== skillToLearn.toLowerCase());
     userRoadmapsStore.set(uId, [...filtered, roadmap]);
+    roadmapMemoryStore.set(`${uId}_${skillToLearn.toLowerCase()}`, roadmap);
 
     // Persist to MongoDB if connected
     if (mongoose.connection.readyState === 1 && mongoose.Types.ObjectId.isValid(uId)) {
@@ -211,15 +217,18 @@ router.post('/roadmap', async (req, res) => {
         await LearningRoadmap.findOneAndUpdate(
           { userId: uId, skillName: skillToLearn },
           {
+            roadmapId: roadmap.roadmapId,
             userId: uId,
             targetRole: targetRole || "Frontend Developer",
             skillName: skillToLearn,
             currentLevel: currentLevel || "Beginner",
             targetLevel: targetLevel || "Advanced",
             stages: roadmap.stages,
+            tasks: roadmap.tasks,
             prerequisites: roadmap.prerequisites,
             finalProject: roadmap.finalProject,
             assessmentInfo: roadmap.finalAssessment || roadmap.assessmentInfo,
+            overallProgress: roadmap.overallProgress || 0,
             updatedAt: new Date()
           },
           { upsert: true, new: true }
@@ -251,28 +260,57 @@ router.get('/roadmap/:userId/:skillName', async (req, res) => {
     try {
       const dbRoadmap = await LearningRoadmap.findOne({ userId, skillName });
       if (dbRoadmap) {
+        const hydrated = hydrateRoadmapTasks(dbRoadmap.toObject(), userId);
         return res.json({
           success: true,
-          roadmap: dbRoadmap
+          roadmap: hydrated
         });
       }
     } catch (e) {}
   }
 
-  const userRoadmaps = userRoadmapsStore.get(userId) || [];
-  const found = userRoadmaps.find(r => r.skillName?.toLowerCase() === skillName.toLowerCase());
+  const memRoadmap = roadmapMemoryStore.get(`${userId}_${skillName.toLowerCase()}`) || (userRoadmapsStore.get(userId) || []).find(r => r.skillName?.toLowerCase() === skillName.toLowerCase());
   
-  if (!found) {
+  if (!memRoadmap) {
     return res.status(404).json({
       success: false,
       message: `No stored roadmap found for skill ${skillName}.`
     });
   }
 
+  const hydrated = hydrateRoadmapTasks(memRoadmap, userId);
   res.json({
     success: true,
-    roadmap: found
+    roadmap: hydrated
   });
+});
+
+/**
+ * @desc    Update task status & authoritative progress on the roadmap
+ * @route   PATCH /api/skill-gap/roadmap/tasks/:taskId
+ */
+router.patch('/roadmap/tasks/:taskId', async (req, res) => {
+  try {
+    const { taskId } = req.params;
+    const { status = "completed", score = null, roadmapId, userId } = req.body;
+    const uId = userId || req.user?.id || "guest_user";
+
+    const updateResult = await updateTaskProgress({
+      taskId,
+      roadmapId,
+      userId: uId,
+      status,
+      score
+    });
+
+    res.json({
+      success: true,
+      data: updateResult
+    });
+  } catch (error) {
+    console.error("Update Task Progress Error:", error);
+    res.status(500).json({ error: "Failed to update task status", message: error.message });
+  }
 });
 
 /**
