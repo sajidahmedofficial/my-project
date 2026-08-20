@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Interactive 7-stage skill verification modal with backend-authoritative MCQ scoring, secure answer key comparison, and cross-device certification", deps: ["react", "lucide-react", "../../utils/skillChallenges", "../../services/skillGapApi"], state: "active", last: "anti@2026-08-20" }
+// agent-notes: { ctx: "Interactive 7-stage skill verification modal with backend VM sandbox code execution, real test-case evaluation, and authoritative certification", deps: ["react", "lucide-react", "../../utils/skillChallenges", "../../services/skillGapApi"], state: "active", last: "anti@2026-08-20" }
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { 
@@ -9,22 +9,22 @@ import {
   Sparkles, 
   Play, 
   ChevronRight, 
-  HelpCircle,
-  FolderPlus,
-  RefreshCw,
-  AlertTriangle,
-  X,
-  Download,
-  CheckCircle2
+  HelpCircle, 
+  FolderPlus, 
+  RefreshCw, 
+  AlertTriangle, 
+  X, 
+  Download, 
+  CheckCircle2, 
+  Terminal,
+  Clock,
+  XCircle
 } from 'lucide-react';
-import { getChallengeForSkill } from '../../utils/skillChallenges';
 import { skillGapApi } from '../../services/skillGapApi';
 
 export default function SkillVerificationModal({ skillName = "Node.js", onClose, onCompleteVerification, userId = "guest_user" }) {
   const [currentStep, setCurrentStep] = useState(1);
   const modalContainerRef = useRef(null);
-
-  const challenge = getChallengeForSkill(skillName);
 
   // Lock background page scroll when modal is active
   useEffect(() => {
@@ -46,48 +46,45 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
   const [assessmentId, setAssessmentId] = useState(null);
   const [mcqQuestions, setMcqQuestions] = useState([]);
   const [mcqAnswers, setMcqAnswers] = useState({});
-  const [mcqEvaluationResult, setMcqEvaluationResult] = useState(null);
   const [loadingQuestions, setLoadingQuestions] = useState(false);
 
-  // Fetch sanitized MCQ questions from backend on mount or skill change
+  // Step 4 Coding State (Backend Challenge & Sandboxed Test Suite)
+  const [challengeData, setChallengeData] = useState(null);
+  const [codeContent, setCodeContent] = useState("");
+  const [codeRunning, setCodeRunning] = useState(false);
+  const [codeExecutionResult, setCodeExecutionResult] = useState(null);
+  const [codePassed, setCodePassed] = useState(false);
+  const [codeValidationError, setCodeValidationError] = useState(null);
+
+  // Fetch MCQ Questions & Coding Challenge from Backend on mount or skill change
   useEffect(() => {
     let isMounted = true;
-    const fetchQuestions = async () => {
+    const loadVerificationAssets = async () => {
       setLoadingQuestions(true);
       try {
-        const data = await skillGapApi.getAssessmentQuestions(skillName, userId);
-        if (isMounted && data && Array.isArray(data.questions)) {
-          setAssessmentId(data.assessmentId);
-          setMcqQuestions(data.questions);
+        // 1. Fetch sanitized questions
+        const qData = await skillGapApi.getAssessmentQuestions(skillName, userId);
+        if (isMounted && qData && Array.isArray(qData.questions)) {
+          setAssessmentId(qData.assessmentId);
+          setMcqQuestions(qData.questions);
+        }
+
+        // 2. Fetch coding challenge
+        const cData = await skillGapApi.getCodingChallenge(skillName);
+        if (isMounted && cData && cData.challenge) {
+          setChallengeData(cData.challenge);
+          setCodeContent(cData.challenge.starterCode || "");
         }
       } catch (err) {
-        console.warn("Failed to fetch questions from backend, using sanitized challenge questions:", err.message);
-        if (isMounted) {
-          const fallbackQuestions = (challenge.mcqs || []).map((q, idx) => ({
-            questionId: `q_${skillName.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${idx + 1}`,
-            question: q.question,
-            options: q.options.map((opt, oIdx) => ({
-              key: oIdx === 0 ? "A" : oIdx === 1 ? "B" : oIdx === 2 ? "C" : "D",
-              text: opt
-            }))
-          }));
-          setAssessmentId(`asmt_${Date.now()}`);
-          setMcqQuestions(fallbackQuestions);
-        }
+        console.warn("Failed to load verification assets from backend:", err.message);
       } finally {
         if (isMounted) setLoadingQuestions(false);
       }
     };
 
-    fetchQuestions();
+    loadVerificationAssets();
     return () => { isMounted = false; };
   }, [skillName, userId]);
-
-  // Step 4 Coding State
-  const [codeContent, setCodeContent] = useState(challenge.starterCode);
-  const [codeRunning, setCodeRunning] = useState(false);
-  const [codePassed, setCodePassed] = useState(false);
-  const [codeValidationError, setCodeValidationError] = useState(null);
 
   // Step 5 Project State
   const [projectRepo, setProjectRepo] = useState('');
@@ -101,33 +98,60 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
     { num: 1, label: "Notes & Video" },
     { num: 2, label: "Practice" },
     { num: 3, label: "MCQ Check" },
-    { num: 4, label: "Coding Challenge" },
+    { num: 4, label: "Coding Sandbox" },
     { num: 5, label: "Micro-Project" },
     { num: 6, label: "AI Evaluation" },
     { num: 7, label: "Certification" }
   ];
 
   const handleResetTemplate = () => {
-    setCodeContent(challenge.starterCode);
+    if (challengeData) {
+      setCodeContent(challengeData.starterCode || "");
+    }
     setCodePassed(false);
+    setCodeExecutionResult(null);
     setCodeValidationError(null);
   };
 
-  const handleRunCode = () => {
+  const handleRunCode = async () => {
     setCodeValidationError(null);
+    setCodeExecutionResult(null);
     const cleaned = codeContent.trim();
-    const isUnedited = cleaned === challenge.starterCode.trim() || cleaned.length < 25;
 
-    if (isUnedited) {
-      setCodeValidationError("Please write your own code solution in the editor before running test verification!");
+    if (!cleaned || (challengeData && cleaned === challengeData.starterCode?.trim())) {
+      setCodeValidationError("Please implement your own solution logic in the function before running tests!");
       return;
     }
 
     setCodeRunning(true);
-    setTimeout(() => {
+    try {
+      // Call Backend Sandbox Execution API
+      const result = await skillGapApi.runSandboxCode({
+        skillName,
+        userCode: cleaned,
+        functionName: challengeData?.functionName,
+        challengeId: challengeData?.challengeId
+      });
+
+      setCodeExecutionResult(result);
+      if (result && result.status === 'passed' && result.passedTests === result.totalTests && result.totalTests > 0) {
+        setCodePassed(true);
+      } else {
+        setCodePassed(false);
+      }
+    } catch (err) {
+      console.error("Code Sandbox Error:", err);
+      setCodeExecutionResult({
+        passedTests: 0,
+        totalTests: challengeData?.testCases?.length || 0,
+        score: 0,
+        status: "failed",
+        error: err.message || "Failed to execute code in sandbox."
+      });
+      setCodePassed(false);
+    } finally {
       setCodeRunning(false);
-      setCodePassed(true);
-    }, 1000);
+    }
   };
 
   const handleSelectOption = (questionId, optionKey) => {
@@ -164,20 +188,17 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
       answer
     }));
 
-    // Compute actual Coding assessment results
     const cleanedCode = codeContent.trim();
-    const isUnedited = cleanedCode === challenge.starterCode.trim() || cleanedCode.length < 25;
-    const codingScore = (!isUnedited && codePassed) ? 100 : codePassed ? 60 : 0;
 
     try {
-      // Send raw answers to backend (backend authoritatively computes the score)
+      // Send raw code and MCQ answers to backend (backend authoritatively executes and computes scores)
       const res = await skillGapApi.verifySkill({
         skillName,
         userName: "SkillBridge Student",
         userId,
         assessmentId,
         answers: answersPayload,
-        codingResults: { score: codingScore, testsPassed: codePassed ? 1 : 0, testsTotal: 1, code: cleanedCode },
+        userCode: cleanedCode,
         projectSubmission: { repoUrl: cleanedRepo, notes: '' },
         targetRole: "Frontend Developer"
       });
@@ -199,7 +220,7 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
           : `⚠ AI Evaluation Flagged Areas for Improvement: Total Score ${evalData.overallScore}% (Passing threshold is 75%).`),
         feedback: [
           `✓ Quiz Knowledge Check (30% weight): ${evalData.mcqScore}% (${evalData.detailedBreakdown?.mcqCorrect || 0}/${evalData.detailedBreakdown?.mcqTotal || mcqQuestions.length} correct - Backend Authoritative)`,
-          `✓ Coding Challenge (35% weight): ${evalData.codingScore}% (${codePassed ? 'Unit Tests Verified' : 'Failed Tests'})`,
+          `✓ Coding Sandbox Evaluation (35% weight): ${evalData.codingScore}% (${evalData.detailedBreakdown?.codeTestsPassed || 0}/${evalData.detailedBreakdown?.codeTestsTotal || challengeData?.testCases?.length || 1} test cases passed in isolated VM)`,
           `✓ Micro-Project Integration (35% weight): ${evalData.projectScore}% (${cleanedRepo})`
         ],
         certificate: certData
@@ -215,7 +236,7 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
       setEvalResult({
         score: 0,
         quizScore: 0,
-        codingScore,
+        codingScore: 0,
         projectScore: 0,
         status: "FAILED",
         passed: false,
@@ -254,12 +275,12 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
           <div>
             <div className="flex items-center gap-2">
               <span className="px-2.5 py-0.5 rounded bg-accent-purple/20 text-accent-purple text-xs font-bold uppercase tracking-wider">
-                SKILL BRIDGE VERIFICATION
+                SKILL BRIDGE PIPELINE
               </span>
               <span className="text-xs text-gray-400">Target Skill:</span>
             </div>
             <h2 className="text-xl font-black text-white mt-0.5 flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-accent-purple" /> {skillName} Assessment & Certification
+              <Sparkles className="w-5 h-5 text-accent-purple" /> {skillName} Verification & Sandbox Assessment
             </h2>
           </div>
 
@@ -406,30 +427,37 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
                 onClick={() => setCurrentStep(4)} 
                 className="flex-1 py-3 rounded-xl bg-accent-purple disabled:opacity-50 text-white text-xs font-bold flex items-center justify-center gap-1 shadow-md shadow-accent-purple/20"
               >
-                Proceed to Coding Challenge <ChevronRight className="w-4 h-4" />
+                Proceed to Coding Sandbox <ChevronRight className="w-4 h-4" />
               </button>
             </div>
           </div>
         )}
 
-        {/* ================= STEP 4: CODING CHALLENGE ================= */}
+        {/* ================= STEP 4: REAL TEST-BASED CODING SANDBOX ================= */}
         {currentStep === 4 && (
           <div className="space-y-4">
             <div className="p-4 rounded-2xl bg-gray-900/80 border border-gray-800 space-y-3">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                  <Code className="w-4 h-4 text-emerald-400" /> Module 4: {challenge.title}
+                  <Code className="w-4 h-4 text-emerald-400" /> Module 4: {challengeData?.question ? `${skillName} Practical Challenge` : "Coding Challenge"}
                 </h3>
                 {codePassed && (
                   <span className="px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-xs font-bold flex items-center gap-1">
-                    <CheckCircle className="w-3.5 h-3.5" /> Tests Passed
+                    <CheckCircle className="w-3.5 h-3.5" /> All Tests Passed ({codeExecutionResult?.passedTests}/{codeExecutionResult?.totalTests})
                   </span>
                 )}
               </div>
 
-              <p className="text-xs text-gray-300 leading-relaxed">
-                {challenge.prompt}
-              </p>
+              <div className="space-y-1.5 p-3 rounded-xl bg-gray-950 border border-gray-800 text-xs">
+                <p className="text-gray-200 font-medium leading-relaxed">
+                  {challengeData?.question || "Implement the function logic to satisfy all unit test assertions."}
+                </p>
+                {challengeData?.expectedBehavior && (
+                  <p className="text-[11px] text-gray-400 font-mono">
+                    Expected: {challengeData.expectedBehavior}
+                  </p>
+                )}
+              </div>
 
               {codeValidationError && (
                 <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold flex items-center gap-2">
@@ -438,6 +466,7 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
                 </div>
               )}
 
+              {/* Code Editor */}
               <div className="relative">
                 <textarea
                   value={codeContent}
@@ -446,7 +475,7 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
                     if (codeValidationError) setCodeValidationError(null);
                   }}
                   rows={9}
-                  placeholder="// Type your code solution here..."
+                  placeholder="// Implement your solution logic here..."
                   className="w-full p-4 rounded-xl bg-gray-950 border border-gray-800 font-mono text-xs text-emerald-400 focus:outline-none focus:border-accent-purple leading-relaxed resize-none shadow-inner"
                 />
                 <button
@@ -459,20 +488,78 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
                 </button>
               </div>
 
+              {/* Run Code Button */}
               <div className="flex items-center justify-between pt-1">
                 <button
                   onClick={handleRunCode}
                   disabled={codeRunning}
-                  className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-accent-purple to-accent-pink hover:opacity-95 text-white text-xs font-bold flex items-center gap-2 shadow-md shadow-accent-purple/20 transition-all"
+                  className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-accent-purple to-accent-pink hover:opacity-95 text-white text-xs font-bold flex items-center gap-2 shadow-md shadow-accent-purple/20 transition-all disabled:opacity-50"
                 >
                   {codeRunning ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4 fill-white" />}
-                  {codeRunning ? "Executing Test Cases..." : "Run Code & Verify Tests"}
+                  {codeRunning ? "Executing in Isolated VM Sandbox..." : "Run Code & Verify Test Cases"}
                 </button>
 
                 <span className="text-[11px] text-gray-400 font-medium">
-                  {codePassed ? "✓ Code verified successfully" : "Type your own code solution & click Run"}
+                  {codePassed ? "✓ Code verified against test suite" : "Backend sandbox executes code against test cases"}
                 </span>
               </div>
+
+              {/* Real Test Suite Output from Sandbox */}
+              {codeExecutionResult && (
+                <div className={`p-4 rounded-xl border space-y-3 ${
+                  codeExecutionResult.status === 'passed' 
+                    ? 'bg-emerald-950/20 border-emerald-500/30' 
+                    : 'bg-rose-950/20 border-rose-500/30'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Terminal className="w-4 h-4 text-gray-400" />
+                      <span className="text-xs font-bold text-white uppercase tracking-wider">
+                        Sandbox Execution Report:
+                      </span>
+                    </div>
+                    <span className={`text-xs font-black ${codeExecutionResult.status === 'passed' ? 'text-emerald-400' : 'text-rose-400'}`}>
+                      {codeExecutionResult.passedTests} / {codeExecutionResult.totalTests} Tests Passed ({codeExecutionResult.score}%)
+                    </span>
+                  </div>
+
+                  {codeExecutionResult.error && (
+                    <div className="p-2.5 rounded-lg bg-rose-900/40 text-rose-300 font-mono text-[11px]">
+                      {codeExecutionResult.error}
+                    </div>
+                  )}
+
+                  {codeExecutionResult.testResults && codeExecutionResult.testResults.length > 0 && (
+                    <div className="space-y-1.5 pt-1">
+                      {codeExecutionResult.testResults.map((tr, idx) => (
+                        <div key={tr.id || idx} className="p-2 rounded-lg bg-gray-950/80 border border-gray-800/80 text-[11px] flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2 overflow-hidden">
+                            {tr.passed ? (
+                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                            ) : (
+                              <XCircle className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                            )}
+                            <span className={`font-mono truncate ${tr.passed ? 'text-gray-300' : 'text-rose-300 font-medium'}`}>
+                              Test {idx + 1}: {tr.description}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center gap-2 shrink-0">
+                            {tr.executionTimeMs !== undefined && (
+                              <span className="text-[10px] text-gray-500 font-mono flex items-center gap-0.5">
+                                <Clock className="w-2.5 h-2.5" /> {tr.executionTimeMs}ms
+                              </span>
+                            )}
+                            <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${tr.passed ? 'bg-emerald-500/20 text-emerald-300' : 'bg-rose-500/20 text-rose-300'}`}>
+                              {tr.passed ? "PASS" : "FAIL"}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="flex gap-3">
@@ -480,7 +567,7 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
               <button 
                 disabled={!codePassed}
                 onClick={() => setCurrentStep(5)} 
-                className="flex-1 py-3 rounded-xl bg-accent-purple disabled:opacity-50 text-white text-xs font-bold flex items-center justify-center gap-1"
+                className="flex-1 py-3 rounded-xl bg-accent-purple disabled:opacity-50 text-white text-xs font-bold flex items-center justify-center gap-1 shadow-md shadow-accent-purple/20"
               >
                 Submit Project Proof <ChevronRight className="w-4 h-4" />
               </button>
@@ -544,7 +631,7 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
                 <div className="w-14 h-14 rounded-full border-4 border-accent-purple border-t-transparent animate-spin" />
                 <div>
                   <h3 className="text-base font-bold text-white">AI Evaluator is Reviewing Submission...</h3>
-                  <p className="text-xs text-gray-400 mt-1">Comparing MCQ answers against backend answer key & analyzing repository code</p>
+                  <p className="text-xs text-gray-400 mt-1">Executing code in sandbox, checking MCQs, and validating repository architecture</p>
                 </div>
               </div>
             ) : evalResult ? (
@@ -575,10 +662,10 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
                 <div className="pt-3 flex gap-3">
                   {!evalResult.passed ? (
                     <button
-                      onClick={() => setCurrentStep(3)}
+                      onClick={() => setCurrentStep(4)}
                       className="w-full py-3 rounded-xl bg-amber-500 text-black font-bold text-xs flex items-center justify-center gap-2 shadow-md"
                     >
-                      <RefreshCw className="w-4 h-4" /> Retake Assessment & Fix Errors
+                      <RefreshCw className="w-4 h-4" /> Retake & Fix Code / MCQ Errors
                     </button>
                   ) : (
                     <button
@@ -607,7 +694,7 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
               </span>
               <h3 className="text-2xl font-black text-white">{skillName} Certified</h3>
               <p className="text-xs text-gray-300 max-w-md mx-auto">
-                Verified through backend-scored MCQ assessment, code challenge unit tests, and repository evaluation.
+                Verified through backend-scored MCQ assessment, sandbox test cases, and repository evaluation.
               </p>
             </div>
 

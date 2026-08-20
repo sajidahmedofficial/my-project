@@ -365,6 +365,66 @@ router.post('/assessment/submit-mcq', async (req, res) => {
   }
 });
 
+import { getChallengeForSkill, executeInSandbox } from '../services/codeSandbox.service.js';
+
+/**
+ * @desc    Get Coding Challenge for Skill Verification
+ * @route   GET /api/skill-gap/assessment/coding/:skillName
+ */
+router.get('/assessment/coding/:skillName', (req, res) => {
+  try {
+    const { skillName } = req.params;
+    const challenge = getChallengeForSkill(skillName);
+    res.json({
+      success: true,
+      challenge
+    });
+  } catch (error) {
+    console.error("Get Challenge Error:", error);
+    res.status(500).json({ error: "Failed to load coding challenge", message: error.message });
+  }
+});
+
+/**
+ * @desc    Execute and Evaluate User Code inside Secure VM Sandbox against Test Cases
+ * @route   POST /api/skill-gap/assessment/run-code
+ */
+router.post('/assessment/run-code', async (req, res) => {
+  try {
+    const { skillName, userCode, functionName, challengeId } = req.body;
+
+    if (!userCode || typeof userCode !== 'string') {
+      return res.status(400).json({ error: "userCode string is required" });
+    }
+
+    const challenge = getChallengeForSkill(skillName);
+    const targetFunctionName = functionName || challenge.functionName || "solution";
+    const testCases = challenge.testCases || [];
+
+    const executionResult = await executeInSandbox({
+      userCode,
+      functionName: targetFunctionName,
+      testCases,
+      timeoutMs: 2000
+    });
+
+    res.json({
+      success: true,
+      ...executionResult
+    });
+  } catch (error) {
+    console.error("Code Sandbox Execution Error:", error);
+    res.status(500).json({ 
+      success: false,
+      passedTests: 0,
+      totalTests: 0,
+      score: 0,
+      status: "failed",
+      error: error.message || "Failed to execute code in sandbox." 
+    });
+  }
+});
+
 /**
  * @desc    Verify Skill through Multi-Modal Assessments (MCQ + Code + Project)
  * @route   POST /api/skill-gap/verify
@@ -379,6 +439,8 @@ router.post('/verify', async (req, res) => {
       answers,
       mcqAnswers,
       mcqResults,
+      userCode,
+      code,
       codingResults,
       projectSubmission,
       targetRole
@@ -410,11 +472,32 @@ router.post('/verify', async (req, res) => {
       };
     }
 
+    // 2. Authoritatively calculate Coding score from sandbox execution if code is provided
+    let calculatedCodingResults = codingResults || { score: 0, testsPassed: 0, testsTotal: 1 };
+    const codeToTest = userCode || code || codingResults?.code;
+
+    if (codeToTest && typeof codeToTest === 'string') {
+      const challenge = getChallengeForSkill(skillName);
+      const codeExec = await executeInSandbox({
+        userCode: codeToTest,
+        functionName: challenge.functionName,
+        testCases: challenge.testCases,
+        timeoutMs: 2000
+      });
+
+      calculatedCodingResults = {
+        score: codeExec.score,
+        testsPassed: codeExec.passedTests,
+        testsTotal: codeExec.totalTests,
+        code: codeToTest
+      };
+    }
+
     // Run backend evaluation
     const evalResult = await evaluateSkillVerification({
       skillName,
       mcqResults: calculatedMcqResults,
-      codingResults: codingResults || { score: 0, testsPassed: 0, testsTotal: 1 },
+      codingResults: calculatedCodingResults,
       projectSubmission: projectSubmission || { repoUrl: "" },
       passingThreshold: 75
     });

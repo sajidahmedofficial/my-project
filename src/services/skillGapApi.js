@@ -166,9 +166,43 @@ export const skillGapApi = {
   },
 
   /**
+   * Get coding challenge for skill
+   */
+  getCodingChallenge: async (skillName = "React.js") => {
+    const res = await fetch(`${API_BASE_URL}/skill-gap/assessment/coding/${encodeURIComponent(skillName)}`);
+    if (!res.ok) {
+      throw new Error("Failed to load coding challenge from backend.");
+    }
+    return await res.json();
+  },
+
+  /**
+   * Run user code in isolated sandbox against test cases
+   */
+  runSandboxCode: async ({ skillName = "React.js", userCode, functionName, challengeId }) => {
+    const res = await fetch(`${API_BASE_URL}/skill-gap/assessment/run-code`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        skillName,
+        userCode,
+        functionName,
+        challengeId
+      })
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData.error || errorData.message || "Failed to execute code in sandbox.");
+    }
+
+    return await res.json();
+  },
+
+  /**
    * Verify skill through multi-modal assessments
    */
-  verifySkill: async ({ skillName, userName = "SkillBridge Student", userId = "guest_user", assessmentId, answers, mcqResults, codingResults, projectSubmission, targetRole = "Frontend Developer" }) => {
+  verifySkill: async ({ skillName, userName = "SkillBridge Student", userId = "guest_user", assessmentId, answers, userCode, code, mcqResults, codingResults, projectSubmission, targetRole = "Frontend Developer" }) => {
     const res = await fetch(`${API_BASE_URL}/skill-gap/verify`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -178,6 +212,8 @@ export const skillGapApi = {
         userId,
         assessmentId,
         answers,
+        userCode,
+        code,
         mcqResults,
         codingResults,
         projectSubmission,
