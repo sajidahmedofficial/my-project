@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Skill Gap Dashboard with LOADING, SUCCESS, EMPTY, ERROR states and zero hard-coded/fake analysis results", deps: ["react", "lucide-react", "../services/skillGapApi"], state: "active", last: "anti@2026-08-20" }
+// agent-notes: { ctx: "Skill Gap Dashboard connected directly to uploaded resumeId and parsed resume text with detailed evidence citations", deps: ["react", "lucide-react", "../services/skillGapApi"], state: "active", last: "anti@2026-08-20" }
 import React, { useState, useEffect } from 'react';
 import { 
   Briefcase, 
@@ -47,10 +47,10 @@ export default function SkillGapDashboard({
   const [report, setReport] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
-  // Auto-run analysis whenever target role or profile skills change
+  // Auto-run analysis whenever target role, resume, or profile skills change
   useEffect(() => {
     runAnalysis(selectedRole, customJd);
-  }, [profile?.skills, selectedRole]);
+  }, [profile?.skills, profile?.resumeId, profile?.resumeText, selectedRole]);
 
   const runAnalysis = async (targetRole, jdText) => {
     setStatus('LOADING');
@@ -58,8 +58,13 @@ export default function SkillGapDashboard({
 
     try {
       const userSkills = profile?.skills || [];
-      
+      const resumeId = profile?.resumeId || localStorage.getItem('sb_active_resume_id') || "";
+      const resumeText = profile?.resumeText || localStorage.getItem('sb_resume_text') || "";
+      const activeFileName = profile?.resumeFileName || localStorage.getItem('sb_resume_filename') || "";
+
       const res = await skillGapApi.analyzeSkillGap({
+        resumeId,
+        resumeText,
         userSkills,
         targetRole,
         jobDescription: jdText,
@@ -67,7 +72,10 @@ export default function SkillGapDashboard({
       });
 
       if (res && res.report) {
-        setReport(res.report);
+        setReport({
+          ...res.report,
+          sourceResumeFile: activeFileName
+        });
         const hasSkills = (res.report.strongSkills?.length || 0) + (res.report.partialSkills?.length || 0) + (res.report.missingSkills?.length || 0) > 0;
         if (hasSkills) {
           setStatus('SUCCESS');
@@ -122,7 +130,14 @@ export default function SkillGapDashboard({
               <Briefcase className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h2 className="text-xl font-extrabold text-white tracking-tight">AI Skill-Gap & Verification Hub</h2>
+              <div className="flex items-center gap-2">
+                <h2 className="text-xl font-extrabold text-white tracking-tight">AI Skill-Gap & Verification Hub</h2>
+                {report?.sourceResumeFile && (
+                  <span className="px-2 py-0.5 rounded-full bg-accent-purple/20 border border-accent-purple/40 text-accent-purple text-[10px] font-bold">
+                    Resume: {report.sourceResumeFile}
+                  </span>
+                )}
+              </div>
               <p className="text-xs text-gray-400">Deep technical proficiency evaluation, gap breakdown, and verification pipeline</p>
             </div>
           </div>
@@ -172,7 +187,7 @@ export default function SkillGapDashboard({
             <label className="text-xs font-bold text-accent-purple flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5" /> Custom Job Description / Role Requirements
             </label>
-            <span className="text-[10px] text-gray-400">Paste job requirements to compare against your profile</span>
+            <span className="text-[10px] text-gray-400">Paste job requirements to compare against your uploaded resume</span>
           </div>
           <textarea
             value={customJd}
@@ -200,9 +215,9 @@ export default function SkillGapDashboard({
             <RefreshCw className="w-6 h-6 animate-spin" />
           </div>
           <div className="space-y-1">
-            <h3 className="text-base font-bold text-white">Analyzing Skills for {selectedRole}...</h3>
+            <h3 className="text-base font-bold text-white">Analyzing Resume Evidence for {selectedRole}...</h3>
             <p className="text-xs text-gray-400 max-w-md mx-auto">
-              Evaluating your technical proficiencies, role taxonomy, and identifying skill gaps with AI...
+              Scanning technical skills, projects, experience, education, and extracting concrete evidence...
             </p>
           </div>
         </div>
@@ -238,7 +253,7 @@ export default function SkillGapDashboard({
           <div className="space-y-1">
             <h3 className="text-base font-bold text-white">No Skill Gap analysis available yet.</h3>
             <p className="text-xs text-gray-400 max-w-md mx-auto">
-              Upload your resume or paste a custom job description above to generate your skill gap breakdown.
+              Upload your resume on the Resume Analyzer tab to extract your skills and generate your skill gap analysis.
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -416,7 +431,7 @@ export default function SkillGapDashboard({
 
               <div className="space-y-2.5">
                 {getFilteredSkills(report?.strongSkills).map((skill, sIdx) => (
-                  <div key={sIdx} className="p-3.5 rounded-xl bg-gray-900/90 border border-emerald-500/20 space-y-1.5">
+                  <div key={sIdx} className="p-3.5 rounded-xl bg-gray-900/90 border border-emerald-500/20 space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="font-extrabold text-white text-xs flex items-center gap-1.5">
                         <span className="text-emerald-400 font-bold">✓</span> {skill.skillName}
@@ -425,7 +440,21 @@ export default function SkillGapDashboard({
                         {skill.currentProficiency || 'Advanced'}
                       </span>
                     </div>
-                    {skill.reason && <p className="text-[11px] text-gray-400 leading-relaxed">{skill.reason}</p>}
+
+                    {/* Resume Evidence Snippets */}
+                    {skill.evidence && skill.evidence.length > 0 ? (
+                      <div className="space-y-1 pt-1 border-t border-gray-800">
+                        <span className="text-[9px] uppercase font-bold text-gray-500 block">Resume Evidence:</span>
+                        {skill.evidence.map((ev, eIdx) => (
+                          <div key={eIdx} className="text-[10px] text-emerald-300/90 flex items-start gap-1">
+                            <span className="text-emerald-400 font-bold">•</span>
+                            <span>{ev}</span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : skill.reason ? (
+                      <p className="text-[11px] text-gray-400 leading-relaxed">{skill.reason}</p>
+                    ) : null}
                   </div>
                 ))}
                 {getFilteredSkills(report?.strongSkills).length === 0 && (
@@ -461,7 +490,20 @@ export default function SkillGapDashboard({
                         </span>
                       )}
                     </div>
-                    {skill.reason && <p className="text-[11px] text-gray-400 leading-relaxed">{skill.reason}</p>}
+
+                    {skill.evidence && skill.evidence.length > 0 ? (
+                      <div className="space-y-1 pt-1 border-t border-gray-800">
+                        <span className="text-[9px] uppercase font-bold text-gray-500 block">Resume Mention:</span>
+                        {skill.evidence.map((ev, eIdx) => (
+                          <div key={eIdx} className="text-[10px] text-blue-300/90 flex items-start gap-1">
+                            <span className="text-blue-400 font-bold">•</span>
+                            <span>{ev}</span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : skill.reason ? (
+                      <p className="text-[11px] text-gray-400 leading-relaxed">{skill.reason}</p>
+                    ) : null}
 
                     <div className="pt-2 border-t border-gray-800 flex items-center justify-between gap-2">
                       <button
@@ -516,7 +558,10 @@ export default function SkillGapDashboard({
                         </span>
                       )}
                     </div>
-                    {skill.reason && <p className="text-[11px] text-gray-400 leading-relaxed">{skill.reason}</p>}
+                    
+                    <p className="text-[11px] text-gray-400 leading-relaxed">
+                      {skill.reason || "No evidence found in uploaded resume."}
+                    </p>
 
                     <div className="pt-2 border-t border-gray-800 flex items-center justify-between gap-2">
                       <button

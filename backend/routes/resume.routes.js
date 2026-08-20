@@ -1,9 +1,11 @@
-// agent-notes: { ctx: "Express router handling multer resume uploads and AI analysis", deps: ["express", "multer", "../services/resumeParser.service.js", "../services/resumeAnalyzer.service.js"], state: "active", last: "anti@2026-08-06" }
+// agent-notes: { ctx: "Express router handling multer resume uploads, AI analysis, and centralized resumeStore caching", deps: ["express", "multer", "../services/resumeParser.service.js", "../services/resumeAnalyzer.service.js", "../services/resumeStore.service.js"], state: "active", last: "anti@2026-08-20" }
 import express from "express";
 import multer from "multer";
+import fs from "fs";
 
 import { extractResumeText } from "../services/resumeParser.service.js";
 import { analyzeResume } from "../services/resumeAnalyzer.service.js";
+import { saveParsedResume } from "../services/resumeStore.service.js";
 
 const router = express.Router();
 
@@ -26,8 +28,14 @@ router.post(
       }
 
       const targetRole = req.body.targetRole || "Full Stack Developer";
+      const userId = req.body.userId || "guest_user";
 
       const resumeText = await extractResumeText(req.file);
+
+      // Clean up uploaded temp file
+      if (req.file.path && fs.existsSync(req.file.path)) {
+        try { fs.unlinkSync(req.file.path); } catch (e) {}
+      }
 
       if (!resumeText || !resumeText.trim()) {
         return res.status(400).json({
@@ -40,14 +48,30 @@ router.post(
         targetRole
       );
 
+      // Save to centralized resume store
+      const record = saveParsedResume({
+        userId,
+        fileName: req.file.originalname,
+        resumeText,
+        analysis,
+        targetRole
+      });
+
       res.json({
         success: true,
+        resumeId: record.resumeId,
+        fileName: req.file.originalname,
         resumeText,
         analysis
       });
 
     } catch (error) {
       console.error('Resume Analysis Error:', error);
+
+      // Clean up temp file on error
+      if (req.file?.path && fs.existsSync(req.file.path)) {
+        try { fs.unlinkSync(req.file.path); } catch (e) {}
+      }
 
       res.status(500).json({
         success: false,
@@ -73,15 +97,36 @@ router.post(
       }
 
       const targetRole = req.body.targetRole || "Full Stack Developer";
+      const userId = req.body.userId || "guest_user";
       const resumeText = await extractResumeText(req.file);
+
+      // Clean up uploaded temp file
+      if (req.file.path && fs.existsSync(req.file.path)) {
+        try { fs.unlinkSync(req.file.path); } catch (e) {}
+      }
+
       const analysis = await analyzeResume(resumeText, targetRole);
+
+      const record = saveParsedResume({
+        userId,
+        fileName: req.file.originalname,
+        resumeText,
+        analysis,
+        targetRole
+      });
 
       res.json({
         success: true,
+        resumeId: record.resumeId,
+        fileName: req.file.originalname,
         resumeText,
         analysis
       });
     } catch (error) {
+      if (req.file?.path && fs.existsSync(req.file.path)) {
+        try { fs.unlinkSync(req.file.path); } catch (e) {}
+      }
+
       res.status(500).json({
         success: false,
         message: "Resume upload processing failed",

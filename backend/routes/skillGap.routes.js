@@ -16,6 +16,8 @@ import { evaluateSkillVerification } from '../services/skillEvaluator.service.js
 import { generateCertificate } from '../services/certificate.service.js';
 import { generateStructuredPatch } from '../services/resumeUpdater.service.js';
 
+import { getParsedResume } from '../services/resumeStore.service.js';
+
 const router = express.Router();
 const upload = multer({ limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB max
 
@@ -31,10 +33,26 @@ const userCertificatesStore = new Map();
  */
 router.post('/analyze', upload.single('resume'), async (req, res) => {
   try {
+    const resumeId = req.body.resumeId;
+    const userId = req.body.userId || req.user?.id || "guest_user";
+    const targetRole = req.body.targetRole || "Frontend Developer";
+    const jobDescription = req.body.jobDescription || "";
+
     let resumeText = req.body.resumeText || "";
     let userSkills = [];
 
-    if (req.body.userSkills) {
+    // 1. If resumeId or userId is provided, look up in central parsed resume store
+    if (!resumeText && (resumeId || userId)) {
+      const stored = getParsedResume(resumeId, userId);
+      if (stored && stored.resumeText) {
+        resumeText = stored.resumeText;
+        if (stored.analysis?.skills?.detected) {
+          userSkills = stored.analysis.skills.detected;
+        }
+      }
+    }
+
+    if (req.body.userSkills && (!userSkills || !userSkills.length)) {
       userSkills = typeof req.body.userSkills === 'string' 
         ? JSON.parse(req.body.userSkills) 
         : req.body.userSkills;
@@ -48,10 +66,6 @@ router.post('/analyze', upload.single('resume'), async (req, res) => {
         resumeText = req.file.buffer.toString('utf-8');
       }
     }
-
-    const targetRole = req.body.targetRole || "Frontend Developer";
-    const jobDescription = req.body.jobDescription || "";
-    const userId = req.body.userId || req.user?.id || "guest_user";
 
     const gapReport = await performSkillGapAnalysis({
       userSkills,

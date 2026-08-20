@@ -139,11 +139,26 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
     const atsScoreVal = analysis.scores?.ats || 81;
     const grammarScoreVal = analysis.scores?.grammar || 72;
     const skillScoreVal = analysis.scores?.skills || 78;
+    const resumeId = data.resumeId || analysis.resumeId;
+    const resumeText = data.resumeText || "";
+
+    if (resumeId) {
+      localStorage.setItem('sb_active_resume_id', resumeId);
+    }
+    if (resumeText) {
+      localStorage.setItem('sb_resume_text', resumeText);
+    }
+    if (data.fileName) {
+      localStorage.setItem('sb_resume_filename', data.fileName);
+    }
 
     if (setProfile) {
       setProfile(prev => ({
         ...prev,
         hasUploadedResume: true,
+        resumeId: resumeId || prev?.resumeId,
+        resumeText: resumeText || prev?.resumeText,
+        resumeFileName: data.fileName || prev?.resumeFileName,
         name: analysis.candidate?.name || prev?.name || 'Aarav Sharma',
         skills: analysis.skills?.detected || prev?.skills || ["HTML", "CSS", "JavaScript"],
         scores: {
