@@ -101,4 +101,30 @@ router.post('/apply-fix', (req, res) => {
   });
 });
 
+// Update resume from verified skills
+router.post('/update-from-skills', (req, res) => {
+  const { resumeData = {}, verifiedSkills = [], certificateCode = "" } = req.body;
+  const currentSkills = resumeData.skills || [];
+  const updatedSkills = Array.from(new Set([...currentSkills, ...verifiedSkills]));
+  
+  const newBullets = verifiedSkills.map(skill => 
+    `Engineered scalable ${skill} modules with automated unit test coverage and clean architecture.`
+  );
+
+  const existingBullets = resumeData.experienceBullets || [];
+  const updatedBullets = Array.from(new Set([...existingBullets, ...newBullets]));
+
+  res.json({
+    success: true,
+    message: "Resume updated successfully from verified skills!",
+    updatedResume: {
+      ...resumeData,
+      skills: updatedSkills,
+      verifiedSkills: updatedSkills,
+      experienceBullets: updatedBullets,
+      latestCertificateCode: certificateCode
+    }
+  });
+});
+
 export default router;

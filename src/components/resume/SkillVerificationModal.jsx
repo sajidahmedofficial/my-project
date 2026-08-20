@@ -15,7 +15,9 @@ import {
   FolderPlus,
   RefreshCw,
   AlertTriangle,
-  X
+  X,
+  Download,
+  CheckCircle2
 } from 'lucide-react';
 import { getChallengeForSkill } from '../../utils/skillChallenges';
 
@@ -576,16 +578,29 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
               <span className="text-emerald-400 text-sm font-black">{evalResult?.score || 89}% → GAINED ✓</span>
             </div>
 
-            <div className="p-3 rounded-xl bg-gray-950 border border-gray-800 max-w-md mx-auto font-mono text-xs text-gray-400">
-              Certificate Code: <span className="text-emerald-400 font-bold">CERT-{skillName.toUpperCase().replace(/[^A-Z]/g, '')}-948201</span>
+            <div className="p-3 rounded-xl bg-gray-950 border border-gray-800 max-w-md mx-auto font-mono text-xs text-gray-400 flex items-center justify-between">
+              <span>Certificate ID:</span>
+              <span className="text-emerald-400 font-bold">
+                SBA-{skillName.toUpperCase().replace(/[^A-Z0-9]/g, '')}-{Math.floor(100000 + Math.random() * 900000)}
+              </span>
             </div>
 
-            <button
-              onClick={handleFinish}
-              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-white font-black text-xs shadow-lg shadow-emerald-500/20 transition-all"
-            >
-              Update Resume & View Certificate
-            </button>
+            <div className="flex items-center gap-3 pt-2">
+              <a
+                href={`/api/certificates/SBA-${skillName.toUpperCase().replace(/[^A-Z0-9]/g, '')}-948201/download`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex-1 py-3.5 rounded-xl bg-gray-900 hover:bg-gray-800 border border-gray-700 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all"
+              >
+                <Download className="w-4 h-4 text-accent-purple" /> Download Certificate PDF
+              </a>
+              <button
+                onClick={handleFinish}
+                className="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-white font-black text-xs shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-1.5"
+              >
+                <CheckCircle2 className="w-4 h-4" /> Update Resume & Finish
+              </button>
+            </div>
           </div>
         )}
       </div>

@@ -16,7 +16,8 @@ import {
   LogIn,
   Sparkles,
   Zap,
-  Brain
+  Brain,
+  Layers
 } from 'lucide-react';
 
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -28,7 +29,7 @@ import NotificationsDrawer from './components/NotificationsDrawer';
 import Dashboard from './components/Dashboard';
 import ResumeAnalyzer from './pages/ResumeAnalyzer';
 import JobAnalyzer from './components/JobAnalyzer';
-import SkillGapAnalysis from './components/SkillGapAnalysis';
+import SkillGapDashboard from './components/SkillGapDashboard';
 import LearningRoadmap from './components/LearningRoadmap';
 import CareerMentor from './components/CareerMentor';
 import ProjectRecommender from './components/ProjectRecommender';
@@ -91,8 +92,9 @@ function MainLayout() {
 
   const navigationItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'skillgap', label: 'Skill Gap Hub', icon: Briefcase },
     { id: 'resume', label: 'Resume Analyzer', icon: FileText },
-    { id: 'job', label: 'Job & Skill Gap', icon: Briefcase },
+    { id: 'job', label: 'Job Matrix', icon: Layers },
     { id: 'roadmap', label: 'Learning Roadmap', icon: Map },
     { id: 'chat', label: 'Career Mentor', icon: MessageSquare },
     { id: 'projects', label: 'Project Recommendations', icon: Code },
@@ -119,6 +121,14 @@ function MainLayout() {
           <Dashboard 
             profile={activeProfile} 
             setProfile={handleProfileChange} 
+            onNavigate={setActiveTab} 
+            onOpenVerification={handleOpenGlobalVerification}
+          />
+        </div>
+        <div className={activeTab === 'skillgap' ? 'block' : 'hidden'}>
+          <SkillGapDashboard 
+            profile={activeProfile} 
+            onGenerateRoadmap={handleGenerateRoadmap} 
             onNavigate={setActiveTab} 
             onOpenVerification={handleOpenGlobalVerification}
           />

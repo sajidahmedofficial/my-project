@@ -11,6 +11,7 @@ import certificateRoutes from './routes/certificate.routes.js';
 import roadmapRoutes from './routes/roadmap.routes.js';
 import authRoutes from './routes/auth.js';
 import aptitudeRoutes from './routes/aptitude.routes.js';
+import skillGapRoutes from './routes/skillGap.routes.js';
 
 import aiRoutes from './routes/ai.js';
 
@@ -26,6 +27,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/skill-gap", skillGapRoutes);
 app.use("/api/resume", resumeRoutes);
 app.use("/api/skills", skillRoutes);
 app.use("/api/certificates", certificateRoutes);
@@ -40,6 +42,7 @@ app.get("/api/health", (req, res) => {
     endpoints: [
       "/api/auth",
       "/api/ai",
+      "/api/skill-gap",
       "/api/resume",
       "/api/skills",
       "/api/certificates",
