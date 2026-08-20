@@ -608,10 +608,12 @@ APPLIED RESUME IMPROVEMENTS:
                   <div className="lg:col-span-7">
                     <UploadResume 
                       onFileSelect={handleFileSelect} 
+                      onAnalysis={processAnalysisResult}
                       parsing={parsing} 
                       selectedFile={selectedFile} 
                       onSelectPreset={handleSelectPreset} 
                       analyzed={analyzed}
+                      profile={profile}
                     />
                   </div>
                   <div className="lg:col-span-5 glass rounded-2xl p-8 border border-gray-800 flex flex-col justify-center items-center text-center space-y-4">
@@ -641,10 +643,12 @@ APPLIED RESUME IMPROVEMENTS:
                     <div className="lg:col-span-6">
                       <UploadResume 
                         onFileSelect={handleFileSelect} 
+                        onAnalysis={processAnalysisResult}
                         parsing={parsing} 
                         selectedFile={selectedFile} 
                         onSelectPreset={handleSelectPreset} 
                         analyzed={analyzed}
+                        profile={profile}
                       />
                     </div>
                     <div className="lg:col-span-6 glass rounded-2xl p-6 border border-gray-800 space-y-4 flex flex-col justify-between">
@@ -760,10 +764,12 @@ APPLIED RESUME IMPROVEMENTS:
               <p className="text-xs text-gray-400">Scores, ATS checks, and grammar mistakes will be displayed after you upload your resume.</p>
               <UploadResume 
                 onFileSelect={handleFileSelect} 
+                onAnalysis={processAnalysisResult}
                 parsing={parsing} 
                 selectedFile={selectedFile} 
                 onSelectPreset={handleSelectPreset} 
                 analyzed={analyzed}
+                profile={profile}
               />
             </div>
           ) : (
@@ -779,9 +785,12 @@ APPLIED RESUME IMPROVEMENTS:
                 <div className="lg:col-span-6">
                   <UploadResume 
                     onFileSelect={handleFileSelect} 
+                    onAnalysis={processAnalysisResult}
                     parsing={parsing} 
                     selectedFile={selectedFile} 
                     onSelectPreset={handleSelectPreset} 
+                    analyzed={analyzed}
+                    profile={profile}
                   />
                 </div>
                 <div className="lg:col-span-6 glass rounded-2xl p-6 border border-gray-800 space-y-4">
