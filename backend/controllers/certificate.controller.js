@@ -55,10 +55,19 @@ export const downloadCertificatePdf = async (req, res) => {
 
     // Look up certificate in persistent storage
     const certRecord = persistentStore.findOne('certificates', { certificateId: id });
-    const directory = path.join(process.cwd(), "generated", "certificates");
-    const filePath = path.join(directory, `${id}.pdf`);
+    const localDir = path.join(process.cwd(), "generated", "certificates");
+    const tmpDir = path.join(os.tmpdir(), "skillbridge_certificates");
+    
+    let filePath = certRecord?.filePath;
+    if (!filePath || !fs.existsSync(filePath)) {
+      if (fs.existsSync(path.join(localDir, `${id}.pdf`))) {
+        filePath = path.join(localDir, `${id}.pdf`);
+      } else if (fs.existsSync(path.join(tmpDir, `${id}.pdf`))) {
+        filePath = path.join(tmpDir, `${id}.pdf`);
+      }
+    }
 
-    if (fs.existsSync(filePath)) {
+    if (filePath && fs.existsSync(filePath)) {
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader('Content-Disposition', `attachment; filename="${id}.pdf"`);
       const fileStream = fs.createReadStream(filePath);
@@ -67,7 +76,7 @@ export const downloadCertificatePdf = async (req, res) => {
 
     if (certRecord && certRecord.status === 'verified') {
       // Re-render PDF if record is authentic
-      const regeneratedPath = await issueVerifiedCertificate({
+      const regeneratedCert = await issueVerifiedCertificate({
         userId: certRecord.userId,
         userName: certRecord.userName,
         skillName: certRecord.skillName,
@@ -77,10 +86,11 @@ export const downloadCertificatePdf = async (req, res) => {
         verificationId: certRecord.verificationId
       });
 
-      if (fs.existsSync(regeneratedPath.filePath)) {
+      const regenPath = regeneratedCert.filePath || path.join(localDir, `${id}.pdf`);
+      if (fs.existsSync(regenPath)) {
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `attachment; filename="${id}.pdf"`);
-        return fs.createReadStream(regeneratedPath.filePath).pipe(res);
+        return fs.createReadStream(regenPath).pipe(res);
       }
     }
 

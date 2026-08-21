@@ -19,6 +19,31 @@ const getGenAI = () => {
   return new GoogleGenerativeAI(apiKey);
 };
 
+// Helper to invoke Gemini with model fallback
+async function generateGeminiContent(ai, prompt, isJson = false) {
+  const modelNames = ['gemini-1.5-flash', 'gemini-2.0-flash', 'gemini-1.5-pro'];
+  let lastError = null;
+
+  for (const modelName of modelNames) {
+    try {
+      const model = ai.getGenerativeModel({
+        model: modelName,
+        ...(isJson ? { generationConfig: { responseMimeType: 'application/json' } } : {})
+      });
+      const result = await model.generateContent(
+        isJson ? { contents: [{ role: 'user', parts: [{ text: prompt }] }] } : prompt
+      );
+      const text = result.response.text();
+      if (text) return text;
+    } catch (err) {
+      console.warn(`[AI Route] Model ${modelName} warning:`, err.message);
+      lastError = err;
+    }
+  }
+
+  throw lastError || new Error("Gemini AI request failed across all models.");
+}
+
 // @desc    Analyze uploaded resume (PDF/DOCX)
 // @route   POST /api/ai/analyze-resume
 router.post('/analyze-resume', upload.single('resume'), async (req, res) => {
@@ -47,7 +72,6 @@ router.post('/analyze-resume', upload.single('resume'), async (req, res) => {
       return res.json(runLocalResumeAnalyzer(resumeText));
     }
 
-    const model = ai.getGenerativeModel({ model: "gemini-2.5-flash" });
     const prompt = `You are an expert ATS (Applicant Tracking System) and Resume Parser.
 Analyze the following resume text and extract skills, project details, education, and experience.
 Also calculate an overall Resume Score (out of 100) based on formatting, technical vocabulary, and structure.
@@ -68,14 +92,9 @@ Return the output strictly in the following JSON format:
   "resumeScore": 75
 }`;
 
-    const result = await model.generateContent({
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      generationConfig: {
-        responseMimeType: "application/json"
-      }
-    });
-
-    const parsedJson = JSON.parse(result.response.text());
+    const text = await generateGeminiContent(ai, prompt, true);
+    const cleaned = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+    const parsedJson = JSON.parse(cleaned);
     res.json(parsedJson);
 
   } catch (error) {
@@ -99,7 +118,6 @@ router.post('/analyze-jd', async (req, res) => {
       return res.json(runLocalJdAnalyzer(jdText, studentSkills));
     }
 
-    const model = ai.getGenerativeModel({ model: "gemini-2.5-flash" });
     const prompt = `You are an AI Technical recruiter.
 Analyze the following Job Description (JD).
 1. Extract required technical skills.
@@ -124,14 +142,9 @@ Return the response strictly as a JSON object of this structure:
   ]
 }`;
 
-    const result = await model.generateContent({
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      generationConfig: {
-        responseMimeType: "application/json"
-      }
-    });
-
-    const jobExtracted = JSON.parse(result.response.text());
+    const text = await generateGeminiContent(ai, prompt, true);
+    const cleaned = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+    const jobExtracted = JSON.parse(cleaned);
     
     // Perform skill gap comparison
     const matched = [];
@@ -175,8 +188,6 @@ router.post('/chat', async (req, res) => {
       return res.json({ response: "Local Mentor response fallback trigger." });
     }
 
-    const model = ai.getGenerativeModel({ model: "gemini-2.5-flash" });
-    
     // Construct chat contextual prompt
     const chatHistoryContext = (messages || []).map(m => `${m.sender === 'bot' ? 'Mentor' : 'Student'}: ${m.text}`).join('\n');
     
@@ -190,8 +201,8 @@ Student's Query: "${query}"
 
 Mentor Response:`;
 
-    const result = await model.generateContent(prompt);
-    res.json({ response: result.response.text() });
+    const text = await generateGeminiContent(ai, prompt, false);
+    res.json({ response: text });
 
   } catch (error) {
     res.status(500).json({ error: 'Chat session failed', message: error.message });
@@ -209,7 +220,6 @@ router.post('/evaluate-interview', async (req, res) => {
       return res.status(500).json({ error: 'Gemini Key is missing' });
     }
 
-    const model = ai.getGenerativeModel({ model: "gemini-2.5-flash" });
     const prompt = `You are an AI Technical Interviewer evaluating a candidate's response.
 Compare the student's answer against the target question and model answer.
 Score the student on:
@@ -234,14 +244,9 @@ Return the response strictly as a JSON object of this structure:
   ]
 }`;
 
-    const result = await model.generateContent({
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      generationConfig: {
-        responseMimeType: "application/json"
-      }
-    });
-
-    res.json(JSON.parse(result.response.text()));
+    const text = await generateGeminiContent(ai, prompt, true);
+    const cleaned = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+    res.json(JSON.parse(cleaned));
 
   } catch (error) {
     res.status(500).json({ error: 'Evaluation failed', message: error.message });

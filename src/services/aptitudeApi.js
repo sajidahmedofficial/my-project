@@ -12,26 +12,45 @@ async function request(endpoint, options = {}) {
     ...options.headers
   };
 
+  let res;
+  let isNetworkError = false;
+
   try {
-    const res = await fetch(`${API_BASE_URL}${endpoint}`, { ...options, headers });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    return data.data !== undefined ? data.data : data;
-  } catch (err) {
-    console.warn(`API call failed (${endpoint}). Trying fallback endpoint:`, err.message);
+    res = await fetch(`${API_BASE_URL}${endpoint}`, { ...options, headers });
+  } catch (netErr) {
+    isNetworkError = true;
+  }
+
+  // If primary path hit a 404 or network error, attempt /aptitude prefix
+  if ((isNetworkError || res?.status === 404) && !endpoint.startsWith('/aptitude')) {
     try {
-      // Retry with /aptitude prefix if endpoint starts with /topics, /questions, /quiz
-      const altEndpoint = endpoint.startsWith('/aptitude') ? endpoint : `/aptitude${endpoint}`;
+      const altEndpoint = `/aptitude${endpoint}`;
       const resAlt = await fetch(`${API_BASE_URL}${altEndpoint}`, { ...options, headers });
       if (resAlt.ok) {
         const dataAlt = await resAlt.json();
         return dataAlt.data !== undefined ? dataAlt.data : dataAlt;
       }
+      if (resAlt && !resAlt.ok && resAlt.status !== 404) {
+        const errorJson = await resAlt.json().catch(() => ({}));
+        throw new Error(errorJson.message || errorJson.error || `HTTP ${resAlt.status}`);
+      }
     } catch (altErr) {
-      // Ignore
+      if (!isNetworkError) throw altErr;
     }
+  }
+
+  if (isNetworkError) {
+    console.warn(`Aptitude API server offline (${endpoint}). Activating offline fallback.`);
     return mockAptitudeFallback(endpoint, options);
   }
+
+  if (!res.ok) {
+    const errorJson = await res.json().catch(() => ({}));
+    throw new Error(errorJson.message || errorJson.error || `HTTP ${res.status}`);
+  }
+
+  const data = await res.json();
+  return data.data !== undefined ? data.data : data;
 }
 
 // Emergency client fallback to prevent complete UI white-screen crashes if backend server is unreachable

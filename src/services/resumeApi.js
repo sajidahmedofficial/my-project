@@ -1,7 +1,12 @@
-// agent-notes: { ctx: "Frontend API service module for communicating with Backend REST endpoints", deps: [], state: "active", last: "anti@2026-08-06" }
-const API_URL =
-  import.meta.env.VITE_API_URL ||
-  "http://localhost:5000";
+const API_URL = import.meta.env.VITE_API_URL || '/api';
+
+const getHeaders = (extraHeaders = {}) => {
+  const token = localStorage.getItem('sb_token') || sessionStorage.getItem('sb_token');
+  return {
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...extraHeaders
+  };
+};
 
 export async function analyzeResume(
   file,
@@ -19,10 +24,14 @@ export async function analyzeResume(
     targetRole
   );
 
+  const token = localStorage.getItem('sb_token') || sessionStorage.getItem('sb_token');
+  const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
   const response = await fetch(
-    `${API_URL}/api/resume/analyze`,
+    `${API_URL}/resume/analyze`,
     {
       method: "POST",
+      headers,
       body: formData
     }
   );
@@ -43,9 +52,9 @@ export const analyzeResumeApi = analyzeResume;
 
 export const applyProblemFix = async (problemId) => {
   try {
-    const res = await fetch(`${API_URL}/api/resume/apply-fix`, {
+    const res = await fetch(`${API_URL}/resume/apply-fix`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ problemId })
     });
     return await res.json();
@@ -56,9 +65,9 @@ export const applyProblemFix = async (problemId) => {
 
 export const fetchSkillGap = async (userSkills, roleRequirements) => {
   try {
-    const res = await fetch(`${API_URL}/api/skills/gap`, {
+    const res = await fetch(`${API_URL}/skills/gap`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ userSkills, roleRequirements })
     });
     return await res.json();
@@ -69,9 +78,9 @@ export const fetchSkillGap = async (userSkills, roleRequirements) => {
 
 export const advanceSkillProgress = async (skillName, currentProgress) => {
   try {
-    const res = await fetch(`${API_URL}/api/skills/advance`, {
+    const res = await fetch(`${API_URL}/skills/advance`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ skillName, currentProgress })
     });
     return await res.json();
@@ -82,9 +91,9 @@ export const advanceSkillProgress = async (skillName, currentProgress) => {
 
 export const generateCertificate = async (userName, skillName) => {
   try {
-    const res = await fetch(`${API_URL}/api/certificates/generate`, {
+    const res = await fetch(`${API_URL}/certificates/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ userName, skillName })
     });
     return await res.json();

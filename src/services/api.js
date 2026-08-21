@@ -10,22 +10,25 @@ async function request(endpoint, options = {}) {
     ...options.headers
   };
 
+  let res;
   try {
-    const res = await fetch(`${API_BASE_URL}${endpoint}`, {
+    res = await fetch(`${API_BASE_URL}${endpoint}`, {
       ...options,
       headers
     });
-    
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.error || errData.message || `Request failed with status ${res.status}`);
-    }
-    return await res.json();
-  } catch (err) {
-    // If backend server is not running or network fails, provide client-side mock fallback
-    console.warn(`API Server offline (${endpoint}). Using fallback simulation:`, err.message);
+  } catch (networkErr) {
+    // Network / connection level failure
+    console.warn(`Network failure on (${endpoint}):`, networkErr.message);
     return mockFallback(endpoint, options);
   }
+
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}));
+    const errorMsg = errData.error || errData.message || `Request failed with status ${res.status}`;
+    throw new Error(errorMsg);
+  }
+
+  return await res.json();
 }
 
 // Client-side fallback handler for seamless standalone experience
