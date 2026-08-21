@@ -376,10 +376,10 @@
             "stageNumber": 1,
             "taskType": "topic",
             "difficulty": "Beginner",
-            "status": "pending",
-            "completed": false,
+            "status": "completed",
+            "completed": true,
             "score": null,
-            "completedAt": null
+            "completedAt": "2026-08-20T17:12:07.701Z"
           },
           {
             "taskId": "task_rdm_react_js_preset-sajid_s1_top1",
@@ -389,10 +389,10 @@
             "stageNumber": 1,
             "taskType": "topic",
             "difficulty": "Beginner",
-            "status": "pending",
-            "completed": false,
+            "status": "completed",
+            "completed": true,
             "score": null,
-            "completedAt": null
+            "completedAt": "2026-08-20T17:12:06.510Z"
           },
           {
             "taskId": "task_rdm_react_js_preset-sajid_s1_top2",
@@ -402,10 +402,10 @@
             "stageNumber": 1,
             "taskType": "topic",
             "difficulty": "Beginner",
-            "status": "pending",
-            "completed": false,
+            "status": "completed",
+            "completed": true,
             "score": null,
-            "completedAt": null
+            "completedAt": "2026-08-20T17:12:02.748Z"
           },
           {
             "taskId": "task_rdm_react_js_preset-sajid_s1_top3",
@@ -415,13 +415,13 @@
             "stageNumber": 1,
             "taskType": "topic",
             "difficulty": "Beginner",
-            "status": "pending",
-            "completed": false,
+            "status": "completed",
+            "completed": true,
             "score": null,
-            "completedAt": null
+            "completedAt": "2026-08-20T17:12:04.151Z"
           }
         ],
-        "stageProgress": 0
+        "stageProgress": 100
       },
       {
         "stageNumber": 2,
@@ -604,8 +604,8 @@
       "codingCount": 2,
       "passingThreshold": 75
     },
-    "overallProgress": 0,
-    "status": "NOT_STARTED",
+    "overallProgress": 33,
+    "status": "IN_PROGRESS",
     "generatedAt": "2026-08-20T16:47:56.340Z",
     "roadmapId": "rdm_react_js_preset-sajid",
     "userId": "preset-sajid",
@@ -618,10 +618,10 @@
         "stageNumber": 1,
         "taskType": "topic",
         "difficulty": "Beginner",
-        "status": "pending",
-        "completed": false,
+        "status": "completed",
+        "completed": true,
         "score": null,
-        "completedAt": null
+        "completedAt": "2026-08-20T17:12:07.701Z"
       },
       {
         "taskId": "task_rdm_react_js_preset-sajid_s1_top1",
@@ -631,10 +631,10 @@
         "stageNumber": 1,
         "taskType": "topic",
         "difficulty": "Beginner",
-        "status": "pending",
-        "completed": false,
+        "status": "completed",
+        "completed": true,
         "score": null,
-        "completedAt": null
+        "completedAt": "2026-08-20T17:12:06.510Z"
       },
       {
         "taskId": "task_rdm_react_js_preset-sajid_s1_top2",
@@ -644,10 +644,10 @@
         "stageNumber": 1,
         "taskType": "topic",
         "difficulty": "Beginner",
-        "status": "pending",
-        "completed": false,
+        "status": "completed",
+        "completed": true,
         "score": null,
-        "completedAt": null
+        "completedAt": "2026-08-20T17:12:02.748Z"
       },
       {
         "taskId": "task_rdm_react_js_preset-sajid_s1_top3",
@@ -657,10 +657,10 @@
         "stageNumber": 1,
         "taskType": "topic",
         "difficulty": "Beginner",
-        "status": "pending",
-        "completed": false,
+        "status": "completed",
+        "completed": true,
         "score": null,
-        "completedAt": null
+        "completedAt": "2026-08-20T17:12:04.151Z"
       },
       {
         "taskId": "task_rdm_react_js_preset-sajid_s2_top0",
@@ -767,7 +767,7 @@
         "completedAt": null
       }
     ],
-    "updatedAt": "2026-08-20T16:47:56.857Z"
+    "updatedAt": "2026-08-20T17:12:07.703Z"
   },
   {
     "createdAt": "2026-08-20T17:02:20.651Z",

@@ -286,7 +286,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-20T16:48:07.106Z"
+    "updatedAt": "2026-08-20T17:10:14.547Z"
   },
   {
     "createdAt": "2026-08-20T16:47:56.296Z",
@@ -301,7 +301,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-20T16:48:07.107Z"
+    "updatedAt": "2026-08-20T17:10:14.553Z"
   },
   {
     "createdAt": "2026-08-20T16:47:56.297Z",
@@ -316,7 +316,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-20T16:48:07.109Z"
+    "updatedAt": "2026-08-20T17:10:14.559Z"
   },
   {
     "createdAt": "2026-08-20T16:47:56.298Z",
@@ -331,7 +331,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-20T16:48:07.111Z"
+    "updatedAt": "2026-08-20T17:10:14.568Z"
   },
   {
     "createdAt": "2026-08-20T16:47:56.299Z",
@@ -346,7 +346,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "medium",
-    "updatedAt": "2026-08-20T16:48:07.113Z"
+    "updatedAt": "2026-08-20T17:10:14.576Z"
   },
   {
     "createdAt": "2026-08-20T16:47:56.303Z",
@@ -361,7 +361,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "medium",
-    "updatedAt": "2026-08-20T16:48:07.114Z"
+    "updatedAt": "2026-08-20T17:10:14.582Z"
   },
   {
     "createdAt": "2026-08-20T16:47:56.304Z",
@@ -376,7 +376,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "medium",
-    "updatedAt": "2026-08-20T16:48:07.116Z"
+    "updatedAt": "2026-08-20T17:10:14.591Z"
   },
   {
     "createdAt": "2026-08-20T16:47:56.306Z",
@@ -391,7 +391,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "medium",
-    "updatedAt": "2026-08-20T16:48:07.118Z"
+    "updatedAt": "2026-08-20T17:10:14.597Z"
   },
   {
     "createdAt": "2026-08-20T16:47:56.308Z",
@@ -406,7 +406,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-20T16:48:07.121Z"
+    "updatedAt": "2026-08-20T17:10:14.605Z"
   },
   {
     "createdAt": "2026-08-20T16:47:56.309Z",
@@ -420,8 +420,8 @@
     "currentLevel": 0,
     "requiredLevel": 100,
     "gapPercentage": 100,
-    "priority": "medium",
-    "updatedAt": "2026-08-20T16:48:07.122Z"
+    "priority": "high",
+    "updatedAt": "2026-08-20T17:10:14.619Z"
   },
   {
     "createdAt": "2026-08-20T16:47:56.310Z",
@@ -436,7 +436,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-20T16:48:07.125Z"
+    "updatedAt": "2026-08-20T17:10:14.628Z"
   },
   {
     "createdAt": "2026-08-20T16:47:56.311Z",
@@ -450,8 +450,8 @@
     "currentLevel": 0,
     "requiredLevel": 100,
     "gapPercentage": 100,
-    "priority": "medium",
-    "updatedAt": "2026-08-20T16:48:07.130Z"
+    "priority": "high",
+    "updatedAt": "2026-08-20T17:10:14.634Z"
   },
   {
     "createdAt": "2026-08-20T16:47:56.312Z",
@@ -465,8 +465,8 @@
     "currentLevel": 0,
     "requiredLevel": 100,
     "gapPercentage": 100,
-    "priority": "medium",
-    "updatedAt": "2026-08-20T16:48:07.132Z"
+    "priority": "high",
+    "updatedAt": "2026-08-20T17:10:14.646Z"
   },
   {
     "createdAt": "2026-08-20T16:47:56.314Z",
@@ -480,8 +480,8 @@
     "currentLevel": 0,
     "requiredLevel": 100,
     "gapPercentage": 100,
-    "priority": "medium",
-    "updatedAt": "2026-08-20T16:48:07.134Z"
+    "priority": "high",
+    "updatedAt": "2026-08-20T17:10:14.652Z"
   },
   {
     "createdAt": "2026-08-20T16:47:56.316Z",
@@ -495,8 +495,8 @@
     "currentLevel": 0,
     "requiredLevel": 100,
     "gapPercentage": 100,
-    "priority": "medium",
-    "updatedAt": "2026-08-20T16:48:07.137Z"
+    "priority": "high",
+    "updatedAt": "2026-08-20T17:10:14.661Z"
   },
   {
     "createdAt": "2026-08-20T16:47:56.317Z",
@@ -510,8 +510,8 @@
     "currentLevel": 0,
     "requiredLevel": 100,
     "gapPercentage": 100,
-    "priority": "medium",
-    "updatedAt": "2026-08-20T16:48:07.141Z"
+    "priority": "high",
+    "updatedAt": "2026-08-20T17:10:14.668Z"
   },
   {
     "createdAt": "2026-08-20T16:47:56.319Z",
@@ -525,8 +525,8 @@
     "currentLevel": 0,
     "requiredLevel": 100,
     "gapPercentage": 100,
-    "priority": "medium",
-    "updatedAt": "2026-08-20T16:48:07.144Z"
+    "priority": "high",
+    "updatedAt": "2026-08-20T17:10:14.676Z"
   },
   {
     "createdAt": "2026-08-20T16:47:56.321Z",
@@ -540,8 +540,8 @@
     "currentLevel": 0,
     "requiredLevel": 100,
     "gapPercentage": 100,
-    "priority": "medium",
-    "updatedAt": "2026-08-20T16:48:07.147Z"
+    "priority": "high",
+    "updatedAt": "2026-08-20T17:10:14.682Z"
   },
   {
     "createdAt": "2026-08-20T16:47:56.322Z",
@@ -555,8 +555,8 @@
     "currentLevel": 0,
     "requiredLevel": 100,
     "gapPercentage": 100,
-    "priority": "medium",
-    "updatedAt": "2026-08-20T16:48:07.150Z"
+    "priority": "high",
+    "updatedAt": "2026-08-20T17:10:14.688Z"
   },
   {
     "createdAt": "2026-08-20T16:47:56.324Z",
@@ -570,8 +570,8 @@
     "currentLevel": 0,
     "requiredLevel": 100,
     "gapPercentage": 100,
-    "priority": "medium",
-    "updatedAt": "2026-08-20T16:48:07.152Z"
+    "priority": "high",
+    "updatedAt": "2026-08-20T17:10:14.698Z"
   },
   {
     "createdAt": "2026-08-20T16:47:56.325Z",
@@ -585,8 +585,8 @@
     "currentLevel": 0,
     "requiredLevel": 100,
     "gapPercentage": 100,
-    "priority": "medium",
-    "updatedAt": "2026-08-20T16:48:07.154Z"
+    "priority": "high",
+    "updatedAt": "2026-08-20T17:10:14.703Z"
   },
   {
     "createdAt": "2026-08-20T16:47:56.326Z",
@@ -600,8 +600,8 @@
     "currentLevel": 0,
     "requiredLevel": 100,
     "gapPercentage": 100,
-    "priority": "low",
-    "updatedAt": "2026-08-20T16:48:07.156Z"
+    "priority": "high",
+    "updatedAt": "2026-08-20T17:10:14.711Z"
   },
   {
     "createdAt": "2026-08-20T16:52:11.692Z",
@@ -3008,5 +3008,35 @@
     "gapPercentage": 100,
     "priority": "high",
     "updatedAt": "2026-08-20T17:08:03.851Z"
+  },
+  {
+    "createdAt": "2026-08-20T17:10:06.024Z",
+    "id": "usk_preset-sajid_problem_solving",
+    "userId": "preset-sajid",
+    "resumeId": null,
+    "skillGapId": "sg_preset-sajid_frontend_developer",
+    "skillName": "Problem Solving",
+    "category": "Programming",
+    "status": "missing",
+    "currentLevel": 0,
+    "requiredLevel": 100,
+    "gapPercentage": 100,
+    "priority": "high",
+    "updatedAt": "2026-08-20T17:10:14.717Z"
+  },
+  {
+    "createdAt": "2026-08-20T17:10:06.030Z",
+    "id": "usk_preset-sajid_team_collaboration",
+    "userId": "preset-sajid",
+    "resumeId": null,
+    "skillGapId": "sg_preset-sajid_frontend_developer",
+    "skillName": "Team Collaboration",
+    "category": "Programming",
+    "status": "missing",
+    "currentLevel": 0,
+    "requiredLevel": 100,
+    "gapPercentage": 100,
+    "priority": "high",
+    "updatedAt": "2026-08-20T17:10:14.723Z"
   }
 ]
