@@ -15,12 +15,16 @@ const STORE_PATH = path.join(__dirname, '../data/questionStore.json');
 let memoryQuestionStore = null;
 
 function ensureStoreExists() {
-  const dir = path.dirname(STORE_PATH);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-  if (!fs.existsSync(STORE_PATH)) {
-    fs.writeFileSync(STORE_PATH, JSON.stringify({ questions: [] }, null, 2), 'utf-8');
+  try {
+    const dir = path.dirname(STORE_PATH);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    if (!fs.existsSync(STORE_PATH)) {
+      fs.writeFileSync(STORE_PATH, JSON.stringify({ questions: [] }, null, 2), 'utf-8');
+    }
+  } catch (err) {
+    // Suppress write errors in read-only environment
   }
 }
 

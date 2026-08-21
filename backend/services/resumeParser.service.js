@@ -4,11 +4,18 @@ import pdfParse from "pdf-parse";
 import mammoth from "mammoth";
 
 export async function extractResumeText(file) {
-  if (!file || !file.path) {
+  if (!file) {
     throw new Error("File input is required.");
   }
 
-  const buffer = fs.readFileSync(file.path);
+  let buffer;
+  if (file.buffer) {
+    buffer = file.buffer;
+  } else if (file.path && fs.existsSync(file.path)) {
+    buffer = fs.readFileSync(file.path);
+  } else {
+    throw new Error("File buffer or path is required.");
+  }
 
   if (file.mimetype === "application/pdf" || file.originalname?.endsWith('.pdf')) {
     try {

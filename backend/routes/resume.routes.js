@@ -10,7 +10,7 @@ import { saveParsedResume } from "../services/resumeStore.service.js";
 const router = express.Router();
 
 const upload = multer({
-  dest: "uploads/",
+  storage: multer.memoryStorage(),
   limits: {
     fileSize: 5 * 1024 * 1024
   }

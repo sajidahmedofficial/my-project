@@ -1,13 +1,21 @@
-// agent-notes: { ctx: "Production Certificate Generator issuing authentic unique PDFKit certificates only upon verified status and score >= threshold", deps: ["pdfkit", "fs", "path", "crypto", "../storage/persistentStore.js"], state: "active", last: "anti@2026-08-20" }
 import PDFDocument from "pdfkit";
 import fs from "fs";
 import path from "path";
+import os from "os";
 import crypto from "crypto";
 import persistentStore from "../storage/persistentStore.js";
 
-const CERTIFICATES_DIR = path.join(process.cwd(), "generated", "certificates");
-if (!fs.existsSync(CERTIFICATES_DIR)) {
-  fs.mkdirSync(CERTIFICATES_DIR, { recursive: true });
+const isServerless = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.NODE_ENV === 'production');
+const CERTIFICATES_DIR = isServerless
+  ? path.join(os.tmpdir(), "skillbridge_certificates")
+  : path.join(process.cwd(), "generated", "certificates");
+
+try {
+  if (!fs.existsSync(CERTIFICATES_DIR)) {
+    fs.mkdirSync(CERTIFICATES_DIR, { recursive: true });
+  }
+} catch (e) {
+  console.warn("Certificates directory init notice:", e.message);
 }
 
 /**
