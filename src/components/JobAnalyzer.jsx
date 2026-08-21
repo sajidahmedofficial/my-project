@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Unified Job & Skill Gap Analyzer supporting AI Job Description extraction, Company Presets, and Interactive Competency Matrix", deps: ["lucide-react", "../utils/mockData", "../utils/aiSimulator", "./SkillGapAnalysis.css"], state: "active", last: "anti@2026-08-06" }
+// agent-notes: { ctx: "Playful cartoon Unified Job & Skill Gap Analyzer with 3D buttons, interactive Competency Matrix & AI Job Description extraction", deps: ["lucide-react", "../utils/mockData", "../utils/aiSimulator", "./SkillGapAnalysis.css"], state: "active", last: "anti@2026-08-21" }
 import React, { useState, useMemo, useEffect } from 'react';
 import { 
   Briefcase, 
@@ -13,7 +13,9 @@ import {
   Layers,
   Award,
   Grid,
-  FileText
+  FileText,
+  Sparkles,
+  Trophy
 } from 'lucide-react';
 import { JOB_PRESETS } from '../utils/mockData';
 import { analyzeJobDescription, detectSkillGap, extractSkillsFromText } from '../utils/aiSimulator';
@@ -66,15 +68,6 @@ const ROLE_PRESETS = {
   }
 };
 
-const INITIAL_USER_SKILLS = [
-  "HTML",
-  "CSS",
-  "JavaScript",
-  "React",
-  "Node.js",
-  "SQL",
-];
-
 const CATEGORY_LABELS = {
   frontend: "FRONTEND",
   backend: "BACKEND",
@@ -89,7 +82,7 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
   // Main Mode Switcher: 'matrix' (Visual Chip Matrix) vs 'analyzer' (AI Job Description Analyzer)
   const [viewMode, setViewMode] = useState('matrix');
 
-  // AI Analyzer States (Old Feature)
+  // AI Analyzer States
   const [userSkillsText, setUserSkillsText] = useState(
     profile && profile.skills && profile.skills.length > 0
       ? `My skills: ${profile.skills.join(', ')}`
@@ -102,7 +95,7 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
   const [jobProfile, setJobProfile] = useState(null);
   const [gapReport, setGapReport] = useState(null);
 
-  // Matrix View States (New Feature)
+  // Matrix View States
   const [targetRoleKey, setTargetRoleKey] = useState("fullstack");
   const [roleSkills, setRoleSkills] = useState(ROLE_PRESETS.fullstack.skills);
   const [userSkills, setUserSkills] = useState(() => {
@@ -123,15 +116,12 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
     }
   }, [profile, hasUploadedResume]);
 
-  // Initial auto-run for AI analyzer
   useEffect(() => {
     runComparison(userSkillsText, jdText);
   }, []);
 
-  // Run AI Comparison
   const runComparison = (userText, jobText) => {
     if (!userText.trim() || !jobText.trim()) return;
-
     setAnalyzing(true);
 
     setTimeout(() => {
@@ -147,7 +137,6 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
       setJobProfile(jProfile);
       setGapReport(gapResults);
 
-      // Also update userSkills and roleSkills for Matrix if extracted
       if (uSkills.length > 0) {
         setUserSkills(prev => Array.from(new Set([...prev, ...uSkills])));
       }
@@ -177,7 +166,6 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
     }
   };
 
-  // Target role preset change in Matrix view
   const handleRoleChange = (e) => {
     const roleKey = e.target.value;
     setTargetRoleKey(roleKey);
@@ -186,9 +174,6 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
     }
   };
 
-  /*
-   * Matrix calculations
-   */
   const allRoleSkills = useMemo(() => {
     return Object.values(roleSkills).flat();
   }, [roleSkills]);
@@ -207,9 +192,6 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
     return Math.round((matchedSkills.length / allRoleSkills.length) * 100);
   }, [matchedSkills, allRoleSkills]);
 
-  /*
-   * Matrix Chip Modifications
-   */
   const addRoleSkill = () => {
     const skill = skillInput.trim();
     if (!skill || !activeCategory) return;
@@ -309,59 +291,61 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
   };
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in select-none">
       {/* Top Header & View Switcher */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-gray-800">
-        <div>
-          <h2 className="text-xl font-bold text-white flex items-center gap-2">
-            <Briefcase className="w-5 h-5 text-accent-purple" /> Job & Skill Gap Analyzer
-          </h2>
-          <p className="text-xs text-gray-400">
-            Compare target role requirements, analyze custom job descriptions, and identify missing competencies
-          </p>
-        </div>
+      <div className="cartoon-card p-6 md:p-8 border-2 border-purple-500/30 relative overflow-hidden bg-gradient-to-r from-[#171d33] via-[#1c243f] to-[#1a2138]">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
+          <div>
+            <div className="cartoon-badge cartoon-badge-pink mb-2">
+              <Sparkles className="w-3.5 h-3.5" /> Target Matrix & Job Analyzer
+            </div>
+            <h2 className="text-2xl md:text-3xl font-black text-white flex items-center gap-2">
+              <Briefcase className="w-8 h-8 text-yellow-400" />
+              <span>Job Competency Matrix</span>
+            </h2>
+            <p className="text-xs text-gray-300 font-medium mt-1">
+              Compare target role requirements, evaluate job descriptions & benchmark missing skills
+            </p>
+          </div>
 
-        {/* View Switcher Toggle */}
-        <div className="flex items-center p-1 bg-gray-900 border border-gray-800 rounded-xl self-start md:self-auto">
-          <button
-            onClick={() => setViewMode('matrix')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-              viewMode === 'matrix'
-                ? 'bg-gradient-to-r from-accent-purple to-accent-pink text-white shadow-md'
-                : 'text-gray-400 hover:text-white'
-            }`}
-          >
-            <Grid className="w-3.5 h-3.5" /> Interactive Skill Matrix
-          </button>
-          <button
-            onClick={() => setViewMode('analyzer')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-              viewMode === 'analyzer'
-                ? 'bg-gradient-to-r from-accent-purple to-accent-pink text-white shadow-md'
-                : 'text-gray-400 hover:text-white'
-            }`}
-          >
-            <FileText className="w-3.5 h-3.5" /> AI Job & Preset Analyzer
-          </button>
+          {/* View Switcher Toggle */}
+          <div className="flex items-center p-1.5 bg-[#0d1220] border-2 border-purple-500/30 rounded-2xl">
+            <button
+              onClick={() => setViewMode('matrix')}
+              className={`cartoon-btn py-1.5 px-3.5 text-xs font-black gap-1.5 ${
+                viewMode === 'matrix' ? 'cartoon-btn-purple' : 'cartoon-btn-dark'
+              }`}
+            >
+              <Grid className="w-3.5 h-3.5" /> Interactive Matrix
+            </button>
+            <button
+              onClick={() => setViewMode('analyzer')}
+              className={`cartoon-btn py-1.5 px-3.5 text-xs font-black gap-1.5 ${
+                viewMode === 'analyzer' ? 'cartoon-btn-pink' : 'cartoon-btn-dark'
+              }`}
+            >
+              <FileText className="w-3.5 h-3.5" /> AI Job Analyzer
+            </button>
+          </div>
         </div>
       </div>
 
       {/* UPLOAD-FIRST CHECK */}
       {!hasUploadedResume ? (
-        <div className="glass rounded-2xl p-8 border border-gray-800 text-center space-y-4 animate-fade-in">
-          <div className="w-14 h-14 rounded-2xl bg-accent-purple/15 border border-accent-purple/30 flex items-center justify-center text-accent-purple mx-auto shadow-lg shadow-purple-500/10">
-            <FileText className="w-7 h-7" />
+        <div className="cartoon-card p-10 border-2 border-purple-500/30 text-center space-y-4 animate-fade-in">
+          <div className="w-16 h-16 rounded-2xl bg-purple-950/60 border-2 border-purple-400 flex items-center justify-center text-purple-300 mx-auto shadow-lg shadow-purple-500/20">
+            <FileText className="w-8 h-8 text-pink-400" />
           </div>
-          <h3 className="text-lg font-black text-white">Upload Your Resume to View Skill Gap & Role Match</h3>
-          <p className="text-xs text-gray-400 leading-relaxed max-w-md mx-auto">
-            Please upload your PDF or DOCX resume to let our AI evaluate your target role competencies, calculate your match score, and identify missing skills.
+          <h3 className="text-xl font-black text-white">Upload Resume to View Role Match & Competency Gap</h3>
+          <p className="text-xs text-gray-300 max-w-md mx-auto font-medium">
+            Please upload your resume to calculate your match score and unlock verified learning roadmaps.
           </p>
           <div className="flex items-center justify-center gap-3 pt-2">
             <button
               onClick={() => onNavigate && onNavigate('resume')}
-              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-accent-purple to-accent-pink text-white font-bold text-xs shadow-lg shadow-purple-600/30 flex items-center gap-2 hover:opacity-95"
+              className="cartoon-btn cartoon-btn-purple py-3 px-6 text-xs font-black gap-2"
             >
-              <Zap className="w-4 h-4" /> Go to Resume Analyzer & Upload Resume ›
+              <Zap className="w-4 h-4 fill-current" /> Go to Resume Analyzer ›
             </button>
           </div>
         </div>
@@ -371,587 +355,323 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
           {/* VIEW MODE 1: INTERACTIVE SKILL MATRIX */}
           {/* ================================================================ */}
           {viewMode === 'matrix' && (
-        <div className="skill-page rounded-2xl border border-gray-800">
+            <div className="cartoon-card p-6 md:p-8 border-2 border-purple-500/30 space-y-8">
+              {/* TOP SECTION */}
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6 p-6 rounded-3xl bg-[#0d1220] border-2 border-purple-500/30">
+                <div className="flex items-center gap-5 text-center sm:text-left">
+                  <div className="w-24 h-24 rounded-3xl bg-gradient-to-tr from-purple-600 via-pink-500 to-amber-400 border-2 border-white/30 flex flex-col items-center justify-center shadow-xl text-white font-black">
+                    <span className="text-3xl leading-none">{matchPercentage}%</span>
+                    <span className="text-[9px] font-extrabold uppercase tracking-wider mt-1">MATCH</span>
+                  </div>
 
-          {/* ================= TOP SECTION ================= */}
-          <div className="top-section">
-            <div className="match-card">
-              <div className="match-number">
-                {matchPercentage}%
-              </div>
-              <div className="match-label">
-                MATCH
-              </div>
-            </div>
-
-            <div className="role-info">
-              <div className="target-label-row" style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                <div className="target-label">
-                  <span>◈</span>
-                  TARGET ROLE
-                </div>
-
-                <select
-                  value={targetRoleKey}
-                  onChange={handleRoleChange}
-                  className="role-selector-dropdown"
-                  aria-label="Select Target Goal / Role"
-                >
-                  {Object.entries(ROLE_PRESETS).map(([key, role]) => (
-                    <option key={key} value={key}>
-                      {role.title}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <h1>
-                {ROLE_PRESETS[targetRoleKey]?.title || jobProfile?.roleTitle || "Full Stack Developer"}
-              </h1>
-
-              <h3>
-                Matched{" "}
-                <span>{matchedSkills.length}</span>{" "}
-                competencies expected for this role
-              </h3>
-
-              <p>
-                Your match is based on the competencies
-                expected for the {ROLE_PRESETS[targetRoleKey]?.title || "Full Stack Developer"} role.
-              </p>
-            </div>
-
-            <button
-              className="roadmap-button"
-              onClick={() => triggerGenerateRoadmap()}
-            >
-              <span>
-                Generate
-                <br />
-                Roadmap
-              </span>
-              <strong>›</strong>
-            </button>
-          </div>
-
-          <div className="divider" />
-
-          {/* ================= ROLE REQUIREMENTS ================= */}
-          <section>
-            <div className="section-title">
-              <span className="section-icon">♙</span>
-              ROLE REQUIREMENTS PROFILE
-            </div>
-
-            <div className="requirements-grid">
-              {Object.entries(roleSkills).map(
-                ([category, skills]) => (
-                  <div
-                    className="requirement-card"
-                    key={category}
-                  >
-                    <h2>
-                      {CATEGORY_LABELS[category] || category.toUpperCase()}
-                    </h2>
-
-                    <div className="skill-list">
-                      {(skills || []).map((skill) => (
-                        <div
-                          className={`skill-chip ${
-                            matchedSkills.some(
-                              (matched) =>
-                                matched.toLowerCase().trim() ===
-                                skill.toLowerCase().trim()
-                            )
-                              ? "matched"
-                              : "required"
-                          }`}
-                          key={skill}
-                        >
-                          <span>{skill}</span>
-
-                          <button
-                            className="remove-button"
-                            onClick={() =>
-                              removeRoleSkill(
-                                category,
-                                skill
-                              )
-                            }
-                            title={`Remove ${skill}`}
-                          >
-                            ×
-                          </button>
-                        </div>
-                      ))}
-
-                      <button
-                        className="add-skill-button"
-                        onClick={() =>
-                          openRoleSkillDialog(category)
-                        }
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="cartoon-badge cartoon-badge-purple text-[10px]">TARGET ROLE</span>
+                      <select
+                        value={targetRoleKey}
+                        onChange={handleRoleChange}
+                        className="bg-[#151b2e] border-2 border-purple-500/30 text-white text-xs font-black rounded-xl px-3 py-1.5 focus:outline-none cursor-pointer"
                       >
-                        <span>+</span>
-                        Add Skill
-                      </button>
+                        {Object.entries(ROLE_PRESETS).map(([key, role]) => (
+                          <option key={key} value={key} className="bg-[#121727] text-white font-bold">
+                            {role.title}
+                          </option>
+                        ))}
+                      </select>
                     </div>
+
+                    <h3 className="text-sm font-black text-gray-200">
+                      Matched <span className="text-emerald-400 font-black">{matchedSkills.length}</span> competencies expected for this role
+                    </h3>
                   </div>
-                )
-              )}
-            </div>
-          </section>
-
-          {/* ================= SKILL COMPARISON ================= */}
-          <section className="comparison-section">
-            <div className="section-title">
-              SKILL COMPARISON
-            </div>
-
-            <div className="your-skills-card">
-              <div className="your-skills-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '10px' }}>
-                <h2 style={{ margin: 0 }}>
-                  YOUR SKILLS ({userSkills.length})
-                </h2>
-
-                {profile && profile.skills && (
-                  <button 
-                    className="sync-profile-button"
-                    onClick={handleLoadProfileSkills}
-                    title="Sync skills from current user profile"
-                  >
-                    ⚡ Sync Profile Skills ({profile.name ? profile.name.split(' ')[0] : 'User'})
-                  </button>
-                )}
-              </div>
-
-              <div className="user-skills">
-                {userSkills.map((skill) => (
-                  <div
-                    className="user-skill-chip"
-                    key={skill}
-                  >
-                    <span>{skill}</span>
-
-                    <button
-                      className="remove-button"
-                      onClick={() =>
-                        removeUserSkill(skill)
-                      }
-                      title={`Remove ${skill}`}
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
+                </div>
 
                 <button
-                  className="add-skill-button user-add"
-                  onClick={openUserSkillDialog}
+                  onClick={() => triggerGenerateRoadmap()}
+                  className="cartoon-btn cartoon-btn-purple py-3 px-6 text-xs font-black gap-2"
                 >
-                  <span>+</span>
-                  Add Skill
+                  <Sparkles className="w-4 h-4 text-yellow-300" />
+                  <span>Generate Roadmap</span>
                 </button>
               </div>
-            </div>
-          </section>
 
-          {/* ================= MISSING SKILLS & VERIFICATION PIPELINE ================= */}
-          <section className="mt-6 pt-4 border-t border-gray-800">
-            <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-              <div className="section-title text-amber-400 flex items-center gap-2">
-                <span>⚠</span>
-                IDENTIFIED MISSING SKILLS GAP ({allRoleSkills.filter(s => !userSkills.some(u => u.toLowerCase().trim() === s.toLowerCase().trim())).length})
-              </div>
-              <button
-                onClick={() => triggerGenerateRoadmap()}
-                className="px-3.5 py-1.5 rounded-xl bg-accent-purple/20 border border-accent-purple/30 text-accent-purple hover:bg-accent-purple/30 text-xs font-bold transition-all flex items-center gap-1.5"
-              >
-                View Full AI Roadmap ›
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-              {allRoleSkills.filter(s => !userSkills.some(u => u.toLowerCase().trim() === s.toLowerCase().trim())).map((missingSkill) => (
-                <div 
-                  key={missingSkill}
-                  className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between gap-2"
-                >
-                  <div className="overflow-hidden">
-                    <span className="font-bold text-white text-xs block truncate">{missingSkill}</span>
-                    <span className="text-[10px] text-amber-300/80 block">Missing for {ROLE_PRESETS[targetRoleKey]?.title}</span>
-                  </div>
-                  <button
-                    onClick={() => onOpenVerification && onOpenVerification(missingSkill)}
-                    className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-[11px] shrink-0 transition-all flex items-center gap-1 shadow-md shadow-amber-500/20"
-                    title={`Start verification pipeline for ${missingSkill}`}
-                  >
-                    ⚡ Verify
-                  </button>
-                </div>
-              ))}
-              {allRoleSkills.filter(s => !userSkills.some(u => u.toLowerCase().trim() === s.toLowerCase().trim())).length === 0 && (
-                <div className="col-span-full p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold text-center">
-                  🎉 100% Match! Zero missing skills for {ROLE_PRESETS[targetRoleKey]?.title}!
-                </div>
-              )}
-            </div>
-          </section>
-
-          {/* ================= BOTTOM INFO ================= */}
-          <div className="bottom-arrow">
-            ↓
-          </div>
-
-          <div className="tip">
-            <span>💡</span>
-            Select a Target Role, or add/remove skills to see how it impacts
-            your match percentage. Switch to AI Job Analyzer to paste custom Job Descriptions!
-          </div>
-
-          {/* ================= ADD SKILL MODAL ================= */}
-          {activeCategory && (
-            <div
-              className="modal-overlay"
-              onClick={closeDialog}
-            >
-              <div
-                className="skill-modal"
-                onClick={(event) =>
-                  event.stopPropagation()
-                }
-              >
-                <button
-                  className="modal-close"
-                  onClick={closeDialog}
-                >
-                  ×
-                </button>
-
-                <h2>Add Skill</h2>
-
-                <p>
-                  {activeCategory === "user"
-                    ? "Add a skill you currently have."
-                    : `Add a skill to ${
-                        CATEGORY_LABELS[activeCategory] || activeCategory.toUpperCase()
-                      } requirements.`}
-                </p>
-
-                <input
-                  type="text"
-                  placeholder="Enter skill name..."
-                  value={skillInput}
-                  onChange={(event) =>
-                    setSkillInput(event.target.value)
-                  }
-                  onKeyDown={handleKeyDown}
-                  autoFocus
-                />
-
-                <div className="modal-actions">
-                  <button
-                    className="cancel-button"
-                    onClick={closeDialog}
-                  >
-                    Cancel
-                  </button>
-
-                  <button
-                    className="confirm-button"
-                    onClick={
-                      activeCategory === "user"
-                        ? addUserSkill
-                        : addRoleSkill
-                    }
-                  >
-                    Add Skill
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ================================================================ */}
-      {/* VIEW MODE 2: AI JOB DESCRIPTION & PRESET ANALYZER (OLD FEATURE) */}
-      {/* ================================================================ */}
-      {viewMode === 'analyzer' && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left Column: 2 Inputs & Presets (5 cols) */}
-          <div className="lg:col-span-5 space-y-6">
-            {/* Input 1: Your Current Skills / Profile */}
-            <div className="glass rounded-xl p-5 space-y-3 border border-gray-800 focus-within:border-accent-purple/50 transition-colors">
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-                  <span className="w-5 h-5 rounded-full bg-accent-purple/20 text-accent-purple text-xs flex items-center justify-center font-bold">1</span>
-                  Your Current Skills / Profile
+              {/* ROLE REQUIREMENTS */}
+              <section className="space-y-4">
+                <h3 className="text-sm font-black text-white uppercase tracking-wider flex items-center gap-2">
+                  <Layers className="w-4 h-4 text-purple-400" /> Role Requirements Profile
                 </h3>
-                {profile && profile.skills && profile.skills.length > 0 && (
-                  <button
-                    onClick={handleLoadProfileSkills}
-                    className="text-[11px] text-accent-purple hover:underline flex items-center gap-1 font-medium"
-                  >
-                    <UserCheck className="w-3 h-3" /> Load Saved Skills
-                  </button>
-                )}
-              </div>
-              <textarea
-                value={userSkillsText}
-                onChange={(e) => setUserSkillsText(e.target.value)}
-                placeholder="e.g. I know HTML, CSS, JavaScript and React. I have basic knowledge of Node.js and SQL."
-                rows={4}
-                className="w-full px-3 py-2 bg-gray-900/80 border border-gray-800 rounded-lg text-xs text-white placeholder-gray-500 focus:outline-none focus:border-accent-purple resize-none leading-relaxed"
-              />
-            </div>
 
-            {/* Input 2: Target Job Description or Role */}
-            <div className="glass rounded-xl p-5 space-y-3 border border-gray-800 focus-within:border-accent-purple/50 transition-colors">
-              <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-                <span className="w-5 h-5 rounded-full bg-accent-purple/20 text-accent-purple text-xs flex items-center justify-center font-bold">2</span>
-                Target Job Description / Role
-              </h3>
-              <textarea
-                value={jdText}
-                onChange={(e) => setJdText(e.target.value)}
-                placeholder="e.g. Full Stack Developer or paste full job description..."
-                rows={4}
-                className="w-full px-3 py-2 bg-gray-900/80 border border-gray-800 rounded-lg text-xs text-white placeholder-gray-500 focus:outline-none focus:border-accent-purple resize-none leading-relaxed font-mono"
-              />
-            </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {Object.entries(roleSkills).map(([category, skills]) => (
+                    <div key={category} className="cartoon-card p-5 border-2 border-purple-500/20 space-y-3 bg-[#0d1220]/80">
+                      <h4 className="text-xs font-black text-cyan-300 uppercase tracking-wider">
+                        {CATEGORY_LABELS[category] || category.toUpperCase()}
+                      </h4>
 
-            {/* Compare Button */}
-            <button
-              onClick={handleAnalyze}
-              disabled={!userSkillsText.trim() || !jdText.trim() || analyzing}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-accent-purple to-accent-pink hover:opacity-95 text-white font-bold text-xs transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent-purple/20 disabled:opacity-50"
-            >
-              {analyzing ? (
-                <>
-                  <RefreshCw className="w-4 h-4 animate-spin" /> Extracting Skills & Analyzing Role...
-                </>
-              ) : (
-                <>
-                  <Zap className="w-4 h-4 fill-white" /> Compare Skills
-                </>
-              )}
-            </button>
+                      <div className="flex flex-wrap gap-2">
+                        {(skills || []).map((skill) => {
+                          const isMatched = matchedSkills.some(m => m.toLowerCase().trim() === skill.toLowerCase().trim());
+                          return (
+                            <span
+                              key={skill}
+                              className={`cartoon-badge text-xs ${
+                                isMatched 
+                                  ? 'cartoon-badge-mint' 
+                                  : 'cartoon-badge-purple'
+                              }`}
+                            >
+                              <span>{skill}</span>
+                              <button
+                                onClick={() => removeRoleSkill(category, skill)}
+                                className="ml-1 text-gray-400 hover:text-white font-bold"
+                              >
+                                ×
+                              </button>
+                            </span>
+                          );
+                        })}
 
-            {/* Target Company Presets */}
-            <div className="glass rounded-xl p-5 space-y-3 border border-gray-800">
-              <h3 className="text-xs uppercase font-bold text-gray-400 tracking-wider">Select Target Company Preset</h3>
-              <div className="space-y-2">
-                {JOB_PRESETS.map((preset) => (
-                  <button
-                    key={preset.id}
-                    onClick={() => handleSelectPreset(preset)}
-                    className="w-full text-left p-3 rounded-lg border border-gray-800 hover:border-gray-700 bg-white/5 hover:bg-white/10 transition-colors flex items-center justify-between text-xs"
-                  >
-                    <div>
-                      <span className="font-semibold text-white block">{preset.company}</span>
-                      <span className="text-[10px] text-gray-400 mt-0.5">{preset.title}</span>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-gray-500" />
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column: Role Detection & Skill Gap Results (7 cols) */}
-          <div className="lg:col-span-7 space-y-6">
-            {analyzing && (
-              <div className="glass rounded-xl p-12 text-center flex flex-col items-center justify-center space-y-4 min-h-[400px]">
-                <div className="w-12 h-12 rounded-full border-2 border-accent-purple border-t-transparent animate-spin" />
-                <div className="space-y-1">
-                  <h4 className="text-sm font-semibold text-white">Running Role & Skill Analysis...</h4>
-                  <p className="text-xs text-gray-500">Detecting role competencies, mandatory skills, and weighted match score</p>
-                </div>
-              </div>
-            )}
-
-            {!analyzing && gapReport && (
-              <div className="glass rounded-xl p-6 space-y-6 border border-gray-800">
-                {/* Header Match Badge & Role Title */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-gray-800 gap-4">
-                  <div className="flex items-center gap-4">
-                    <div className={`w-20 h-20 rounded-2xl flex flex-col items-center justify-center shadow-xl border-2 ${
-                      gapReport.matchScore >= 75 
-                        ? 'bg-emerald-500/10 border-emerald-500 text-emerald-400 shadow-emerald-500/10' 
-                        : gapReport.matchScore >= 50 
-                        ? 'bg-amber-500/10 border-amber-500 text-amber-400 shadow-amber-500/10' 
-                        : 'bg-red-500/10 border-red-500 text-red-400 shadow-red-500/10'
-                    }`}>
-                      <span className="text-2xl font-black leading-none">{gapReport.matchScore}%</span>
-                      <span className="text-[10px] font-bold uppercase tracking-wider mt-1 text-gray-300">Match</span>
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="px-2 py-0.5 rounded bg-accent-purple/20 text-accent-purple text-[10px] font-bold tracking-wider uppercase flex items-center gap-1">
-                          <Layers className="w-3 h-3" /> TARGET ROLE
-                        </span>
+                        <button
+                          onClick={() => openRoleSkillDialog(category)}
+                          className="cartoon-badge bg-white/5 border-dashed border-white/20 text-gray-300 hover:text-white text-xs cursor-pointer"
+                        >
+                          + Add Skill
+                        </button>
                       </div>
-                      <h3 className="text-lg font-bold text-white mt-1">
-                        {jobProfile?.roleTitle || "Full Stack Developer"}
-                      </h3>
-                      <p className="text-xs text-gray-400 mt-1">
-                        Matched <span className="text-emerald-400 font-bold">{gapReport.matchedSkills.length}</span> competencies expected for this role
-                      </p>
-                      <p className="text-[10px] text-gray-500 italic mt-1">
-                        Your match is based on the competencies expected for the {jobProfile?.roleTitle || "Full Stack Developer"} role.
-                      </p>
                     </div>
-                  </div>
+                  ))}
+                </div>
+              </section>
 
-                  {gapReport.missingSkills.length > 0 && (
-                    <button
-                      onClick={() => triggerGenerateRoadmap(gapReport.missingSkills)}
-                      className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-accent-purple to-accent-pink hover:opacity-95 text-white font-bold text-xs transition-all flex items-center justify-center gap-1.5 shadow-lg shadow-accent-purple/20 self-start sm:self-center"
+              {/* SKILL COMPARISON */}
+              <section className="space-y-4 pt-4 border-t-2 border-white/10">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-black text-white uppercase tracking-wider">
+                    Your Profile Skills ({userSkills.length})
+                  </h3>
+
+                  {profile && profile.skills && (
+                    <button 
+                      onClick={handleLoadProfileSkills}
+                      className="cartoon-btn cartoon-btn-dark py-1.5 px-3 text-xs font-bold gap-1"
                     >
-                      Generate Roadmap <ChevronRight className="w-4 h-4" />
+                      <Zap className="w-3 h-3 text-yellow-400" /> Sync Profile
                     </button>
                   )}
                 </div>
 
-                {/* Categorized Role Requirements */}
-                {jobProfile && jobProfile.roleCategories && (
-                  <div className="space-y-3">
-                    <h4 className="text-xs uppercase font-bold text-gray-400 tracking-wider flex items-center gap-1.5">
-                      <Award className="w-4 h-4 text-accent-purple" /> Role Requirements Profile
-                    </h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                      {Object.entries(jobProfile.roleCategories).map(([catName, catSkills]) => (
-                        <div key={catName} className="p-3 rounded-lg border border-gray-800 bg-gray-900/60 space-y-1.5">
-                          <span className="text-[11px] font-bold text-accent-purple uppercase tracking-wider block">
-                            {catName}
-                          </span>
-                          <div className="flex flex-wrap gap-1">
-                            {catSkills.map((sk, idx) => {
-                              const isMatched = gapReport.matchedSkills.some(m => m.toLowerCase().trim() === sk.toLowerCase().trim());
-                              return (
-                                <span 
-                                  key={idx} 
-                                  className={`px-2 py-0.5 text-[11px] font-medium rounded ${
-                                    isMatched 
-                                      ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30' 
-                                      : 'bg-gray-800 text-gray-400 border border-gray-700'
-                                  }`}
-                                >
-                                  {sk}
-                                </span>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Skill Comparison Breakdown */}
-                <div className="space-y-4 pt-2">
-                  <h4 className="text-xs uppercase font-bold text-gray-400 tracking-wider">Skill Comparison</h4>
-
-                  <div className="p-4 rounded-xl border border-gray-800 bg-gray-900/60 space-y-2">
-                    <div className="flex items-center justify-between text-xs font-semibold text-gray-300">
-                      <span className="flex items-center gap-1.5 text-accent-purple font-bold">
-                        YOUR SKILLS ({extractedUserSkills.length})
+                <div className="cartoon-card p-5 border-2 border-purple-500/20 bg-[#0d1220]/80">
+                  <div className="flex flex-wrap gap-2">
+                    {userSkills.map((skill) => (
+                      <span key={skill} className="cartoon-badge cartoon-badge-cyan text-xs">
+                        <span>{skill}</span>
+                        <button
+                          onClick={() => removeUserSkill(skill)}
+                          className="ml-1 text-gray-400 hover:text-white font-bold"
+                        >
+                          ×
+                        </button>
                       </span>
-                    </div>
-                    <div className="flex flex-wrap gap-1.5">
-                      {extractedUserSkills.map((skill, idx) => (
-                        <span key={idx} className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-accent-purple/10 text-accent-purple border border-accent-purple/20">
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
+                    ))}
+
+                    <button
+                      onClick={openUserSkillDialog}
+                      className="cartoon-badge bg-white/5 border-dashed border-white/20 text-gray-300 hover:text-white text-xs cursor-pointer"
+                    >
+                      + Add My Skill
+                    </button>
                   </div>
+                </div>
+              </section>
 
-                  <div className="flex justify-center text-gray-600">
-                    <ArrowDown className="w-5 h-5 animate-pulse text-accent-purple" />
-                  </div>
+              {/* MISSING SKILLS & VERIFICATION */}
+              <section className="space-y-4 pt-4 border-t-2 border-white/10">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-black text-yellow-300 uppercase tracking-wider flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 text-yellow-400" />
+                    Identified Missing Skills Gap ({allRoleSkills.filter(s => !userSkills.some(u => u.toLowerCase().trim() === s.toLowerCase().trim())).length})
+                  </h3>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5 space-y-3">
-                      <h5 className="text-xs uppercase font-bold text-emerald-400 flex items-center gap-1.5 tracking-wider">
-                        <CheckCircle className="w-4 h-4 text-emerald-400" /> Matched Skills ({gapReport.matchedSkills.length})
-                      </h5>
-                      <div className="flex flex-wrap gap-1.5">
-                        {gapReport.matchedSkills.map((skill, idx) => (
-                          <span key={idx} className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                            {skill}
-                          </span>
-                        ))}
-                        {gapReport.matchedSkills.length === 0 && (
-                          <span className="text-xs text-gray-500 italic">No matching skills found</span>
-                        )}
+                  <button
+                    onClick={() => triggerGenerateRoadmap()}
+                    className="cartoon-btn cartoon-btn-purple py-1.5 px-4 text-xs font-black"
+                  >
+                    View Roadmap ›
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                  {allRoleSkills.filter(s => !userSkills.some(u => u.toLowerCase().trim() === s.toLowerCase().trim())).map((missingSkill) => (
+                    <div 
+                      key={missingSkill}
+                      className="cartoon-card p-4 border-2 border-yellow-500/30 flex items-center justify-between gap-2 bg-[#0d1220]"
+                    >
+                      <div>
+                        <span className="font-black text-white text-xs block truncate">{missingSkill}</span>
+                        <span className="text-[10px] text-yellow-300 font-bold block">Missing competency</span>
                       </div>
+                      <button
+                        onClick={() => onOpenVerification && onOpenVerification(missingSkill)}
+                        className="cartoon-btn cartoon-btn-yellow py-1 px-3 text-xs font-black gap-1"
+                      >
+                        <Zap className="w-3 h-3 fill-current" /> Verify
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              {/* ADD SKILL MODAL */}
+              {activeCategory && (
+                <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in" onClick={closeDialog}>
+                  <div className="cartoon-card max-w-md w-full p-6 border-2 border-purple-500 space-y-4 bg-[#151b2e]" onClick={e => e.stopPropagation()}>
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-black text-white">Add New Skill</h3>
+                      <button onClick={closeDialog} className="text-gray-400 hover:text-white font-bold">✕</button>
                     </div>
 
-                    <div className="p-4 rounded-xl border border-red-500/30 bg-red-500/5 space-y-3">
-                      <h5 className="text-xs uppercase font-bold text-red-400 flex items-center gap-1.5 tracking-wider">
-                        <XCircle className="w-4 h-4 text-red-400" /> Skill Gaps ({gapReport.missingSkills.length})
-                      </h5>
-                      <div className="flex flex-wrap gap-1.5">
-                        {gapReport.missingSkills.map((skill, idx) => (
-                          <span key={idx} className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-red-500/20 text-red-300 border border-red-500/30">
-                            {skill}
-                          </span>
-                        ))}
-                        {gapReport.missingSkills.length === 0 && (
-                          <span className="text-xs text-emerald-400 italic font-medium">Perfect fit! Zero gaps detected</span>
-                        )}
-                      </div>
+                    <input
+                      type="text"
+                      placeholder="Enter skill name..."
+                      value={skillInput}
+                      onChange={e => setSkillInput(e.target.value)}
+                      onKeyDown={handleKeyDown}
+                      autoFocus
+                      className="w-full px-4 py-3 bg-[#0d1220] border-2 border-purple-500/30 rounded-2xl text-xs text-white font-bold focus:outline-none focus:border-purple-400"
+                    />
+
+                    <div className="flex justify-end gap-2 pt-2">
+                      <button onClick={closeDialog} className="cartoon-btn cartoon-btn-dark py-2 px-4 text-xs font-bold">
+                        Cancel
+                      </button>
+                      <button onClick={activeCategory === 'user' ? addUserSkill : addRoleSkill} className="cartoon-btn cartoon-btn-purple py-2 px-5 text-xs font-black">
+                        Add Skill
+                      </button>
                     </div>
                   </div>
                 </div>
+              )}
+            </div>
+          )}
 
-                {/* Tools & Responsibilities */}
-                {jobProfile && (
-                  <div className="pt-4 border-t border-gray-800 space-y-4">
-                    {jobProfile.tools && jobProfile.tools.length > 0 && (
-                      <div className="space-y-1.5">
-                        <h4 className="text-xs uppercase font-bold text-gray-400 tracking-wider">Required Tools & Version Control</h4>
-                        <div className="flex flex-wrap gap-1.5">
-                          {jobProfile.tools.map((tool, idx) => (
-                            <span key={idx} className="px-2.5 py-1 text-xs rounded-lg bg-gray-800 text-gray-300 border border-gray-700">
-                              {tool}
-                            </span>
-                          ))}
+          {/* ================================================================ */}
+          {/* VIEW MODE 2: AI JOB DESCRIPTION & PRESET ANALYZER */}
+          {/* ================================================================ */}
+          {viewMode === 'analyzer' && (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              {/* Left Column */}
+              <div className="lg:col-span-5 space-y-6">
+                <div className="cartoon-card p-5 border-2 border-purple-500/25 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xs font-black text-purple-300 uppercase tracking-wider">
+                      1. Your Current Skills / Profile
+                    </h3>
+                    {profile && profile.skills && (
+                      <button onClick={handleLoadProfileSkills} className="text-xs font-bold text-cyan-300 hover:underline">
+                        Load Saved
+                      </button>
+                    )}
+                  </div>
+                  <textarea
+                    value={userSkillsText}
+                    onChange={(e) => setUserSkillsText(e.target.value)}
+                    rows={4}
+                    className="w-full px-4 py-3 bg-[#0d1220] border-2 border-purple-500/30 rounded-2xl text-xs text-white focus:outline-none focus:border-purple-400 font-medium resize-none"
+                  />
+                </div>
+
+                <div className="cartoon-card p-5 border-2 border-purple-500/25 space-y-3">
+                  <h3 className="text-xs font-black text-pink-300 uppercase tracking-wider">
+                    2. Target Job Description / Role
+                  </h3>
+                  <textarea
+                    value={jdText}
+                    onChange={(e) => setJdText(e.target.value)}
+                    rows={4}
+                    className="w-full px-4 py-3 bg-[#0d1220] border-2 border-purple-500/30 rounded-2xl text-xs text-white focus:outline-none focus:border-purple-400 font-mono resize-none"
+                  />
+                </div>
+
+                <button
+                  onClick={handleAnalyze}
+                  disabled={!userSkillsText.trim() || !jdText.trim() || analyzing}
+                  className="cartoon-btn cartoon-btn-purple w-full py-3.5 text-xs font-black gap-2 disabled:opacity-50"
+                >
+                  {analyzing ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4 fill-current" />}
+                  <span>{analyzing ? "Extracting Skills..." : "Compare Skills"}</span>
+                </button>
+
+                {/* Company Presets */}
+                <div className="cartoon-card p-5 border-2 border-purple-500/25 space-y-3">
+                  <h3 className="text-xs font-black text-yellow-300 uppercase tracking-wider">Target Company Presets</h3>
+                  <div className="space-y-2">
+                    {JOB_PRESETS.map((preset) => (
+                      <button
+                        key={preset.id}
+                        onClick={() => handleSelectPreset(preset)}
+                        className="cartoon-card cartoon-card-interactive w-full text-left p-3.5 border-2 border-purple-500/20 flex items-center justify-between text-xs"
+                      >
+                        <div>
+                          <span className="font-black text-white block">{preset.company}</span>
+                          <span className="text-[10px] text-gray-400 font-medium">{preset.title}</span>
                         </div>
-                      </div>
-                    )}
+                        <ChevronRight className="w-4 h-4 text-purple-400" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
 
-                    {jobProfile.responsibilities && jobProfile.responsibilities.length > 0 && (
-                      <div className="space-y-2">
-                        <h4 className="text-xs uppercase font-bold text-gray-400 tracking-wider">Core Responsibilities</h4>
-                        <ul className="space-y-2 text-xs text-gray-300">
-                          {jobProfile.responsibilities.map((resp, idx) => (
-                            <li key={idx} className="flex items-start gap-2 leading-relaxed">
-                              <span className="w-1.5 h-1.5 rounded-full bg-accent-purple mt-1.5 shrink-0" />
-                              <span>{resp}</span>
-                            </li>
-                          ))}
-                        </ul>
+              {/* Right Column: Analysis Output */}
+              <div className="lg:col-span-7 space-y-6">
+                {!analyzing && gapReport && (
+                  <div className="cartoon-card p-6 border-2 border-purple-500/30 space-y-6">
+                    <div className="flex items-center gap-4 pb-6 border-b-2 border-white/10">
+                      <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 border-2 border-white/20 flex flex-col items-center justify-center text-white font-black shadow-lg">
+                        <span className="text-2xl leading-none">{gapReport.matchScore}%</span>
+                        <span className="text-[8px] uppercase tracking-wider mt-1 font-bold">Match</span>
                       </div>
-                    )}
+                      <div>
+                        <div className="cartoon-badge cartoon-badge-purple text-[10px] mb-1">Detected Role</div>
+                        <h3 className="text-lg font-black text-white">{jobProfile?.roleTitle || "Full Stack Developer"}</h3>
+                        <p className="text-xs text-gray-300 font-medium">Matched {gapReport.matchedSkills.length} expected competencies</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <h4 className="text-xs font-black text-emerald-400 uppercase tracking-wider">Matched Skills ({gapReport.matchedSkills.length})</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {gapReport.matchedSkills.map((s, idx) => (
+                          <span key={idx} className="cartoon-badge cartoon-badge-mint text-xs">
+                            ✓ {s}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <h4 className="text-xs font-black text-rose-400 uppercase tracking-wider">Missing Skills ({gapReport.missingSkills.length})</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {gapReport.missingSkills.map((s, idx) => (
+                          <span key={idx} className="cartoon-badge cartoon-badge-pink text-xs">
+                            ✗ {s}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => triggerGenerateRoadmap(gapReport.missingSkills)}
+                      className="cartoon-btn cartoon-btn-purple w-full py-3 text-xs font-black gap-2"
+                    >
+                      <Sparkles className="w-4 h-4 text-yellow-300" />
+                      <span>Generate Tailored Roadmap</span>
+                    </button>
                   </div>
                 )}
               </div>
-            )}
-
-            {!analyzing && !gapReport && (
-              <div className="glass rounded-xl p-12 text-center flex flex-col items-center justify-center space-y-4 min-h-[400px] border-dashed border-gray-800">
-                <AlertCircle className="w-12 h-12 text-gray-600" />
-                <div className="space-y-1">
-                  <h4 className="text-sm font-semibold text-white">Ready for Skill Gap Comparison</h4>
-                  <p className="text-xs text-gray-500">Provide your current skills and target job description on the left to calculate match percentage</p>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+            </div>
+          )}
         </>
       )}
     </div>

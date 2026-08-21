@@ -1,4 +1,5 @@
-import React from 'react';
+// agent-notes: { ctx: "Playful cartoon AI Mock Interview simulator with Sparky reactions, 3D buttons, bouncy score metrics & detailed diagnostic cards", deps: ["lucide-react", "./common/AIAssistantAvatar", "../utils/mockData", "../utils/aiSimulator"], state: "active", last: "anti@2026-08-21" }
+import React, { useState } from 'react';
 import { 
   Award, 
   ChevronRight, 
@@ -7,24 +8,30 @@ import {
   HelpCircle as QuestionIcon,
   MessageSquare,
   Sparkles,
-  Play
+  Play,
+  Zap,
+  CheckCircle2,
+  Trophy,
+  Volume2
 } from 'lucide-react';
+import AIAssistantAvatar from './common/AIAssistantAvatar';
 import { MOCK_INTERVIEWS } from '../utils/mockData';
 import { evaluateInterviewResponse } from '../utils/aiSimulator';
 
 export default function MockInterview({ _profile, setProfile, onNavigate }) {
-  const [track, setTrack] = React.useState(null); // 'frontend', 'backend', 'hr'
-  const [step, setStep] = React.useState('select'); // 'select', 'interview', 'evaluating', 'report'
+  const [track, setTrack] = useState(null); // 'frontend', 'backend', 'hr'
+  const [step, setStep] = useState('select'); // 'select', 'interview', 'evaluating', 'report'
+  const [avatarState, setAvatarState] = useState('idle');
   
-  const [currentQuestionIndex, setCurrentQuestionIndex] = React.useState(0);
-  const [answers, setAnswers] = React.useState([]);
-  const [currentAnswer, setCurrentAnswer] = React.useState("");
-  const [showHint, setShowHint] = React.useState(false);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [answers, setAnswers] = useState([]);
+  const [currentAnswer, setCurrentAnswer] = useState("");
+  const [showHint, setShowHint] = useState(false);
   
   // Results
-  const [evaluatingIndex, setEvaluatingIndex] = React.useState(0);
-  const [evaluatingText, setEvaluatingText] = React.useState("");
-  const [report, setReport] = React.useState(null);
+  const [evaluatingIndex, setEvaluatingIndex] = useState(0);
+  const [evaluatingText, setEvaluatingText] = useState("");
+  const [report, setReport] = useState(null);
 
   const startInterview = (selectedTrack) => {
     setTrack(selectedTrack);
@@ -32,6 +39,7 @@ export default function MockInterview({ _profile, setProfile, onNavigate }) {
     setCurrentQuestionIndex(0);
     setCurrentAnswer("");
     setShowHint(false);
+    setAvatarState('listening');
     setStep('interview');
   };
 
@@ -58,16 +66,16 @@ export default function MockInterview({ _profile, setProfile, onNavigate }) {
 
   const runEvaluation = (allAnswers) => {
     setStep('evaluating');
+    setAvatarState('thinking');
     setEvaluatingIndex(0);
     setEvaluatingText("Evaluating Question 1...");
     
-    // Simulate AI grading each response sequentially for UI immersion
     const evaluations = [];
     const questions = MOCK_INTERVIEWS[track];
 
     const evaluateNext = (idx) => {
       if (idx < allAnswers.length) {
-        setEvaluatingText(`AI Grading response for Question ${idx + 1}...`);
+        setEvaluatingText(`Sparky is grading response ${idx + 1} of ${allAnswers.length}...`);
         
         setTimeout(() => {
           const evalResult = evaluateInterviewResponse(track, idx, allAnswers[idx].answer);
@@ -104,15 +112,18 @@ export default function MockInterview({ _profile, setProfile, onNavigate }) {
         };
 
         setReport(compiledReport);
+        setAvatarState('success');
         
         // Update user readiness score on profile
-        setProfile(prev => ({
-          ...prev,
-          scores: {
-            ...prev.scores,
-            placementReadiness: Math.min(100, Math.round(prev.scores.placementReadiness * 0.4 + avgScore * 0.6))
-          }
-        }));
+        if (setProfile) {
+          setProfile(prev => ({
+            ...prev,
+            scores: {
+              ...prev?.scores,
+              placementReadiness: Math.min(100, Math.round((prev?.scores?.placementReadiness || 70) * 0.4 + avgScore * 0.6))
+            }
+          }));
+        }
 
         setStep('report');
       }
@@ -127,74 +138,100 @@ export default function MockInterview({ _profile, setProfile, onNavigate }) {
   const currentQuestionObj = questions[currentQuestionIndex];
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div>
-        <h2 className="text-xl font-bold text-white flex items-center gap-2">
-          <Award className="w-5 h-5 text-accent-purple" /> AI Placement Mock Interview
-        </h2>
-        <p className="text-xs text-gray-400">Simulate mock coding and behavioral placement questions. AI evaluates correctness, confidence, and vocabulary</p>
+    <div className="space-y-6 animate-fade-in select-none">
+      {/* Top Header Card */}
+      <div className="cartoon-card p-6 md:p-8 border-2 border-purple-500/30 relative overflow-hidden bg-gradient-to-r from-[#171d33] via-[#1c243f] to-[#1a2138]">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 relative z-10">
+          <div className="flex items-center gap-4">
+            <AIAssistantAvatar size="md" state={avatarState} onClick={() => setAvatarState('success')} />
+            <div>
+              <div className="cartoon-badge cartoon-badge-pink mb-1">
+                <Sparkles className="w-3.5 h-3.5" /> AI Placement Interview Room
+              </div>
+              <h1 className="text-2xl md:text-3xl font-black text-white flex items-center gap-2">
+                <Award className="w-7 h-7 text-yellow-400" />
+                <span>Simulated Hiring Rounds</span>
+              </h1>
+              <p className="text-gray-300 text-xs mt-1 font-medium">
+                Practice live technical and HR placement questions with Sparky grading correctness, confidence, and structure!
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* STEP 1: Select Track */}
       {step === 'select' && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto pt-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto pt-2">
           {/* Frontend Card */}
-          <div className="glass rounded-2xl p-6 border border-gray-800 hover:border-accent-purple/30 flex flex-col justify-between space-y-6 transition-all group">
+          <div className="cartoon-card p-6 border-2 border-purple-500/30 hover:border-purple-400/60 flex flex-col justify-between space-y-6 transition-all group">
             <div className="space-y-3">
-              <div className="w-10 h-10 rounded-lg bg-accent-purple/10 border border-accent-purple/20 flex items-center justify-center text-accent-purple">
-                <Sparkles className="w-5 h-5" />
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-purple-500/30 border-2 border-white/20 group-hover:scale-110 transition-transform">
+                <Sparkles className="w-6 h-6 text-yellow-300" />
               </div>
-              <h3 className="text-sm font-semibold text-white">Frontend Track</h3>
-              <p className="text-xs text-gray-400 leading-relaxed">Questions covering React state/props, Virtual DOM diffing, lifecycle Hooks, performance, and CSS layout grids.</p>
+              <div className="cartoon-badge cartoon-badge-purple text-[10px]">React & Web</div>
+              <h3 className="text-base font-black text-white">Frontend Track</h3>
+              <p className="text-xs text-gray-300 font-medium leading-relaxed">
+                Questions covering React hooks, state management, Virtual DOM reconciliation, performance optimizations, and CSS grid layouts.
+              </p>
             </div>
             <button 
               onClick={() => startInterview('frontend')}
-              className="w-full py-2.5 rounded-xl bg-gray-800 group-hover:bg-accent-purple text-gray-300 group-hover:text-white font-semibold text-xs transition-all flex items-center justify-center gap-1"
+              className="cartoon-btn cartoon-btn-purple w-full py-3 text-xs font-black gap-2"
             >
-              Start Session <Play className="w-3 h-3 ml-0.5 fill-current" />
+              <span>Start Frontend Round</span>
+              <Play className="w-3.5 h-3.5 fill-current" />
             </button>
           </div>
 
           {/* Backend Card */}
-          <div className="glass rounded-2xl p-6 border border-gray-800 hover:border-accent-blue/30 flex flex-col justify-between space-y-6 transition-all group">
+          <div className="cartoon-card p-6 border-2 border-cyan-500/30 hover:border-cyan-400/60 flex flex-col justify-between space-y-6 transition-all group">
             <div className="space-y-3">
-              <div className="w-10 h-10 rounded-lg bg-accent-blue/10 border border-accent-blue/20 flex items-center justify-center text-accent-blue">
-                <QuestionIcon className="w-5 h-5" />
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/30 border-2 border-white/20 group-hover:scale-110 transition-transform">
+                <QuestionIcon className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-sm font-semibold text-white">Backend Track</h3>
-              <p className="text-xs text-gray-400 leading-relaxed">Questions covering Express middlewares, API structures, REST principles, SQL vs NoSQL indexes, and security safeguards.</p>
+              <div className="cartoon-badge cartoon-badge-cyan text-[10px]">Node.js & APIs</div>
+              <h3 className="text-base font-black text-white">Backend Track</h3>
+              <p className="text-xs text-gray-300 font-medium leading-relaxed">
+                Questions covering Express middlewares, REST API contracts, indexing in SQL/NoSQL databases, authentication, and microservice patterns.
+              </p>
             </div>
             <button 
               onClick={() => startInterview('backend')}
-              className="w-full py-2.5 rounded-xl bg-gray-800 group-hover:bg-accent-blue text-gray-300 group-hover:text-white font-semibold text-xs transition-all flex items-center justify-center gap-1"
+              className="cartoon-btn cartoon-btn-cyan w-full py-3 text-xs font-black gap-2"
             >
-              Start Session <Play className="w-3 h-3 ml-0.5 fill-current" />
+              <span>Start Backend Round</span>
+              <Play className="w-3.5 h-3.5 fill-current" />
             </button>
           </div>
 
           {/* HR & Aptitude Card */}
-          <div className="glass rounded-2xl p-6 border border-gray-800 hover:border-accent-pink/30 flex flex-col justify-between space-y-6 transition-all group">
+          <div className="cartoon-card p-6 border-2 border-pink-500/30 hover:border-pink-400/60 flex flex-col justify-between space-y-6 transition-all group">
             <div className="space-y-3">
-              <div className="w-10 h-10 rounded-lg bg-accent-pink/10 border border-accent-pink/20 flex items-center justify-center text-accent-pink">
-                <MessageSquare className="w-5 h-5" />
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-pink-500 to-rose-600 flex items-center justify-center text-white shadow-lg shadow-pink-500/30 border-2 border-white/20 group-hover:scale-110 transition-transform">
+                <MessageSquare className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-sm font-semibold text-white">HR & Aptitude Track</h3>
-              <p className="text-xs text-gray-400 leading-relaxed">Behavioral questions (STAR method) & full Placement Aptitude MCQ Platform with 87 topics (Quant, Logical, Verbal, DI).</p>
+              <div className="cartoon-badge cartoon-badge-pink text-[10px]">HR & Behavioral</div>
+              <h3 className="text-base font-black text-white">HR & Aptitude Track</h3>
+              <p className="text-xs text-gray-300 font-medium leading-relaxed">
+                Behavioral questions using the STAR framework, situational leadership scenarios, and full Placement Aptitude practice arena.
+              </p>
             </div>
             <div className="space-y-2">
               {onNavigate && (
                 <button 
                   onClick={() => onNavigate('aptitude')}
-                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-accent-purple to-accent-pink text-white font-extrabold text-xs shadow-lg shadow-purple-600/30 transition-all flex items-center justify-center gap-1.5 hover:scale-[1.02]"
+                  className="cartoon-btn cartoon-btn-yellow w-full py-2.5 text-xs font-black gap-1.5"
                 >
-                  <Sparkles className="w-3.5 h-3.5 fill-current" /> Open Aptitude Platform (87 Topics)
+                  <Sparkles className="w-3.5 h-3.5 fill-current" /> Open Aptitude Arena
                 </button>
               )}
               <button 
                 onClick={() => startInterview('hr')}
-                className="w-full py-2 rounded-xl bg-gray-900 border border-gray-800 hover:border-accent-pink text-gray-300 hover:text-white font-semibold text-xs transition-all flex items-center justify-center gap-1"
+                className="cartoon-btn cartoon-btn-pink w-full py-2.5 text-xs font-black gap-1.5"
               >
-                HR Interview Session <Play className="w-3 h-3 ml-0.5 fill-current" />
+                <span>Start HR Round</span>
+                <Play className="w-3.5 h-3.5 fill-current" />
               </button>
             </div>
           </div>
@@ -203,60 +240,73 @@ export default function MockInterview({ _profile, setProfile, onNavigate }) {
 
       {/* STEP 2: Interviewing Questions */}
       {step === 'interview' && currentQuestionObj && (
-        <div className="max-w-2xl mx-auto glass rounded-2xl border border-gray-850 p-6 space-y-5">
+        <div className="max-w-3xl mx-auto cartoon-card border-2 border-purple-500/30 p-6 md:p-8 space-y-6 animate-fade-in">
           {/* Progress Header */}
-          <div className="flex items-center justify-between pb-3 border-b border-gray-850">
-            <span className="text-[10px] uppercase font-bold text-accent-purple tracking-wider">
-              {track.toUpperCase()} TRACK
-            </span>
-            <span className="text-xs font-semibold text-gray-400">
-              Question {currentQuestionIndex + 1} of {questions.length}
-            </span>
+          <div className="flex items-center justify-between pb-4 border-b-2 border-white/10">
+            <div className="flex items-center gap-2">
+              <span className="cartoon-badge cartoon-badge-purple text-xs">
+                {track.toUpperCase()} TRACK
+              </span>
+              <span className="text-xs font-extrabold text-white">
+                Question {currentQuestionIndex + 1} of {questions.length}
+              </span>
+            </div>
+
+            <div className="w-36 bg-[#0d1220] rounded-full h-3 overflow-hidden border border-white/10">
+              <div 
+                className="bg-gradient-to-r from-purple-500 to-pink-500 h-full rounded-full transition-all duration-300"
+                style={{ width: `${((currentQuestionIndex + 1) / questions.length) * 100}%` }}
+              />
+            </div>
           </div>
 
-          {/* Question Text */}
-          <div className="space-y-1">
-            <span className="text-[10px] uppercase font-bold text-gray-500 block">Question</span>
-            <h3 className="text-sm font-semibold text-white leading-relaxed">
-              {currentQuestionObj.question}
-            </h3>
+          {/* Question Text with Sparky Avatar */}
+          <div className="flex items-start gap-4 p-4 rounded-2xl bg-purple-950/40 border-2 border-purple-500/30">
+            <AIAssistantAvatar size="sm" state="speaking" />
+            <div className="space-y-1">
+              <span className="text-[10px] uppercase font-black text-purple-300 block">Sparky Interviewer:</span>
+              <h3 className="text-sm md:text-base font-black text-white leading-relaxed">
+                "{currentQuestionObj.question}"
+              </h3>
+            </div>
           </div>
 
           {/* Input response */}
           <div className="space-y-2">
-            <span className="text-[10px] uppercase font-bold text-gray-500 block">Your Answer</span>
+            <label className="text-xs font-black text-purple-300 uppercase tracking-wider block">Your Verbal / Written Response:</label>
             <textarea
               value={currentAnswer}
               onChange={(e) => setCurrentAnswer(e.target.value)}
-              placeholder="Type your explanation in detail (minimum 2-3 sentences)..."
+              placeholder="Type your thorough answer in detail (minimum 2-3 sentences)..."
               rows={6}
-              className="w-full px-3 py-2 bg-gray-900 border border-gray-800 focus:border-accent-purple rounded-xl text-xs text-white placeholder-gray-500 focus:outline-none resize-none leading-relaxed"
+              className="w-full px-4 py-3 bg-[#0d1220] border-2 border-purple-500/30 focus:border-purple-400 rounded-2xl text-xs text-white placeholder-gray-400 focus:outline-none resize-none leading-relaxed font-medium"
             />
           </div>
 
           {/* Hint expander */}
-          <div className="space-y-1">
+          <div className="space-y-2">
             <button 
               onClick={() => setShowHint(!showHint)}
-              className="text-[10px] font-bold text-accent-purple hover:underline flex items-center gap-1"
+              className="text-xs font-black text-cyan-300 hover:text-cyan-200 flex items-center gap-1.5"
             >
-              <HelpCircle className="w-3.5 h-3.5" /> {showHint ? "Hide Hint" : "Show Hint & Terminology"}
+              <HelpCircle className="w-4 h-4 text-cyan-400" /> {showHint ? "Hide Hint" : "Need a Hint? View Key Terminology"}
             </button>
             {showHint && (
-              <p className="p-3 rounded-lg bg-white/5 border border-gray-800 text-[11px] text-gray-400 leading-relaxed animate-fade-in mt-1">
-                📌 **Recommended topics/words**: {currentQuestionObj.hints}
+              <p className="p-3.5 rounded-2xl bg-[#0d1220] border-2 border-cyan-500/30 text-xs text-cyan-200 leading-relaxed font-medium animate-fade-in">
+                📌 **Recommended terminology**: {currentQuestionObj.hints}
               </p>
             )}
           </div>
 
           {/* Next Button */}
-          <div className="flex justify-end pt-3">
+          <div className="flex justify-end pt-4 border-t-2 border-white/10">
             <button
               onClick={handleNext}
               disabled={!currentAnswer.trim()}
-              className="px-5 py-2.5 rounded-xl bg-accent-purple text-white font-semibold text-xs hover:bg-opacity-90 disabled:opacity-50 transition-opacity flex items-center gap-1.5 shadow-lg shadow-accent-purple/10"
+              className="cartoon-btn cartoon-btn-purple py-3 px-6 text-xs font-black gap-2 disabled:opacity-40"
             >
-              {currentQuestionIndex === questions.length - 1 ? "Finish & Submit" : "Submit Answer"} <ChevronRight className="w-4 h-4" />
+              <span>{currentQuestionIndex === questions.length - 1 ? "Finish & Grade Round" : "Submit Answer"}</span>
+              <ChevronRight className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -264,15 +314,15 @@ export default function MockInterview({ _profile, setProfile, onNavigate }) {
 
       {/* STEP 3: Evaluating Loop */}
       {step === 'evaluating' && (
-        <div className="glass rounded-xl p-12 text-center flex flex-col items-center justify-center space-y-4 min-h-[300px] max-w-2xl mx-auto">
-          <div className="w-12 h-12 rounded-full border-2 border-accent-purple border-t-transparent animate-spin" />
-          <div className="space-y-1.5">
-            <h4 className="text-sm font-semibold text-white">{evaluatingText}</h4>
-            <p className="text-xs text-gray-500">Grading semantics, counting hesitation triggers, and analyzing vocabulary</p>
+        <div className="cartoon-card p-12 text-center flex flex-col items-center justify-center space-y-6 max-w-xl mx-auto border-2 border-purple-500/40">
+          <AIAssistantAvatar size="lg" state="thinking" />
+          <div className="space-y-2">
+            <h4 className="text-base font-black text-white">{evaluatingText}</h4>
+            <p className="text-xs text-gray-300 font-medium">Grading vocabulary density, structure, and technical correctness...</p>
           </div>
-          <div className="w-48 h-1.5 bg-gray-800 rounded-full overflow-hidden mt-2">
+          <div className="w-64 h-3 bg-[#0d1220] rounded-full overflow-hidden border border-white/10">
             <div 
-              className="h-full bg-accent-purple transition-all duration-300"
+              className="h-full bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-400 transition-all duration-500 rounded-full"
               style={{ width: `${(evaluatingIndex / 5) * 100}%` }}
             />
           </div>
@@ -281,18 +331,21 @@ export default function MockInterview({ _profile, setProfile, onNavigate }) {
 
       {/* STEP 4: Results Report */}
       {step === 'report' && report && (
-        <div className="space-y-6 max-w-4xl mx-auto">
+        <div className="space-y-6 max-w-4xl mx-auto animate-fade-in">
           {/* Main Score Metrics Card */}
-          <div className="glass rounded-2xl p-6 space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-gray-850 gap-4">
+          <div className="cartoon-card p-6 md:p-8 space-y-6 border-2 border-purple-500/30">
+            <div className="flex flex-col md:flex-row md:items-center justify-between pb-6 border-b-2 border-white/10 gap-4">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-accent-purple/10 border-2 border-accent-purple flex flex-col items-center justify-center shadow-lg shadow-accent-purple/10 text-accent-purple">
-                  <span className="text-xl font-bold leading-none">{report.overallScore}%</span>
-                  <span className="text-[8px] text-gray-400 font-semibold uppercase tracking-wider mt-0.5">Score</span>
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-600 border-2 border-white/20 flex flex-col items-center justify-center shadow-lg text-white font-black">
+                  <span className="text-xl leading-none">{report.overallScore}%</span>
+                  <span className="text-[8px] font-bold uppercase tracking-wider mt-1">Score</span>
                 </div>
                 <div>
-                  <h3 className="text-md font-semibold text-white">Interview Assessment Completed</h3>
-                  <p className="text-xs text-gray-400 mt-0.5">
+                  <h3 className="text-lg font-black text-white flex items-center gap-2">
+                    <span>Round Assessment Completed!</span>
+                    <Trophy className="w-5 h-5 text-yellow-400" />
+                  </h3>
+                  <p className="text-xs text-gray-300 font-medium mt-0.5">
                     Your placement readiness stats have been updated on the Dashboard.
                   </p>
                 </div>
@@ -300,74 +353,77 @@ export default function MockInterview({ _profile, setProfile, onNavigate }) {
 
               <button
                 onClick={() => setStep('select')}
-                className="px-4 py-2 rounded-lg bg-gray-850 hover:bg-gray-800 border border-gray-700 text-white font-semibold text-xs transition-colors flex items-center gap-1.5 self-start md:self-center"
+                className="cartoon-btn cartoon-btn-dark py-2.5 px-4 text-xs font-bold gap-1.5"
               >
-                <RefreshCw className="w-3.5 h-3.5" /> Restart Interview
+                <RefreshCw className="w-3.5 h-3.5" /> Restart Round
               </button>
             </div>
 
             {/* Radial Scores */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {/* Score block 1 */}
-              <div className="p-4 rounded-xl border border-gray-850 bg-white/5 space-y-1.5 text-center">
-                <span className="text-[10px] uppercase font-bold text-gray-400 block">Technical Correctness</span>
-                <div className="text-xl font-extrabold text-white">{report.correctness}%</div>
-                <p className="text-[10px] text-gray-500">Vocabulary accuracy score</p>
+              <div className="p-4 rounded-2xl border-2 border-purple-500/30 bg-[#0d1220] space-y-1 text-center">
+                <span className="text-[10px] uppercase font-black text-purple-400 block">Technical Correctness</span>
+                <div className="text-2xl font-black text-white">{report.correctness}%</div>
+                <p className="text-[10px] text-gray-400 font-medium">Vocabulary accuracy score</p>
               </div>
 
-              {/* Score block 2 */}
-              <div className="p-4 rounded-xl border border-gray-850 bg-white/5 space-y-1.5 text-center">
-                <span className="text-[10px] uppercase font-bold text-gray-400 block">Mock Confidence</span>
-                <div className="text-xl font-extrabold text-white">{report.confidence}%</div>
-                <p className="text-[10px] text-gray-500">Assertiveness keyword analysis</p>
+              <div className="p-4 rounded-2xl border-2 border-pink-500/30 bg-[#0d1220] space-y-1 text-center">
+                <span className="text-[10px] uppercase font-black text-pink-400 block">Mock Confidence</span>
+                <div className="text-2xl font-black text-white">{report.confidence}%</div>
+                <p className="text-[10px] text-gray-400 font-medium">Assertiveness analysis</p>
               </div>
 
-              {/* Score block 3 */}
-              <div className="p-4 rounded-xl border border-gray-850 bg-white/5 space-y-1.5 text-center">
-                <span className="text-[10px] uppercase font-bold text-gray-400 block">Communication Clarity</span>
-                <div className="text-xl font-extrabold text-white">{report.communication}%</div>
-                <p className="text-[10px] text-gray-500">Length & structure density</p>
+              <div className="p-4 rounded-2xl border-2 border-cyan-500/30 bg-[#0d1220] space-y-1 text-center">
+                <span className="text-[10px] uppercase font-black text-cyan-400 block">Communication Clarity</span>
+                <div className="text-2xl font-black text-white">{report.communication}%</div>
+                <p className="text-[10px] text-gray-400 font-medium">Length & structure density</p>
               </div>
             </div>
           </div>
 
           {/* Question-by-Question breakdown */}
           <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-white">Detail Response Diagnostics</h3>
+            <h3 className="text-sm font-black text-white flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-yellow-400" />
+              <span>Detail Response Diagnostics</span>
+            </h3>
             <div className="space-y-4">
               {report.evaluations.map((item, idx) => (
-                <div key={idx} className="glass rounded-2xl p-5 border border-gray-850 space-y-4">
-                  <div className="flex items-center justify-between pb-3 border-b border-gray-850">
-                    <span className="text-xs font-semibold text-white">Question {idx + 1}</span>
-                    <span className={`px-2 py-0.5 text-[10px] font-bold rounded ${item.overallScore >= 75 ? 'bg-emerald-500/10 text-emerald-400' : item.overallScore >= 55 ? 'bg-amber-500/10 text-amber-400' : 'bg-red-500/10 text-red-400'}`}>
+                <div key={idx} className="cartoon-card p-5 border-2 border-purple-500/25 space-y-4">
+                  <div className="flex items-center justify-between pb-3 border-b-2 border-white/10">
+                    <span className="text-xs font-black text-white">Question {idx + 1}</span>
+                    <span className={`px-2.5 py-0.5 text-[10px] font-black rounded-full border ${
+                      item.overallScore >= 75 
+                        ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' 
+                        : item.overallScore >= 55 
+                        ? 'bg-yellow-500/20 text-yellow-300 border-yellow-500/40' 
+                        : 'bg-rose-500/20 text-rose-300 border-rose-500/40'
+                    }`}>
                       Score: {item.overallScore}%
                     </span>
                   </div>
 
-                  <div className="space-y-3.5 text-xs">
-                    {/* Q text */}
+                  <div className="space-y-3 text-xs">
                     <div>
-                      <span className="text-[9px] uppercase font-bold text-gray-400 block mb-0.5">Question Text</span>
-                      <p className="text-white leading-relaxed font-semibold">{item.question}</p>
+                      <span className="text-[10px] uppercase font-black text-purple-300 block mb-0.5">Question Text</span>
+                      <p className="text-white leading-relaxed font-bold">{item.question}</p>
                     </div>
 
-                    {/* Student response */}
                     <div>
-                      <span className="text-[9px] uppercase font-bold text-gray-400 block mb-0.5">Your Response</span>
-                      <p className="text-gray-300 bg-gray-900/60 p-3 rounded-lg border border-gray-800 leading-relaxed italic">
+                      <span className="text-[10px] uppercase font-black text-cyan-300 block mb-0.5">Your Response</span>
+                      <p className="text-gray-200 bg-[#0d1220] p-3 rounded-2xl border border-purple-500/20 leading-relaxed italic font-medium">
                         "{item.studentAnswer}"
                       </p>
                     </div>
 
-                    {/* AI Feedback */}
                     <div className="space-y-1.5">
-                      <span className="text-[9px] uppercase font-bold text-gray-400 block">AI Evaluation Feedback</span>
-                      <div className="bg-accent-purple/5 p-3.5 rounded-lg border border-accent-purple/20 space-y-2">
-                        <p className="text-accent-pink leading-relaxed font-semibold">{item.feedback}</p>
+                      <span className="text-[10px] uppercase font-black text-pink-300 block">Sparky Evaluation Feedback</span>
+                      <div className="bg-purple-950/40 p-4 rounded-2xl border-2 border-purple-500/30 space-y-2">
+                        <p className="text-pink-300 leading-relaxed font-bold">{item.feedback}</p>
                         <ul className="space-y-1">
                           {item.notes.map((note, nIdx) => (
-                            <li key={nIdx} className="flex items-start gap-1.5 text-[11px] text-gray-300">
-                              <span className="w-1 h-1 rounded-full bg-accent-purple mt-2 shrink-0" />
+                            <li key={nIdx} className="flex items-start gap-1.5 text-xs text-gray-300 font-medium">
+                              <span className="w-1.5 h-1.5 rounded-full bg-purple-400 mt-1.5 shrink-0" />
                               <span>{note}</span>
                             </li>
                           ))}
@@ -375,10 +431,9 @@ export default function MockInterview({ _profile, setProfile, onNavigate }) {
                       </div>
                     </div>
 
-                    {/* Model Answer comparison */}
-                    <div className="space-y-1.5">
-                      <span className="text-[9px] uppercase font-bold text-gray-400 block">Sample Model Response</span>
-                      <p className="text-gray-300 bg-gray-900/40 p-3.5 rounded-lg border border-gray-850 leading-relaxed font-mono leading-relaxed">
+                    <div className="space-y-1">
+                      <span className="text-[10px] uppercase font-black text-emerald-300 block">Sample Model Response</span>
+                      <p className="text-gray-300 bg-[#0d1220] p-3 rounded-2xl border border-white/10 leading-relaxed font-mono text-[11px]">
                         {item.modelAnswer}
                       </p>
                     </div>

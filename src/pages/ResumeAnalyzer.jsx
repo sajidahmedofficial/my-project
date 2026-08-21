@@ -449,54 +449,54 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in pb-12 resume-analyzer-page">
+    <div className="space-y-6 animate-fade-in pb-12 resume-analyzer-page select-none">
       {/* Header Bar */}
-      <div className="glass rounded-2xl p-6 border border-gray-800 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div className="cartoon-card p-6 md:p-8 border-2 border-purple-500/30 flex flex-col lg:flex-row lg:items-center justify-between gap-4 relative overflow-hidden bg-gradient-to-r from-[#171d33] via-[#1c243f] to-[#1a2138]">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-black text-white flex items-center gap-2 tracking-tight">
-              <Sparkles className="w-6 h-6 text-accent-purple" /> AI RESUME ANALYZER
+            <h1 className="text-2xl md:text-3xl font-black text-white flex items-center gap-2 tracking-wide">
+              <Sparkles className="w-7 h-7 text-yellow-400" /> AI Resume Analyzer
             </h1>
-            <span className="px-2.5 py-0.5 rounded-full bg-accent-purple/10 border border-accent-purple/30 text-accent-purple text-[10px] font-bold uppercase tracking-wider">
+            <span className="cartoon-badge cartoon-badge-purple text-[10px]">
               Target: Full Stack Developer
             </span>
           </div>
-          <p className="text-xs text-gray-400 mt-1">
-            Candidate: <strong className="text-gray-200">{profile?.name || 'Aarav Sharma'}</strong> — Upload, optimize, verify skills & generate certified resumes
+          <p className="text-xs text-gray-300 font-medium mt-1">
+            Candidate: <strong className="text-white font-black">{profile?.name || 'Aarav Sharma'}</strong> — Upload, optimize, verify skills & generate certified resumes
           </p>
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
           <button 
             onClick={() => setViewMode(prev => prev === 'tabs' ? 'scroll' : 'tabs')}
-            className="px-3 py-2 rounded-xl bg-gray-900 border border-gray-800 text-gray-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 transition-all"
+            className="cartoon-btn cartoon-btn-dark py-2 px-3 text-xs font-bold gap-1.5"
             title="Toggle between Tabbed and Full Scroll layouts"
           >
-            {viewMode === 'tabs' ? <Layers className="w-4 h-4 text-accent-pink" /> : <LayoutGrid className="w-4 h-4 text-accent-pink" />}
-            {viewMode === 'tabs' ? 'Tabbed View' : 'All Sections View'}
+            {viewMode === 'tabs' ? <Layers className="w-4 h-4 text-pink-400" /> : <LayoutGrid className="w-4 h-4 text-pink-400" />}
+            <span>{viewMode === 'tabs' ? 'Tabbed View' : 'All Sections'}</span>
           </button>
 
           {!is100PercentComplete ? (
             <button 
               onClick={handleSimulateFullMastery} 
-              className="px-3 py-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold flex items-center gap-1.5 hover:bg-amber-500/20 transition-all shadow-sm"
+              className="cartoon-btn cartoon-btn-yellow py-2 px-3.5 text-xs font-black gap-1.5"
             >
-              <Trophy className="w-4 h-4 text-amber-300" /> Unlock 100% Mastery
+              <Trophy className="w-4 h-4" /> 100% Mastery
             </button>
           ) : (
             <button 
               onClick={handleResetDemo}
-              className="px-3 py-2 rounded-xl bg-gray-900 border border-gray-800 text-gray-400 hover:text-white text-xs font-bold flex items-center gap-1.5 transition-all"
+              className="cartoon-btn cartoon-btn-dark py-2 px-3 text-xs font-bold gap-1.5"
             >
               <RefreshCw className="w-3.5 h-3.5" /> Reset Demo
             </button>
           )}
 
-          <button onClick={() => setShowPreview(true)} className="px-3.5 py-2 rounded-xl bg-gray-900 border border-gray-800 text-white text-xs font-bold flex items-center gap-1.5 hover:border-accent-purple transition-all">
-            <Eye className="w-4 h-4 text-accent-purple" /> Preview
+          <button onClick={() => setShowPreview(true)} className="cartoon-btn cartoon-btn-dark py-2 px-3.5 text-xs font-bold gap-1.5">
+            <Eye className="w-4 h-4 text-cyan-400" /> Preview
           </button>
-          <button onClick={handleDownload} className="px-4 py-2 rounded-xl bg-gradient-to-r from-accent-purple to-accent-pink text-white text-xs font-extrabold flex items-center gap-1.5 shadow-md shadow-accent-purple/20 transition-all hover:opacity-95">
-            <Download className="w-4 h-4" /> Download
+          <button onClick={handleDownload} className="cartoon-btn cartoon-btn-purple py-2 px-4 text-xs font-black gap-1.5">
+            <Download className="w-4 h-4" /> Download PDF
           </button>
         </div>
       </div>
@@ -506,12 +506,12 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
 
       {/* Auto Progression Toast Notification Banner */}
       {toastMessage && (
-        <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-500/20 via-teal-500/20 to-accent-purple/20 border border-emerald-500/40 text-emerald-300 font-bold text-xs flex items-center justify-between shadow-xl animate-pulse">
+        <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-500/20 via-teal-500/20 to-purple-500/20 border-2 border-emerald-500/40 text-emerald-300 font-black text-xs flex items-center justify-between shadow-xl animate-pulse">
           <span className="flex items-center gap-2">
             <CheckCircle2 className="w-5 h-5 text-emerald-400" />
             {toastMessage}
           </span>
-          <span className="px-2.5 py-1 rounded-full bg-emerald-500/30 text-emerald-200 text-[10px] font-black uppercase tracking-wider">
+          <span className="cartoon-badge cartoon-badge-mint text-[10px]">
             AUTO ADVANCING ›
           </span>
         </div>
@@ -530,34 +530,34 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
 
       {/* Navigation Tabs Header */}
       {viewMode === 'tabs' && (
-        <div className="flex items-center gap-2 border-b border-gray-800 overflow-x-auto pb-1">
+        <div className="flex items-center gap-2 border-b-2 border-white/10 overflow-x-auto pb-2">
           <button
             onClick={() => setActiveTab('overview')}
-            className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all whitespace-nowrap ${
+            className={`cartoon-btn py-2 px-4 text-xs font-black gap-2 whitespace-nowrap ${
               activeTab === 'overview'
-                ? 'bg-accent-purple text-white shadow-lg shadow-accent-purple/25'
-                : 'bg-gray-900/60 border border-gray-800 text-gray-400 hover:text-white'
+                ? 'cartoon-btn-purple scale-105 shadow-md'
+                : 'cartoon-btn-dark'
             }`}
           >
-            <Sparkles className="w-4 h-4" />
-            Overview & Upload
+            <Sparkles className="w-4 h-4 text-yellow-300" />
+            <span>Overview & Upload</span>
             {pendingSuggestion && (
-              <span className="w-2 h-2 rounded-full bg-accent-pink animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-pink-400 animate-pulse" />
             )}
           </button>
 
           <button
             onClick={() => setActiveTab('issues')}
-            className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all whitespace-nowrap ${
+            className={`cartoon-btn py-2 px-4 text-xs font-black gap-2 whitespace-nowrap ${
               activeTab === 'issues'
-                ? 'bg-accent-purple text-white shadow-lg shadow-accent-purple/25'
-                : 'bg-gray-900/60 border border-gray-800 text-gray-400 hover:text-white'
+                ? 'cartoon-btn-purple scale-105 shadow-md'
+                : 'cartoon-btn-dark'
             }`}
           >
             <AlertCircle className="w-4 h-4 text-amber-400" />
-            Issues & Fixes
+            <span>Issues & Fixes</span>
             {unfixedProblemsCount > 0 && (
-              <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-black">
+              <span className="cartoon-badge cartoon-badge-yellow text-[10px] py-0 px-1.5">
                 {unfixedProblemsCount}
               </span>
             )}
@@ -565,16 +565,16 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
 
           <button
             onClick={() => setActiveTab('skills')}
-            className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all whitespace-nowrap ${
+            className={`cartoon-btn py-2 px-4 text-xs font-black gap-2 whitespace-nowrap ${
               activeTab === 'skills'
-                ? 'bg-accent-purple text-white shadow-lg shadow-accent-purple/25'
-                : 'bg-gray-900/60 border border-gray-800 text-gray-400 hover:text-white'
+                ? 'cartoon-btn-purple scale-105 shadow-md'
+                : 'cartoon-btn-dark'
             }`}
           >
             <Target className="w-4 h-4 text-emerald-400" />
-            Skill Gap & Bridge
+            <span>Skill Gap & Bridge</span>
             {learningSkillsCount > 0 && (
-              <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-black">
+              <span className="cartoon-badge cartoon-badge-mint text-[10px] py-0 px-1.5">
                 {learningSkillsCount} learning
               </span>
             )}
@@ -582,15 +582,15 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
 
           <button
             onClick={() => setActiveTab('certs')}
-            className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all whitespace-nowrap ${
+            className={`cartoon-btn py-2 px-4 text-xs font-black gap-2 whitespace-nowrap ${
               activeTab === 'certs'
-                ? 'bg-accent-purple text-white shadow-lg shadow-accent-purple/25'
-                : 'bg-gray-900/60 border border-gray-800 text-gray-400 hover:text-white'
+                ? 'cartoon-btn-purple scale-105 shadow-md'
+                : 'cartoon-btn-dark'
             }`}
           >
-            <Award className="w-4 h-4 text-accent-pink" />
-            Verified Certs & Export
-            <span className="px-2 py-0.5 rounded-full bg-accent-pink/20 text-accent-pink text-[10px] font-black">
+            <Award className="w-4 h-4 text-pink-400" />
+            <span>Verified Certs & Export</span>
+            <span className="cartoon-badge cartoon-badge-pink text-[10px] py-0 px-1.5">
               {certifiedCount} certs
             </span>
           </button>

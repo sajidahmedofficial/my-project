@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Full MCQ practice & exam engine with question navigator palette, timer & step-by-step explanations", deps: ["lucide-react", "../../services/aptitudeApi"], state: "active", last: "anti@2026-08-04" }
+// agent-notes: { ctx: "Cartoon style MCQ quiz interface with bouncy question option cards, animated timer pill & celebratory feedback", deps: ["lucide-react", "../../services/aptitudeApi"], state: "active", last: "anti@2026-08-21" }
 
 import React, { useState, useEffect } from 'react';
 import { 
@@ -11,7 +11,9 @@ import {
   ArrowLeft, 
   ArrowRight, 
   CheckSquare, 
-  Flag
+  Flag,
+  Sparkles,
+  Zap
 } from 'lucide-react';
 import { aptitudeApi } from '../../services/aptitudeApi';
 
@@ -162,12 +164,12 @@ export default function MCQQuizInterface({ session, questions, onComplete, onExi
 
   if (safeQuestions.length === 0) {
     return (
-      <div className="glass rounded-2xl p-8 border border-gray-800 text-center space-y-4">
-        <h3 className="text-lg font-bold text-white">Questions are being prepared for this topic.</h3>
-        <p className="text-xs text-gray-400">Please select another topic or generate questions in Admin Console.</p>
+      <div className="cartoon-card p-8 border-2 border-purple-500/30 text-center space-y-4">
+        <h3 className="text-lg font-black text-white">Questions are being prepared for this quest.</h3>
+        <p className="text-xs text-gray-300 font-medium">Please select another topic from the Practice Hub.</p>
         <button
           onClick={onExit}
-          className="px-4 py-2 bg-gray-900 border border-gray-800 text-white rounded-xl text-xs font-bold"
+          className="cartoon-btn cartoon-btn-purple py-2 px-5 text-xs font-bold"
         >
           Return to Hub
         </button>
@@ -180,18 +182,18 @@ export default function MCQQuizInterface({ session, questions, onComplete, onExi
   const selectedOptIdx = answers[currentIndex];
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in select-none">
       {/* Top Header Toolbar */}
-      <div className="glass rounded-2xl p-4 border border-card-border flex flex-wrap items-center justify-between gap-4">
+      <div className="cartoon-card p-4 border-2 border-purple-500/30 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <button
             onClick={onExit}
-            className="p-2 rounded-xl bg-gray-900 border border-gray-800 text-gray-400 hover:text-white"
+            className="cartoon-btn cartoon-btn-dark py-2 px-3 text-xs font-bold"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
           <div>
-            <span className="text-[10px] uppercase font-bold text-accent-pink block">
+            <span className="text-[11px] font-black uppercase text-pink-400 block">
               {session.topicName || session.topic} ({session.mode || 'practice'} mode)
             </span>
             <h2 className="text-sm font-black text-white">
@@ -201,21 +203,21 @@ export default function MCQQuizInterface({ session, questions, onComplete, onExi
         </div>
 
         {/* Progress Bar & Timer */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4">
           <div className="hidden sm:flex items-center gap-2">
-            <div className="w-32 bg-gray-900 rounded-full h-2 overflow-hidden border border-gray-800">
+            <div className="w-32 bg-[#0d1220] rounded-full h-3 overflow-hidden border border-white/10">
               <div
-                className="bg-gradient-to-r from-accent-purple to-accent-pink h-full transition-all duration-300"
+                className="bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-400 h-full rounded-full transition-all duration-300"
                 style={{ width: `${((currentIndex + 1) / safeQuestions.length) * 100}%` }}
               />
             </div>
-            <span className="text-xs font-mono font-bold text-gray-300">
+            <span className="text-xs font-black text-purple-300">
               {Math.round(((currentIndex + 1) / safeQuestions.length) * 100)}%
             </span>
           </div>
 
-          <div className="flex items-center gap-1.5 bg-gray-900 px-3 py-1.5 rounded-xl border border-gray-800 text-accent-pink font-mono font-bold text-xs">
-            <Clock className="w-4 h-4" /> {formatTime(timerSeconds)}
+          <div className="cartoon-badge cartoon-badge-pink py-1.5 px-3 font-mono text-xs font-black">
+            <Clock className="w-4 h-4 text-pink-400" /> {formatTime(timerSeconds)}
           </div>
         </div>
       </div>
@@ -224,20 +226,20 @@ export default function MCQQuizInterface({ session, questions, onComplete, onExi
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left: Active Question Card */}
         <div className="lg:col-span-8 space-y-4">
-          <div className="glass rounded-2xl p-6 border border-gray-800 space-y-6">
+          <div className="cartoon-card p-6 border-2 border-purple-500/30 space-y-6">
             {/* Metadata Badges */}
-            <div className="flex items-center justify-between gap-2 border-b border-gray-850 pb-3">
-              <span className="text-[10px] font-mono font-bold text-accent-purple bg-accent-purple/10 px-2.5 py-1 rounded-md border border-accent-purple/20">
+            <div className="flex items-center justify-between gap-2 border-b-2 border-white/10 pb-3">
+              <span className="cartoon-badge cartoon-badge-purple text-xs">
                 {currentQ.id || `Q-${currentIndex + 1}`}
               </span>
 
               <div className="flex items-center gap-2">
                 <button
                   onClick={toggleBookmarkQuestion}
-                  className={`p-1.5 rounded-lg border transition-all ${
+                  className={`p-2 rounded-2xl border-2 transition-all ${
                     bookmarks[currentIndex]
-                      ? 'bg-amber-500/20 border-amber-500 text-amber-400'
-                      : 'bg-gray-900 border-gray-800 text-gray-400 hover:text-white'
+                      ? 'bg-amber-500/20 border-amber-400 text-amber-300 shadow-md'
+                      : 'bg-[#151b2e] border-purple-500/20 text-gray-400 hover:text-white'
                   }`}
                   title="Bookmark question"
                 >
@@ -246,10 +248,10 @@ export default function MCQQuizInterface({ session, questions, onComplete, onExi
 
                 <button
                   onClick={toggleReviewMark}
-                  className={`p-1.5 rounded-lg border text-xs font-bold flex items-center gap-1 transition-all ${
+                  className={`p-2 rounded-2xl border-2 text-xs font-black flex items-center gap-1 transition-all ${
                     markedForReview[currentIndex]
-                      ? 'bg-purple-500/20 border-purple-500 text-purple-400'
-                      : 'bg-gray-900 border-gray-800 text-gray-400 hover:text-white'
+                      ? 'bg-purple-500/20 border-purple-400 text-purple-300'
+                      : 'bg-[#151b2e] border-purple-500/20 text-gray-400 hover:text-white'
                   }`}
                 >
                   <Flag className="w-3.5 h-3.5" />
@@ -258,34 +260,29 @@ export default function MCQQuizInterface({ session, questions, onComplete, onExi
               </div>
             </div>
 
-            {/* Question Mode Badge & Question Text */}
+            {/* Question Text */}
             <div className="space-y-2">
-              <span className={`inline-block px-2.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider ${
-                isSyntaxQuestion ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
-              }`}>
-                {isSyntaxQuestion ? 'Syntax Question — Write answer on your own (No options)' : 'Coding Question — Select correct answer option'}
+              <span className="cartoon-badge cartoon-badge-cyan text-[10px]">
+                {isSyntaxQuestion ? 'Syntax Challenge' : 'Multiple Choice Challenge'}
               </span>
-              <h3 className="text-base font-bold text-white leading-relaxed">{currentQ.question}</h3>
+              <h3 className="text-base font-black text-white leading-relaxed">{currentQ.question}</h3>
             </div>
 
-            {/* Answer Input Section: Syntax (Free-form input, no options) vs Coding (Multiple choice options) */}
+            {/* Multiple Choice Options */}
             {isSyntaxQuestion ? (
               <div className="space-y-3 pt-2">
-                <div className="p-4 rounded-xl bg-gray-950 border border-amber-500/30 space-y-2">
-                  <label className="text-xs font-bold text-amber-300 block">
-                    Type Your Exact Syntax Answer (No Options Provided):
+                <div className="p-4 rounded-2xl bg-[#0d1220] border-2 border-amber-500/40 space-y-2">
+                  <label className="text-xs font-black text-amber-300 block">
+                    Type Your Exact Syntax Answer:
                   </label>
                   <input
                     type="text"
                     value={syntaxInputs[currentIndex] || ''}
                     onChange={(e) => handleSyntaxInputChange(e.target.value)}
                     disabled={isPracticeMode && Boolean(feedback)}
-                    placeholder="Enter syntax code answer here (e.g. const [state, setState] = useState())..."
-                    className="w-full bg-gray-900 border border-gray-700 text-emerald-300 font-mono text-xs rounded-xl p-3 focus:outline-none focus:border-amber-400"
+                    placeholder="Enter syntax code answer here..."
+                    className="w-full bg-[#151b2e] border-2 border-purple-500/30 text-emerald-300 font-mono text-xs rounded-xl p-3 focus:outline-none focus:border-amber-400 font-bold"
                   />
-                  <p className="text-[11px] text-gray-400 italic">
-                    Syntax evaluation requires exact code keywords or statement input.
-                  </p>
                 </div>
               </div>
             ) : (
@@ -294,17 +291,17 @@ export default function MCQQuizInterface({ session, questions, onComplete, onExi
                   currentQ.options.map((opt, oIdx) => {
                     const optText = typeof opt === 'string' ? opt : opt.text;
                     const isSelected = selectedOptIdx === oIdx;
-                    let borderStyle = 'border-gray-800 hover:border-gray-700 bg-gray-900/60';
+                    let cardClass = 'bg-[#151b2e] border-purple-500/20 text-gray-200 hover:border-purple-500/50 hover:bg-[#1a223a]';
 
                     if (isSelected) {
-                      borderStyle = 'border-accent-purple bg-accent-purple/15 text-white shadow-lg shadow-purple-600/20';
+                      cardClass = 'bg-gradient-to-r from-purple-900/60 to-indigo-900/60 border-purple-400 text-white shadow-xl scale-[1.01]';
                     }
 
                     if (isPracticeMode && feedback) {
                       if (oIdx === feedback.correctAnswer) {
-                        borderStyle = 'border-emerald-500 bg-emerald-500/20 text-emerald-300 font-bold';
+                        cardClass = 'bg-emerald-950/60 border-emerald-400 text-emerald-200 font-bold shadow-lg shadow-emerald-500/20';
                       } else if (isSelected && !feedback.isCorrect) {
-                        borderStyle = 'border-red-500 bg-red-500/20 text-red-300';
+                        cardClass = 'bg-rose-950/60 border-rose-400 text-rose-200';
                       }
                     }
 
@@ -313,17 +310,17 @@ export default function MCQQuizInterface({ session, questions, onComplete, onExi
                         key={oIdx}
                         onClick={() => handleSelectOption(oIdx)}
                         disabled={isPracticeMode && Boolean(feedback)}
-                        className={`w-full p-4 rounded-xl border text-left text-xs font-medium flex items-center justify-between transition-all ${borderStyle}`}
+                        className={`w-full p-4 rounded-2xl border-2 text-left text-xs font-bold flex items-center justify-between transition-all transform active:scale-98 ${cardClass}`}
                       >
                         <div className="flex items-center gap-3">
-                          <span className="w-6 h-6 rounded-lg bg-gray-800 text-gray-300 text-[10px] font-bold flex items-center justify-center border border-gray-700 shrink-0">
+                          <span className="w-7 h-7 rounded-xl bg-purple-600/30 border border-purple-400/40 text-purple-200 text-xs font-black flex items-center justify-center shrink-0">
                             {String.fromCharCode(65 + oIdx)}
                           </span>
-                          <span className="font-mono">{optText}</span>
+                          <span className="font-medium text-xs">{optText}</span>
                         </div>
 
                         {isSelected && !feedback && (
-                          <div className="w-2.5 h-2.5 rounded-full bg-accent-pink shadow-md shadow-pink-500" />
+                          <div className="w-3 h-3 rounded-full bg-pink-500 shadow-md shadow-pink-500 animate-pulse" />
                         )}
                       </button>
                     );
@@ -331,47 +328,42 @@ export default function MCQQuizInterface({ session, questions, onComplete, onExi
               </div>
             )}
 
-            {/* Instant Feedback & Step Explanation for Practice Mode */}
+            {/* Instant Feedback & Step Explanation */}
             {isPracticeMode && feedback && (
               <div
-                className={`p-4 rounded-xl border space-y-2 animate-fade-in ${
+                className={`p-4 rounded-2xl border-2 space-y-2 animate-fade-in ${
                   feedback.isCorrect
-                    ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-200'
-                    : 'bg-red-950/60 border-red-500/40 text-red-200'
+                    ? 'bg-emerald-950/60 border-emerald-400 text-emerald-200'
+                    : 'bg-rose-950/60 border-rose-400 text-rose-200'
                 }`}
               >
-                <div className="flex items-center gap-2 font-extrabold text-xs uppercase tracking-wider">
+                <div className="flex items-center gap-2 font-black text-xs uppercase tracking-wider">
                   {feedback.isCorrect ? (
                     <>
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Correct Answer (+1 Point)
+                      <CheckCircle2 className="w-5 h-5 text-emerald-400 animate-bounce" /> Correct Answer! (+1 Point)
                     </>
                   ) : (
                     <>
-                      <XCircle className="w-4 h-4 text-red-400" /> Incorrect (Correct Option: {String.fromCharCode(65 + feedback.correctAnswer)})
+                      <XCircle className="w-5 h-5 text-rose-400" /> Incorrect (Correct: Option {String.fromCharCode(65 + feedback.correctAnswer)})
                     </>
                   )}
                 </div>
 
-                <div className="pt-2 border-t border-gray-800/80 space-y-1">
-                  <span className="text-[10px] font-bold uppercase text-gray-400 flex items-center gap-1">
-                    <HelpCircle className="w-3.5 h-3.5 text-accent-purple" /> Step-by-Step Explanation & Solution
+                <div className="pt-2 border-t border-white/10 space-y-1">
+                  <span className="text-[11px] font-black uppercase text-purple-300 flex items-center gap-1">
+                    <HelpCircle className="w-3.5 h-3.5 text-purple-400" /> Step-by-Step Solution
                   </span>
-                  <p className="text-xs text-gray-300 leading-relaxed">{feedback.explanation}</p>
-                  {feedback.solution && (
-                    <div className="mt-2 p-2.5 rounded-lg bg-black/40 text-[11px] font-mono text-purple-300 border border-purple-500/20">
-                      {feedback.solution}
-                    </div>
-                  )}
+                  <p className="text-xs text-gray-200 leading-relaxed font-medium">{feedback.explanation}</p>
                 </div>
               </div>
             )}
 
             {/* Navigation Actions */}
-            <div className="pt-4 border-t border-gray-850 flex items-center justify-between gap-3">
+            <div className="pt-4 border-t-2 border-white/10 flex items-center justify-between gap-3">
               <button
                 onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))}
                 disabled={currentIndex === 0}
-                className="px-4 py-2 rounded-xl bg-gray-900 border border-gray-800 text-xs font-bold text-gray-300 hover:text-white disabled:opacity-40"
+                className="cartoon-btn cartoon-btn-dark py-2 px-4 text-xs font-bold disabled:opacity-40"
               >
                 Previous
               </button>
@@ -380,25 +372,27 @@ export default function MCQQuizInterface({ session, questions, onComplete, onExi
                 {isPracticeMode && !feedback && selectedOptIdx !== undefined && (
                   <button
                     onClick={handleSubmitAnswer}
-                    className="px-5 py-2 rounded-xl bg-accent-purple hover:bg-purple-600 text-white font-bold text-xs shadow-lg shadow-purple-600/30"
+                    className="cartoon-btn cartoon-btn-purple py-2 px-5 text-xs font-black"
                   >
-                    Submit Answer
+                    Check Answer
                   </button>
                 )}
 
                 {currentIndex < safeQuestions.length - 1 ? (
                   <button
                     onClick={() => setCurrentIndex(prev => prev + 1)}
-                    className="px-5 py-2 rounded-xl bg-gradient-to-r from-accent-purple to-accent-pink text-white font-bold text-xs flex items-center gap-1.5 shadow-lg shadow-purple-600/30"
+                    className="cartoon-btn cartoon-btn-cyan py-2 px-5 text-xs font-black gap-1.5"
                   >
-                    Next Question <ArrowRight className="w-3.5 h-3.5" />
+                    <span>Next</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 ) : (
                   <button
                     onClick={handleFinalSubmit}
-                    className="px-6 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-lg shadow-emerald-600/30"
+                    className="cartoon-btn cartoon-btn-mint py-2 px-5 text-xs font-black gap-1.5"
                   >
-                    <CheckSquare className="w-3.5 h-3.5" /> Submit Complete Test
+                    <CheckSquare className="w-3.5 h-3.5" />
+                    <span>Finish Quest</span>
                   </button>
                 )}
               </div>
@@ -408,22 +402,16 @@ export default function MCQQuizInterface({ session, questions, onComplete, onExi
 
         {/* Right: Question Palette Navigation */}
         <div className="lg:col-span-4 space-y-4">
-          <div className="glass rounded-2xl p-5 border border-gray-800 space-y-4">
-            <h4 className="text-xs font-extrabold uppercase text-gray-300 tracking-wider">Question Palette</h4>
+          <div className="cartoon-card p-5 border-2 border-purple-500/30 space-y-4">
+            <h4 className="text-xs font-black uppercase text-purple-300 tracking-wider">Quest Navigator</h4>
 
             {/* Color Legend */}
-            <div className="grid grid-cols-2 gap-2 text-[10px] font-semibold text-gray-400">
+            <div className="grid grid-cols-2 gap-2 text-[10px] font-bold text-gray-400">
               <div className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-emerald-500/80" /> Answered ({answeredCount})
+                <span className="w-3 h-3 rounded-full bg-emerald-500" /> Answered ({answeredCount})
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-purple-500/80" /> Marked Review ({Object.values(markedForReview).filter(Boolean).length})
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-gray-800 border border-gray-700" /> Unanswered ({safeQuestions.length - answeredCount})
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-accent-pink" /> Current (# {currentIndex + 1})
+                <span className="w-3 h-3 rounded-full bg-purple-500" /> Review ({Object.values(markedForReview).filter(Boolean).length})
               </div>
             </div>
 
@@ -434,17 +422,17 @@ export default function MCQQuizInterface({ session, questions, onComplete, onExi
                 const isAns = answers[idx] !== undefined;
                 const isRev = Boolean(markedForReview[idx]);
 
-                let paletteStyle = 'bg-gray-900 border-gray-800 text-gray-400 hover:border-gray-700';
+                let paletteStyle = 'bg-[#151b2e] border-purple-500/20 text-gray-400 hover:border-purple-500/50';
 
-                if (isAns) paletteStyle = 'bg-emerald-500/20 border-emerald-500 text-emerald-300 font-bold';
-                if (isRev) paletteStyle = 'bg-purple-500/20 border-purple-500 text-purple-300 font-bold';
-                if (isCurrent) paletteStyle = 'bg-accent-pink text-white font-extrabold shadow-md shadow-pink-500/40 border-accent-pink';
+                if (isAns) paletteStyle = 'bg-emerald-950/60 border-emerald-400 text-emerald-300 font-bold';
+                if (isRev) paletteStyle = 'bg-purple-950/60 border-purple-400 text-purple-300 font-bold';
+                if (isCurrent) paletteStyle = 'bg-pink-600 text-white font-black shadow-lg shadow-pink-500/40 border-pink-300 scale-105';
 
                 return (
                   <button
                     key={idx}
                     onClick={() => setCurrentIndex(idx)}
-                    className={`h-9 rounded-xl border text-xs font-mono transition-all flex items-center justify-center ${paletteStyle}`}
+                    className={`h-9 rounded-2xl border-2 text-xs font-mono transition-all flex items-center justify-center ${paletteStyle}`}
                   >
                     {idx + 1}
                   </button>
@@ -454,9 +442,10 @@ export default function MCQQuizInterface({ session, questions, onComplete, onExi
 
             <button
               onClick={handleFinalSubmit}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-accent-purple to-accent-pink text-white font-extrabold text-xs flex items-center justify-center gap-2 shadow-lg shadow-purple-600/30 transition-all hover:scale-[1.02]"
+              className="cartoon-btn cartoon-btn-purple w-full py-3 text-xs font-black gap-2"
             >
-              Finish & View Result
+              <Trophy className="w-4 h-4 text-yellow-300" />
+              <span>Complete & View Score</span>
             </button>
           </div>
         </div>
