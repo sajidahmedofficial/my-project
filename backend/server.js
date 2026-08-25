@@ -14,6 +14,7 @@ import authRoutes from './routes/auth.js';
 import aptitudeRoutes from './routes/aptitude.routes.js';
 import skillGapRoutes from './routes/skillGap.routes.js';
 import aiRoutes from './routes/ai.js';
+import { checkSupabaseConnection } from './services/supabase.service.js';
 import { aiRateLimiter } from './middleware/rateLimiter.js';
 
 const app = express();
@@ -84,7 +85,8 @@ app.use("/api/roadmap", roadmapRoutes);
 app.use("/api/aptitude", aptitudeRoutes);
 app.use("/api", aptitudeRoutes);
 
-app.get("/api/health", (req, res) => {
+app.get("/api/health", async (req, res) => {
+  const supabaseCheck = await checkSupabaseConnection();
   const readyState = mongoose.connection.readyState;
   const stateLabels = {
     0: "DISCONNECTED",
@@ -99,6 +101,7 @@ app.get("/api/health", (req, res) => {
     database: readyState === 1 ? "CONNECTED" : (process.env.MONGODB_URI ? `ERROR_${stateLabels[readyState] || "OFFLINE"}` : "LOCAL_FALLBACK"),
     databaseReadyState: readyState,
     databaseStatus: stateLabels[readyState] || "UNKNOWN",
+    supabaseStatus: supabaseCheck.connected ? (supabaseCheck.status || "CONNECTED") : "DISCONNECTED",
     endpoints: [
       "/api/auth",
       "/api/ai",
