@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Main Express API server with MongoDB connection, CORS, health check, and route mounts", deps: ["dotenv", "express", "cors", "mongoose", "./routes/*"], state: "active", last: "anti@2026-08-20" }
+// agent-notes: { ctx: "Main Express API server with MongoDB connection, CORS, health check, and route mounts", deps: ["dotenv", "express", "cors", "mongoose", "./routes/*"], state: "active", last: "anti@2026-08-25" }
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -17,14 +17,52 @@ import aiRoutes from './routes/ai.js';
 
 const app = express();
 
-// Connect to MongoDB
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/skillbridge';
-mongoose.connect(MONGODB_URI, {
-  serverSelectionTimeoutMS: 2000
-}).then(() => {
-  console.log('MongoDB connected successfully.');
-}).catch((err) => {
-  console.warn('MongoDB offline notification (operating in resilient local store mode):', err.message);
+// Cached database connection promise for serverless cold starts & Node runtime
+let dbConnectionPromise = null;
+
+export async function connectDB() {
+  if (mongoose.connection.readyState === 1) {
+    return mongoose.connection;
+  }
+
+  if (dbConnectionPromise) {
+    return dbConnectionPromise;
+  }
+
+  const MONGODB_URI = process.env.MONGODB_URI;
+
+  if (!MONGODB_URI) {
+    console.info('[DB] No MONGODB_URI configured. Running in resilient local store / demo mode.');
+    return null;
+  }
+
+  dbConnectionPromise = mongoose.connect(MONGODB_URI, {
+    serverSelectionTimeoutMS: 3000
+  }).then((conn) => {
+    console.log(`[DB] MongoDB connected successfully to database: "${conn.connection.name}". Connection state: CONNECTED (readyState: 1)`);
+    return conn.connection;
+  }).catch((err) => {
+    console.error(`[DB] MongoDB connection attempt failed (${err.name}: ${err.message}). Check MONGODB_URI credentials or network access. Operating in resilient fallback mode.`);
+    dbConnectionPromise = null;
+    return null;
+  });
+
+  return dbConnectionPromise;
+}
+
+// Immediately initiate connection on module load
+connectDB().catch(() => {});
+
+// Middleware ensuring DB connection check completes before routes handle requests (critical for serverless / cold starts)
+app.use(async (req, res, next) => {
+  if (mongoose.connection.readyState !== 1 && process.env.MONGODB_URI) {
+    try {
+      await connectDB();
+    } catch (err) {
+      console.error('[DB Middleware] Error checking DB connection:', err.message);
+    }
+  }
+  next();
 });
 
 app.use(
@@ -46,10 +84,20 @@ app.use("/api/aptitude", aptitudeRoutes);
 app.use("/api", aptitudeRoutes);
 
 app.get("/api/health", (req, res) => {
+  const readyState = mongoose.connection.readyState;
+  const stateLabels = {
+    0: "DISCONNECTED",
+    1: "CONNECTED",
+    2: "CONNECTING",
+    3: "DISCONNECTING"
+  };
+
   res.json({
     status: "OK",
     service: "SkillBridge AI API",
-    database: mongoose.connection.readyState === 1 ? "CONNECTED" : "LOCAL_FALLBACK",
+    database: readyState === 1 ? "CONNECTED" : (process.env.MONGODB_URI ? `ERROR_${stateLabels[readyState] || "OFFLINE"}` : "LOCAL_FALLBACK"),
+    databaseReadyState: readyState,
+    databaseStatus: stateLabels[readyState] || "UNKNOWN",
     endpoints: [
       "/api/auth",
       "/api/ai",
