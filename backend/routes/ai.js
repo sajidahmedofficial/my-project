@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "AI routes for resume parsing, JD analysis, skill-gap, chat & roadmap", deps: ["@google/generative-ai"], state: "active", last: "anti@2026-07-31" }
+// agent-notes: { ctx: "AI routes for resume parsing, JD analysis, question generation, chat & roadmap via backend Gemini", deps: ["@google/generative-ai", "pdf-parse", "multer"], state: "active", last: "anti@2026-08-25" }
 import express from 'express';
 import multer from 'multer';
 import { GoogleGenerativeAI } from '@google/generative-ai';
@@ -8,14 +8,13 @@ const router = express.Router();
 const upload = multer({ limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB limit
 
 // Initialize Gemini API Client
-// Note: Requires GEMINI_API_KEY environment variable. If not set, it will fallback to mock grading/responses.
+// Note: Requires GEMINI_API_KEY environment variable. If not set, routes fallback gracefully to structured mock engines.
 const getGenAI = () => {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
   if (!apiKey) {
-    console.warn("WARNING: GEMINI_API_KEY is not set. Routes will fallback to automated mock engines.");
+    console.warn("[AI Routes] WARNING: GEMINI_API_KEY is not configured in backend environment. Fallback engines active.");
     return null;
   }
-  // Initialize with standard constructor
   return new GoogleGenerativeAI(apiKey);
 };
 
@@ -55,7 +54,6 @@ router.post('/analyze-resume', upload.single('resume'), async (req, res) => {
         const data = await pdfParse(req.file.buffer);
         resumeText = data.text;
       } else {
-        // Fallback for word documents or basic texts
         resumeText = req.file.buffer.toString('utf-8');
       }
     } else {
@@ -68,7 +66,6 @@ router.post('/analyze-resume', upload.single('resume'), async (req, res) => {
 
     const ai = getGenAI();
     if (!ai) {
-      // Return local fallback analysis if API key is not present
       return res.json(runLocalResumeAnalyzer(resumeText));
     }
 
@@ -146,7 +143,6 @@ Return the response strictly as a JSON object of this structure:
     const cleaned = text.replace(/```json/gi, '').replace(/```/g, '').trim();
     const jobExtracted = JSON.parse(cleaned);
     
-    // Perform skill gap comparison
     const matched = [];
     const missing = [];
     const sSkillsNormalized = (studentSkills || []).map(s => s.toLowerCase().trim());
@@ -177,6 +173,61 @@ Return the response strictly as a JSON object of this structure:
   }
 });
 
+// @desc    Generate Practice, Coding & Interview Questions via Gemini
+// @route   POST /api/ai/generate-questions
+router.post('/generate-questions', async (req, res) => {
+  const { topic, difficulty = 'medium', questionType = 'mcq', numberOfQuestions = 5 } = req.body;
+
+  if (!topic) {
+    return res.status(400).json({ error: 'Topic parameter is required' });
+  }
+
+  const count = Number(numberOfQuestions) || 5;
+
+  try {
+    const ai = getGenAI();
+    if (!ai) {
+      const fallbackQuestions = generateMockQuestions(topic, difficulty, questionType, count);
+      return res.json({ questions: fallbackQuestions });
+    }
+
+    const prompt = `You are an expert AI technical examiner. Generate exactly ${count} practice questions based on the following specs:
+- Topic: ${topic}
+- Difficulty: ${difficulty}
+- Question Type: ${questionType}
+
+Output requirements:
+Return a clean JSON array of ${count} question objects.
+Structure per question object depending on questionType (${questionType}):
+- If "mcq": { "id": number, "question": string, "options": Array<string> (4 items), "correctAnswer": string, "explanation": string }
+- If "coding": { "id": number, "question": string, "starterCode": string, "sampleSolution": string, "explanation": string }
+- If "interview": { "id": number, "question": string, "sampleAnswer": string, "keyConcepts": Array<string> }
+
+Return strictly valid JSON only. Do not include markdown code fences or conversational text.`;
+
+    const text = await generateGeminiContent(ai, prompt, true);
+    const cleaned = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+    let questions;
+
+    try {
+      questions = JSON.parse(cleaned);
+    } catch {
+      const parsed = JSON.parse(cleaned);
+      questions = Array.isArray(parsed) ? parsed : (parsed.questions || parsed.data || []);
+    }
+
+    if (!Array.isArray(questions)) {
+      questions = [questions];
+    }
+
+    res.json({ questions });
+  } catch (error) {
+    console.error('[AI Route] Question generation error:', error.message);
+    const fallbackQuestions = generateMockQuestions(topic, difficulty, questionType, count);
+    res.json({ questions: fallbackQuestions, warning: 'Fallback questions used due to upstream AI service response.' });
+  }
+});
+
 // @desc    Career Chatbot Mentor
 // @route   POST /api/ai/chat
 router.post('/chat', async (req, res) => {
@@ -188,7 +239,6 @@ router.post('/chat', async (req, res) => {
       return res.json({ response: "Local Mentor response fallback trigger." });
     }
 
-    // Construct chat contextual prompt
     const chatHistoryContext = (messages || []).map(m => `${m.sender === 'bot' ? 'Mentor' : 'Student'}: ${m.text}`).join('\n');
     
     const prompt = `You are a Career Mentor chatbot at SkillBridge AI. Your goal is to guide CSE/IT students.
@@ -316,8 +366,45 @@ router.post('/generate-roadmap', async (req, res) => {
 });
 
 // Local Fallback helper engines
+function generateMockQuestions(topic, difficulty = 'medium', questionType = 'mcq', numberOfQuestions = 5) {
+  const count = Number(numberOfQuestions) || 5;
+  const questions = [];
+  
+  for (let i = 1; i <= count; i++) {
+    if (questionType === 'coding') {
+      questions.push({
+        id: i,
+        question: `Implement a robust ${topic} solution for scenario #${i} with optimal time/space complexity (${difficulty} level).`,
+        starterCode: `function solve${topic.replace(/[^a-zA-Z0-9]/g, '')}Case${i}(input) {\n  // TODO: Implement solution for ${topic}\n  return null;\n}`,
+        sampleSolution: `function solve${topic.replace(/[^a-zA-Z0-9]/g, '')}Case${i}(input) {\n  if (!input) return null;\n  return Array.isArray(input) ? input.filter(Boolean) : { status: 'success', topic: '${topic}' };\n}`,
+        explanation: `Demonstrates best-practice architecture, error handling, and clean modular code for ${topic}.`
+      });
+    } else if (questionType === 'interview') {
+      questions.push({
+        id: i,
+        question: `How would you explain the core architectural principles of ${topic} and handle edge cases at scale?`,
+        sampleAnswer: `${topic} requires clear separation of concerns, defensive validation, and modular encapsulation to maintain performance and reliability.`,
+        keyConcepts: [topic, 'Scalability', 'Design Patterns', 'Error Handling']
+      });
+    } else {
+      questions.push({
+        id: i,
+        question: `Which of the following statements is most accurate regarding ${topic} in production applications?`,
+        options: [
+          `${topic} enhances maintainability and modular execution when configured properly.`,
+          `${topic} completely eliminates the need for unit and integration testing.`,
+          `${topic} can only run in single-threaded environments without asynchronous capabilities.`,
+          `${topic} deprecated all standard web interfaces in modern architectures.`
+        ],
+        correctAnswer: `${topic} enhances maintainability and modular execution when configured properly.`,
+        explanation: `In production software design, ${topic} provides structured encapsulation and modular separation.`
+      });
+    }
+  }
+  return questions;
+}
+
 function runLocalResumeAnalyzer(_text) {
-  // Simulates parser
   return {
     skills: ["HTML", "CSS", "JavaScript", "SQL", "Java"],
     projects: [
@@ -330,7 +417,6 @@ function runLocalResumeAnalyzer(_text) {
 }
 
 function runLocalJdAnalyzer(jdText, studentSkills) {
-  // Simulates gap detector
   const requiredSkills = ["React.js", "Node.js", "Git", "SQL"];
   const matched = requiredSkills.filter(s => (studentSkills || []).includes(s));
   const missing = requiredSkills.filter(s => !(studentSkills || []).includes(s));
