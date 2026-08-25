@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Frontend API client for Skill Gap Analysis, Multi-stage Roadmap, Verification & Certificate downloads with strict error propagation", deps: [], state: "active", last: "anti@2026-08-20" }
+// agent-notes: { ctx: "Frontend API client for Skill Gap Analysis, Multi-stage Roadmap, Verification & Certificate downloads with strict error propagation", deps: [], state: "active", last: "anti@2026-08-25" }
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
