@@ -596,7 +596,7 @@ router.post('/verify', async (req, res) => {
       mcqResults: calculatedMcqResults,
       codingResults: calculatedCodingResults,
       projectSubmission: cleanProjectSubmission,
-      passingThreshold: 80
+      passingThreshold: 75
     });
 
     // Persist assessment result in MongoDB if connected
@@ -611,7 +611,7 @@ router.post('/verify', async (req, res) => {
           overallScore: evalResult.finalScore,
           projectUrl: projectSubmission?.repoUrl || "",
           repositoryInfo: evalResult.repositoryInfo,
-          passingThreshold: 80,
+          passingThreshold: 75,
           status: evalResult.status === 'verified' ? 'VERIFIED' : (evalResult.status === 'pending' ? 'PENDING' : 'FAILED'),
           aiFeedback: evalResult.feedback,
           detailedBreakdown: evalResult.detailedBreakdown
@@ -639,7 +639,7 @@ router.post('/verify', async (req, res) => {
       skillName,
       verificationStatus: "verified",
       finalScore: evalResult.finalScore,
-      passingThreshold: 80
+      passingThreshold: 75
     });
 
     // Generate structured patch for automatic resume update
@@ -654,7 +654,7 @@ router.post('/verify', async (req, res) => {
       codingScore: evalResult.codingScore,
       projectScore: evalResult.projectScore,
       finalScore: evalResult.finalScore,
-      passingThreshold: 80,
+      passingThreshold: 75,
       status: 'verified',
       repositoryUrl: evalResult.repositoryInfo?.repoUrl || "",
       repositoryName: evalResult.repositoryInfo?.repoName || "",
@@ -700,7 +700,7 @@ router.post('/verify', async (req, res) => {
           codingScore: evalResult.codingScore,
           projectScore: evalResult.projectScore,
           overallScore: evalResult.finalScore,
-          passingThreshold: 80,
+          passingThreshold: 75,
           status: "PASSED",
           detailedBreakdown: evalResult.detailedBreakdown,
           certificateId: cert.certificateId

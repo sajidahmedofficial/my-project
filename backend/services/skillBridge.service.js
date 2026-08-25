@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Skill verification calculator and progress service", deps: [], state: "active", last: "anti@2026-08-06" }
+// agent-notes: { ctx: "Skill verification calculator and progress service unified with single 25-35-40 formula and 75% threshold", deps: [], state: "active", last: "anti@2026-08-25" }
 export function calculateSkillStatus({
   quizScore = 90,
   codingScore = 85,
@@ -10,7 +10,7 @@ export function calculateSkillStatus({
     projectScore * 0.40
   );
 
-  if (total >= 80) {
+  if (total >= 75) {
     return {
       status: "GAINED",
       level: 100,

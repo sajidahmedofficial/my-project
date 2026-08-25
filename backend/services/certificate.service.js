@@ -132,7 +132,7 @@ export async function issueVerifiedCertificate({
   skillName,
   verificationStatus = "verified",
   finalScore,
-  passingThreshold = 80,
+  passingThreshold = 75,
   verificationId = null
 }) {
   if (!skillName) {
@@ -216,7 +216,7 @@ export const generateCertificate = async ({ name, skill, score, level, userId, s
     skillName: skill,
     finalScore: score,
     verificationStatus: status || "verified",
-    passingThreshold: threshold || 80
+    passingThreshold: threshold || 75
   });
 };
 

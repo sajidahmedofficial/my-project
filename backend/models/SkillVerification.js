@@ -10,7 +10,7 @@ const skillVerificationSchema = new mongoose.Schema({
   codingScore: { type: Number, required: true },
   projectScore: { type: Number, required: true },
   finalScore: { type: Number, required: true },
-  passingThreshold: { type: Number, default: 80 },
+  passingThreshold: { type: Number, default: 75 },
   status: { 
     type: String, 
     enum: ['pending', 'failed', 'verified'], 

@@ -245,11 +245,11 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
         passed: isVerified,
         summary: evalData.feedback || (isVerified
           ? `✓ Comprehensive Verification Complete! ${skillName} has been certified at ${evalData.finalScore}%.`
-          : `⚠ Verification Incomplete: Final Score ${evalData.finalScore}% did not reach the ${evalData.passingThreshold || 80}% requirement.`),
+          : `⚠ Verification Incomplete: Final Score ${evalData.finalScore}% did not reach the ${evalData.passingThreshold || 75}% requirement.`),
         feedback: [
-          `✓ Quiz Knowledge Check (30% weight): ${evalData.mcqScore ?? 0}% (${evalData.detailedBreakdown?.mcqCorrect || 0}/${evalData.detailedBreakdown?.mcqTotal || mcqQuestions.length} correct)`,
+          `✓ Quiz Knowledge Check (25% weight): ${evalData.mcqScore ?? 0}% (${evalData.detailedBreakdown?.mcqCorrect || 0}/${evalData.detailedBreakdown?.mcqTotal || mcqQuestions.length} correct)`,
           `✓ Coding Sandbox Challenge (35% weight): ${evalData.codingScore ?? 0}% (${evalData.detailedBreakdown?.codeTestsPassed || 0}/${evalData.detailedBreakdown?.codeTestsTotal || challengeData?.testCases?.length || 1} test cases passed)`,
-          `✓ GitHub Project Repository (35% weight): ${evalData.projectScore ?? 0}% (${evalData.repositoryInfo?.repoName || cleanedRepo})`
+          `✓ GitHub Project Repository (40% weight): ${evalData.projectScore ?? 0}% (${evalData.repositoryInfo?.repoName || cleanedRepo})`
         ],
         evidence: evalData.repositoryInfo?.evidence || [],
         certificate: certData
@@ -798,7 +798,7 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
             {/* Weighted Score Breakdown */}
             <div className="grid grid-cols-3 gap-2 max-w-md mx-auto text-center">
               <div className="p-2.5 rounded-xl bg-gray-900 border border-gray-800 space-y-0.5">
-                <span className="text-[10px] text-gray-400 font-semibold block">Quiz (30%)</span>
+                <span className="text-[10px] text-gray-400 font-semibold block">Quiz (25%)</span>
                 <span className="text-sm font-bold text-white">{evalResult?.quizScore ?? 0}%</span>
               </div>
               <div className="p-2.5 rounded-xl bg-gray-900 border border-gray-800 space-y-0.5">
@@ -806,7 +806,7 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
                 <span className="text-sm font-bold text-white">{evalResult?.codingScore ?? 0}%</span>
               </div>
               <div className="p-2.5 rounded-xl bg-gray-900 border border-gray-800 space-y-0.5">
-                <span className="text-[10px] text-gray-400 font-semibold block">Project (35%)</span>
+                <span className="text-[10px] text-gray-400 font-semibold block">Project (40%)</span>
                 <span className="text-sm font-bold text-white">{evalResult?.projectScore ?? 0}%</span>
               </div>
             </div>

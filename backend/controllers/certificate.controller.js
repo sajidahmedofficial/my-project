@@ -14,7 +14,7 @@ export const generateCertificate = async (req, res) => {
       score, 
       verificationStatus, 
       status, 
-      passingThreshold = 80, 
+      passingThreshold = 75, 
       verificationId 
     } = req.body;
 
@@ -87,7 +87,7 @@ export const downloadCertificatePdf = async (req, res) => {
         skillName: certRecord.skillName,
         verificationStatus: certRecord.status,
         finalScore: certRecord.score,
-        passingThreshold: certRecord.passingThreshold || 80,
+        passingThreshold: certRecord.passingThreshold || 75,
         verificationId: certRecord.verificationId
       });
 

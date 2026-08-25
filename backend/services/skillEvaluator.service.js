@@ -1,13 +1,13 @@
-// agent-notes: { ctx: "Authoritative Backend Skill Verification Engine enforcing single 30-35-35 weighting, 80% passing threshold, and pending/failed/verified statuses", deps: ["./projectVerification.service.js"], state: "active", last: "anti@2026-08-20" }
+// agent-notes: { ctx: "Authoritative Single Source of Truth for Skill Verification scoring (MCQ 25%, Coding 35%, Project 40%, passing 75%)", deps: ["./projectVerification.service.js"], state: "active", last: "anti@2026-08-25" }
 import { verifyProjectRepository } from './projectVerification.service.js';
 
 export const VERIFICATION_WEIGHTS = {
-  mcq: 0.30,
+  mcq: 0.25,
   coding: 0.35,
-  project: 0.35
+  project: 0.40
 };
 
-export const VERIFICATION_PASSING_THRESHOLD = 80;
+export const VERIFICATION_PASSING_THRESHOLD = 75;
 
 /**
  * Evaluates all verification components authoritatively on the backend.
@@ -54,9 +54,9 @@ export async function evaluateSkillVerification({
         projectScore: null
       },
       weights: {
-        mcqWeight: "30%",
+        mcqWeight: "25%",
         codingWeight: "35%",
-        projectWeight: "35%"
+        projectWeight: "40%"
       },
       missingComponents,
       feedback: `Verification pending: ${reason}.`,
@@ -79,7 +79,7 @@ export async function evaluateSkillVerification({
   const projectScore = projectEval.projectScore;
   const isRepoVerified = projectEval.isAccessible && projectScore >= 60;
 
-  // Single Authoritative Weighting Calculation: 30% MCQ + 35% Coding + 35% Project
+  // Single Authoritative Weighting Calculation: 25% MCQ + 35% Coding + 40% Project
   const finalScore = Math.round(
     (mcqScore * VERIFICATION_WEIGHTS.mcq) +
     (codingScore * VERIFICATION_WEIGHTS.coding) +
@@ -120,9 +120,9 @@ export async function evaluateSkillVerification({
     codingScore,
     projectScore,
     weights: {
-      mcqWeight: "30%",
+      mcqWeight: "25%",
       codingWeight: "35%",
-      projectWeight: "35%"
+      projectWeight: "40%"
     },
     isPassed,
     feedback,
