@@ -14,6 +14,7 @@ import authRoutes from './routes/auth.js';
 import aptitudeRoutes from './routes/aptitude.routes.js';
 import skillGapRoutes from './routes/skillGap.routes.js';
 import aiRoutes from './routes/ai.js';
+import { aiRateLimiter } from './middleware/rateLimiter.js';
 
 const app = express();
 
@@ -74,8 +75,8 @@ app.use(
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
-app.use("/api/ai", aiRoutes);
-app.use("/api/skill-gap", skillGapRoutes);
+app.use("/api/ai", aiRateLimiter, aiRoutes);
+app.use("/api/skill-gap", aiRateLimiter, skillGapRoutes);
 app.use("/api/resume", resumeRoutes);
 app.use("/api/skills", skillRoutes);
 app.use("/api/certificates", certificateRoutes);

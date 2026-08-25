@@ -7,6 +7,7 @@ import { extractResumeText } from "../services/resumeParser.service.js";
 import { analyzeResume } from "../services/resumeAnalyzer.service.js";
 import { saveParsedResume } from "../services/resumeStore.service.js";
 import { authenticateUser, getAuthenticatedUserId } from "../middleware/auth.js";
+import { resumeAnalyzeLimiter } from "../middleware/rateLimiter.js";
 
 const router = express.Router();
 router.use(authenticateUser);
@@ -30,6 +31,7 @@ const cleanupUploadedFile = (filePath) => {
 
 router.post(
   "/analyze",
+  resumeAnalyzeLimiter,
   upload.single("resume"),
   async (req, res) => {
     const tempFilePath = req.file?.path;

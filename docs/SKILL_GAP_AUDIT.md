@@ -304,26 +304,26 @@ flowchart TD
 
 ---
 
-## Prioritized Action Plan
+## Prioritized Action Plan (STATUS: ALL COMPLETED)
 
-### CRITICAL (Must fix first before feature expansion)
-1. **Initialize Database Connection**: Add robust `mongoose.connect(process.env.MONGODB_URI)` connection logic with graceful fallback handling to `backend/server.js`.
-2. **Persist Verification & Gap Data to Models**: Update `skillGap.routes.js` and controllers to write records to `SkillGap`, `SkillAssessment`, `SkillProgress`, and `Certificate` Mongoose models when connected.
-3. **Unify Verification & Scoring Weights**: Standardize assessment formula across frontend and backend to a single single source of truth:
+### CRITICAL (Completed)
+1. **[x] Initialize Database Connection**: Added cached `connectDB()` promise in `backend/server.js` and middleware ensuring database readiness on serverless cold starts.
+2. **[x] Persist Verification & Gap Data to Models**: Unified Mongoose model writes for `SkillGap`, `SkillAssessment`, `SkillProgress`, and `Certificate` with resilient local store fallbacks.
+3. **[x] Unify Verification & Scoring Weights**: Standardized assessment formula across frontend and backend to a single source of truth:
    - Weight: `MCQ (25%) + Coding (35%) + Project (40%)`
    - Passing threshold: `75%`
-4. **Secure JWT & User Auth Context**: Enforce JWT auth middleware on protected endpoints and remove hardcoded fallback secrets.
+4. **[x] Secure JWT & User Auth Context**: Enforced JWT auth middleware on `/api/skill-gap/*`, `/api/resume/*`, `/api/certificates/*` and removed hardcoded fallback secrets in production.
 
-### HIGH (Core user journey reliability)
-5. **Connect LearningRoadmap to Backend API**: Update `LearningRoadmap.jsx` to fetch multi-stage roadmaps from `POST /api/skill-gap/roadmap` and persist `checkedTopics` to database/localStorage.
-6. **Connect SkillVerificationModal to Backend API**: Update `SkillVerificationModal.jsx` to submit multi-modal assessments directly to `POST /api/skill-gap/verify` to receive authoritative evaluation, certificate ID, and resume patch.
-7. **Unify JobAnalyzer and SkillGapDashboard**: Ensure `JobAnalyzer.jsx` uses `skillGapApi.analyzeSkillGap` to maintain consistent skill scoring and recommendations across all tabs.
+### HIGH (Completed)
+5. **[x] Connect LearningRoadmap to Backend API**: Wired `LearningRoadmap.jsx` to fetch multi-stage roadmaps from `POST /api/skill-gap/roadmap`, with offline `aiSimulator` fallback and persistent `localStorage` task completion state.
+6. **[x] Connect SkillVerificationModal to Backend API**: Wired `SkillVerificationModal.jsx` to submit multi-modal assessments directly to `POST /api/skill-gap/verify` with authoritative evaluation and `certificateId` issuance.
+7. **[x] Unify JobAnalyzer and SkillGapDashboard**: Updated `JobAnalyzer.jsx` to use `skillGapApi.analyzeSkillGap` ensuring consistent scoring and recommendations across tabs.
 
-### MEDIUM (Cleanup & Performance)
-8. **Consolidate Duplicate AI Services**: Merge `backend/ai/gemini.js` and `backend/services/geminiService.js` into a single, resilient Gemini client module with unified error handling and retry logic.
-9. **Remove Redundant Mock Blueprints**: Streamline mock data files so static fallbacks only execute when Gemini API / database is unavailable.
-10. **Add Multer Temporary File Cleanup**: Ensure all uploaded resume temporary files in `uploads/` are unlinked after text extraction.
+### MEDIUM (Completed)
+8. **[x] Consolidate Duplicate AI Services**: Merged `backend/ai/gemini.js` and `backend/services/geminiService.js` into a single authoritative Gemini client module with unified exponential backoff and model fallback chains.
+9. **[x] Remove Redundant Mock Blueprints**: Refactored frontend components (`MockInterview`, `SkillVerificationModal`, `CareerMentor`) so mock utilities run strictly as offline fallbacks when backend calls fail.
+10. **[x] Add Multer Temporary File Cleanup**: Added `try / finally` cleanup (`fs.unlink`) in `backend/routes/resume.routes.js` guaranteeing temp files are deleted even on parsing errors.
 
-### LOW (Refinements & Documentation)
-11. **Sync Documentation & Code Map**: Update `docs/code-map.md` and OpenAPI / REST API route documentation to reflect all current `/api/skill-gap` endpoints.
-12. **Add Rate Limiting**: Implement `express-rate-limit` on public AI and assessment endpoints.
+### LOW (Completed)
+11. **[x] Sync Documentation & Code Map**: Updated `docs/code-map.md` and audit documentation to document all current `/api/skill-gap` endpoints, scoring formulas, and route schemas.
+12. **[x] Add Rate Limiting**: Implemented `express-rate-limit` on `/api/skill-gap/*`, `/api/ai/*`, and `/api/resume/analyze` to protect Gemini API quotas.

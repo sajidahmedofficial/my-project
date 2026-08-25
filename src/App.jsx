@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Main App Component redesigned with modern interactive cartoon visual style, Sparky avatar integration & playful navigation", deps: ["lucide-react", "./context/AuthContext", "./components/common/AIAssistantAvatar", "./components/common/CartoonDecorations"], state: "active", last: "anti@2026-08-21" }
+// agent-notes: { ctx: "Main App Component redesigned with modern interactive cartoon visual style, Sparky avatar integration & playful navigation", deps: ["lucide-react", "./context/AuthContext", "./components/common/AIAssistantAvatar", "./components/common/CartoonDecorations"], state: "active", last: "anti@2026-08-25" }
 import React, { useState } from 'react';
 import { 
   LayoutDashboard, 
@@ -33,16 +33,25 @@ import AIAssistantAvatar from './components/common/AIAssistantAvatar';
 import CartoonDecorations from './components/common/CartoonDecorations';
 
 import Dashboard from './components/Dashboard';
-import ResumeAnalyzer from './pages/ResumeAnalyzer';
-import JobAnalyzer from './components/JobAnalyzer';
-import SkillGapDashboard from './components/SkillGapDashboard';
-import LearningRoadmap from './components/LearningRoadmap';
-import CareerMentor from './components/CareerMentor';
-import ProjectRecommender from './components/ProjectRecommender';
-import MockInterview from './components/MockInterview';
-import CodingPractice from './components/CodingPractice';
-import AptitudeDashboard from './components/aptitude/AptitudeDashboard';
-import SkillVerificationModal from './components/resume/SkillVerificationModal';
+
+// Dynamic lazy route imports for optimal bundle splitting
+const ResumeAnalyzer = React.lazy(() => import('./pages/ResumeAnalyzer'));
+const JobAnalyzer = React.lazy(() => import('./components/JobAnalyzer'));
+const SkillGapDashboard = React.lazy(() => import('./components/SkillGapDashboard'));
+const LearningRoadmap = React.lazy(() => import('./components/LearningRoadmap'));
+const CareerMentor = React.lazy(() => import('./components/CareerMentor'));
+const ProjectRecommender = React.lazy(() => import('./components/ProjectRecommender'));
+const MockInterview = React.lazy(() => import('./components/MockInterview'));
+const CodingPractice = React.lazy(() => import('./components/CodingPractice'));
+const AptitudeDashboard = React.lazy(() => import('./components/aptitude/AptitudeDashboard'));
+const SkillVerificationModal = React.lazy(() => import('./components/resume/SkillVerificationModal'));
+
+const TabLoadingFallback = () => (
+  <div className="cartoon-card p-12 text-center space-y-4 my-6">
+    <div className="w-10 h-10 rounded-full border-4 border-purple-500 border-t-transparent animate-spin mx-auto" />
+    <p className="text-xs font-black text-purple-300">Loading module...</p>
+  </div>
+);
 
 import { RESUME_PRESETS } from './utils/mockData';
 
@@ -123,7 +132,8 @@ function MainLayout() {
     }
 
     return (
-      <div className="transition-all duration-300">
+      <React.Suspense fallback={<TabLoadingFallback />}>
+        <div className="transition-all duration-300">
         <div className={activeTab === 'dashboard' ? 'block' : 'hidden'}>
           <Dashboard 
             profile={activeProfile} 
@@ -189,6 +199,7 @@ function MainLayout() {
           <AptitudeDashboard />
         </div>
       </div>
+      </React.Suspense>
     );
   };
 
@@ -457,11 +468,13 @@ function MainLayout() {
 
       {/* Global Skill Verification Modal */}
       {globalVerifyingSkill && (
-        <SkillVerificationModal
-          skillName={globalVerifyingSkill}
-          onClose={() => setGlobalVerifyingSkill(null)}
-          onCompleteVerification={handleCompleteGlobalVerification}
-        />
+        <React.Suspense fallback={null}>
+          <SkillVerificationModal
+            skillName={globalVerifyingSkill}
+            onClose={() => setGlobalVerifyingSkill(null)}
+            onCompleteVerification={handleCompleteGlobalVerification}
+          />
+        </React.Suspense>
       )}
     </div>
   );
