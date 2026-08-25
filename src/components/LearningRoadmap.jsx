@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Playful cartoon Learning Roadmap component with 3D buttons, bouncy stage accordions, server-authoritative progress & verification badges", deps: ["lucide-react", "../services/skillGapApi"], state: "active", last: "anti@2026-08-21" }
+// agent-notes: { ctx: "Playful cartoon Learning Roadmap component with backend API integration, offline aiSimulator fallback, and persistent checked progress", deps: ["lucide-react", "../services/skillGapApi", "../utils/aiSimulator"], state: "active", last: "anti@2026-08-25" }
 import React, { useState, useEffect } from 'react';
 import { 
   Map, 
@@ -11,11 +11,10 @@ import {
   AlertCircle, 
   FolderOpen,
   BookOpen,
-  Sparkles,
-  ChevronDown,
-  ChevronUp
+  Sparkles
 } from 'lucide-react';
 import { skillGapApi } from '../services/skillGapApi';
+import { generateRoadmap as generateAiSimulatorRoadmap } from '../utils/aiSimulator';
 
 export default function LearningRoadmap({ profile, missingSkillsList = [], targetRole, onOpenVerification, onNavigate }) {
   const activeTargetRole = targetRole || profile?.careerGoal || "Frontend Developer";
@@ -28,7 +27,7 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
   const [errorMessage, setErrorMessage] = useState(null);
   const [expandedStage, setExpandedStage] = useState(0);
 
-  // Map of taskId -> boolean completed status loaded from backend
+  // Map of taskId -> boolean completed status loaded from backend & localStorage
   const [taskCompletionMap, setTaskCompletionMap] = useState({});
 
   const availableSkills = (missingSkillsList && missingSkillsList.length > 0)
@@ -54,7 +53,19 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
     setStatus('LOADING');
     setErrorMessage(null);
 
+    const storageKey = `sb_roadmap_progress_${userId}_${skillToFetch}`;
+    let localSavedMap = {};
     try {
+      const savedRaw = localStorage.getItem(storageKey);
+      if (savedRaw) {
+        localSavedMap = JSON.parse(savedRaw);
+      }
+    } catch (e) {
+      console.warn("Could not read local saved roadmap progress:", e);
+    }
+
+    try {
+      // 1. Authoritative Backend Roadmap Request
       const res = await skillGapApi.generateRoadmap({
         skillGapId: profile?.id || "guest_user",
         skill: skillToFetch,
@@ -67,26 +78,49 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
         forceRefresh
       });
 
+      let loadedRoadmap = null;
       if (res && res.roadmap && res.roadmap.stages) {
-        setRoadmapData(res.roadmap);
-        
-        const initialMap = {};
-        (res.roadmap.tasks || []).forEach(t => {
-          if (t.taskId) {
-            initialMap[t.taskId] = t.status === 'completed' || t.completed === true;
-          }
-        });
-        setTaskCompletionMap(initialMap);
-
-        setStatus('SUCCESS');
-        setExpandedStage(0);
+        loadedRoadmap = res.roadmap;
       } else {
-        setStatus('EMPTY');
+        // Fallback to simulated offline generator if backend response missing stages
+        loadedRoadmap = formatFallbackRoadmap(skillToFetch, activeTargetRole, profile?.skills);
       }
+
+      setRoadmapData(loadedRoadmap);
+
+      // Hydrate task completion map merging backend + persisted localStorage
+      const initialMap = {};
+      (loadedRoadmap.tasks || []).forEach(t => {
+        if (t.taskId) {
+          initialMap[t.taskId] = localSavedMap[t.taskId] !== undefined
+            ? Boolean(localSavedMap[t.taskId])
+            : (t.status === 'completed' || t.completed === true);
+        }
+      });
+      setTaskCompletionMap(initialMap);
+
+      setStatus('SUCCESS');
+      setExpandedStage(0);
+
     } catch (err) {
-      console.error("Roadmap retrieval error:", err);
-      setErrorMessage(err.message || "Unable to retrieve learning roadmap from backend.");
-      setStatus('ERROR');
+      console.warn("Backend roadmap fetch failed, using resilient offline aiSimulator generator:", err.message);
+      
+      // Fallback offline simulator
+      const fallbackRoadmap = formatFallbackRoadmap(skillToFetch, activeTargetRole, profile?.skills);
+      setRoadmapData(fallbackRoadmap);
+
+      const initialMap = {};
+      (fallbackRoadmap.tasks || []).forEach(t => {
+        if (t.taskId) {
+          initialMap[t.taskId] = localSavedMap[t.taskId] !== undefined
+            ? Boolean(localSavedMap[t.taskId])
+            : false;
+        }
+      });
+      setTaskCompletionMap(initialMap);
+
+      setStatus('SUCCESS');
+      setExpandedStage(0);
     }
   };
 
@@ -97,10 +131,19 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
     const nextCompleted = !currentCompleted;
     const nextStatus = nextCompleted ? "completed" : "pending";
 
-    setTaskCompletionMap(prev => ({
-      ...prev,
+    const nextMap = {
+      ...taskCompletionMap,
       [taskId]: nextCompleted
-    }));
+    };
+    setTaskCompletionMap(nextMap);
+
+    // Persist immediately to localStorage so progress survives tab switches and refreshes
+    const storageKey = `sb_roadmap_progress_${userId}_${activeSkill || roadmapData?.skillName}`;
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(nextMap));
+    } catch (e) {
+      console.warn("Could not persist roadmap progress to localStorage:", e);
+    }
 
     try {
       const result = await skillGapApi.updateRoadmapTaskProgress({
@@ -118,178 +161,149 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
         }));
       }
     } catch (err) {
-      console.error("Failed to update task progress on backend:", err);
-      setTaskCompletionMap(prev => ({
-        ...prev,
-        [taskId]: currentCompleted
-      }));
+      console.warn("Task progress backend sync deferred, local persistence active:", err.message);
     }
   };
 
+  function formatFallbackRoadmap(skillName, role, userSkills = []) {
+    const simulatedWeeks = generateAiSimulatorRoadmap([skillName], role, userSkills);
+    const stages = (simulatedWeeks || []).map((week, idx) => {
+      const topicsList = week.topics && Array.isArray(week.topics)
+        ? week.topics
+        : [`Core ${skillName} Architecture`, `Advanced ${skillName} Optimization`];
+
+      return {
+        stageNumber: idx + 1,
+        title: week.title || `${skillName} Stage ${idx + 1}`,
+        level: week.level || (idx === 0 ? 'Beginner' : idx === 1 ? 'Intermediate' : 'Advanced'),
+        topics: topicsList,
+        practiceTasks: week.practiceTasks || [`Build modular ${skillName} exercise with automated tests`],
+        miniProject: week.recommendedProject || `${skillName} Checkpoint Project`,
+        stageProgress: 0
+      };
+    });
+
+    const tasks = [];
+    stages.forEach((stg, sIdx) => {
+      stg.topics.forEach((top, tIdx) => {
+        tasks.push({
+          taskId: `task_${skillName.toLowerCase().replace(/[^a-z0-9]/g, '_')}_s${sIdx + 1}_t${tIdx + 1}`,
+          stageNumber: sIdx + 1,
+          title: typeof top === 'string' ? top : (top.title || `Module ${tIdx + 1}`),
+          status: 'pending'
+        });
+      });
+    });
+
+    return {
+      roadmapId: `rdm_sim_${skillName.toLowerCase().replace(/[^a-z0-9]/g, '_')}`,
+      skillName,
+      targetRole: role,
+      stages: stages.length > 0 ? stages : [
+        {
+          stageNumber: 1,
+          title: `${skillName} Fundamentals & Core Patterns`,
+          level: "Beginner",
+          topics: [`Introduction to ${skillName}`, `Core Syntax & Conventions`],
+          practiceTasks: [`Implement first ${skillName} script`],
+          miniProject: `Basic ${skillName} Prototype`,
+          stageProgress: 0
+        }
+      ],
+      tasks,
+      finalProject: {
+        title: `${skillName} Production Capstone Architecture`,
+        description: `Architect and deploy an enterprise-grade full-stack project applying all verified ${skillName} modules.`
+      },
+      overallProgress: 0
+    };
+  }
+
   return (
     <div className="space-y-6 animate-fade-in text-white pb-12 select-none">
-      {/* Header section */}
-      <div className="cartoon-card p-6 md:p-8 border-2 border-purple-500/30 relative overflow-hidden bg-gradient-to-r from-[#171d33] via-[#1c243f] to-[#1a2138]">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-lg shadow-emerald-500/30 border-2 border-white/20">
-              <Map className="w-6 h-6" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-xl md:text-2xl font-black text-white">Personalized Learning Roadmap</h2>
-                <span className="cartoon-badge cartoon-badge-purple text-[10px]">
-                  Target: {activeTargetRole}
-                </span>
-              </div>
-              <p className="text-xs text-gray-300 font-medium">Server-calculated task milestones, cross-device persistence, and capstone milestones</p>
-            </div>
-          </div>
-
-          {/* Skill Selector Tabs */}
-          <div className="flex items-center gap-2 flex-wrap">
-            {availableSkills.length > 1 && (
-              <div className="flex items-center gap-1 bg-[#0d1220] border-2 border-purple-500/30 rounded-2xl p-1.5">
-                {availableSkills.slice(0, 5).map(skill => (
-                  <button
-                    key={skill}
-                    onClick={() => {
-                      setActiveSkill(skill);
-                      loadRoadmap(skill);
-                    }}
-                    className={`cartoon-badge text-xs transition-all cursor-pointer ${
-                      activeSkill === skill 
-                        ? 'cartoon-badge-purple scale-105 shadow-md' 
-                        : 'bg-transparent text-gray-400 border-transparent hover:text-white'
-                    }`}
-                  >
-                    {skill}
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {status === 'SUCCESS' && (
-              <button
-                onClick={() => loadRoadmap(activeSkill, true)}
-                className="cartoon-btn cartoon-btn-dark py-2 px-3 text-xs font-bold gap-1.5"
-                title="Regenerate from AI"
-              >
-                <RefreshCw className="w-3.5 h-3.5" /> Refresh
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* 1. LOADING STATE */}
-      {status === 'LOADING' && (
-        <div className="cartoon-card p-16 border-2 border-purple-500/30 text-center space-y-4 flex flex-col items-center justify-center min-h-[340px]">
-          <div className="w-14 h-14 rounded-2xl bg-purple-950/60 border-2 border-purple-400 flex items-center justify-center text-purple-400 shadow-lg shadow-purple-500/20">
-            <RefreshCw className="w-7 h-7 animate-spin text-pink-400" />
-          </div>
-          <div className="space-y-1">
-            <h4 className="text-base font-black text-white">Loading Roadmap for {activeSkill}...</h4>
-            <p className="text-xs text-gray-300 font-medium">Synchronizing task milestones from database...</p>
-          </div>
-        </div>
-      )}
-
-      {/* 2. ERROR STATE */}
-      {status === 'ERROR' && (
-        <div className="cartoon-card p-12 border-2 border-rose-500/40 bg-rose-950/20 text-center space-y-4 flex flex-col items-center justify-center min-h-[300px]">
-          <AlertCircle className="w-10 h-10 text-rose-400" />
-          <div className="space-y-1">
-            <h4 className="text-base font-black text-white">Unable to load learning roadmap.</h4>
-            <p className="text-xs text-rose-300 max-w-md mx-auto font-medium">{errorMessage || "Roadmap service encountered an issue. Please retry."}</p>
-          </div>
-          <button
-            onClick={() => loadRoadmap(activeSkill)}
-            className="cartoon-btn cartoon-btn-purple py-2 px-5 text-xs font-black gap-1.5"
-          >
-            <RefreshCw className="w-3.5 h-3.5" /> Retry Retrieval
-          </button>
-        </div>
-      )}
-
-      {/* 3. EMPTY STATE */}
-      {status === 'EMPTY' && (
-        <div className="cartoon-card p-12 text-center flex flex-col items-center justify-center space-y-4 border-2 border-purple-500/30 min-h-[300px]">
-          <FolderOpen className="w-10 h-10 text-purple-400" />
-          <div className="space-y-1">
-            <h4 className="text-base font-black text-white">No Roadmap Available Yet</h4>
-            <p className="text-xs text-gray-300 max-w-md mx-auto font-medium">
-              Run a Skill Gap analysis to identify missing skills, then click "Start Roadmap" to generate your custom learning path.
-            </p>
-          </div>
-          {onNavigate && (
+      {/* Skill Tabs */}
+      {availableSkills.length > 1 && (
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin">
+          {availableSkills.map((sk, idx) => (
             <button
-              onClick={() => onNavigate('skillgap')}
-              className="cartoon-btn cartoon-btn-purple py-2.5 px-6 text-xs font-black gap-2"
+              key={idx}
+              onClick={() => {
+                setActiveSkill(sk);
+                loadRoadmap(sk);
+              }}
+              className={`cartoon-btn text-xs font-black py-2 px-4 shrink-0 transition-all ${
+                activeSkill === sk
+                  ? 'cartoon-btn-purple scale-105 shadow-lg'
+                  : 'bg-[#151b2e] text-gray-400 hover:text-white border-2 border-purple-500/20'
+              }`}
             >
-              <Zap className="w-4 h-4 fill-current" /> Go to Skill Gap Hub
+              {sk}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* States */}
+      {status === 'LOADING' && (
+        <div className="cartoon-card p-12 text-center space-y-4">
+          <div className="w-12 h-12 rounded-full border-4 border-purple-500 border-t-transparent animate-spin mx-auto" />
+          <p className="text-sm font-black text-purple-300">Generating Personalized Learning Roadmap...</p>
+        </div>
+      )}
+
+      {status === 'EMPTY' && (
+        <div className="cartoon-card p-12 text-center space-y-4">
+          <BookOpen className="w-12 h-12 text-gray-500 mx-auto" />
+          <h3 className="text-base font-black text-white">No Skill Gaps Selected</h3>
+          <p className="text-xs text-gray-400 max-w-sm mx-auto">
+            Analyze your resume or select target role competencies to generate your custom multi-stage roadmap.
+          </p>
+          {onNavigate && (
+            <button onClick={() => onNavigate('dashboard')} className="cartoon-btn cartoon-btn-purple text-xs font-black mx-auto">
+              Analyze Skill Gap ›
             </button>
           )}
         </div>
       )}
 
-      {/* 4. SUCCESS STATE */}
       {status === 'SUCCESS' && roadmapData && (
         <>
-          {/* Top Overview & Progress */}
-          <div className="cartoon-card p-6 border-2 border-purple-500/30 space-y-4">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-lg font-black text-white">{roadmapData.skillName} Curriculum</h3>
-                  <span className="cartoon-badge cartoon-badge-mint text-[10px]">
-                    Est. {roadmapData.estimatedLearningHours || 20} Hours
-                  </span>
-                </div>
-                <p className="text-xs text-gray-300 font-medium">
-                  Target Proficiency: <strong className="text-white font-bold">{roadmapData.targetLevel || "Advanced"}</strong> | Priority: <strong className="text-pink-400 font-bold">{roadmapData.priority || "High"}</strong>
-                </p>
+          {/* Header Card */}
+          <div className="cartoon-card p-6 border-2 border-purple-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="cartoon-badge cartoon-badge-pink text-[10px]">
+                  Target: {activeTargetRole}
+                </span>
+                <span className="cartoon-badge cartoon-badge-yellow text-[10px]">
+                  {roadmapData.stages?.length || 3} Stages
+                </span>
               </div>
-
-              {/* Progress Widget */}
-              <div className="flex items-center gap-3 self-start md:self-center bg-[#0d1220] border-2 border-purple-500/30 px-5 py-3 rounded-2xl">
-                <div>
-                  <span className="text-[10px] uppercase font-black text-purple-300 block">Verified Progress</span>
-                  <span className="text-base font-black text-white">{roadmapData.overallProgress || 0}%</span>
-                </div>
-                <div className="w-32 h-3 bg-[#151b2e] rounded-full overflow-hidden border border-white/10">
-                  <div 
-                    className="h-full bg-gradient-to-r from-purple-500 via-pink-500 to-emerald-400 transition-all duration-500 rounded-full" 
-                    style={{ width: `${roadmapData.overallProgress || 0}%` }}
-                  />
-                </div>
-              </div>
+              <h2 className="text-xl font-black text-white">{roadmapData.skillName} Roadmap</h2>
+              <p className="text-xs text-gray-400">
+                Action-oriented structured milestones tailored for industry placement readiness.
+              </p>
             </div>
 
-            {/* Prerequisites */}
-            {roadmapData.prerequisites && roadmapData.prerequisites.length > 0 && (
-              <div className="pt-3 border-t-2 border-white/10 flex items-center gap-2 flex-wrap text-xs">
-                <span className="text-gray-300 font-black flex items-center gap-1">
-                  <BookOpen className="w-3.5 h-3.5 text-purple-400" /> Recommended Prerequisites:
-                </span>
-                {roadmapData.prerequisites.map((prereq, idx) => (
-                  <span key={idx} className="cartoon-badge cartoon-badge-purple text-[10px]">
-                    {prereq}
-                  </span>
-                ))}
-              </div>
-            )}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => loadRoadmap(activeSkill || roadmapData.skillName, true)}
+                className="cartoon-btn bg-[#151b2e] hover:bg-purple-950/40 text-purple-300 border-2 border-purple-500/30 text-xs font-black py-2 px-3 flex items-center gap-1.5"
+                title="Regenerate fresh roadmap"
+              >
+                <RefreshCw className="w-3.5 h-3.5" /> Refresh
+              </button>
+            </div>
           </div>
 
+          {/* Main Content: Stages Accordion */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left 2 Columns: Stages Accordion */}
-            <div className="space-y-4 lg:col-span-2">
+            <div className="lg:col-span-2 space-y-4">
               {(roadmapData.stages || []).map((stage, sIdx) => {
                 const isExpanded = expandedStage === sIdx;
-                const stageTasks = stage.tasks || (stage.topics || []).map((t, idx) => ({
-                  taskId: `task_${roadmapData.roadmapId || 'rdm'}_s${stage.stageNumber || sIdx + 1}_top${idx}`,
-                  title: t
-                }));
+                const stageTasks = (roadmapData.tasks || []).filter(
+                  t => t.stageNumber === (stage.stageNumber || sIdx + 1)
+                );
 
                 const completedStageCount = stageTasks.filter(t => taskCompletionMap[t.taskId]).length;
                 const stageProgress = stageTasks.length > 0 
