@@ -1,9 +1,8 @@
-// agent-notes: { ctx: "React Auth Context for user session with Supabase Auth & Supabase Data sync", deps: ["../services/api", "../services/supabase", "../services/supabaseData", "../utils/mockData"], state: "active", last: "anti@2026-08-18" }
+// agent-notes: { ctx: "React Auth Context for user session with Supabase Auth & authentic backend validation", deps: ["../services/api", "../services/supabase", "../services/supabaseData", "../utils/mockData"], state: "active", last: "anti@2026-08-25" }
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { api } from '../services/api';
 import { supabase } from '../services/supabase';
 import { saveUserDataToSupabase, loadUserDataFromSupabase } from '../services/supabaseData';
-import { RESUME_PRESETS } from '../utils/mockData';
 
 const AuthContext = createContext(null);
 
@@ -13,25 +12,36 @@ export function AuthProvider({ children }) {
     if (saved) {
       try { return JSON.parse(saved); } catch {}
     }
-    return RESUME_PRESETS[0];
+    return null;
   });
 
   const [token, setToken] = useState(() => {
-    return localStorage.getItem('sb_token') || sessionStorage.getItem('sb_token') || 'sb_demo_token_123';
+    return localStorage.getItem('sb_token') || sessionStorage.getItem('sb_token') || null;
   });
 
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return Boolean(localStorage.getItem('sb_token') || sessionStorage.getItem('sb_token'));
+  });
 
-  const [isOnboarded, setIsOnboarded] = useState(true);
+  const [isOnboarded, setIsOnboarded] = useState(() => {
+    const saved = localStorage.getItem('sb_user') || sessionStorage.getItem('sb_user');
+    if (saved) {
+      try {
+        const u = JSON.parse(saved);
+        return Boolean(u?.college && u?.careerGoal);
+      } catch {}
+    }
+    return false;
+  });
 
   useEffect(() => {
-    if (currentUser) {
+    if (currentUser && isAuthenticated) {
       const storage = localStorage.getItem('sb_remember') === 'true' ? localStorage : sessionStorage;
       storage.setItem('sb_user', JSON.stringify(currentUser));
       // Asynchronously sync user data changes to Supabase
       saveUserDataToSupabase(currentUser);
     }
-  }, [currentUser]);
+  }, [currentUser, isAuthenticated]);
 
   // Sync latest user progress from Supabase on initial auth mount
   useEffect(() => {
@@ -46,8 +56,10 @@ export function AuthProvider({ children }) {
         }
       }
     }
-    restoreFromSupabase();
-  }, []);
+    if (isAuthenticated) {
+      restoreFromSupabase();
+    }
+  }, [isAuthenticated]);
 
   const login = async (email, password, rememberMe = false) => {
     let supabaseSession = null;
@@ -57,13 +69,15 @@ export function AuthProvider({ children }) {
         supabaseSession = data;
       }
     } catch (e) {
-      console.warn('Supabase auth login attempt:', e.message);
+      console.warn('Supabase auth login check:', e.message);
     }
 
+    // Authoritative backend login verification (validates password hash)
     const res = await api.login({ email, password, rememberMe });
     if (res.requires2FA) {
       return res;
     }
+
     const storage = rememberMe ? localStorage : sessionStorage;
     if (rememberMe) localStorage.setItem('sb_remember', 'true');
     
@@ -77,7 +91,6 @@ export function AuthProvider({ children }) {
     const savedSupabaseData = await loadUserDataFromSupabase(userId, email);
 
     const fullUser = {
-      ...RESUME_PRESETS[0],
       ...res.user,
       ...(savedSupabaseData || {}),
       id: userId,
@@ -95,7 +108,7 @@ export function AuthProvider({ children }) {
     return { ...res, token: activeToken };
   };
 
-  const register = async (name, email, password) => {
+  const register = async (name, email, password, college = '', careerGoal = '') => {
     let supabaseUser = null;
     try {
       const { data, error } = await supabase.auth.signUp({
@@ -107,10 +120,10 @@ export function AuthProvider({ children }) {
         supabaseUser = data.user;
       }
     } catch (e) {
-      console.warn('Supabase auth registration attempt:', e.message);
+      console.warn('Supabase auth registration notice:', e.message);
     }
 
-    const res = await api.register({ name, email, password });
+    const res = await api.register({ name, email, password, college, careerGoal });
     const storage = sessionStorage;
     const activeToken = res.token;
     storage.setItem('sb_token', activeToken);
@@ -120,11 +133,11 @@ export function AuthProvider({ children }) {
       id: supabaseUser?.id || res.user.id || `usr_${Date.now()}`,
       name: name,
       email: email,
-      college: '',
+      college: college || '',
       degree: '',
       department: '',
       graduationYear: 2027,
-      careerGoal: '',
+      careerGoal: careerGoal || '',
       experienceLevel: 'Beginner',
       skills: [],
       interests: [],
@@ -139,7 +152,7 @@ export function AuthProvider({ children }) {
 
     setCurrentUser(newUser);
     setIsAuthenticated(true);
-    setIsOnboarded(false);
+    setIsOnboarded(Boolean(college && careerGoal));
 
     await saveUserDataToSupabase(newUser);
 
@@ -147,48 +160,27 @@ export function AuthProvider({ children }) {
   };
 
   const socialLogin = async (provider) => {
-    const socialMockMap = {
-      google: { name: 'Alex Rivera (Google)', email: 'alex.rivera.google@gmail.com' },
-      github: { name: 'Sarah Chen (GitHub)', email: 'sarah.chen@github.io' },
-      microsoft: { name: 'David Miller (Microsoft)', email: 'dmiller@outlook.com' },
-      linkedin: { name: 'Priya Sharma (LinkedIn)', email: 'priya.sharma@linkedin.com' }
-    };
-
     try {
-      await supabase.auth.signInWithOAuth({ provider });
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: typeof window !== 'undefined' ? window.location.origin : undefined
+        }
+      });
+      if (error) {
+        throw new Error(`Social authentication failed: ${error.message}`);
+      }
     } catch (e) {
-      console.warn(`Supabase OAuth for ${provider}:`, e.message);
+      console.error(`Supabase OAuth for ${provider}:`, e.message);
+      throw new Error(`Social sign-in with ${provider} failed (${e.message}). Please use Email/Password sign-in or register.`);
     }
-
-    const res = await api.socialAuth(provider, socialMockMap[provider] || socialMockMap.google);
-    localStorage.setItem('sb_token', res.token);
-    setToken(res.token);
-
-    const userEmail = res.user.email || socialMockMap[provider]?.email;
-    const userId = res.user.id || `usr_${provider}_${Date.now()}`;
-
-    const savedSupabaseData = await loadUserDataFromSupabase(userId, userEmail);
-
-    const mergedUser = {
-      ...RESUME_PRESETS[0],
-      ...res.user,
-      ...(savedSupabaseData || {})
-    };
-
-    setCurrentUser(mergedUser);
-    setIsAuthenticated(true);
-    setIsOnboarded(Boolean(mergedUser.college && mergedUser.careerGoal));
-
-    await saveUserDataToSupabase(mergedUser);
-
-    return res;
   };
 
   const completeOnboarding = async (onboardingData) => {
     const updated = {
       ...currentUser,
       ...onboardingData,
-      scores: currentUser.scores || {
+      scores: currentUser?.scores || {
         skillScore: 78,
         resumeScore: 82,
         interviewReadiness: 74,
@@ -196,7 +188,9 @@ export function AuthProvider({ children }) {
         weeklyGoalProgress: 45
       }
     };
-    await api.completeOnboarding({ userId: currentUser.id, ...onboardingData });
+    if (currentUser?.id) {
+      await api.completeOnboarding({ userId: currentUser.id, ...onboardingData }).catch(() => {});
+    }
     setCurrentUser(updated);
     setIsOnboarded(true);
     await saveUserDataToSupabase(updated);
@@ -206,7 +200,7 @@ export function AuthProvider({ children }) {
     try {
       await supabase.auth.signOut();
     } catch (e) {
-      console.warn('Supabase signout:', e.message);
+      console.warn('Supabase signout notice:', e.message);
     }
     localStorage.removeItem('sb_token');
     localStorage.removeItem('sb_user');
@@ -250,4 +244,3 @@ export function useAuth() {
   }
   return context;
 }
-

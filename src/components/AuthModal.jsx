@@ -41,6 +41,9 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
   // Forgot password state
   const [forgotEmail, setForgotEmail] = useState('');
   const [forgotSent, setForgotSent] = useState(false);
+  const [resetToken, setResetToken] = useState('');
+  const [newResetPassword, setNewResetPassword] = useState('');
+  const [resetCompleted, setResetCompleted] = useState(false);
 
   // UI state
   const [loading, setLoading] = useState(false);
@@ -126,8 +129,8 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
       setTimeout(() => {
         onClose();
       }, 600);
-    } catch {
-      setErrorMsg(`Failed to log in with ${provider}.`);
+    } catch (err) {
+      setErrorMsg(err.message || `Failed to authenticate with ${provider}.`);
     } finally {
       setLoading(false);
     }
@@ -144,13 +147,13 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
 
     setLoading(true);
     try {
-      await api.verify2FA({ userId: pendingUserId, code: twoFactorCode });
+      await api.verify2FA({ email: loginEmail, code: twoFactorCode });
       setSuccessMsg('2FA verified successfully!');
       setTimeout(() => {
         onClose();
       }, 500);
     } catch (err) {
-      setErrorMsg(err.message || 'Invalid 2FA verification code.');
+      setErrorMsg(err.message || 'Invalid or expired 2FA verification code.');
     } finally {
       setLoading(false);
     }
@@ -161,7 +164,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
     clearMessages();
 
     if (!forgotEmail) {
-      setErrorMsg('Please enter your email address.');
+      setErrorMsg('Please enter your registered email address.');
       return;
     }
 
@@ -169,9 +172,41 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
     try {
       const res = await api.forgotPassword({ email: forgotEmail });
       setForgotSent(true);
-      setSuccessMsg(res.message || 'Reset link sent to your email address.');
+      if (res.resetToken) setResetToken(res.resetToken);
+      setSuccessMsg(res.message || 'Reset token generated.');
     } catch (err) {
-      setErrorMsg(err.message || 'Unable to process reset request.');
+      setErrorMsg(err.message || 'No registered account found with this email.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResetSubmit = async (e) => {
+    e.preventDefault();
+    clearMessages();
+
+    if (!resetToken || !newResetPassword) {
+      setErrorMsg('Please enter the reset token and your new password.');
+      return;
+    }
+
+    if (newResetPassword.length < 6) {
+      setErrorMsg('Password must be at least 6 characters long.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await api.resetPassword({ email: forgotEmail, token: resetToken, newPassword: newResetPassword });
+      setResetCompleted(true);
+      setSuccessMsg(res.message || 'Password updated successfully!');
+      setTimeout(() => {
+        setActiveTab('login');
+        setForgotSent(false);
+        setResetCompleted(false);
+      }, 1200);
+    } catch (err) {
+      setErrorMsg(err.message || 'Failed to reset password.');
     } finally {
       setLoading(false);
     }
@@ -457,12 +492,48 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
                   disabled={loading}
                   className="w-full py-2.5 rounded-xl bg-gradient-to-r from-accent-purple to-purple-600 text-white font-bold text-xs"
                 >
-                  {loading ? 'Sending Instructions...' : 'Send Reset Link'}
+                  {loading ? 'Generating Instructions...' : 'Request Password Reset'}
                 </button>
               </>
+            ) : !resetCompleted ? (
+              <div className="space-y-3">
+                <div className="p-3 rounded-xl bg-purple-500/10 border border-purple-500/30 text-xs text-purple-300">
+                  Reset token generated for <strong>{forgotEmail}</strong>. Enter your token and new password below:
+                </div>
+                <div>
+                  <label className="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1">Reset Token</label>
+                  <input 
+                    type="text"
+                    required
+                    placeholder="Enter security token"
+                    value={resetToken}
+                    onChange={(e) => setResetToken(e.target.value)}
+                    className="w-full bg-gray-900/60 border border-gray-800 rounded-xl px-3 py-2 text-xs text-white font-mono placeholder-gray-500 focus:outline-none focus:border-accent-purple"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1">New Password</label>
+                  <input 
+                    type="password"
+                    required
+                    placeholder="At least 6 characters"
+                    value={newResetPassword}
+                    onChange={(e) => setNewResetPassword(e.target.value)}
+                    className="w-full bg-gray-900/60 border border-gray-800 rounded-xl px-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-accent-purple"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={handleResetSubmit}
+                  disabled={loading}
+                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold text-xs shadow-md"
+                >
+                  {loading ? 'Updating Password...' : 'Save New Password'}
+                </button>
+              </div>
             ) : (
               <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-center text-xs text-emerald-400">
-                Reset token dispatched! Please check your inbox.
+                Password updated successfully! Returning to sign in...
               </div>
             )}
 
