@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Express router handling multer resume uploads, AI analysis, and centralized resumeStore caching", deps: ["express", "multer", "../services/resumeParser.service.js", "../services/resumeAnalyzer.service.js", "../services/resumeStore.service.js"], state: "active", last: "anti@2026-08-20" }
+// agent-notes: { ctx: "Express router handling multer resume uploads, AI analysis, and centralized resumeStore caching with JWT auth", deps: ["express", "multer", "../services/resumeParser.service.js", "../services/resumeAnalyzer.service.js", "../services/resumeStore.service.js", "../middleware/auth.js"], state: "active", last: "anti@2026-08-25" }
 import express from "express";
 import multer from "multer";
 import fs from "fs";
@@ -6,8 +6,10 @@ import fs from "fs";
 import { extractResumeText } from "../services/resumeParser.service.js";
 import { analyzeResume } from "../services/resumeAnalyzer.service.js";
 import { saveParsedResume } from "../services/resumeStore.service.js";
+import { authenticateUser, getAuthenticatedUserId } from "../middleware/auth.js";
 
 const router = express.Router();
+router.use(authenticateUser);
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -28,7 +30,8 @@ router.post(
       }
 
       const targetRole = req.body.targetRole || "Full Stack Developer";
-      const userId = req.body.userId || "guest_user";
+      // Authoritatively derive userId from verified JWT or explicit guest mode
+      const userId = getAuthenticatedUserId(req);
 
       const resumeText = await extractResumeText(req.file);
 
@@ -62,7 +65,8 @@ router.post(
         resumeId: record.resumeId,
         fileName: req.file.originalname,
         resumeText,
-        analysis
+        analysis,
+        userId
       });
 
     } catch (error) {
@@ -97,7 +101,7 @@ router.post(
       }
 
       const targetRole = req.body.targetRole || "Full Stack Developer";
-      const userId = req.body.userId || "guest_user";
+      const userId = getAuthenticatedUserId(req);
       const resumeText = await extractResumeText(req.file);
 
       // Clean up uploaded temp file
@@ -120,7 +124,8 @@ router.post(
         resumeId: record.resumeId,
         fileName: req.file.originalname,
         resumeText,
-        analysis
+        analysis,
+        userId
       });
     } catch (error) {
       if (req.file?.path && fs.existsSync(req.file.path)) {

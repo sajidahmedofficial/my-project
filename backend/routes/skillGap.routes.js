@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Skill Gap Express router providing analyze, roadmap, verify & certificate endpoints with direct MongoDB persistence", deps: ["express", "multer", "pdf-parse", "mongoose", "../models/*"], state: "active", last: "anti@2026-08-20" }
+// agent-notes: { ctx: "Skill Gap Express router providing analyze, roadmap, verify & certificate endpoints with direct MongoDB persistence", deps: ["express", "multer", "pdf-parse", "mongoose", "../models/*"], state: "active", last: "anti@2026-08-25" }
 import express from 'express';
 import multer from 'multer';
 import pdfParse from 'pdf-parse';
@@ -403,13 +403,13 @@ router.get('/assessment/questions/:skillName', (req, res) => {
  */
 router.post('/assessment/submit-mcq', async (req, res) => {
   try {
-    const { assessmentId, skillName, userId, answers = [], passingThreshold = 75 } = req.body;
+    const { assessmentId, skillName, answers = [], passingThreshold = 75 } = req.body;
 
     if (!answers || !Array.isArray(answers)) {
       return res.status(400).json({ error: "answers array is required" });
     }
 
-    const uId = userId || req.user?.id || "guest_user";
+    const uId = getAuthenticatedUserId(req);
     const evaluation = await evaluateMcqSubmission({
       assessmentId,
       skillName,
@@ -517,7 +517,6 @@ router.post('/verify', async (req, res) => {
     const {
       skillName,
       userName,
-      userId,
       assessmentId,
       answers,
       mcqAnswers,

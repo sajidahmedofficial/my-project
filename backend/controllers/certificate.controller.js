@@ -1,14 +1,15 @@
-// agent-notes: { ctx: "Express controller for certificate verification validation and secure PDF streaming", deps: ["../services/certificate.service.js", "../storage/persistentStore.js", "fs", "path"], state: "active", last: "anti@2026-08-20" }
+// agent-notes: { ctx: "Express controller for certificate verification validation and secure PDF streaming with JWT authentication", deps: ["../services/certificate.service.js", "../storage/persistentStore.js", "../middleware/auth.js", "fs", "path"], state: "active", last: "anti@2026-08-25" }
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 import { issueVerifiedCertificate } from '../services/certificate.service.js';
 import persistentStore from '../storage/persistentStore.js';
+import { getAuthenticatedUserId } from '../middleware/auth.js';
 
 export const generateCertificate = async (req, res) => {
   try {
     const { 
-      userId = 'guest_user', 
-      userName = 'SkillBridge Student', 
+      userName, 
       skillName, 
       score, 
       verificationStatus, 
@@ -16,6 +17,10 @@ export const generateCertificate = async (req, res) => {
       passingThreshold = 80, 
       verificationId 
     } = req.body;
+
+    // Derive authoritative userId from verified JWT or explicit guest context
+    const userId = getAuthenticatedUserId(req);
+    const candidateName = userName || req.user?.name || 'SkillBridge Student';
 
     const currentStatus = verificationStatus || status;
 
@@ -32,7 +37,7 @@ export const generateCertificate = async (req, res) => {
 
     const cert = await issueVerifiedCertificate({
       userId,
-      userName,
+      userName: candidateName,
       skillName,
       verificationStatus: currentStatus,
       finalScore: score,
