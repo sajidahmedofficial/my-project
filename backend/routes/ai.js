@@ -1,47 +1,11 @@
-// agent-notes: { ctx: "AI routes for resume parsing, JD analysis, question generation, chat & roadmap via backend Gemini", deps: ["@google/generative-ai", "pdf-parse", "multer"], state: "active", last: "anti@2026-08-25" }
+// agent-notes: { ctx: "AI routes for resume parsing, JD analysis, question generation, chat & roadmap via backend Gemini", deps: ["express", "multer", "pdf-parse", "../services/geminiService.js"], state: "active", last: "anti@2026-08-25" }
 import express from 'express';
 import multer from 'multer';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import pdfParse from 'pdf-parse';
+import { analyzeWithGemini, analyzeJSON, getGenAIClient } from '../services/geminiService.js';
 
 const router = express.Router();
 const upload = multer({ limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB limit
-
-// Initialize Gemini API Client
-// Note: Requires GEMINI_API_KEY environment variable. If not set, routes fallback gracefully to structured mock engines.
-const getGenAI = () => {
-  const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
-  if (!apiKey) {
-    console.warn("[AI Routes] WARNING: GEMINI_API_KEY is not configured in backend environment. Fallback engines active.");
-    return null;
-  }
-  return new GoogleGenerativeAI(apiKey);
-};
-
-// Helper to invoke Gemini with model fallback
-async function generateGeminiContent(ai, prompt, isJson = false) {
-  const modelNames = ['gemini-1.5-flash', 'gemini-2.0-flash', 'gemini-1.5-pro'];
-  let lastError = null;
-
-  for (const modelName of modelNames) {
-    try {
-      const model = ai.getGenerativeModel({
-        model: modelName,
-        ...(isJson ? { generationConfig: { responseMimeType: 'application/json' } } : {})
-      });
-      const result = await model.generateContent(
-        isJson ? { contents: [{ role: 'user', parts: [{ text: prompt }] }] } : prompt
-      );
-      const text = result.response.text();
-      if (text) return text;
-    } catch (err) {
-      console.warn(`[AI Route] Model ${modelName} warning:`, err.message);
-      lastError = err;
-    }
-  }
-
-  throw lastError || new Error("Gemini AI request failed across all models.");
-}
 
 // @desc    Analyze uploaded resume (PDF/DOCX)
 // @route   POST /api/ai/analyze-resume
@@ -64,8 +28,7 @@ router.post('/analyze-resume', upload.single('resume'), async (req, res) => {
       return res.status(400).json({ error: "No resume text found or file is empty" });
     }
 
-    const ai = getGenAI();
-    if (!ai) {
+    if (!getGenAIClient()) {
       return res.json(runLocalResumeAnalyzer(resumeText));
     }
 
@@ -89,10 +52,8 @@ Return the output strictly in the following JSON format:
   "resumeScore": 75
 }`;
 
-    const text = await generateGeminiContent(ai, prompt, true);
-    const cleaned = text.replace(/```json/gi, '').replace(/```/g, '').trim();
-    const parsedJson = JSON.parse(cleaned);
-    res.json(parsedJson);
+    const parsedJson = await analyzeJSON(prompt);
+    res.json(parsedJson || runLocalResumeAnalyzer(resumeText));
 
   } catch (error) {
     console.error("Gemini Resume Analysis Error:", error);
@@ -110,8 +71,7 @@ router.post('/analyze-jd', async (req, res) => {
   }
 
   try {
-    const ai = getGenAI();
-    if (!ai) {
+    if (!getGenAIClient()) {
       return res.json(runLocalJdAnalyzer(jdText, studentSkills));
     }
 
@@ -139,9 +99,10 @@ Return the response strictly as a JSON object of this structure:
   ]
 }`;
 
-    const text = await generateGeminiContent(ai, prompt, true);
-    const cleaned = text.replace(/```json/gi, '').replace(/```/g, '').trim();
-    const jobExtracted = JSON.parse(cleaned);
+    const jobExtracted = await analyzeJSON(prompt);
+    if (!jobExtracted || !jobExtracted.requiredSkills) {
+      return res.json(runLocalJdAnalyzer(jdText, studentSkills));
+    }
     
     const matched = [];
     const missing = [];
@@ -185,8 +146,7 @@ router.post('/generate-questions', async (req, res) => {
   const count = Number(numberOfQuestions) || 5;
 
   try {
-    const ai = getGenAI();
-    if (!ai) {
+    if (!getGenAIClient()) {
       const fallbackQuestions = generateMockQuestions(topic, difficulty, questionType, count);
       return res.json({ questions: fallbackQuestions });
     }
@@ -205,19 +165,11 @@ Structure per question object depending on questionType (${questionType}):
 
 Return strictly valid JSON only. Do not include markdown code fences or conversational text.`;
 
-    const text = await generateGeminiContent(ai, prompt, true);
-    const cleaned = text.replace(/```json/gi, '').replace(/```/g, '').trim();
-    let questions;
+    const parsed = await analyzeJSON(prompt);
+    let questions = Array.isArray(parsed) ? parsed : (parsed?.questions || parsed?.data || []);
 
-    try {
-      questions = JSON.parse(cleaned);
-    } catch {
-      const parsed = JSON.parse(cleaned);
-      questions = Array.isArray(parsed) ? parsed : (parsed.questions || parsed.data || []);
-    }
-
-    if (!Array.isArray(questions)) {
-      questions = [questions];
+    if (!Array.isArray(questions) || questions.length === 0) {
+      questions = generateMockQuestions(topic, difficulty, questionType, count);
     }
 
     res.json({ questions });
@@ -234,8 +186,7 @@ router.post('/chat', async (req, res) => {
   const { messages, query } = req.body;
 
   try {
-    const ai = getGenAI();
-    if (!ai) {
+    if (!getGenAIClient()) {
       return res.json({ response: "Local Mentor response fallback trigger." });
     }
 
@@ -251,7 +202,7 @@ Student's Query: "${query}"
 
 Mentor Response:`;
 
-    const text = await generateGeminiContent(ai, prompt, false);
+    const text = await analyzeWithGemini(prompt);
     res.json({ response: text });
 
   } catch (error) {
@@ -265,8 +216,7 @@ router.post('/evaluate-interview', async (req, res) => {
   const { question, studentAnswer, modelAnswer } = req.body;
 
   try {
-    const ai = getGenAI();
-    if (!ai) {
+    if (!getGenAIClient()) {
       return res.status(500).json({ error: 'Gemini Key is missing' });
     }
 
@@ -294,9 +244,8 @@ Return the response strictly as a JSON object of this structure:
   ]
 }`;
 
-    const text = await generateGeminiContent(ai, prompt, true);
-    const cleaned = text.replace(/```json/gi, '').replace(/```/g, '').trim();
-    res.json(JSON.parse(cleaned));
+    const evaluated = await analyzeJSON(prompt);
+    res.json(evaluated);
 
   } catch (error) {
     res.status(500).json({ error: 'Evaluation failed', message: error.message });

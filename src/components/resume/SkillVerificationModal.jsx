@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Interactive 7-stage skill verification modal with live GitHub repository evidence extraction, sandbox VM coding evaluation, and authoritative certification", deps: ["react", "lucide-react", "../../utils/skillChallenges", "../../services/skillGapApi"], state: "active", last: "anti@2026-08-20" }
+// agent-notes: { ctx: "Interactive 7-stage skill verification modal with live GitHub repository evidence extraction, sandbox VM coding evaluation, and authoritative certification", deps: ["react", "lucide-react", "../../utils/skillChallenges", "../../services/skillGapApi"], state: "active", last: "anti@2026-08-25" }
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { 
@@ -23,6 +23,7 @@ import {
   Check
 } from 'lucide-react';
 import { skillGapApi } from '../../services/skillGapApi';
+import { SKILL_CHALLENGES } from '../../utils/skillChallenges';
 
 export default function SkillVerificationModal({ skillName = "Node.js", onClose, onCompleteVerification, userId = "guest_user" }) {
   const [currentStep, setCurrentStep] = useState(1);
@@ -83,22 +84,45 @@ export default function SkillVerificationModal({ skillName = "Node.js", onClose,
     let isMounted = true;
     const loadVerificationAssets = async () => {
       setLoadingQuestions(true);
+      const normalizedKey = skillName.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const offlineFallback = SKILL_CHALLENGES[normalizedKey] || SKILL_CHALLENGES.react;
+
       try {
-        // 1. Fetch sanitized questions
+        // 1. Fetch sanitized questions from backend as primary path
         const qData = await skillGapApi.getAssessmentQuestions(skillName, userId);
-        if (isMounted && qData && Array.isArray(qData.questions)) {
+        if (isMounted && qData && Array.isArray(qData.questions) && qData.questions.length > 0) {
           setAssessmentId(qData.assessmentId);
           setMcqQuestions(qData.questions);
+        } else if (isMounted && offlineFallback?.mcqs) {
+          setMcqQuestions(offlineFallback.mcqs.map((q, idx) => ({
+            questionId: `mcq_${normalizedKey}_${idx}`,
+            question: q.question,
+            options: q.options
+          })));
         }
 
-        // 2. Fetch coding challenge
+        // 2. Fetch coding challenge from backend as primary path
         const cData = await skillGapApi.getCodingChallenge(skillName);
         if (isMounted && cData && cData.challenge) {
           setChallengeData(cData.challenge);
           setCodeContent(cData.challenge.starterCode || "");
+        } else if (isMounted && offlineFallback) {
+          setChallengeData(offlineFallback);
+          setCodeContent(offlineFallback.starterCode || "");
         }
       } catch (err) {
-        console.warn("Failed to load verification assets from backend:", err.message);
+        console.warn("Backend verification assets notice (using offline challenge fallback):", err.message);
+        if (isMounted && offlineFallback) {
+          if (offlineFallback.mcqs) {
+            setMcqQuestions(offlineFallback.mcqs.map((q, idx) => ({
+              questionId: `mcq_${normalizedKey}_${idx}`,
+              question: q.question,
+              options: q.options
+            })));
+          }
+          setChallengeData(offlineFallback);
+          setCodeContent(offlineFallback.starterCode || "");
+        }
       } finally {
         if (isMounted) setLoadingQuestions(false);
       }

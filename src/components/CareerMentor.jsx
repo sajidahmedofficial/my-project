@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Playful modern cartoon AI Career Mentor & interactive Voice AI Assistant with Sparky avatar, speech recognition & waveform", deps: ["lucide-react", "./common/AIAssistantAvatar", "../utils/aiSimulator"], state: "active", last: "anti@2026-08-21" }
+// agent-notes: { ctx: "Playful modern cartoon AI Career Mentor & interactive Voice AI Assistant with Sparky avatar, speech recognition & waveform", deps: ["lucide-react", "./common/AIAssistantAvatar", "../utils/aiSimulator"], state: "active", last: "anti@2026-08-25" }
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   MessageSquare, 
@@ -183,7 +183,7 @@ export default function CareerMentor({ profile }) {
     setVoiceStatus("Sparky is thinking & generating your answer...");
 
     try {
-      const res = await fetch('/api/ai/chat', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || '/api'}/ai/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query, messages: [...messages, userMsg] })

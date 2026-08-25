@@ -1,5 +1,5 @@
-// agent-notes: { ctx: "Primary Skill Gap AI service supporting custom Job Description extraction, required vs preferred separation, weighted scoring (High=3, Med=2, Low=1), and verified skill promotion", deps: ["../ai/gemini.js"], state: "active", last: "anti@2026-08-20" }
-import { analyzeJSON } from "../ai/gemini.js";
+// agent-notes: { ctx: "Primary Skill Gap AI service supporting custom Job Description extraction, required vs preferred separation, weighted scoring (High=3, Med=2, Low=1), and verified skill promotion", deps: ["./geminiService.js"], state: "active", last: "anti@2026-08-25" }
+import { analyzeJSON } from "./geminiService.js";
 
 // Priority weights configuration
 export const PRIORITY_WEIGHTS = {

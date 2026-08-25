@@ -1,5 +1,5 @@
-// agent-notes: { ctx: "GitHub Repository inspection service fetching live repository metadata, package manifests, README, and evaluating technology evidence", deps: ["../ai/gemini.js"], state: "active", last: "anti@2026-08-20" }
-import { analyzeJSON } from "../ai/gemini.js";
+// agent-notes: { ctx: "GitHub Repository inspection service fetching live repository metadata, package manifests, README, and evaluating technology evidence", deps: ["./geminiService.js"], state: "active", last: "anti@2026-08-25" }
+import { analyzeJSON } from "./geminiService.js";
 import { validateGitHubUrl } from "../utils/security.js";
 
 /**

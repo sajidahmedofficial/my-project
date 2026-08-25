@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Express router handling multer resume uploads, AI analysis, and centralized resumeStore caching with JWT auth", deps: ["express", "multer", "../services/resumeParser.service.js", "../services/resumeAnalyzer.service.js", "../services/resumeStore.service.js", "../middleware/auth.js"], state: "active", last: "anti@2026-08-25" }
+// agent-notes: { ctx: "Express router handling multer resume uploads with try/finally temp file cleanup, AI analysis, and centralized store", deps: ["express", "multer", "fs", "../services/resumeParser.service.js", "../services/resumeAnalyzer.service.js", "../services/resumeStore.service.js", "../middleware/auth.js"], state: "active", last: "anti@2026-08-25" }
 import express from "express";
 import multer from "multer";
 import fs from "fs";
@@ -18,10 +18,21 @@ const upload = multer({
   }
 });
 
+const cleanupUploadedFile = (filePath) => {
+  if (filePath) {
+    fs.unlink(filePath, (err) => {
+      if (err && err.code !== "ENOENT") {
+        console.warn(`[Resume Router] Could not delete temp file ${filePath}:`, err.message);
+      }
+    });
+  }
+};
+
 router.post(
   "/analyze",
   upload.single("resume"),
   async (req, res) => {
+    const tempFilePath = req.file?.path;
     try {
       if (!req.file) {
         return res.status(400).json({
@@ -34,11 +45,6 @@ router.post(
       const userId = getAuthenticatedUserId(req);
 
       const resumeText = await extractResumeText(req.file);
-
-      // Clean up uploaded temp file
-      if (req.file.path && fs.existsSync(req.file.path)) {
-        try { fs.unlinkSync(req.file.path); } catch (e) {}
-      }
 
       if (!resumeText || !resumeText.trim()) {
         return res.status(400).json({
@@ -71,17 +77,13 @@ router.post(
 
     } catch (error) {
       console.error('Resume Analysis Error:', error);
-
-      // Clean up temp file on error
-      if (req.file?.path && fs.existsSync(req.file.path)) {
-        try { fs.unlinkSync(req.file.path); } catch (e) {}
-      }
-
       res.status(500).json({
         success: false,
         message: "Resume analysis failed",
         error: error.message
       });
+    } finally {
+      cleanupUploadedFile(tempFilePath);
     }
   }
 );
@@ -91,6 +93,7 @@ router.post(
   "/upload",
   upload.single("resume"),
   async (req, res) => {
+    const tempFilePath = req.file?.path;
     try {
       if (!req.file) {
         return res.status(200).json({
@@ -103,11 +106,6 @@ router.post(
       const targetRole = req.body.targetRole || "Full Stack Developer";
       const userId = getAuthenticatedUserId(req);
       const resumeText = await extractResumeText(req.file);
-
-      // Clean up uploaded temp file
-      if (req.file.path && fs.existsSync(req.file.path)) {
-        try { fs.unlinkSync(req.file.path); } catch (e) {}
-      }
 
       const analysis = await analyzeResume(resumeText, targetRole);
 
@@ -128,15 +126,14 @@ router.post(
         userId
       });
     } catch (error) {
-      if (req.file?.path && fs.existsSync(req.file.path)) {
-        try { fs.unlinkSync(req.file.path); } catch (e) {}
-      }
-
+      console.error('Resume Upload Error:', error);
       res.status(500).json({
         success: false,
         message: "Resume upload processing failed",
         error: error.message
       });
+    } finally {
+      cleanupUploadedFile(tempFilePath);
     }
   }
 );

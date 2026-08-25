@@ -1,5 +1,5 @@
-// agent-notes: { ctx: "Personalized multi-stage Roadmap Generator service with Gemini AI structured generation, MCQs, coding challenges, and capstone blueprints", deps: ["../ai/gemini.js", "./skillGap.service.js"], state: "active", last: "anti@2026-08-20" }
-import { analyzeJSON } from "../ai/gemini.js";
+// agent-notes: { ctx: "Personalized multi-stage Roadmap Generator service with Gemini AI structured generation, MCQs, coding challenges, and capstone blueprints", deps: ["./geminiService.js", "./skillGap.service.js"], state: "active", last: "anti@2026-08-25" }
+import { analyzeJSON } from "./geminiService.js";
 import { normalizeSkillName } from "./skillGap.service.js";
 
 // Curated curriculum blueprints for popular skills

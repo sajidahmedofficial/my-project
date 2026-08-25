@@ -1,5 +1,5 @@
-// agent-notes: { ctx: "Comprehensive AI Resume Analyzer service leveraging Gemini prompt schemas", deps: ["../ai/gemini.js"], state: "active", last: "anti@2026-08-06" }
-import { analyzeJSON } from "../ai/gemini.js";
+// agent-notes: { ctx: "Comprehensive AI Resume Analyzer service leveraging Gemini prompt schemas", deps: ["./geminiService.js"], state: "active", last: "anti@2026-08-25" }
+import { analyzeJSON } from "./geminiService.js";
 
 export async function analyzeResume(
   resumeText,
