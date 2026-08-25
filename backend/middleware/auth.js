@@ -1,7 +1,6 @@
-// agent-notes: { ctx: "Authentication and authorization middleware verifying JWT tokens, enforcing user identity, and preventing unauthorized cross-user access", deps: ["jsonwebtoken"], state: "active", last: "anti@2026-08-20" }
+// agent-notes: { ctx: "Authentication and authorization middleware verifying JWT tokens, enforcing user identity, and preventing unauthorized cross-user access", deps: ["jsonwebtoken", "../routes/auth.js"], state: "active", last: "anti@2026-08-25" }
 import jwt from 'jsonwebtoken';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'skillbridge_secure_jwt_secret_key_2026';
+import { getJwtSecret } from '../routes/auth.js';
 
 /**
  * Authentication Middleware:
@@ -24,7 +23,7 @@ export function authenticateUser(req, res, next) {
 
     if (token) {
       try {
-        const decoded = jwt.verify(token, JWT_SECRET);
+        const decoded = jwt.verify(token, getJwtSecret());
         req.user = {
           id: decoded.id || decoded.userId || decoded._id,
           email: decoded.email,

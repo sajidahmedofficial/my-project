@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Auth routing endpoints for login, register, 2FA, onboarding & OAuth", deps: ["../models/User.js", "../models/Profile.js"], state: "active", last: "anti@2026-07-31" }
+// agent-notes: { ctx: "Auth routing endpoints for login, register, 2FA, onboarding & OAuth with production JWT validation", deps: ["../models/User.js", "../models/Profile.js", "jsonwebtoken", "mongoose"], state: "active", last: "anti@2026-08-25" }
 import express from 'express';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
@@ -7,9 +7,36 @@ import Profile from '../models/Profile.js';
 
 const router = express.Router();
 
+const isProduction = process.env.NODE_ENV === 'production' || Boolean(process.env.VERCEL);
+
+/**
+ * Validates and retrieves the JWT secret.
+ * Throws a fatal startup error if JWT_SECRET is missing in production/Vercel environments.
+ */
+export function getJwtSecret() {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    if (isProduction) {
+      throw new Error(
+        'FATAL: JWT_SECRET is not defined in production / Vercel environment. Set JWT_SECRET in environment variables.'
+      );
+    }
+    console.warn('[AUTH WARNING] JWT_SECRET is not set in development mode. Using insecure development secret.');
+    return 'skillbridge_secure_jwt_secret_key_2026';
+  }
+  return secret;
+}
+
+// Module load verification
+if (isProduction && !process.env.JWT_SECRET) {
+  throw new Error(
+    'FATAL: JWT_SECRET is not defined in production / Vercel environment. Set JWT_SECRET in environment variables.'
+  );
+}
+
 // Helper to generate JWT Token
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET || 'skillbridge_secure_jwt_secret_key_2026', {
+  return jwt.sign({ id }, getJwtSecret(), {
     expiresIn: '30d'
   });
 };
