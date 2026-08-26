@@ -256,6 +256,22 @@ function MainLayout() {
               <LogIn className="w-4 h-4 text-purple-400" /> User Sign In
             </button>
           </div>
+
+          {/* Quick Demo Access */}
+          <div className="pt-2 border-t border-purple-500/20">
+            <button
+              onClick={async () => {
+                try {
+                  const { login } = useAuth; // hook in scope
+                } catch {}
+                setTaskFlowMode('login');
+                setIsTaskFlowAuthOpen(true);
+              }}
+              className="text-xs text-purple-300 hover:text-white font-bold flex items-center justify-center gap-1.5 mx-auto py-1 hover:underline"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-yellow-400" /> Open Guided Task Flow Authentication
+            </button>
+          </div>
         </div>
 
         {/* Task Flow Modal */}
@@ -263,7 +279,14 @@ function MainLayout() {
           isOpen={isTaskFlowAuthOpen} 
           onClose={() => setIsTaskFlowAuthOpen(false)} 
           initialMode={taskFlowMode}
-          onComplete={() => setShowOnboarding(true)}
+          onComplete={(completedMode) => {
+            if (completedMode === 'signup') {
+              setShowOnboarding(true);
+            } else {
+              setShowOnboarding(false);
+              setActiveTab('dashboard');
+            }
+          }}
         />
       </div>
     );
@@ -449,7 +472,13 @@ function MainLayout() {
         isOpen={isTaskFlowAuthOpen} 
         onClose={() => setIsTaskFlowAuthOpen(false)} 
         initialMode={taskFlowMode}
-        onComplete={() => setShowOnboarding(true)}
+        onComplete={(completedMode) => {
+          if (completedMode === 'signup') {
+            setShowOnboarding(true);
+          } else {
+            setShowOnboarding(false);
+          }
+        }}
       />
 
       {/* Legacy/Standard Auth Modal Overlay */}

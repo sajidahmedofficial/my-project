@@ -326,6 +326,17 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
                 />
                 <span>Remember me for 30 days</span>
               </label>
+              <button
+                type="button"
+                onClick={() => {
+                  setLoginEmail('demo@skillbridge.ai');
+                  setLoginPassword('Demo@123456');
+                  setSuccessMsg('Demo credentials filled! Click Sign In.');
+                }}
+                className="text-[11px] font-bold text-accent-purple hover:underline"
+              >
+                Use Demo Login
+              </button>
             </div>
 
             <button

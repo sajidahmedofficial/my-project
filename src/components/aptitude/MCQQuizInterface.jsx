@@ -13,7 +13,8 @@ import {
   CheckSquare, 
   Flag,
   Sparkles,
-  Zap
+  Zap,
+  Trophy
 } from 'lucide-react';
 import { aptitudeApi } from '../../services/aptitudeApi';
 
