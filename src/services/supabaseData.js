@@ -1,6 +1,7 @@
-// agent-notes: { ctx: "Supabase service for storing and restoring user profile, scores, resume analysis & progress by User ID", deps: ["./supabase"], state: "active", last: "anti@2026-08-18" }
+// agent-notes: { ctx: "Supabase service for storing and restoring user profile, scores, resume analysis & progress with clean primitive sanitization", deps: ["./supabase", "../utils/sanitizeProfile"], state: "active", last: "anti@2026-08-27" }
 
 import { supabase } from './supabase';
+import { sanitizeUserProfile, extractString } from '../utils/sanitizeProfile';
 
 /**
  * Saves complete user profile, progress, scores, and resume analysis to Supabase.
@@ -9,25 +10,21 @@ import { supabase } from './supabase';
 export async function saveUserDataToSupabase(user) {
   if (!user || !user.id) return { success: false, error: 'No valid user ID provided' };
 
+  const sanitized = sanitizeUserProfile(user);
   const payload = {
-    id: user.id,
-    email: user.email,
-    name: user.name,
-    college: user.college || '',
-    degree: user.degree || '',
-    department: user.department || '',
-    graduationYear: user.graduationYear || 2027,
-    careerGoal: user.careerGoal || '',
-    experienceLevel: user.experienceLevel || 'Beginner',
-    skills: user.skills || [],
-    interests: user.interests || [],
-    scores: user.scores || {
-      skillScore: 60,
-      resumeScore: 65,
-      interviewReadiness: 55,
-      placementReadiness: 60,
-      weeklyGoalProgress: 20
-    },
+    ...sanitized,
+    id: sanitized.id,
+    email: sanitized.email,
+    name: sanitized.name,
+    college: sanitized.college,
+    degree: sanitized.degree,
+    department: sanitized.department,
+    graduationYear: sanitized.graduationYear,
+    careerGoal: sanitized.careerGoal,
+    experienceLevel: sanitized.experienceLevel,
+    skills: sanitized.skills,
+    interests: sanitized.interests,
+    scores: sanitized.scores,
     hasUploadedResume: Boolean(user.hasUploadedResume || user.resumeAnalysis?.analyzed),
     resumeAnalysis: user.resumeAnalysis || null,
     updatedAt: new Date().toISOString()
@@ -65,10 +62,10 @@ export async function saveUserDataToSupabase(user) {
       .upsert({
         user_id: user.id,
         email: user.email?.toLowerCase(),
-        name: user.name,
-        college: user.college,
-        career_goal: user.careerGoal,
-        scores: user.scores,
+        name: sanitized.name,
+        college: sanitized.college,
+        career_goal: sanitized.careerGoal,
+        scores: sanitized.scores,
         resume_analysis: user.resumeAnalysis,
         raw_user_data: payload,
         updated_at: payload.updatedAt
@@ -106,8 +103,8 @@ export async function loadUserDataFromSupabase(userId, email = '') {
         id: data.user_id,
         email: data.email,
         name: data.name,
-        college: data.college,
-        careerGoal: data.career_goal,
+        college: extractString(data.college),
+        careerGoal: extractString(data.career_goal),
         scores: data.scores,
         resumeAnalysis: data.resume_analysis,
         hasUploadedResume: Boolean(data.resume_analysis?.analyzed)
@@ -145,5 +142,5 @@ export async function loadUserDataFromSupabase(userId, email = '') {
     }
   }
 
-  return loadedData;
+  return loadedData ? sanitizeUserProfile(loadedData) : null;
 }

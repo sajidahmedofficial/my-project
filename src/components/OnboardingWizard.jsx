@@ -1,5 +1,5 @@
-// agent-notes: { ctx: "Clean minimal SaaS student onboarding wizard with light theme, high contrast & step navigation", deps: ["lucide-react", "../context/AuthContext", "../services/api"], state: "active", last: "anti@2026-08-27" }
-import React, { useState } from 'react';
+// agent-notes: { ctx: "Clean minimal SaaS student onboarding wizard with prefilled user state, async loading state, and safe primitive data binding", deps: ["lucide-react", "../context/AuthContext", "../services/api", "../services/supabaseData", "../utils/sanitizeProfile"], state: "active", last: "anti@2026-08-27" }
+import React, { useState, useEffect } from 'react';
 import { 
   GraduationCap, 
   Target, 
@@ -15,6 +15,8 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
+import { loadUserDataFromSupabase } from '../services/supabaseData';
+import { extractString, extractStringArray, sanitizeUserProfile } from '../utils/sanitizeProfile';
 
 const CAREER_OPTIONS = [
   'Full Stack AI Engineer',
@@ -39,49 +41,114 @@ const INTEREST_SUGGESTIONS = [
 export default function OnboardingWizard({ onComplete }) {
   const { currentUser, completeOnboarding } = useAuth();
   const [step, setStep] = useState(1);
+  const [loadingInitialData, setLoadingInitialData] = useState(true);
 
-  // Form State
-  const [college, setCollege] = useState(currentUser?.college || 'Stanford University');
-  const [degree, setDegree] = useState(currentUser?.degree || 'B.Tech / B.S.');
-  const [department, setDepartment] = useState(currentUser?.department || 'Computer Science & Engineering');
-  const [graduationYear, setGraduationYear] = useState(currentUser?.graduationYear || 2027);
+  // Form State with primitive string defaults
+  const [college, setCollege] = useState(() => extractString(currentUser?.college, 'Stanford University'));
+  const [degree, setDegree] = useState(() => extractString(currentUser?.degree, 'B.Tech / B.S.'));
+  const [department, setDepartment] = useState(() => extractString(currentUser?.department, 'Computer Science & Engineering'));
+  const [graduationYear, setGraduationYear] = useState(() => {
+    const raw = currentUser?.graduationYear;
+    return typeof raw === 'number' ? raw : parseInt(extractString(raw, '2027'), 10) || 2027;
+  });
 
-  const [careerGoal, setCareerGoal] = useState(currentUser?.careerGoal || 'Full Stack AI Engineer');
-  const [experienceLevel, setExperienceLevel] = useState(currentUser?.experienceLevel || 'Intermediate');
+  const [careerGoal, setCareerGoal] = useState(() => extractString(currentUser?.careerGoal || currentUser?.targetRole, 'Full Stack AI Engineer'));
+  const [experienceLevel, setExperienceLevel] = useState(() => extractString(currentUser?.experienceLevel, 'Intermediate'));
   
-  const [selectedSkills, setSelectedSkills] = useState(currentUser?.skills?.length ? currentUser.skills : ['React', 'JavaScript', 'HTML/CSS', 'Git']);
+  const [selectedSkills, setSelectedSkills] = useState(() => {
+    const initial = extractStringArray(currentUser?.skills);
+    return initial.length ? initial : ['React', 'JavaScript', 'HTML/CSS', 'Git'];
+  });
   const [customSkillInput, setCustomSkillInput] = useState('');
   
-  const [selectedInterests, setSelectedInterests] = useState(currentUser?.interests?.length ? currentUser.interests : ['Web Development', 'Artificial Intelligence']);
+  const [selectedInterests, setSelectedInterests] = useState(() => {
+    const initial = extractStringArray(currentUser?.interests);
+    return initial.length ? initial : ['Web Development', 'Artificial Intelligence'];
+  });
   
   // AI Resume Parsing State
   const [uploadingResume, setUploadingResume] = useState(false);
-  const [resumeFileName, setResumeFileName] = useState('');
+  const [resumeFileName, setResumeFileName] = useState(() => extractString(currentUser?.resumeURL?.replace('files/', ''), ''));
   const [aiExtractedSkills, setAiExtractedSkills] = useState([]);
   const [resumeScore, setResumeScore] = useState(null);
 
   const [submitting, setSubmitting] = useState(false);
 
+  // Asynchronously hydrate form with persisted database/cache profile on mount or user change
+  useEffect(() => {
+    let isMounted = true;
+
+    async function hydrateSavedProfile() {
+      setLoadingInitialData(true);
+      try {
+        let savedData = null;
+        if (currentUser?.id || currentUser?.email) {
+          savedData = await loadUserDataFromSupabase(currentUser.id, currentUser.email);
+        }
+
+        // Fallback to local storage cache if available
+        if (!savedData && currentUser?.id) {
+          const cached = localStorage.getItem(`sb_user_data_${currentUser.id}`);
+          if (cached) {
+            try { savedData = JSON.parse(cached); } catch {}
+          }
+        }
+
+        const source = savedData || currentUser;
+        if (source && isMounted) {
+          const sanitized = sanitizeUserProfile(source);
+
+          if (sanitized.college) setCollege(sanitized.college);
+          if (sanitized.degree) setDegree(sanitized.degree);
+          if (sanitized.department) setDepartment(sanitized.department);
+          if (sanitized.graduationYear) setGraduationYear(sanitized.graduationYear);
+          if (sanitized.careerGoal) setCareerGoal(sanitized.careerGoal);
+          if (sanitized.experienceLevel) setExperienceLevel(sanitized.experienceLevel);
+          if (sanitized.skills && sanitized.skills.length) setSelectedSkills(sanitized.skills);
+          if (sanitized.interests && sanitized.interests.length) setSelectedInterests(sanitized.interests);
+          if (sanitized.resumeURL) setResumeFileName(extractString(sanitized.resumeURL.replace('files/', '')));
+        }
+      } catch (err) {
+        console.warn('Profile hydration notice:', err);
+      } finally {
+        if (isMounted) {
+          setLoadingInitialData(false);
+        }
+      }
+    }
+
+    hydrateSavedProfile();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [currentUser?.id, currentUser?.email]);
+
   const toggleSkill = (skill) => {
-    if (selectedSkills.includes(skill)) {
-      setSelectedSkills(selectedSkills.filter(s => s !== skill));
+    const cleanSkill = extractString(skill);
+    if (!cleanSkill) return;
+    if (selectedSkills.includes(cleanSkill)) {
+      setSelectedSkills(selectedSkills.filter(s => s !== cleanSkill));
     } else {
-      setSelectedSkills([...selectedSkills, skill]);
+      setSelectedSkills([...selectedSkills, cleanSkill]);
     }
   };
 
   const addCustomSkill = () => {
-    if (customSkillInput.trim() && !selectedSkills.includes(customSkillInput.trim())) {
-      setSelectedSkills([...selectedSkills, customSkillInput.trim()]);
+    const clean = extractString(customSkillInput);
+    if (clean && !selectedSkills.includes(clean)) {
+      setSelectedSkills([...selectedSkills, clean]);
       setCustomSkillInput('');
     }
   };
 
   const toggleInterest = (interest) => {
-    if (selectedInterests.includes(interest)) {
-      setSelectedInterests(selectedInterests.filter(i => i !== interest));
+    const cleanInterest = extractString(interest);
+    if (!cleanInterest) return;
+    if (selectedInterests.includes(cleanInterest)) {
+      setSelectedInterests(selectedInterests.filter(i => i !== cleanInterest));
     } else {
-      setSelectedInterests([...selectedInterests, interest]);
+      setSelectedInterests([...selectedInterests, cleanInterest]);
     }
   };
 
@@ -94,10 +161,11 @@ export default function OnboardingWizard({ onComplete }) {
     
     try {
       const res = await api.analyzeResume({ resumeText: 'Mock Resume Text', targetRole: careerGoal });
-      setAiExtractedSkills(res.extractedSkills || []);
-      setResumeScore(res.score || 85);
+      const extracted = extractStringArray(res.extractedSkills);
+      setAiExtractedSkills(extracted);
+      setResumeScore(typeof res.score === 'number' ? res.score : 85);
       
-      const merged = Array.from(new Set([...selectedSkills, ...(res.extractedSkills || [])]));
+      const merged = Array.from(new Set([...selectedSkills, ...extracted]));
       setSelectedSkills(merged);
     } catch (err) {
       console.error(err);
@@ -110,25 +178,35 @@ export default function OnboardingWizard({ onComplete }) {
     setSubmitting(true);
     try {
       const profileData = {
-        college,
-        degree,
-        department,
-        graduationYear: parseInt(graduationYear, 10),
-        careerGoal,
-        experienceLevel,
-        skills: selectedSkills,
-        interests: selectedInterests,
+        college: extractString(college, 'Stanford University'),
+        degree: extractString(degree, 'B.Tech / B.S.'),
+        department: extractString(department, 'Computer Science & Engineering'),
+        graduationYear: parseInt(graduationYear, 10) || 2027,
+        careerGoal: extractString(careerGoal, 'Full Stack AI Engineer'),
+        experienceLevel: extractString(experienceLevel, 'Intermediate'),
+        skills: extractStringArray(selectedSkills),
+        interests: extractStringArray(selectedInterests),
         resumeURL: resumeFileName ? `files/${resumeFileName}` : 'uploaded_resume.pdf'
       };
 
       await completeOnboarding(profileData);
       if (onComplete) onComplete();
     } catch (err) {
-      console.error(err);
+      console.error('Finish onboarding error:', err);
     } finally {
       setSubmitting(false);
     }
   };
+
+  if (loadingInitialData) {
+    return (
+      <div className="max-w-3xl mx-auto py-16 px-4 text-center space-y-3 animate-fade-in text-slate-900">
+        <div className="w-9 h-9 rounded-full border-2 border-indigo-600 border-t-transparent animate-spin mx-auto" />
+        <h3 className="text-sm font-semibold text-slate-900">Loading Academic & Profile Details...</h3>
+        <p className="text-xs text-slate-500">Retrieving your saved progress from database</p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-3xl mx-auto py-8 px-4 text-slate-900">
@@ -139,7 +217,7 @@ export default function OnboardingWizard({ onComplete }) {
           <span>Student Onboarding Setup</span>
         </div>
         <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
-          Welcome to SkillBridge AI, <span className="text-indigo-600">{currentUser?.name?.split(' ')[0] || 'Student'}</span>!
+          Welcome to SkillBridge AI, <span className="text-indigo-600">{extractString(currentUser?.name?.split(' ')[0], 'Student')}</span>!
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 max-w-lg mx-auto">
           Let's customize your personalized learning roadmap and placement readiness dashboard.
@@ -202,7 +280,7 @@ export default function OnboardingWizard({ onComplete }) {
                 <label className="block text-xs font-medium text-slate-700">College / University Name</label>
                 <input 
                   type="text"
-                  value={college}
+                  value={extractString(college)}
                   onChange={(e) => setCollege(e.target.value)}
                   placeholder="e.g. Stanford University or IIT Delhi"
                   className="w-full bg-white border border-slate-200 rounded-lg px-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 transition-colors"
@@ -213,7 +291,7 @@ export default function OnboardingWizard({ onComplete }) {
                 <label className="block text-xs font-medium text-slate-700">Degree Program</label>
                 <input 
                   type="text"
-                  value={degree}
+                  value={extractString(degree)}
                   onChange={(e) => setDegree(e.target.value)}
                   placeholder="e.g. B.Tech / B.S. in Computer Science"
                   className="w-full bg-white border border-slate-200 rounded-lg px-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 transition-colors"
@@ -224,7 +302,7 @@ export default function OnboardingWizard({ onComplete }) {
                 <label className="block text-xs font-medium text-slate-700">Department / Stream</label>
                 <input 
                   type="text"
-                  value={department}
+                  value={extractString(department)}
                   onChange={(e) => setDepartment(e.target.value)}
                   placeholder="e.g. Computer Science & Engineering"
                   className="w-full bg-white border border-slate-200 rounded-lg px-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 transition-colors"
@@ -235,7 +313,7 @@ export default function OnboardingWizard({ onComplete }) {
                 <label className="block text-xs font-medium text-slate-700">Expected Graduation Year</label>
                 <select 
                   value={graduationYear}
-                  onChange={(e) => setGraduationYear(e.target.value)}
+                  onChange={(e) => setGraduationYear(parseInt(e.target.value, 10))}
                   className="w-full bg-white border border-slate-200 rounded-lg px-3.5 py-2 text-xs text-slate-900 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 transition-colors"
                 >
                   {[2024, 2025, 2026, 2027, 2028, 2029].map(yr => (
@@ -425,7 +503,7 @@ export default function OnboardingWizard({ onComplete }) {
                 </div>
                 <div className="flex flex-wrap gap-1 max-w-[200px]">
                   {aiExtractedSkills.slice(0, 4).map(s => (
-                    <span key={s} className="saas-badge saas-badge-success text-[9px]">{s}</span>
+                    <span key={s} className="saas-badge saas-badge-success text-[9px]">{extractString(s)}</span>
                   ))}
                 </div>
               </div>
@@ -435,16 +513,16 @@ export default function OnboardingWizard({ onComplete }) {
             <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2 text-xs">
               <div className="text-[10px] uppercase font-semibold text-slate-500 tracking-wider">Profile Summary</div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-700">
-                <div><strong className="text-slate-900">Institution:</strong> {college}</div>
-                <div><strong className="text-slate-900">Program:</strong> {degree} ({graduationYear})</div>
-                <div><strong className="text-slate-900">Career Goal:</strong> {careerGoal}</div>
-                <div><strong className="text-slate-900">Experience:</strong> {experienceLevel}</div>
+                <div><strong className="text-slate-900">Institution:</strong> {extractString(college)}</div>
+                <div><strong className="text-slate-900">Program:</strong> {extractString(degree)} ({graduationYear})</div>
+                <div><strong className="text-slate-900">Career Goal:</strong> {extractString(careerGoal)}</div>
+                <div><strong className="text-slate-900">Experience:</strong> {extractString(experienceLevel)}</div>
               </div>
               <div className="pt-2 border-t border-slate-200">
                 <strong className="text-slate-900 block mb-1">Selected Skills ({selectedSkills.length}):</strong>
                 <div className="flex flex-wrap gap-1">
                   {selectedSkills.map(s => (
-                    <span key={s} className="saas-badge text-[10px]">{s}</span>
+                    <span key={s} className="saas-badge text-[10px]">{extractString(s)}</span>
                   ))}
                 </div>
               </div>

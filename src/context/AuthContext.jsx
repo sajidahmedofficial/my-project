@@ -1,8 +1,9 @@
-// agent-notes: { ctx: "React Auth Context for user session with Supabase Auth & authentic backend validation", deps: ["../services/api", "../services/supabase", "../services/supabaseData", "../utils/mockData"], state: "active", last: "anti@2026-08-25" }
+// agent-notes: { ctx: "React Auth Context for user session with Supabase Auth, robust field sanitization & remote persistence", deps: ["../services/api", "../services/supabase", "../services/supabaseData", "../utils/sanitizeProfile"], state: "active", last: "anti@2026-08-27" }
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { api } from '../services/api';
 import { supabase } from '../services/supabase';
 import { saveUserDataToSupabase, loadUserDataFromSupabase } from '../services/supabaseData';
+import { sanitizeUserProfile, extractString } from '../utils/sanitizeProfile';
 
 const AuthContext = createContext(null);
 
@@ -10,7 +11,10 @@ export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(() => {
     const saved = localStorage.getItem('sb_user') || sessionStorage.getItem('sb_user');
     if (saved) {
-      try { return JSON.parse(saved); } catch {}
+      try { 
+        const parsed = JSON.parse(saved);
+        return sanitizeUserProfile(parsed);
+      } catch {}
     }
     return null;
   });
@@ -27,7 +31,7 @@ export function AuthProvider({ children }) {
     const saved = localStorage.getItem('sb_user') || sessionStorage.getItem('sb_user');
     if (saved) {
       try {
-        const u = JSON.parse(saved);
+        const u = sanitizeUserProfile(JSON.parse(saved));
         return Boolean(u?.college && u?.careerGoal);
       } catch {}
     }
@@ -36,10 +40,11 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     if (currentUser && isAuthenticated) {
+      const sanitized = sanitizeUserProfile(currentUser);
       const storage = localStorage.getItem('sb_remember') === 'true' ? localStorage : sessionStorage;
-      storage.setItem('sb_user', JSON.stringify(currentUser));
+      storage.setItem('sb_user', JSON.stringify(sanitized));
       // Asynchronously sync user data changes to Supabase
-      saveUserDataToSupabase(currentUser);
+      saveUserDataToSupabase(sanitized);
     }
   }, [currentUser, isAuthenticated]);
 
@@ -49,7 +54,7 @@ export function AuthProvider({ children }) {
       if (currentUser?.id || currentUser?.email) {
         const remoteData = await loadUserDataFromSupabase(currentUser.id, currentUser.email);
         if (remoteData) {
-          setCurrentUser(prev => ({
+          setCurrentUser(prev => sanitizeUserProfile({
             ...prev,
             ...remoteData
           }));
@@ -149,14 +154,20 @@ export function AuthProvider({ children }) {
     // Attempt to load previous stored progress from Supabase for this User ID / Email
     const savedSupabaseData = await loadUserDataFromSupabase(userId, email).catch(() => null);
 
-    const fullUser = {
+    const fullUser = sanitizeUserProfile({
       ...(res.user || {}),
       ...(savedSupabaseData || {}),
       id: userId,
       email: supabaseSession?.user?.email || res.user?.email || email,
       name: savedSupabaseData?.name || res.user?.name || email.split('@')[0],
-      college: savedSupabaseData?.college || res.user?.college || 'SkillBridge Tech Academy',
-      careerGoal: savedSupabaseData?.careerGoal || res.user?.careerGoal || 'Full Stack Developer',
+      college: savedSupabaseData?.college || res.user?.college || 'Stanford University',
+      degree: savedSupabaseData?.degree || res.user?.degree || 'B.Tech / B.S.',
+      department: savedSupabaseData?.department || res.user?.department || 'Computer Science & Engineering',
+      graduationYear: savedSupabaseData?.graduationYear || res.user?.graduationYear || 2027,
+      careerGoal: savedSupabaseData?.careerGoal || res.user?.careerGoal || 'Full Stack AI Engineer',
+      experienceLevel: savedSupabaseData?.experienceLevel || res.user?.experienceLevel || 'Intermediate',
+      skills: savedSupabaseData?.skills || res.user?.skills || ['React', 'JavaScript', 'HTML/CSS', 'Git'],
+      interests: savedSupabaseData?.interests || res.user?.interests || ['Web Development', 'Artificial Intelligence'],
       scores: savedSupabaseData?.scores || res.user?.scores || {
         skillScore: 75,
         resumeScore: 78,
@@ -164,7 +175,7 @@ export function AuthProvider({ children }) {
         placementReadiness: 75,
         weeklyGoalProgress: 40
       }
-    };
+    });
 
     setCurrentUser(fullUser);
     setIsAuthenticated(true);
@@ -176,15 +187,34 @@ export function AuthProvider({ children }) {
     return { ...res, token: activeToken };
   };
 
-  const register = async (name, email, password, college = '', careerGoal = '') => {
+  const register = async (name, email, password, extraDataOrCollege = '', careerGoalParam = '') => {
     let supabaseUser = null;
     const normalizedEmail = (email || '').trim().toLowerCase();
+
+    let college = 'Stanford University';
+    let careerGoal = 'Full Stack AI Engineer';
+    let degree = 'B.Tech in Computer Science';
+    let department = 'Computer Science & Engineering';
+    let graduationYear = 2027;
+    let experienceLevel = 'Intermediate';
+
+    if (extraDataOrCollege && typeof extraDataOrCollege === 'object') {
+      college = extractString(extraDataOrCollege.college, college);
+      careerGoal = extractString(extraDataOrCollege.careerGoal, careerGoal);
+      degree = extractString(extraDataOrCollege.degree, degree);
+      department = extractString(extraDataOrCollege.department, department);
+      graduationYear = parseInt(extraDataOrCollege.graduationYear, 10) || graduationYear;
+      experienceLevel = extractString(extraDataOrCollege.experienceLevel, experienceLevel);
+    } else {
+      college = extractString(extraDataOrCollege, college);
+      careerGoal = extractString(careerGoalParam, careerGoal);
+    }
 
     try {
       const { data, error } = await supabase.auth.signUp({
         email: normalizedEmail,
         password,
-        options: { data: { name, college, careerGoal } }
+        options: { data: { name, college, careerGoal, degree, department, graduationYear } }
       });
       if (!error && data?.user) {
         supabaseUser = data.user;
@@ -205,8 +235,11 @@ export function AuthProvider({ children }) {
           id: fallbackId,
           name: name || normalizedEmail.split('@')[0],
           email: normalizedEmail,
-          college: college || 'Stanford University',
-          careerGoal: careerGoal || 'Full Stack AI Engineer',
+          college,
+          careerGoal,
+          degree,
+          department,
+          graduationYear,
           isVerified: true
         },
         token: `token_${Date.now()}`
@@ -218,18 +251,18 @@ export function AuthProvider({ children }) {
     storage.setItem('sb_token', activeToken);
     setToken(activeToken);
 
-    const newUser = {
+    const newUser = sanitizeUserProfile({
       id: supabaseUser?.id || res.user?.id || `usr_${Date.now()}`,
       name: name || normalizedEmail.split('@')[0],
       email: normalizedEmail,
-      college: college || 'Stanford University',
-      degree: 'B.Tech in Computer Science',
-      department: 'Computer Science',
-      graduationYear: 2027,
-      careerGoal: careerGoal || 'Full Stack AI Engineer',
-      experienceLevel: 'Beginner',
-      skills: ['React', 'JavaScript', 'HTML/CSS'],
-      interests: ['AI Engineering', 'Full Stack Development'],
+      college,
+      degree,
+      department,
+      graduationYear,
+      careerGoal,
+      experienceLevel,
+      skills: ['React', 'JavaScript', 'HTML/CSS', 'Git'],
+      interests: ['Artificial Intelligence', 'Web Development'],
       scores: {
         skillScore: 65,
         resumeScore: 70,
@@ -237,7 +270,7 @@ export function AuthProvider({ children }) {
         placementReadiness: 65,
         weeklyGoalProgress: 25
       }
-    };
+    });
 
     // Store in local registered user cache for offline resilience
     try {
@@ -276,9 +309,21 @@ export function AuthProvider({ children }) {
   };
 
   const completeOnboarding = async (onboardingData) => {
-    const updated = {
+    const sanitizedOnboarding = {
+      college: extractString(onboardingData.college, currentUser?.college || 'Stanford University'),
+      degree: extractString(onboardingData.degree, currentUser?.degree || 'B.Tech / B.S.'),
+      department: extractString(onboardingData.department, currentUser?.department || 'Computer Science & Engineering'),
+      graduationYear: parseInt(onboardingData.graduationYear, 10) || currentUser?.graduationYear || 2027,
+      careerGoal: extractString(onboardingData.careerGoal, currentUser?.careerGoal || 'Full Stack AI Engineer'),
+      experienceLevel: extractString(onboardingData.experienceLevel, currentUser?.experienceLevel || 'Intermediate'),
+      skills: Array.isArray(onboardingData.skills) ? onboardingData.skills.map(s => extractString(s)) : (currentUser?.skills || []),
+      interests: Array.isArray(onboardingData.interests) ? onboardingData.interests.map(i => extractString(i)) : (currentUser?.interests || []),
+      resumeURL: extractString(onboardingData.resumeURL, '')
+    };
+
+    const updated = sanitizeUserProfile({
       ...currentUser,
-      ...onboardingData,
+      ...sanitizedOnboarding,
       scores: currentUser?.scores || {
         skillScore: 78,
         resumeScore: 82,
@@ -286,9 +331,10 @@ export function AuthProvider({ children }) {
         placementReadiness: 79,
         weeklyGoalProgress: 45
       }
-    };
+    });
+
     if (currentUser?.id) {
-      await api.completeOnboarding({ userId: currentUser.id, ...onboardingData }).catch(() => {});
+      await api.completeOnboarding({ userId: currentUser.id, ...sanitizedOnboarding }).catch(() => {});
     }
     setCurrentUser(updated);
     setIsOnboarded(true);
@@ -313,9 +359,10 @@ export function AuthProvider({ children }) {
   };
 
   const updateProfile = (newProfile) => {
-    const updated = typeof newProfile === 'function' ? newProfile(currentUser) : newProfile;
-    setCurrentUser(updated);
-    saveUserDataToSupabase(updated);
+    const rawUpdated = typeof newProfile === 'function' ? newProfile(currentUser) : newProfile;
+    const sanitized = sanitizeUserProfile(rawUpdated);
+    setCurrentUser(sanitized);
+    saveUserDataToSupabase(sanitized);
   };
 
   return (

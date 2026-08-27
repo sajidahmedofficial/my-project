@@ -161,7 +161,7 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
               Welcome back, {profile?.name?.split(' - ')[0] || 'Student'}
             </h1>
             <p className="text-sm text-slate-500">
-              Targeting <span className="font-medium text-slate-800">{profile?.careerGoal || 'Full Stack Developer'}</span> • {profile?.college || 'Computer Science Department'}
+              Targeting <span className="font-medium text-slate-800">{typeof profile?.careerGoal === 'object' ? profile.careerGoal?.name || 'Full Stack Developer' : (profile?.careerGoal || 'Full Stack Developer')}</span> • {typeof profile?.college === 'object' ? profile.college?.name || profile.college?.college || 'Computer Science Department' : (profile?.college || 'Computer Science Department')}
             </p>
           </div>
         </div>

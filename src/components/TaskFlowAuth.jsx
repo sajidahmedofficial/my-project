@@ -23,6 +23,8 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
+import { extractString } from '../utils/sanitizeProfile';
+
 export default function TaskFlowAuth({ isOpen, onClose, initialMode = 'signup', onComplete }) {
   const { login, register, socialLogin } = useAuth();
   
@@ -540,7 +542,7 @@ export default function TaskFlowAuth({ isOpen, onClose, initialMode = 'signup', 
                   type="text"
                   required
                   placeholder="Stanford University"
-                  value={formData.college}
+                  value={extractString(formData.college)}
                   onChange={(e) => handleInputChange('college', e.target.value)}
                   onKeyDown={handleKeyDown}
                   className="w-full bg-white border border-slate-200 rounded-lg pl-9 pr-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600"
@@ -556,7 +558,7 @@ export default function TaskFlowAuth({ isOpen, onClose, initialMode = 'signup', 
                   type="text"
                   required
                   placeholder="B.Tech Computer Science"
-                  value={formData.degree}
+                  value={extractString(formData.degree)}
                   onChange={(e) => handleInputChange('degree', e.target.value)}
                   onKeyDown={handleKeyDown}
                   className="w-full bg-white border border-slate-200 rounded-lg pl-9 pr-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600"
@@ -572,7 +574,7 @@ export default function TaskFlowAuth({ isOpen, onClose, initialMode = 'signup', 
                   type="text"
                   required
                   placeholder="Full Stack AI Engineer"
-                  value={formData.careerGoal}
+                  value={extractString(formData.careerGoal)}
                   onChange={(e) => handleInputChange('careerGoal', e.target.value)}
                   onKeyDown={handleKeyDown}
                   className="w-full bg-white border border-slate-200 rounded-lg pl-9 pr-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600"
@@ -606,11 +608,11 @@ export default function TaskFlowAuth({ isOpen, onClose, initialMode = 'signup', 
                 <>
                   <div className="flex justify-between pb-1.5 border-b border-slate-200">
                     <span className="text-slate-500">College:</span>
-                    <span className="font-semibold text-slate-900">{formData.college}</span>
+                    <span className="font-semibold text-slate-900">{extractString(formData.college)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-500">Target Role:</span>
-                    <span className="font-semibold text-slate-900">{formData.careerGoal}</span>
+                    <span className="font-semibold text-slate-900">{extractString(formData.careerGoal)}</span>
                   </div>
                 </>
               )}
