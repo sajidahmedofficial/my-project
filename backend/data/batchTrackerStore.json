@@ -513,6 +513,584 @@
           "timestamp": "2026-08-04T13:22:12.181Z"
         }
       ]
+    },
+    "simplification": {
+      "topicId": "simplification",
+      "topic": "Simplification",
+      "category": "Quantitative Aptitude",
+      "batchNumber": 50,
+      "totalBatches": 50,
+      "questionsPerBatch": 20,
+      "targetQuestions": 1000,
+      "generatedCount": 4,
+      "failedCount": 996,
+      "status": "completed",
+      "history": [
+        {
+          "batchNumber": 1,
+          "questionsRequested": 20,
+          "generatedCount": 2,
+          "failedCount": 18,
+          "difficulty": "easy",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:35:56.153Z"
+        },
+        {
+          "batchNumber": 2,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "easy",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:35:57.667Z"
+        },
+        {
+          "batchNumber": 3,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "easy",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:35:59.175Z"
+        },
+        {
+          "batchNumber": 4,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "easy",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:00.681Z"
+        },
+        {
+          "batchNumber": 5,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "easy",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:02.186Z"
+        },
+        {
+          "batchNumber": 6,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "easy",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:03.691Z"
+        },
+        {
+          "batchNumber": 7,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "easy",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:05.193Z"
+        },
+        {
+          "batchNumber": 8,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "easy",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:06.695Z"
+        },
+        {
+          "batchNumber": 9,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "easy",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:08.199Z"
+        },
+        {
+          "batchNumber": 10,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "easy",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:09.791Z"
+        },
+        {
+          "batchNumber": 11,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "easy",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:11.295Z"
+        },
+        {
+          "batchNumber": 12,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "easy",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:12.800Z"
+        },
+        {
+          "batchNumber": 13,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "easy",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:14.308Z"
+        },
+        {
+          "batchNumber": 14,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "easy",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:15.814Z"
+        },
+        {
+          "batchNumber": 15,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "easy",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:17.316Z"
+        },
+        {
+          "batchNumber": 16,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "easy",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:18.823Z"
+        },
+        {
+          "batchNumber": 17,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "easy",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:20.329Z"
+        },
+        {
+          "batchNumber": 18,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "easy",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:25.703Z"
+        },
+        {
+          "batchNumber": 19,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "easy",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:26.440Z"
+        },
+        {
+          "batchNumber": 20,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "easy",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:27.495Z"
+        },
+        {
+          "batchNumber": 21,
+          "questionsRequested": 20,
+          "generatedCount": 1,
+          "failedCount": 19,
+          "difficulty": "medium",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:29.024Z"
+        },
+        {
+          "batchNumber": 22,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "medium",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:29.394Z"
+        },
+        {
+          "batchNumber": 23,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "medium",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:30.528Z"
+        },
+        {
+          "batchNumber": 24,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "medium",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:32.036Z"
+        },
+        {
+          "batchNumber": 25,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "medium",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:33.559Z"
+        },
+        {
+          "batchNumber": 26,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "medium",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:35.067Z"
+        },
+        {
+          "batchNumber": 27,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "medium",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:36.573Z"
+        },
+        {
+          "batchNumber": 28,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "medium",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:36.948Z"
+        },
+        {
+          "batchNumber": 29,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "medium",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:38.075Z"
+        },
+        {
+          "batchNumber": 30,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "medium",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:39.583Z"
+        },
+        {
+          "batchNumber": 31,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "medium",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:41.089Z"
+        },
+        {
+          "batchNumber": 32,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "medium",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:42.592Z"
+        },
+        {
+          "batchNumber": 33,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "medium",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:44.098Z"
+        },
+        {
+          "batchNumber": 34,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "medium",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:45.605Z"
+        },
+        {
+          "batchNumber": 35,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "medium",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:47.108Z"
+        },
+        {
+          "batchNumber": 36,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "medium",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:48.611Z"
+        },
+        {
+          "batchNumber": 37,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "medium",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:50.116Z"
+        },
+        {
+          "batchNumber": 38,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "medium",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:51.621Z"
+        },
+        {
+          "batchNumber": 39,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "medium",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:53.123Z"
+        },
+        {
+          "batchNumber": 40,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "medium",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:54.631Z"
+        },
+        {
+          "batchNumber": 41,
+          "questionsRequested": 20,
+          "generatedCount": 1,
+          "failedCount": 19,
+          "difficulty": "hard",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:56.147Z"
+        },
+        {
+          "batchNumber": 42,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "hard",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:57.656Z"
+        },
+        {
+          "batchNumber": 43,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "hard",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:36:59.160Z"
+        },
+        {
+          "batchNumber": 44,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "hard",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:37:00.663Z"
+        },
+        {
+          "batchNumber": 45,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "hard",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:37:02.167Z"
+        },
+        {
+          "batchNumber": 46,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "hard",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:37:03.671Z"
+        },
+        {
+          "batchNumber": 47,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "hard",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:37:05.248Z"
+        },
+        {
+          "batchNumber": 48,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "hard",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:37:06.752Z"
+        },
+        {
+          "batchNumber": 49,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "hard",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:37:08.258Z"
+        },
+        {
+          "batchNumber": 50,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "hard",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:37:11.580Z"
+        }
+      ]
+    },
+    "probability": {
+      "topicId": "probability",
+      "topic": "Probability",
+      "category": "Quantitative Aptitude",
+      "batchNumber": 5,
+      "totalBatches": 50,
+      "questionsPerBatch": 20,
+      "targetQuestions": 1000,
+      "generatedCount": 35,
+      "failedCount": 65,
+      "status": "in_progress",
+      "history": [
+        {
+          "batchNumber": 1,
+          "questionsRequested": 20,
+          "generatedCount": 20,
+          "failedCount": 0,
+          "difficulty": "easy",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:37:26.600Z"
+        },
+        {
+          "batchNumber": 2,
+          "questionsRequested": 20,
+          "generatedCount": 7,
+          "failedCount": 13,
+          "difficulty": "easy",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:37:28.108Z"
+        },
+        {
+          "batchNumber": 3,
+          "questionsRequested": 20,
+          "generatedCount": 6,
+          "failedCount": 14,
+          "difficulty": "easy",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:37:29.612Z"
+        },
+        {
+          "batchNumber": 4,
+          "questionsRequested": 20,
+          "generatedCount": 2,
+          "failedCount": 18,
+          "difficulty": "easy",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:37:31.124Z"
+        },
+        {
+          "batchNumber": 5,
+          "questionsRequested": 20,
+          "generatedCount": 0,
+          "failedCount": 20,
+          "difficulty": "easy",
+          "source": "Templated Math Generator (Fallback)",
+          "status": "success",
+          "timestamp": "2026-08-26T17:37:32.632Z"
+        }
+      ]
     }
   }
 }

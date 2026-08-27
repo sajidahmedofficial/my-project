@@ -6165,6 +6165,989 @@
       ],
       "solution": "20% of 680 = (20/100) × 680 = 136.",
       "questionHash": "hash_ff7c3438"
+    },
+    {
+      "id": "simplification-000001",
+      "category": "Quantitative Aptitude",
+      "topic": "Simplification",
+      "topicId": "simplification",
+      "subtopic": "Core Fundamentals",
+      "question": "Which of the following principles correctly applies to Simplification in placement technical evaluation?",
+      "questionType": "single_choice",
+      "options": [
+        "Optimal systematic evaluation of condition state A",
+        "Random non-deterministic distribution",
+        "Linear execution without condition verification",
+        "Redundant memory allocation overhead"
+      ],
+      "correctAnswer": 0,
+      "explanation": "In Simplification, applying structured algorithmic constraints produces optimal deterministic accuracy.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "simplification",
+        "aptitude",
+        "placement"
+      ],
+      "solution": "In Simplification, applying structured algorithmic constraints produces optimal deterministic accuracy.",
+      "questionHash": "hash_01c2743d"
+    },
+    {
+      "id": "simplification-000002",
+      "category": "Quantitative Aptitude",
+      "topic": "Simplification",
+      "topicId": "simplification",
+      "subtopic": "Core Fundamentals",
+      "question": "What is the expected complexity or outcome when evaluating standard Simplification constraints under easy difficulty?",
+      "questionType": "single_choice",
+      "options": [
+        "O(N log N) time complexity with linear space",
+        "Exponential O(2^N) execution without memoization",
+        "Constant O(1) space with zero memory overhead",
+        "Undefined non-computable state"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Placement assessment standards for Simplification emphasize scalable asymptotic efficiency.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "simplification",
+        "aptitude",
+        "placement"
+      ],
+      "solution": "Placement assessment standards for Simplification emphasize scalable asymptotic efficiency.",
+      "questionHash": "hash_bfe4276f"
+    },
+    {
+      "id": "simplification-000002",
+      "category": "Quantitative Aptitude",
+      "topic": "Simplification",
+      "topicId": "simplification",
+      "subtopic": "Core Fundamentals",
+      "question": "What is the expected complexity or outcome when evaluating standard Simplification constraints under medium difficulty?",
+      "questionType": "single_choice",
+      "options": [
+        "O(N log N) time complexity with linear space",
+        "Exponential O(2^N) execution without memoization",
+        "Constant O(1) space with zero memory overhead",
+        "Undefined non-computable state"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Placement assessment standards for Simplification emphasize scalable asymptotic efficiency.",
+      "difficulty": "medium",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "simplification",
+        "aptitude",
+        "placement"
+      ],
+      "solution": "Placement assessment standards for Simplification emphasize scalable asymptotic efficiency.",
+      "questionHash": "hash_0e4341d0"
+    },
+    {
+      "id": "simplification-000002",
+      "category": "Quantitative Aptitude",
+      "topic": "Simplification",
+      "topicId": "simplification",
+      "subtopic": "Core Fundamentals",
+      "question": "What is the expected complexity or outcome when evaluating standard Simplification constraints under hard difficulty?",
+      "questionType": "single_choice",
+      "options": [
+        "O(N log N) time complexity with linear space",
+        "Exponential O(2^N) execution without memoization",
+        "Constant O(1) space with zero memory overhead",
+        "Undefined non-computable state"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Placement assessment standards for Simplification emphasize scalable asymptotic efficiency.",
+      "difficulty": "hard",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "simplification",
+        "aptitude",
+        "placement"
+      ],
+      "solution": "Placement assessment standards for Simplification emphasize scalable asymptotic efficiency.",
+      "questionHash": "hash_a0664f5e"
+    },
+    {
+      "id": "probability-000001",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 3 red marbles and 17 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "3/20",
+        "4/20",
+        "1/20",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 3 / 20.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 3 / 20.",
+      "questionHash": "hash_4b656211"
+    },
+    {
+      "id": "probability-000002",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 11 red marbles and 4 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "11/15",
+        "12/15",
+        "1/15",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 11 / 15.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 11 / 15.",
+      "questionHash": "hash_1557c582"
+    },
+    {
+      "id": "probability-000003",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 3 red marbles and 9 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "3/12",
+        "4/12",
+        "1/12",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 3 / 12.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 3 / 12.",
+      "questionHash": "hash_5870e26a"
+    },
+    {
+      "id": "probability-000004",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 6 red marbles and 6 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "6/12",
+        "7/12",
+        "1/12",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 6 / 12.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 6 / 12.",
+      "questionHash": "hash_17715aec"
+    },
+    {
+      "id": "probability-000005",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 5 red marbles and 15 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "5/20",
+        "6/20",
+        "1/20",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 5 / 20.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 5 / 20.",
+      "questionHash": "hash_2ed74965"
+    },
+    {
+      "id": "probability-000006",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 4 red marbles and 8 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "4/12",
+        "5/12",
+        "1/12",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 4 / 12.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 4 / 12.",
+      "questionHash": "hash_1a34426c"
+    },
+    {
+      "id": "probability-000007",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 5 red marbles and 10 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "5/15",
+        "6/15",
+        "1/15",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 5 / 15.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 5 / 15.",
+      "questionHash": "hash_f4702a98"
+    },
+    {
+      "id": "probability-000008",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 5 red marbles and 7 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "5/12",
+        "6/12",
+        "1/12",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 5 / 12.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 5 / 12.",
+      "questionHash": "hash_bb33c266"
+    },
+    {
+      "id": "probability-000009",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 8 red marbles and 4 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "8/12",
+        "9/12",
+        "1/12",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 8 / 12.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 8 / 12.",
+      "questionHash": "hash_8912ab2c"
+    },
+    {
+      "id": "probability-000010",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 6 red marbles and 4 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "6/10",
+        "7/10",
+        "1/10",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 6 / 10.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 6 / 10.",
+      "questionHash": "hash_a93460ce"
+    },
+    {
+      "id": "probability-000011",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 10 red marbles and 5 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "10/15",
+        "11/15",
+        "1/15",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 10 / 15.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 10 / 15.",
+      "questionHash": "hash_ef26e7b6"
+    },
+    {
+      "id": "probability-000012",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 3 red marbles and 7 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "3/10",
+        "4/10",
+        "1/10",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 3 / 10.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 3 / 10.",
+      "questionHash": "hash_832880fc"
+    },
+    {
+      "id": "probability-000013",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 6 red marbles and 9 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "6/15",
+        "7/15",
+        "1/15",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 6 / 15.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 6 / 15.",
+      "questionHash": "hash_c2f3a933"
+    },
+    {
+      "id": "probability-000014",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 9 red marbles and 3 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "9/12",
+        "10/12",
+        "1/12",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 9 / 12.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 9 / 12.",
+      "questionHash": "hash_f5dffc86"
+    },
+    {
+      "id": "probability-000015",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 12 red marbles and 3 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "12/15",
+        "13/15",
+        "1/15",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 12 / 15.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 12 / 15.",
+      "questionHash": "hash_5f862146"
+    },
+    {
+      "id": "probability-000016",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 4 red marbles and 11 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "4/15",
+        "5/15",
+        "1/15",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 4 / 15.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 4 / 15.",
+      "questionHash": "hash_bf8b290e"
+    },
+    {
+      "id": "probability-000017",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 3 red marbles and 12 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "3/15",
+        "4/15",
+        "1/15",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 3 / 15.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 3 / 15.",
+      "questionHash": "hash_2655916c"
+    },
+    {
+      "id": "probability-000018",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 12 red marbles and 8 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "12/20",
+        "13/20",
+        "1/20",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 12 / 20.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 12 / 20.",
+      "questionHash": "hash_0c1d58cd"
+    },
+    {
+      "id": "probability-000019",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 5 red marbles and 5 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "5/10",
+        "6/10",
+        "1/10",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 5 / 10.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 5 / 10.",
+      "questionHash": "hash_76ed7e44"
+    },
+    {
+      "id": "probability-000020",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 7 red marbles and 5 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "7/12",
+        "8/12",
+        "1/12",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 7 / 12.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 7 / 12.",
+      "questionHash": "hash_a1f18c82"
+    },
+    {
+      "id": "probability-000001",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 6 red marbles and 14 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "6/20",
+        "7/20",
+        "1/20",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 6 / 20.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 6 / 20.",
+      "questionHash": "hash_704a9a45"
+    },
+    {
+      "id": "probability-000008",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 9 red marbles and 6 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "9/15",
+        "10/15",
+        "1/15",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 9 / 15.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 9 / 15.",
+      "questionHash": "hash_cb6c9193"
+    },
+    {
+      "id": "probability-000011",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 7 red marbles and 8 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "7/15",
+        "8/15",
+        "1/15",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 7 / 15.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 7 / 15.",
+      "questionHash": "hash_3ecc915f"
+    },
+    {
+      "id": "probability-000013",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 8 red marbles and 12 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "8/20",
+        "9/20",
+        "1/20",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 8 / 20.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 8 / 20.",
+      "questionHash": "hash_02f4a6b1"
+    },
+    {
+      "id": "probability-000016",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 8 red marbles and 7 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "8/15",
+        "9/15",
+        "1/15",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 8 / 15.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 8 / 15.",
+      "questionHash": "hash_673b43a7"
+    },
+    {
+      "id": "probability-000018",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 7 red marbles and 3 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "7/10",
+        "8/10",
+        "1/10",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 7 / 10.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 7 / 10.",
+      "questionHash": "hash_7667616c"
+    },
+    {
+      "id": "probability-000020",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 17 red marbles and 3 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "17/20",
+        "18/20",
+        "1/20",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 17 / 20.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 17 / 20.",
+      "questionHash": "hash_d46a2837"
+    },
+    {
+      "id": "probability-000003",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 11 red marbles and 9 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "11/20",
+        "12/20",
+        "1/20",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 11 / 20.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 11 / 20.",
+      "questionHash": "hash_b232ca5f"
+    },
+    {
+      "id": "probability-000008",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 15 red marbles and 5 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "15/20",
+        "16/20",
+        "1/20",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 15 / 20.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 15 / 20.",
+      "questionHash": "hash_6e96d53f"
+    },
+    {
+      "id": "probability-000015",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 4 red marbles and 6 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "4/10",
+        "5/10",
+        "1/10",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 4 / 10.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 4 / 10.",
+      "questionHash": "hash_4973549a"
+    },
+    {
+      "id": "probability-000016",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 9 red marbles and 11 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "9/20",
+        "10/20",
+        "1/20",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 9 / 20.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 9 / 20.",
+      "questionHash": "hash_a177347d"
+    },
+    {
+      "id": "probability-000017",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 14 red marbles and 6 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "14/20",
+        "15/20",
+        "1/20",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 14 / 20.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 14 / 20.",
+      "questionHash": "hash_7c2205c9"
+    },
+    {
+      "id": "probability-000020",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 13 red marbles and 7 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "13/20",
+        "14/20",
+        "1/20",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 13 / 20.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 13 / 20.",
+      "questionHash": "hash_4fd15e67"
+    },
+    {
+      "id": "probability-000011",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 4 red marbles and 16 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "4/20",
+        "5/20",
+        "1/20",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 4 / 20.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 4 / 20.",
+      "questionHash": "hash_69d7c4d1"
+    },
+    {
+      "id": "probability-000016",
+      "category": "Quantitative Aptitude",
+      "topic": "Probability",
+      "topicId": "probability",
+      "question": "A bag contains 16 red marbles and 4 blue marbles. What is the probability of drawing a red marble at random?",
+      "questionType": "single_choice",
+      "options": [
+        "16/20",
+        "17/20",
+        "1/20",
+        "1/2"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Probability = Favorable Outcomes / Total Outcomes = 16 / 20.",
+      "difficulty": "easy",
+      "marks": 1,
+      "timeLimit": 45,
+      "tags": [
+        "probability",
+        "math"
+      ],
+      "solution": "Probability = Favorable Outcomes / Total Outcomes = 16 / 20.",
+      "questionHash": "hash_768a0d3d"
     }
   ]
 }
