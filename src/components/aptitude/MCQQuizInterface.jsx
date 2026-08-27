@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Cartoon style MCQ quiz interface with bouncy question option cards, animated timer pill & celebratory feedback", deps: ["lucide-react", "../../services/aptitudeApi"], state: "active", last: "anti@2026-08-21" }
+// agent-notes: { ctx: "Clean minimal SaaS MCQ quiz interface with question options, timer & palette navigation", deps: ["lucide-react", "../../services/aptitudeApi"], state: "active", last: "anti@2026-08-27" }
 
 import React, { useState, useEffect } from 'react';
 import { 
@@ -11,10 +11,7 @@ import {
   ArrowLeft, 
   ArrowRight, 
   CheckSquare, 
-  Flag,
-  Sparkles,
-  Zap,
-  Trophy
+  Flag
 } from 'lucide-react';
 import { aptitudeApi } from '../../services/aptitudeApi';
 
@@ -37,7 +34,6 @@ export default function MCQQuizInterface({ session, questions, onComplete, onExi
     (currentQ.category && currentQ.category.toLowerCase().includes('syntax')) ||
     (currentQ.question && /syntax|keyword|fill in the missing|write the exact/i.test(currentQ.question));
 
-  // Timer Countdown
   useEffect(() => {
     const timer = setInterval(() => {
       setTimerSeconds(prev => {
@@ -139,86 +135,64 @@ export default function MCQQuizInterface({ session, questions, onComplete, onExi
       try {
         await aptitudeApi.toggleBookmark(currentQ.id, isBookmarked);
       } catch (err) {
-        console.error('Error toggling bookmark:', err);
+        console.error('Failed to toggle bookmark:', err);
       }
     }
   };
 
   const handleFinalSubmit = () => {
-    const formattedAnswers = safeQuestions.map((q, idx) => {
-      const selected = answers[idx];
-      return {
-        questionId: q.id,
-        selectedAnswer: selected !== undefined ? selected : null,
-        selectedOption: selected !== undefined ? selected : null,
-        timeTaken: 30
-      };
-    });
+    const answersPayload = safeQuestions.map((q, idx) => ({
+      questionId: q.id,
+      selectedAnswer: isSyntaxQuestion ? (syntaxInputs[idx] || '') : answers[idx],
+      markedForReview: Boolean(markedForReview[idx])
+    }));
 
-    onComplete({
-      sessionId: session.id || session.sessionId || `sess_${Date.now()}`,
-      answers: formattedAnswers,
-      totalTimeSeconds: ((session?.limit || 20) * 60) - timerSeconds,
-      topicId: session.topicId
-    });
+    if (onComplete) {
+      onComplete(answersPayload);
+    }
   };
 
-  if (safeQuestions.length === 0) {
-    return (
-      <div className="cartoon-card p-8 border-2 border-purple-500/30 text-center space-y-4">
-        <h3 className="text-lg font-black text-white">Questions are being prepared for this quest.</h3>
-        <p className="text-xs text-gray-300 font-medium">Please select another topic from the Practice Hub.</p>
-        <button
-          onClick={onExit}
-          className="cartoon-btn cartoon-btn-purple py-2 px-5 text-xs font-bold"
-        >
-          Return to Hub
-        </button>
-      </div>
-    );
-  }
-
-  const answeredCount = Object.keys(answers).length;
+  const answeredCount = Object.keys(answers).length + Object.keys(syntaxInputs).length;
   const feedback = submittedFeedback[currentIndex];
   const selectedOptIdx = answers[currentIndex];
 
   return (
-    <div className="space-y-6 animate-fade-in select-none">
-      {/* Top Header Toolbar */}
-      <div className="cartoon-card p-4 border-2 border-purple-500/30 flex flex-wrap items-center justify-between gap-4">
+    <div className="space-y-6 text-slate-900 pb-12">
+      {/* Top Header */}
+      <div className="saas-card p-4 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <button
             onClick={onExit}
-            className="cartoon-btn cartoon-btn-dark py-2 px-3 text-xs font-bold"
+            className="saas-btn-secondary py-1.5 px-2.5 text-xs gap-1"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-3.5 h-3.5" /> Exit
           </button>
           <div>
-            <span className="text-[11px] font-black uppercase text-pink-400 block">
-              {session.topicName || session.topic} ({session.mode || 'practice'} mode)
+            <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block">
+              {session?.topicName || 'Aptitude Assessment'}
             </span>
-            <h2 className="text-sm font-black text-white">
+            <h2 className="text-xs font-semibold text-slate-900">
               Question {currentIndex + 1} of {safeQuestions.length}
             </h2>
           </div>
         </div>
 
         {/* Progress Bar & Timer */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <div className="hidden sm:flex items-center gap-2">
-            <div className="w-32 bg-[#0d1220] rounded-full h-3 overflow-hidden border border-white/10">
+            <div className="w-24 bg-slate-100 rounded-full h-1.5 overflow-hidden">
               <div
-                className="bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-400 h-full rounded-full transition-all duration-300"
+                className="bg-indigo-600 h-full rounded-full transition-all duration-300"
                 style={{ width: `${((currentIndex + 1) / safeQuestions.length) * 100}%` }}
               />
             </div>
-            <span className="text-xs font-black text-purple-300">
+            <span className="text-xs text-slate-500">
               {Math.round(((currentIndex + 1) / safeQuestions.length) * 100)}%
             </span>
           </div>
 
-          <div className="cartoon-badge cartoon-badge-pink py-1.5 px-3 font-mono text-xs font-black">
-            <Clock className="w-4 h-4 text-pink-400" /> {formatTime(timerSeconds)}
+          <div className="saas-badge text-xs font-mono font-medium">
+            <Clock className="w-3.5 h-3.5 text-slate-500" /> {formatTime(timerSeconds)}
           </div>
         </div>
       </div>
@@ -227,82 +201,82 @@ export default function MCQQuizInterface({ session, questions, onComplete, onExi
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left: Active Question Card */}
         <div className="lg:col-span-8 space-y-4">
-          <div className="cartoon-card p-6 border-2 border-purple-500/30 space-y-6">
+          <div className="saas-card p-6 space-y-5">
             {/* Metadata Badges */}
-            <div className="flex items-center justify-between gap-2 border-b-2 border-white/10 pb-3">
-              <span className="cartoon-badge cartoon-badge-purple text-xs">
+            <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
+              <span className="saas-badge text-[10px]">
                 {currentQ.id || `Q-${currentIndex + 1}`}
               </span>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 <button
                   onClick={toggleBookmarkQuestion}
-                  className={`p-2 rounded-2xl border-2 transition-all ${
+                  className={`p-1.5 rounded-lg border text-xs transition-colors ${
                     bookmarks[currentIndex]
-                      ? 'bg-amber-500/20 border-amber-400 text-amber-300 shadow-md'
-                      : 'bg-[#151b2e] border-purple-500/20 text-gray-400 hover:text-white'
+                      ? 'bg-amber-50 border-amber-300 text-amber-700'
+                      : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'
                   }`}
                   title="Bookmark question"
                 >
-                  {bookmarks[currentIndex] ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+                  {bookmarks[currentIndex] ? <BookmarkCheck className="w-3.5 h-3.5" /> : <Bookmark className="w-3.5 h-3.5" />}
                 </button>
 
                 <button
                   onClick={toggleReviewMark}
-                  className={`p-2 rounded-2xl border-2 text-xs font-black flex items-center gap-1 transition-all ${
+                  className={`py-1 px-2.5 rounded-lg border text-xs font-medium flex items-center gap-1 transition-colors ${
                     markedForReview[currentIndex]
-                      ? 'bg-purple-500/20 border-purple-400 text-purple-300'
-                      : 'bg-[#151b2e] border-purple-500/20 text-gray-400 hover:text-white'
+                      ? 'bg-indigo-50 border-indigo-300 text-indigo-700'
+                      : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'
                   }`}
                 >
-                  <Flag className="w-3.5 h-3.5" />
+                  <Flag className="w-3 h-3" />
                   <span className="hidden sm:inline">Review</span>
                 </button>
               </div>
             </div>
 
             {/* Question Text */}
-            <div className="space-y-2">
-              <span className="cartoon-badge cartoon-badge-cyan text-[10px]">
-                {isSyntaxQuestion ? 'Syntax Challenge' : 'Multiple Choice Challenge'}
+            <div className="space-y-1">
+              <span className="text-[10px] uppercase font-semibold text-slate-500 tracking-wider block">
+                {isSyntaxQuestion ? 'Syntax Challenge' : 'Multiple Choice'}
               </span>
-              <h3 className="text-base font-black text-white leading-relaxed">{currentQ.question}</h3>
+              <h3 className="text-sm font-semibold text-slate-900 leading-relaxed">{currentQ.question}</h3>
             </div>
 
             {/* Multiple Choice Options */}
             {isSyntaxQuestion ? (
-              <div className="space-y-3 pt-2">
-                <div className="p-4 rounded-2xl bg-[#0d1220] border-2 border-amber-500/40 space-y-2">
-                  <label className="text-xs font-black text-amber-300 block">
-                    Type Your Exact Syntax Answer:
+              <div className="space-y-2 pt-1">
+                <div className="p-3.5 rounded-lg bg-slate-50 border border-slate-200 space-y-1.5">
+                  <label className="text-xs font-medium text-slate-700 block">
+                    Type syntax answer:
                   </label>
                   <input
                     type="text"
                     value={syntaxInputs[currentIndex] || ''}
                     onChange={(e) => handleSyntaxInputChange(e.target.value)}
                     disabled={isPracticeMode && Boolean(feedback)}
-                    placeholder="Enter syntax code answer here..."
-                    className="w-full bg-[#151b2e] border-2 border-purple-500/30 text-emerald-300 font-mono text-xs rounded-xl p-3 focus:outline-none focus:border-amber-400 font-bold"
+                    placeholder="Enter syntax..."
+                    className="w-full bg-white border border-slate-200 text-slate-900 font-mono text-xs rounded-md p-2 focus:outline-none focus:border-indigo-600"
                   />
                 </div>
               </div>
             ) : (
-              <div className="space-y-3 pt-2">
+              <div className="space-y-2 pt-1">
                 {currentQ.options &&
                   currentQ.options.map((opt, oIdx) => {
                     const optText = typeof opt === 'string' ? opt : opt.text;
                     const isSelected = selectedOptIdx === oIdx;
-                    let cardClass = 'bg-[#151b2e] border-purple-500/20 text-gray-200 hover:border-purple-500/50 hover:bg-[#1a223a]';
+                    let cardClass = 'bg-white border-slate-200 text-slate-700 hover:border-slate-300';
 
                     if (isSelected) {
-                      cardClass = 'bg-gradient-to-r from-purple-900/60 to-indigo-900/60 border-purple-400 text-white shadow-xl scale-[1.01]';
+                      cardClass = 'bg-indigo-50/60 border-indigo-600 text-indigo-900 font-medium';
                     }
 
                     if (isPracticeMode && feedback) {
                       if (oIdx === feedback.correctAnswer) {
-                        cardClass = 'bg-emerald-950/60 border-emerald-400 text-emerald-200 font-bold shadow-lg shadow-emerald-500/20';
+                        cardClass = 'bg-emerald-50 border-emerald-500 text-emerald-900 font-medium';
                       } else if (isSelected && !feedback.isCorrect) {
-                        cardClass = 'bg-rose-950/60 border-rose-400 text-rose-200';
+                        cardClass = 'bg-rose-50 border-rose-500 text-rose-900';
                       }
                     }
 
@@ -311,60 +285,56 @@ export default function MCQQuizInterface({ session, questions, onComplete, onExi
                         key={oIdx}
                         onClick={() => handleSelectOption(oIdx)}
                         disabled={isPracticeMode && Boolean(feedback)}
-                        className={`w-full p-4 rounded-2xl border-2 text-left text-xs font-bold flex items-center justify-between transition-all transform active:scale-98 ${cardClass}`}
+                        className={`w-full p-3 rounded-lg border text-left text-xs flex items-center justify-between transition-colors ${cardClass}`}
                       >
-                        <div className="flex items-center gap-3">
-                          <span className="w-7 h-7 rounded-xl bg-purple-600/30 border border-purple-400/40 text-purple-200 text-xs font-black flex items-center justify-center shrink-0">
+                        <div className="flex items-center gap-2.5">
+                          <span className="w-5 h-5 rounded-md bg-slate-100 text-slate-700 text-xs font-semibold flex items-center justify-center shrink-0">
                             {String.fromCharCode(65 + oIdx)}
                           </span>
-                          <span className="font-medium text-xs">{optText}</span>
+                          <span className="text-xs">{optText}</span>
                         </div>
-
-                        {isSelected && !feedback && (
-                          <div className="w-3 h-3 rounded-full bg-pink-500 shadow-md shadow-pink-500 animate-pulse" />
-                        )}
                       </button>
                     );
                   })}
               </div>
             )}
 
-            {/* Instant Feedback & Step Explanation */}
+            {/* Instant Feedback */}
             {isPracticeMode && feedback && (
               <div
-                className={`p-4 rounded-2xl border-2 space-y-2 animate-fade-in ${
+                className={`p-3 rounded-lg border space-y-1.5 ${
                   feedback.isCorrect
-                    ? 'bg-emerald-950/60 border-emerald-400 text-emerald-200'
-                    : 'bg-rose-950/60 border-rose-400 text-rose-200'
+                    ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
+                    : 'bg-rose-50 border-rose-200 text-rose-900'
                 }`}
               >
-                <div className="flex items-center gap-2 font-black text-xs uppercase tracking-wider">
+                <div className="flex items-center gap-1.5 font-semibold text-xs">
                   {feedback.isCorrect ? (
                     <>
-                      <CheckCircle2 className="w-5 h-5 text-emerald-400 animate-bounce" /> Correct Answer! (+1 Point)
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Correct Answer
                     </>
                   ) : (
                     <>
-                      <XCircle className="w-5 h-5 text-rose-400" /> Incorrect (Correct: Option {String.fromCharCode(65 + feedback.correctAnswer)})
+                      <XCircle className="w-4 h-4 text-rose-600" /> Incorrect (Correct: Option {String.fromCharCode(65 + feedback.correctAnswer)})
                     </>
                   )}
                 </div>
 
-                <div className="pt-2 border-t border-white/10 space-y-1">
-                  <span className="text-[11px] font-black uppercase text-purple-300 flex items-center gap-1">
-                    <HelpCircle className="w-3.5 h-3.5 text-purple-400" /> Step-by-Step Solution
-                  </span>
-                  <p className="text-xs text-gray-200 leading-relaxed font-medium">{feedback.explanation}</p>
-                </div>
+                {feedback.explanation && (
+                  <div className="pt-1.5 border-t border-slate-200 text-xs text-slate-700">
+                    <span className="font-semibold block mb-0.5">Solution:</span>
+                    <p className="leading-relaxed">{feedback.explanation}</p>
+                  </div>
+                )}
               </div>
             )}
 
             {/* Navigation Actions */}
-            <div className="pt-4 border-t-2 border-white/10 flex items-center justify-between gap-3">
+            <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-3">
               <button
                 onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))}
                 disabled={currentIndex === 0}
-                className="cartoon-btn cartoon-btn-dark py-2 px-4 text-xs font-bold disabled:opacity-40"
+                className="saas-btn-secondary py-1.5 px-3 text-xs disabled:opacity-40"
               >
                 Previous
               </button>
@@ -373,7 +343,7 @@ export default function MCQQuizInterface({ session, questions, onComplete, onExi
                 {isPracticeMode && !feedback && selectedOptIdx !== undefined && (
                   <button
                     onClick={handleSubmitAnswer}
-                    className="cartoon-btn cartoon-btn-purple py-2 px-5 text-xs font-black"
+                    className="saas-btn-primary py-1.5 px-3 text-xs"
                   >
                     Check Answer
                   </button>
@@ -382,7 +352,7 @@ export default function MCQQuizInterface({ session, questions, onComplete, onExi
                 {currentIndex < safeQuestions.length - 1 ? (
                   <button
                     onClick={() => setCurrentIndex(prev => prev + 1)}
-                    className="cartoon-btn cartoon-btn-cyan py-2 px-5 text-xs font-black gap-1.5"
+                    className="saas-btn-primary py-1.5 px-3.5 text-xs font-medium gap-1"
                   >
                     <span>Next</span>
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -390,10 +360,10 @@ export default function MCQQuizInterface({ session, questions, onComplete, onExi
                 ) : (
                   <button
                     onClick={handleFinalSubmit}
-                    className="cartoon-btn cartoon-btn-mint py-2 px-5 text-xs font-black gap-1.5"
+                    className="saas-btn-primary py-1.5 px-3.5 text-xs font-medium gap-1"
                   >
                     <CheckSquare className="w-3.5 h-3.5" />
-                    <span>Finish Quest</span>
+                    <span>Finish Quiz</span>
                   </button>
                 )}
               </div>
@@ -403,37 +373,27 @@ export default function MCQQuizInterface({ session, questions, onComplete, onExi
 
         {/* Right: Question Palette Navigation */}
         <div className="lg:col-span-4 space-y-4">
-          <div className="cartoon-card p-5 border-2 border-purple-500/30 space-y-4">
-            <h4 className="text-xs font-black uppercase text-purple-300 tracking-wider">Quest Navigator</h4>
-
-            {/* Color Legend */}
-            <div className="grid grid-cols-2 gap-2 text-[10px] font-bold text-gray-400">
-              <div className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-emerald-500" /> Answered ({answeredCount})
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-purple-500" /> Review ({Object.values(markedForReview).filter(Boolean).length})
-              </div>
-            </div>
+          <div className="saas-card p-4 space-y-3">
+            <h4 className="text-xs font-semibold text-slate-900 uppercase tracking-wider">Question Matrix</h4>
 
             {/* Palette Grid */}
-            <div className="grid grid-cols-5 gap-2 max-h-64 overflow-y-auto pr-1">
+            <div className="grid grid-cols-5 gap-1.5 max-h-64 overflow-y-auto pr-1">
               {safeQuestions.map((_, idx) => {
                 const isCurrent = idx === currentIndex;
                 const isAns = answers[idx] !== undefined;
                 const isRev = Boolean(markedForReview[idx]);
 
-                let paletteStyle = 'bg-[#151b2e] border-purple-500/20 text-gray-400 hover:border-purple-500/50';
+                let paletteStyle = 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50';
 
-                if (isAns) paletteStyle = 'bg-emerald-950/60 border-emerald-400 text-emerald-300 font-bold';
-                if (isRev) paletteStyle = 'bg-purple-950/60 border-purple-400 text-purple-300 font-bold';
-                if (isCurrent) paletteStyle = 'bg-pink-600 text-white font-black shadow-lg shadow-pink-500/40 border-pink-300 scale-105';
+                if (isAns) paletteStyle = 'bg-emerald-50 border-emerald-300 text-emerald-800 font-semibold';
+                if (isRev) paletteStyle = 'bg-indigo-50 border-indigo-300 text-indigo-800 font-semibold';
+                if (isCurrent) paletteStyle = 'bg-slate-900 border-slate-900 text-white font-bold';
 
                 return (
                   <button
                     key={idx}
                     onClick={() => setCurrentIndex(idx)}
-                    className={`h-9 rounded-2xl border-2 text-xs font-mono transition-all flex items-center justify-center ${paletteStyle}`}
+                    className={`h-8 rounded-md border text-xs font-mono transition-colors flex items-center justify-center ${paletteStyle}`}
                   >
                     {idx + 1}
                   </button>
@@ -443,10 +403,9 @@ export default function MCQQuizInterface({ session, questions, onComplete, onExi
 
             <button
               onClick={handleFinalSubmit}
-              className="cartoon-btn cartoon-btn-purple w-full py-3 text-xs font-black gap-2"
+              className="saas-btn-primary w-full py-2 text-xs font-medium"
             >
-              <Trophy className="w-4 h-4 text-yellow-300" />
-              <span>Complete & View Score</span>
+              Submit & View Results
             </button>
           </div>
         </div>

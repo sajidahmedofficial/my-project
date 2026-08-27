@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Playful modern cartoon AI Career Mentor & interactive Voice AI Assistant with Sparky avatar, speech recognition & waveform", deps: ["lucide-react", "./common/AIAssistantAvatar", "../utils/aiSimulator"], state: "active", last: "anti@2026-08-25" }
+// agent-notes: { ctx: "Clean minimal SaaS AI Career Mentor with text chat, speech synthesis & voice input", deps: ["lucide-react", "./common/AIAssistantAvatar", "../utils/aiSimulator"], state: "active", last: "anti@2026-08-27" }
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   MessageSquare, 
@@ -9,11 +9,8 @@ import {
   MicOff,
   Volume2,
   VolumeX,
-  RotateCcw,
   Copy,
   Check,
-  Radio,
-  Zap,
   Bot
 } from 'lucide-react';
 import AIAssistantAvatar from './common/AIAssistantAvatar';
@@ -31,7 +28,7 @@ export default function CareerMentor({ profile }) {
     {
       id: "m-welcome",
       sender: "bot",
-      text: `Hi **${candidateName}**! I'm **Sparky**, your AI Career Mentor! 🤖✨\n\nI can help you build custom roadmaps, review technical skills, prep for campus interviews, and share real-time salary benchmarks.\n\nWhat would you like to explore today?`
+      text: `Hi **${candidateName}**! I'm your **AI Career Mentor**.\n\nI can help you build custom learning roadmaps, evaluate skill gaps, prepare for technical interviews, and discuss career strategies.\n\nWhat would you like to explore today?`
     }
   ]);
   const [inputVal, setInputVal] = useState("");
@@ -41,7 +38,7 @@ export default function CareerMentor({ profile }) {
 
   // Voice AI State
   const [isListening, setIsListening] = useState(false);
-  const [voiceStatus, setVoiceStatus] = useState("Tap the microphone to speak with Sparky");
+  const [voiceStatus, setVoiceStatus] = useState("Click the microphone to speak with your mentor");
   const [voiceTranscript, setVoiceTranscript] = useState("");
   const [recognitionSupported, setRecognitionSupported] = useState(true);
 
@@ -71,7 +68,7 @@ export default function CareerMentor({ profile }) {
       recognition.onstart = () => {
         setIsListening(true);
         setAvatarState('listening');
-        setVoiceStatus("Listening to your voice... Speak clearly!");
+        setVoiceStatus("Listening... Speak clearly.");
       };
 
       recognition.onresult = (event) => {
@@ -84,7 +81,7 @@ export default function CareerMentor({ profile }) {
         console.warn("Speech recognition error:", event.error);
         setIsListening(false);
         setAvatarState('error');
-        setVoiceStatus("Didn't catch that. Please tap to try again!");
+        setVoiceStatus("Could not detect audio. Please click to try again.");
         setTimeout(() => setAvatarState('idle'), 2000);
       };
 
@@ -112,14 +109,13 @@ export default function CareerMentor({ profile }) {
       try {
         recognitionRef.current?.start();
       } catch (err) {
-        // Fallback simulation for browsers blocking mic
         setIsListening(true);
         setAvatarState('listening');
-        setVoiceStatus("Listening... (Simulating: 'How can I become a Full Stack Developer?')");
+        setVoiceStatus("Listening (simulating input)...");
         setTimeout(() => {
           setIsListening(false);
           handleSend("How to prepare for campus technical placement interviews?");
-        }, 3000);
+        }, 2500);
       }
     }
   };
@@ -134,11 +130,9 @@ export default function CareerMentor({ profile }) {
         return;
       }
 
-      // Strip markdown asterisks and code backticks for clean speech
       const cleanText = text.replace(/[*#`_]/g, '');
       const utterance = new SpeechSynthesisUtterance(cleanText);
-      utterance.rate = 1.05;
-      utterance.pitch = 1.1; // Friendly slightly higher cartoon pitch
+      utterance.rate = 1.0;
 
       utterance.onstart = () => {
         setIsSpeakingMsgId(msgId);
@@ -180,7 +174,7 @@ export default function CareerMentor({ profile }) {
     setVoiceTranscript("");
     setTyping(true);
     setAvatarState('thinking');
-    setVoiceStatus("Sparky is thinking & generating your answer...");
+    setVoiceStatus("Analyzing your query...");
 
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL || '/api'}/ai/chat`, {
@@ -202,16 +196,15 @@ export default function CareerMentor({ profile }) {
       };
       setMessages(prev => [...prev, botMsg]);
       setAvatarState('speaking');
-      setVoiceStatus("Answer ready!");
+      setVoiceStatus("Response ready.");
 
-      // If in Voice Mode, automatically speak response
       if (activeMode === 'voice') {
         handleSpeakText(responseText, botMsg.id);
       } else {
-        setTimeout(() => setAvatarState('idle'), 3000);
+        setTimeout(() => setAvatarState('idle'), 2500);
       }
     } catch (err) {
-      console.warn("Career Mentor API notice (using simulator):", err.message);
+      console.warn("Career Mentor notice (using fallback):", err.message);
       const responseText = generateMentorResponse(messages, query);
       const botMsg = {
         id: `bot-${Date.now()}`,
@@ -225,66 +218,64 @@ export default function CareerMentor({ profile }) {
     }
   };
 
-  // Convert simple markdown headings, lists, bold text to basic HTML
   const formatText = (text) => {
     return text.split('\n').map((line, idx) => {
       let content = line;
       
-      content = content.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-black">$1</strong>');
-      content = content.replace(/`(.*?)`/g, '<code class="px-2 py-0.5 rounded-lg bg-[#0d1220] text-xs font-mono border border-purple-500/30 text-pink-400 font-bold">$1</code>');
+      content = content.replace(/\*\*(.*?)\*\*/g, '<strong class="text-slate-900 font-semibold">$1</strong>');
+      content = content.replace(/`(.*?)`/g, '<code class="px-1.5 py-0.5 rounded bg-slate-100 text-xs font-mono text-indigo-700 border border-slate-200">$1</code>');
 
       if (content.startsWith('### ')) {
-        return <h4 key={idx} className="text-sm font-black text-purple-300 mt-3 mb-1.5 flex items-center gap-1.5" dangerouslySetInnerHTML={{ __html: content.substring(4) }} />;
+        return <h4 key={idx} className="text-sm font-semibold text-slate-900 mt-3 mb-1" dangerouslySetInnerHTML={{ __html: content.substring(4) }} />;
       }
       if (content.startsWith('#### ')) {
-        return <h5 key={idx} className="text-xs font-black text-cyan-300 mt-2.5 mb-1 uppercase tracking-wider" dangerouslySetInnerHTML={{ __html: content.substring(5) }} />;
+        return <h5 key={idx} className="text-xs font-semibold text-slate-800 mt-2 mb-1 uppercase tracking-wider" dangerouslySetInnerHTML={{ __html: content.substring(5) }} />;
       }
       
       if (content.startsWith('- ') || content.startsWith('* ')) {
         return (
-          <li key={idx} className="list-none ml-3 pl-2 border-l-2 border-purple-400 my-1 text-xs text-gray-200 leading-relaxed font-medium" dangerouslySetInnerHTML={{ __html: content.substring(2) }} />
+          <li key={idx} className="list-disc ml-4 my-0.5 text-xs text-slate-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: content.substring(2) }} />
         );
       }
       
       const numMatch = content.match(/^(\d+)\.\s(.*)/);
       if (numMatch) {
         return (
-          <div key={idx} className="flex gap-2 my-1.5 text-xs leading-relaxed font-medium">
-            <span className="text-yellow-400 font-black">{numMatch[1]}.</span>
-            <span className="text-gray-200" dangerouslySetInnerHTML={{ __html: numMatch[2] }} />
+          <div key={idx} className="flex gap-1.5 my-1 text-xs text-slate-700 leading-relaxed">
+            <span className="font-semibold text-slate-900">{numMatch[1]}.</span>
+            <span dangerouslySetInnerHTML={{ __html: numMatch[2] }} />
           </div>
         );
       }
 
-      return <p key={idx} className="my-1.5 text-xs text-gray-200 leading-relaxed font-medium min-h-[1em]" dangerouslySetInnerHTML={{ __html: content }} />;
+      return <p key={idx} className="my-1 text-xs text-slate-700 leading-relaxed min-h-[1em]" dangerouslySetInnerHTML={{ __html: content }} />;
     });
   };
 
   return (
-    <div className="cartoon-card h-[calc(100vh-170px)] flex flex-col overflow-hidden border-2 border-purple-500/30 shadow-2xl relative select-none animate-fade-in">
+    <div className="saas-card h-[calc(100vh-160px)] flex flex-col overflow-hidden text-slate-900">
       {/* Header Bar with Mode Toggle */}
-      <div className="px-6 py-4 border-b-2 border-purple-500/20 bg-[#12172a]/90 flex items-center justify-between flex-wrap gap-3">
+      <div className="px-5 py-3.5 border-b border-slate-200 bg-white flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-3">
           <AIAssistantAvatar size="sm" state={avatarState} onClick={() => setAvatarState('success')} />
           <div>
-            <h3 className="text-sm font-black text-white flex items-center gap-2">
-              <span>Sparky AI Career Mentor</span>
-              <Sparkles className="w-4 h-4 text-yellow-400" />
+            <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-1.5">
+              <span>AI Career Mentor</span>
             </h3>
-            <span className="text-[11px] text-emerald-400 font-extrabold flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" /> Ready & Listening
+            <span className="text-[11px] text-emerald-600 font-medium flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Active
             </span>
           </div>
         </div>
 
         {/* Mode Switcher Tabs */}
-        <div className="flex items-center gap-2 bg-[#0b0f19] p-1.5 rounded-2xl border border-purple-500/30">
+        <div className="inline-flex bg-slate-100 p-0.5 rounded-lg border border-slate-200/60 text-xs">
           <button
             onClick={() => setActiveMode('chat')}
-            className={`px-4 py-1.5 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-1 rounded-md font-medium transition-all flex items-center gap-1.5 ${
               activeMode === 'chat'
-                ? 'bg-purple-600 text-white shadow-md'
-                : 'text-gray-400 hover:text-white'
+                ? 'bg-white text-slate-900 shadow-sm'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             <MessageSquare className="w-3.5 h-3.5" /> Text Chat
@@ -292,125 +283,109 @@ export default function CareerMentor({ profile }) {
           
           <button
             onClick={() => setActiveMode('voice')}
-            className={`px-4 py-1.5 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-1 rounded-md font-medium transition-all flex items-center gap-1.5 ${
               activeMode === 'voice'
-                ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md animate-pulse'
-                : 'text-gray-400 hover:text-white'
+                ? 'bg-white text-slate-900 shadow-sm'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            <Mic className="w-3.5 h-3.5" /> Voice Assistant
+            <Mic className="w-3.5 h-3.5" /> Voice Mode
           </button>
         </div>
       </div>
 
       {/* Mode 1: Voice AI Interface */}
       {activeMode === 'voice' && (
-        <div className="flex-1 flex flex-col items-center justify-center p-6 text-center space-y-6 bg-gradient-to-b from-[#151b2e] to-[#0d111e] overflow-y-auto">
-          {/* Big Cartoon Avatar */}
+        <div className="flex-1 flex flex-col items-center justify-center p-6 text-center space-y-6 bg-slate-50 overflow-y-auto">
           <AIAssistantAvatar 
-            size="xl" 
+            size="lg" 
             state={avatarState} 
             showSpeechBubble={true} 
             speechText={voiceStatus} 
           />
 
-          <div className="space-y-2 max-w-md">
-            <h2 className="text-xl font-black text-white">Voice Conversation Mode</h2>
-            <p className="text-xs text-gray-300 font-medium">
+          <div className="space-y-1 max-w-md">
+            <h2 className="text-base font-semibold text-slate-900">Voice Assistant Mode</h2>
+            <p className="text-xs text-slate-500">
               {voiceTranscript ? `"${voiceTranscript}"` : voiceStatus}
             </p>
           </div>
 
-          {/* Pulsing Audio Waveform Indicator */}
-          {isListening && (
-            <div className="flex items-center justify-center gap-1.5 h-10">
-              {[40, 70, 100, 60, 90, 45, 80, 55, 95, 30].map((h, i) => (
-                <div 
-                  key={i} 
-                  className="w-1.5 rounded-full bg-gradient-to-t from-cyan-500 to-pink-500 animate-pulse"
-                  style={{ 
-                    height: `${h}%`,
-                    animationDuration: `${0.4 + (i % 4) * 0.2}s`
-                  }} 
-                />
-              ))}
-            </div>
-          )}
-
-          {/* Large Cartoon Microphone Button */}
+          {/* Simple Clean Microphone Button */}
           <div className="pt-2">
             <button
               onClick={handleToggleVoice}
-              className={`w-24 h-24 rounded-full flex items-center justify-center text-white border-4 shadow-2xl transition-all transform hover:scale-110 active:scale-95 ${
+              className={`w-16 h-16 rounded-full flex items-center justify-center text-white transition-all shadow-sm ${
                 isListening
-                  ? 'bg-gradient-to-tr from-rose-500 to-pink-600 border-rose-300 shadow-rose-500/50 animate-bounce-happy'
-                  : 'bg-gradient-to-tr from-purple-600 to-indigo-600 border-purple-300 shadow-purple-500/40'
+                  ? 'bg-rose-600 ring-4 ring-rose-200'
+                  : 'bg-indigo-600 hover:bg-indigo-700'
               }`}
             >
               {isListening ? (
-                <MicOff className="w-10 h-10 text-white animate-spin" />
+                <MicOff className="w-6 h-6 text-white" />
               ) : (
-                <Mic className="w-10 h-10 text-white" />
+                <Mic className="w-6 h-6 text-white" />
               )}
             </button>
-            <span className="block text-[11px] font-bold text-gray-400 mt-3">
-              {isListening ? "Listening... Click to send" : "Tap to Speak"}
+            <span className="block text-[11px] font-medium text-slate-500 mt-2">
+              {isListening ? "Listening... click to send" : "Click to speak"}
             </span>
           </div>
 
           {/* Quick Voice Prompt Suggestions */}
-          <div className="flex flex-wrap justify-center gap-2 max-w-lg pt-2">
+          <div className="flex flex-wrap justify-center gap-1.5 max-w-md pt-2">
             {suggestionChips.slice(0, 3).map((chip, idx) => (
               <button
                 key={idx}
                 onClick={() => handleSend(chip)}
-                className="cartoon-badge cartoon-badge-purple hover:scale-105 transition-transform text-[11px] cursor-pointer"
+                className="saas-badge text-xs hover:border-slate-300 transition-colors cursor-pointer"
               >
-                ✨ {chip}
+                {chip}
               </button>
             ))}
           </div>
         </div>
       )}
 
-      {/* Mode 2: Modern Cartoon Chat Interface */}
+      {/* Mode 2: Modern SaaS Chat Interface */}
       {activeMode === 'chat' && (
         <>
           {/* Messages area */}
-          <div className="flex-1 overflow-y-auto p-5 md:p-6 space-y-4">
+          <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 bg-slate-50/50">
             {messages.map((msg) => {
               const isBot = msg.sender === "bot";
               return (
-                <div key={msg.id} className={`flex items-start gap-3.5 ${isBot ? 'max-w-2xl' : 'max-w-2xl ml-auto flex-row-reverse'}`}>
+                <div key={msg.id} className={`flex items-start gap-3 ${isBot ? 'max-w-2xl' : 'max-w-2xl ml-auto flex-row-reverse'}`}>
                   {/* Avatar */}
-                  <div className="shrink-0 mt-1">
+                  <div className="shrink-0 mt-0.5">
                     {isBot ? (
-                      <AIAssistantAvatar size="sm" state={isSpeakingMsgId === msg.id ? 'speaking' : 'idle'} />
+                      <div className="w-7 h-7 rounded-md bg-slate-900 text-white flex items-center justify-center text-xs">
+                        <Bot className="w-4 h-4 text-indigo-400" />
+                      </div>
                     ) : (
-                      <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 border-2 border-white/20 flex items-center justify-center text-white font-black text-sm shadow-md">
+                      <div className="w-7 h-7 rounded-md bg-indigo-600 text-white flex items-center justify-center text-xs font-semibold">
                         {candidateName?.[0] || 'U'}
                       </div>
                     )}
                   </div>
 
                   {/* Speech Bubble */}
-                  <div className={`p-4 md:p-5 rounded-3xl space-y-2 relative border-2 ${
+                  <div className={`p-4 rounded-xl space-y-1.5 border text-xs leading-relaxed ${
                     isBot 
-                      ? 'bg-[#182035] border-purple-500/25 text-gray-100 shadow-lg' 
-                      : 'bg-gradient-to-r from-purple-700 to-indigo-700 border-purple-300/40 text-white shadow-lg'
+                      ? 'bg-white border-slate-200 text-slate-800 shadow-sm' 
+                      : 'bg-indigo-600 border-indigo-600 text-white shadow-sm'
                   }`}>
-                    {/* Content */}
                     <div>{formatText(msg.text)}</div>
 
                     {/* Bot Message Action Toolbar */}
                     {isBot && (
-                      <div className="flex items-center gap-2 pt-2 border-t border-white/10 text-[10px] text-gray-400">
+                      <div className="flex items-center gap-3 pt-2 border-t border-slate-100 text-[11px] text-slate-400">
                         <button
                           onClick={() => handleSpeakText(msg.text, msg.id)}
-                          className={`p-1.5 rounded-lg hover:bg-white/10 flex items-center gap-1 font-bold transition-all ${
-                            isSpeakingMsgId === msg.id ? 'text-pink-400 animate-pulse' : 'text-gray-300'
+                          className={`hover:text-slate-700 flex items-center gap-1 font-medium transition-colors ${
+                            isSpeakingMsgId === msg.id ? 'text-indigo-600 font-semibold' : ''
                           }`}
-                          title="Listen with Voice"
+                          title="Listen with voice"
                         >
                           {isSpeakingMsgId === msg.id ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
                           <span>{isSpeakingMsgId === msg.id ? "Stop Voice" : "Listen"}</span>
@@ -418,10 +393,10 @@ export default function CareerMentor({ profile }) {
 
                         <button
                           onClick={() => handleCopy(msg.text, msg.id)}
-                          className="p-1.5 rounded-lg hover:bg-white/10 flex items-center gap-1 font-bold text-gray-300 transition-all"
+                          className="hover:text-slate-700 flex items-center gap-1 font-medium transition-colors"
                           title="Copy message"
                         >
-                          {copiedId === msg.id ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                          {copiedId === msg.id ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                           <span>{copiedId === msg.id ? "Copied" : "Copy"}</span>
                         </button>
                       </div>
@@ -431,17 +406,14 @@ export default function CareerMentor({ profile }) {
               );
             })}
 
-            {/* Bouncy Typing Indicator */}
+            {/* Typing Indicator */}
             {typing && (
               <div className="flex items-start gap-3 max-w-2xl">
-                <AIAssistantAvatar size="sm" state="thinking" />
-                <div className="p-4 rounded-3xl bg-[#182035] border-2 border-purple-500/20 flex items-center gap-2">
-                  <span className="text-xs text-purple-300 font-bold">Sparky is typing</span>
-                  <div className="flex gap-1">
-                    <span className="w-2 h-2 rounded-full bg-purple-400 animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <span className="w-2 h-2 rounded-full bg-pink-400 animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <span className="w-2 h-2 rounded-full bg-cyan-400 animate-bounce" style={{ animationDelay: '300ms' }} />
-                  </div>
+                <div className="w-7 h-7 rounded-md bg-slate-900 text-white flex items-center justify-center text-xs">
+                  <Bot className="w-4 h-4 text-indigo-400" />
+                </div>
+                <div className="p-3 rounded-xl bg-white border border-slate-200 text-xs text-slate-500 shadow-sm flex items-center gap-2">
+                  <span>Mentor is formulating answer...</span>
                 </div>
               </div>
             )}
@@ -450,16 +422,16 @@ export default function CareerMentor({ profile }) {
 
           {/* Suggestion Chips */}
           {messages.length <= 2 && !typing && (
-            <div className="px-6 pb-2">
-              <span className="text-[11px] font-black text-purple-300 uppercase tracking-wider block mb-2">
-                ✨ Suggested Inquiries
+            <div className="px-5 py-2 bg-white border-t border-slate-100">
+              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block mb-1.5">
+                Suggested Topics
               </span>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1.5">
                 {suggestionChips.map((chip, idx) => (
                   <button
                     key={idx}
                     onClick={() => handleSend(chip)}
-                    className="cartoon-badge cartoon-badge-purple hover:scale-105 transition-transform text-xs cursor-pointer"
+                    className="saas-badge text-xs hover:border-slate-300 transition-colors cursor-pointer"
                   >
                     {chip}
                   </button>
@@ -469,26 +441,26 @@ export default function CareerMentor({ profile }) {
           )}
 
           {/* Input container */}
-          <div className="p-4 border-t-2 border-purple-500/20 bg-[#12172a]/95">
+          <div className="p-3.5 border-t border-slate-200 bg-white">
             <form 
               onSubmit={(e) => {
                 e.preventDefault();
                 handleSend(inputVal);
               }}
-              className="flex items-center gap-2.5"
+              className="flex items-center gap-2"
             >
               <input
                 type="text"
                 value={inputVal}
                 onChange={(e) => setInputVal(e.target.value)}
-                placeholder="Ask Sparky anything about roadmaps, interviews, or coding..."
-                className="flex-1 px-5 py-3 bg-[#0b0f19] border-2 border-purple-500/30 focus:border-purple-400 rounded-2xl text-xs text-white placeholder-gray-400 focus:outline-none font-medium"
+                placeholder="Ask about career roadmaps, interview questions, or system design..."
+                className="flex-1 px-3.5 py-2 bg-white border border-slate-200 rounded-lg text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20"
               />
 
               <button
                 type="button"
                 onClick={() => setActiveMode('voice')}
-                className="p-3 rounded-2xl bg-purple-950/60 hover:bg-purple-900/80 border-2 border-purple-500/30 text-purple-300 hover:text-white transition-all"
+                className="p-2 rounded-lg border border-slate-200 text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-colors"
                 title="Switch to Voice Mode"
               >
                 <Mic className="w-4 h-4" />
@@ -497,7 +469,7 @@ export default function CareerMentor({ profile }) {
               <button
                 type="submit"
                 disabled={!inputVal.trim() || typing}
-                className="cartoon-btn cartoon-btn-purple py-3 px-5 text-xs font-black gap-1.5 disabled:opacity-50"
+                className="saas-btn-primary py-2 px-3.5 text-xs font-medium gap-1.5 disabled:opacity-50"
               >
                 <span>Send</span>
                 <Send className="w-3.5 h-3.5" />

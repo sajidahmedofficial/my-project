@@ -1,14 +1,13 @@
-// agent-notes: { ctx: "Playful cartoon Project Recommender with 3D difficulty pills, interactive expandable steps & tech stack badges", deps: ["lucide-react", "../utils/mockData"], state: "active", last: "anti@2026-08-21" }
+// agent-notes: { ctx: "Clean minimal SaaS Project Recommender with match metrics, expandable guidelines & tech stack tags", deps: ["lucide-react", "../utils/mockData"], state: "active", last: "anti@2026-08-27" }
 import React, { useState, useMemo } from 'react';
 import { 
   Code, 
   Clock, 
-  ChevronDown,
-  ChevronUp,
-  Sparkles,
-  Zap,
-  FolderGit2,
-  CheckCircle2
+  ChevronDown, 
+  ChevronUp, 
+  FolderGit2, 
+  CheckCircle2,
+  Sparkles
 } from 'lucide-react';
 import { PROJECT_RECOMMENDATIONS } from '../utils/mockData';
 
@@ -29,26 +28,21 @@ export default function ProjectRecommender({ profile }) {
   }, [profile]);
 
   return (
-    <div className="space-y-6 animate-fade-in select-none">
+    <div className="space-y-6 text-slate-900 pb-12">
       {/* Header Banner */}
-      <div className="cartoon-card p-6 md:p-8 border-2 border-purple-500/30 relative overflow-hidden bg-gradient-to-r from-[#171d33] via-[#1c243f] to-[#1a2138]">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
-          <div>
-            <div className="cartoon-badge cartoon-badge-pink mb-2">
-              <Sparkles className="w-3.5 h-3.5" /> Project Portfolio Lab
-            </div>
-            <h1 className="text-2xl md:text-3xl font-black text-white flex items-center gap-2">
-              <FolderGit2 className="w-8 h-8 text-cyan-400" />
-              <span>Recommended Capstone Projects</span>
-            </h1>
-            <p className="text-gray-300 text-xs mt-1 font-medium">
-              Expand your portfolio with custom project structures ranked by compatibility with your current technical skills!
-            </p>
+      <div className="saas-card p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <FolderGit2 className="w-5 h-5 text-indigo-600" />
+            <h1 className="text-lg font-bold text-slate-900">Recommended Capstone Projects</h1>
           </div>
+          <p className="text-xs text-slate-500">
+            Expand your portfolio with structured capstone architectures tailored to your current technical skills
+          </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {scoredRecommendations.map((proj, idx) => {
           const isExpanded = expandedIndex === idx;
           const matchedTagsCount = proj.matchCount;
@@ -56,45 +50,41 @@ export default function ProjectRecommender({ profile }) {
           return (
             <div 
               key={idx} 
-              className={`cartoon-card p-6 border-2 transition-all flex flex-col justify-between ${
-                isExpanded ? 'border-purple-400 shadow-xl' : 'border-purple-500/20 hover:border-purple-500/50'
-              }`}
+              className="saas-card p-5 flex flex-col justify-between space-y-4"
             >
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {/* Header info */}
-                <div className="flex items-start justify-between gap-4">
-                  <div className="space-y-1.5">
-                    <span className={`cartoon-badge text-[10px] ${
+                <div className="flex items-start justify-between gap-3">
+                  <div className="space-y-1">
+                    <span className={`saas-badge text-[10px] ${
                       proj.difficulty === 'Hard' 
-                        ? 'cartoon-badge-orange' 
+                        ? 'saas-badge-danger' 
                         : proj.difficulty === 'Medium' 
-                        ? 'cartoon-badge-yellow' 
-                        : 'cartoon-badge-mint'
+                        ? 'saas-badge-warning' 
+                        : 'saas-badge-success'
                     }`}>
                       {proj.difficulty}
                     </span>
-                    <h3 className="text-base font-black text-white leading-snug">{proj.title}</h3>
+                    <h3 className="text-sm font-semibold text-slate-900">{proj.title}</h3>
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-gray-300 bg-[#0d1220] border border-white/10 px-3 py-1.5 rounded-xl shrink-0">
-                    <Clock className="w-3.5 h-3.5 text-purple-400" /> {proj.timeEstimate}
+                  <div className="flex items-center gap-1 text-[11px] text-slate-500 bg-slate-50 border border-slate-200 px-2 py-1 rounded-md shrink-0">
+                    <Clock className="w-3.5 h-3.5 text-slate-400" /> {proj.timeEstimate}
                   </div>
                 </div>
 
-                <p className="text-xs text-gray-300 font-medium leading-relaxed">{proj.description}</p>
+                <p className="text-xs text-slate-500 leading-relaxed">{proj.description}</p>
 
                 {/* Tech tags */}
-                <div className="space-y-1.5">
-                  <span className="text-[10px] uppercase font-black text-purple-300 block">Technology Stack</span>
-                  <div className="flex flex-wrap gap-1.5">
+                <div className="space-y-1">
+                  <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">Technology Stack</span>
+                  <div className="flex flex-wrap gap-1">
                     {proj.tags.map((tag, tIdx) => {
                       const isMatched = (profile?.skills || []).some(s => s.toLowerCase().includes(tag.toLowerCase()) || tag.toLowerCase().includes(s.toLowerCase()));
                       return (
                         <span 
                           key={tIdx} 
-                          className={`cartoon-badge text-[10px] ${
-                            isMatched 
-                              ? 'cartoon-badge-purple' 
-                              : 'bg-[#0d1220] text-gray-400 border-white/10'
+                          className={`saas-badge text-[11px] ${
+                            isMatched ? 'saas-badge-indigo' : ''
                           }`}
                         >
                           {tag}
@@ -106,22 +96,22 @@ export default function ProjectRecommender({ profile }) {
 
                 {/* Match indicator alert */}
                 {matchedTagsCount > 0 && (
-                  <div className="text-xs text-emerald-300 font-bold flex items-center gap-1.5 bg-emerald-950/40 border border-emerald-500/30 p-2.5 rounded-xl">
-                    <Zap className="w-3.5 h-3.5 fill-emerald-400 text-emerald-400" />
-                    Matches <strong className="text-white">{matchedTagsCount}</strong> of your verified profile skills.
+                  <div className="text-xs text-emerald-800 flex items-center gap-1.5 bg-emerald-50 border border-emerald-200/80 p-2 rounded-lg">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Matches <strong className="font-semibold">{matchedTagsCount}</strong> skills in your profile</span>
                   </div>
                 )}
 
                 {/* Expanded guide */}
                 {isExpanded && (
-                  <div className="pt-4 border-t-2 border-white/10 space-y-4 animate-fade-in">
+                  <div className="pt-3 border-t border-slate-100 space-y-3">
                     {/* Key features */}
-                    <div className="space-y-2">
-                      <h4 className="text-xs font-black uppercase text-pink-300 tracking-wider">Required Key Features</h4>
-                      <ul className="space-y-1.5">
+                    <div className="space-y-1.5">
+                      <h4 className="text-xs font-semibold uppercase text-slate-900 tracking-wider">Required Features</h4>
+                      <ul className="space-y-1">
                         {proj.features.map((feat, fIdx) => (
-                          <li key={fIdx} className="flex items-start gap-2 text-xs text-gray-200 font-medium">
-                            <span className="w-1.5 h-1.5 rounded-full bg-pink-400 mt-1.5 shrink-0" />
+                          <li key={fIdx} className="flex items-start gap-1.5 text-xs text-slate-600">
+                            <span className="text-slate-400">•</span>
                             <span>{feat}</span>
                           </li>
                         ))}
@@ -129,12 +119,12 @@ export default function ProjectRecommender({ profile }) {
                     </div>
 
                     {/* Step guidelines */}
-                    <div className="space-y-2">
-                      <h4 className="text-xs font-black uppercase text-cyan-300 tracking-wider">Step-by-step Guidelines</h4>
-                      <div className="space-y-2">
+                    <div className="space-y-1.5">
+                      <h4 className="text-xs font-semibold uppercase text-slate-900 tracking-wider">Implementation Steps</h4>
+                      <div className="space-y-1">
                         {proj.guidelines.map((guide, gIdx) => (
-                          <div key={gIdx} className="flex gap-2 text-xs text-gray-200 font-medium">
-                            <span className="font-black text-purple-400 shrink-0">{gIdx + 1}.</span>
+                          <div key={gIdx} className="flex gap-2 text-xs text-slate-600">
+                            <span className="font-semibold text-slate-900 shrink-0">{gIdx + 1}.</span>
                             <p>{guide}</p>
                           </div>
                         ))}
@@ -147,17 +137,10 @@ export default function ProjectRecommender({ profile }) {
               {/* Action Button */}
               <button 
                 onClick={() => setExpandedIndex(isExpanded ? -1 : idx)}
-                className="mt-5 cartoon-btn cartoon-btn-dark w-full py-2.5 text-xs font-bold gap-1.5"
+                className="saas-btn-secondary w-full py-1.5 text-xs font-medium gap-1.5 mt-2"
               >
-                {isExpanded ? (
-                  <>
-                    <span>Hide Implementation Guide</span> <ChevronUp className="w-4 h-4" />
-                  </>
-                ) : (
-                  <>
-                    <span>View Implementation Guide</span> <ChevronDown className="w-4 h-4" />
-                  </>
-                )}
+                <span>{isExpanded ? "Hide Details" : "View Implementation Guide"}</span>
+                {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
               </button>
             </div>
           );

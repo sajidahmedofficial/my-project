@@ -1,19 +1,22 @@
-// agent-notes: { ctx: "Playful cartoon Unified Job & Skill Gap Analyzer with backend skillGapApi integration, interactive Competency Matrix & AI extraction", deps: ["lucide-react", "../services/skillGapApi", "../utils/mockData", "../utils/aiSimulator", "./SkillGapAnalysis.css"], state: "active", last: "anti@2026-08-25" }
+// agent-notes: { ctx: "Clean minimal SaaS Unified Job & Skill Gap Analyzer with backend skillGapApi integration, Competency Matrix & AI extraction", deps: ["lucide-react", "../services/skillGapApi", "../utils/mockData", "../utils/aiSimulator"], state: "active", last: "anti@2026-08-27" }
 import React, { useState, useMemo, useEffect } from 'react';
 import { 
   Briefcase, 
   ChevronRight, 
-  Zap,
-  RefreshCw,
-  AlertCircle,
-  Grid,
-  FileText,
-  Sparkles
+  RefreshCw, 
+  AlertCircle, 
+  Grid, 
+  FileText, 
+  Sparkles,
+  Layers,
+  ArrowRight,
+  CheckCircle2,
+  XCircle,
+  Plus
 } from 'lucide-react';
 import { JOB_PRESETS } from '../utils/mockData';
 import { analyzeJobDescription, detectSkillGap, extractSkillsFromText } from '../utils/aiSimulator';
 import { skillGapApi } from '../services/skillGapApi';
-import './SkillGapAnalysis.css';
 
 const ROLE_PRESETS = {
   fullstack: {
@@ -63,11 +66,11 @@ const ROLE_PRESETS = {
 };
 
 const CATEGORY_LABELS = {
-  frontend: "FRONTEND",
-  backend: "BACKEND",
-  database: "DATABASE",
-  tools: "DEVELOPMENT & TOOLS",
-  deployment: "DEPLOYMENT",
+  frontend: "Frontend",
+  backend: "Backend",
+  database: "Database",
+  tools: "Tools & Development",
+  deployment: "Deployment & Cloud",
 };
 
 export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, onOpenVerification }) {
@@ -120,7 +123,6 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
     const targetRole = ROLE_PRESETS[targetRoleKey]?.title || "Full Stack Developer";
 
     try {
-      // Authoritative backend skill gap analysis (agrees with SkillGapDashboard)
       const res = await skillGapApi.analyzeSkillGap({
         resumeText: userText,
         userSkills: uSkills.length > 0 ? uSkills : (profile?.skills || []),
@@ -160,7 +162,7 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
         fallbackLocalComparison(userText, jobText);
       }
     } catch (err) {
-      console.warn("[JobAnalyzer] Backend skill gap API notice, using local fallback:", err.message);
+      console.warn("Backend skill gap comparison failed, using local AI fallback:", err);
       fallbackLocalComparison(userText, jobText);
     } finally {
       setAnalyzing(false);
@@ -168,21 +170,10 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
   };
 
   const fallbackLocalComparison = (userText, jobText) => {
-    const uSkills = extractSkillsFromText(userText);
-    const jProfile = analyzeJobDescription(jobText);
-    const jSkills = extractSkillsFromText(jobText);
-    const finalJobSkills = jSkills.length > 0 ? jSkills : jProfile.requiredSkills;
-    const gapResults = detectSkillGap(uSkills, finalJobSkills, jProfile);
-
-    setJobProfile(jProfile);
-    setGapReport(gapResults);
-
-    if (uSkills.length > 0) {
-      setUserSkills(prev => Array.from(new Set([...prev, ...uSkills])));
-    }
-    if (jProfile && jProfile.roleCategories) {
-      setRoleSkills(jProfile.roleCategories);
-    }
+    const jobParsed = analyzeJobDescription(jobText);
+    setJobProfile(jobParsed);
+    const gap = detectSkillGap(userText, jobParsed.requiredSkills);
+    setGapReport(gap);
   };
 
   const handleAnalyze = () => {
@@ -196,18 +187,9 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
 
   const handleLoadProfileSkills = () => {
     if (profile && profile.skills && profile.skills.length > 0) {
-      const profileText = `My current skills: ${profile.skills.join(', ')}.`;
-      setUserSkillsText(profileText);
-      setUserSkills(profile.skills);
-      runComparison(profileText, jdText);
-    }
-  };
-
-  const handleRoleChange = (e) => {
-    const roleKey = e.target.value;
-    setTargetRoleKey(roleKey);
-    if (ROLE_PRESETS[roleKey]) {
-      setRoleSkills(ROLE_PRESETS[roleKey].skills);
+      const skillsStr = `My skills: ${profile.skills.join(', ')}`;
+      setUserSkillsText(skillsStr);
+      runComparison(skillsStr, jdText);
     }
   };
 
@@ -215,67 +197,31 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
     return Object.values(roleSkills).flat();
   }, [roleSkills]);
 
-  const matchedSkills = useMemo(() => {
-    return userSkills.filter((skill) =>
-      allRoleSkills.some(
-        (requiredSkill) =>
-          requiredSkill.toLowerCase().trim() === skill.toLowerCase().trim()
-      )
-    );
-  }, [userSkills, allRoleSkills]);
-
   const matchPercentage = useMemo(() => {
     if (allRoleSkills.length === 0) return 0;
-    return Math.round((matchedSkills.length / allRoleSkills.length) * 100);
-  }, [matchedSkills, allRoleSkills]);
+    const matchedCount = allRoleSkills.filter((roleSkill) =>
+      userSkills.some(
+        (uSkill) => uSkill.toLowerCase().trim() === roleSkill.toLowerCase().trim()
+      )
+    ).length;
+    return Math.round((matchedCount / allRoleSkills.length) * 100);
+  }, [allRoleSkills, userSkills]);
 
-  const addRoleSkill = () => {
-    const skill = skillInput.trim();
-    if (!skill || !activeCategory) return;
-
-    const currentCatSkills = roleSkills[activeCategory] || [];
-    const alreadyExists = currentCatSkills.some(
-      (s) => s.toLowerCase().trim() === skill.toLowerCase()
-    );
-
-    if (!alreadyExists) {
-      setRoleSkills((prev) => ({
-        ...prev,
-        [activeCategory]: [...currentCatSkills, skill],
-      }));
-    }
-    closeDialog();
+  const handleRoleChange = (e) => {
+    const newRoleKey = e.target.value;
+    setTargetRoleKey(newRoleKey);
+    setRoleSkills(ROLE_PRESETS[newRoleKey]?.skills || {});
   };
 
   const removeRoleSkill = (category, skillToRemove) => {
     setRoleSkills((prev) => ({
       ...prev,
-      [category]: (prev[category] || []).filter(
-        (s) => s.toLowerCase().trim() !== skillToRemove.toLowerCase().trim()
-      ),
+      [category]: prev[category].filter((s) => s !== skillToRemove),
     }));
   };
 
-  const addUserSkill = () => {
-    const skill = skillInput.trim();
-    if (!skill) return;
-
-    const alreadyExists = userSkills.some(
-      (s) => s.toLowerCase().trim() === skill.toLowerCase()
-    );
-
-    if (!alreadyExists) {
-      setUserSkills((prev) => [...prev, skill]);
-    }
-    closeDialog();
-  };
-
   const removeUserSkill = (skillToRemove) => {
-    setUserSkills((prev) =>
-      prev.filter(
-        (s) => s.toLowerCase().trim() !== skillToRemove.toLowerCase().trim()
-      )
-    );
+    setUserSkills((prev) => prev.filter((s) => s !== skillToRemove));
   };
 
   const openAddRoleDialog = (category) => {
@@ -284,7 +230,7 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
   };
 
   const openAddUserDialog = () => {
-    setActiveCategory('user');
+    setActiveCategory("user");
     setSkillInput("");
   };
 
@@ -293,9 +239,27 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
     setSkillInput("");
   };
 
+  const addRoleSkill = () => {
+    if (!skillInput.trim() || !activeCategory) return;
+    setRoleSkills((prev) => ({
+      ...prev,
+      [activeCategory]: [...(prev[activeCategory] || []), skillInput.trim()],
+    }));
+    closeDialog();
+  };
+
+  const addUserSkill = () => {
+    if (!skillInput.trim()) return;
+    const trimmed = skillInput.trim();
+    if (!userSkills.includes(trimmed)) {
+      setUserSkills((prev) => [...prev, trimmed]);
+    }
+    closeDialog();
+  };
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      if (activeCategory === 'user') {
+      if (activeCategory === "user") {
         addUserSkill();
       } else {
         addRoleSkill();
@@ -323,83 +287,80 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
   }, [allRoleSkills, userSkills]);
 
   return (
-    <div className="space-y-6 animate-fade-in text-white pb-12 select-none">
-      {/* Top Banner Notice */}
+    <div className="space-y-6 text-slate-900 pb-12">
+      {/* Top Banner Notice if no resume uploaded */}
       {!hasUploadedResume && (
-        <div className="cartoon-card p-4 border-2 border-yellow-500/40 bg-yellow-950/20 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <AlertCircle className="w-5 h-5 text-yellow-400 shrink-0" />
-            <p className="text-xs text-yellow-200 font-bold">
-              Showing standard template skills. Upload your resume for automated tailored scoring.
+        <div className="saas-card p-4 bg-amber-50/60 border-amber-200 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2.5">
+            <AlertCircle className="w-4 h-4 text-amber-700 shrink-0" />
+            <p className="text-xs text-amber-900 font-medium">
+              Showing standard template skills. Upload your resume for automatic parsing and custom role matching.
             </p>
           </div>
           {onNavigate && (
             <button
               onClick={() => onNavigate('resume')}
-              className="cartoon-btn cartoon-btn-yellow py-1.5 px-4 text-xs font-black shrink-0"
+              className="text-xs font-semibold text-amber-900 hover:text-amber-950 underline shrink-0"
             >
-              Upload Resume ›
+              Upload Resume →
             </button>
           )}
         </div>
       )}
 
-      {/* Mode Switcher */}
-      <div className="flex items-center gap-3">
-        <button
-          onClick={() => setViewMode('matrix')}
-          className={`cartoon-btn text-xs font-black py-2.5 px-5 gap-2 ${
-            viewMode === 'matrix' ? 'cartoon-btn-purple' : 'cartoon-btn-dark'
-          }`}
-        >
-          <Grid className="w-4 h-4" />
-          <span>Competency Matrix</span>
-        </button>
-
-        <button
-          onClick={() => setViewMode('analyzer')}
-          className={`cartoon-btn text-xs font-black py-2.5 px-5 gap-2 ${
-            viewMode === 'analyzer' ? 'cartoon-btn-purple' : 'cartoon-btn-dark'
-          }`}
-        >
-          <FileText className="w-4 h-4" />
-          <span>AI Job Description Matcher</span>
-        </button>
+      {/* Segmented View Mode Switcher */}
+      <div className="flex items-center justify-between">
+        <div className="inline-flex bg-slate-100 p-1 rounded-lg border border-slate-200/60 text-xs">
+          <button
+            onClick={() => setViewMode('matrix')}
+            className={`px-3.5 py-1.5 rounded-md font-medium transition-all ${
+              viewMode === 'matrix' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            Competency Matrix
+          </button>
+          <button
+            onClick={() => setViewMode('analyzer')}
+            className={`px-3.5 py-1.5 rounded-md font-medium transition-all ${
+              viewMode === 'analyzer' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            Job Description Matcher
+          </button>
+        </div>
       </div>
 
-      {/* ================================================================ */}
       {/* VIEW MODE 1: VISUAL COMPETENCY MATRIX */}
-      {/* ================================================================ */}
       {viewMode === 'matrix' && (
         <div className="space-y-6">
           {/* Header Card */}
-          <div className="cartoon-card p-6 border-2 border-purple-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="saas-card p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <Briefcase className="w-5 h-5 text-purple-400" />
-                <h2 className="text-xl font-black text-white">Target Role Match</h2>
+                <Briefcase className="w-4 h-4 text-indigo-600" />
+                <h2 className="text-lg font-bold text-slate-900">Role Competency Matrix</h2>
               </div>
-              <p className="text-xs text-gray-400 font-medium">
-                Live interactive readiness matrix comparing your profile against verified job benchmarks.
+              <p className="text-xs text-slate-500">
+                Interactive matrix comparing your current profile against role benchmarks
               </p>
             </div>
 
-            <div className="flex items-center gap-4 w-full md:w-auto">
+            <div className="flex items-center gap-3 w-full md:w-auto">
               <select
                 value={targetRoleKey}
                 onChange={handleRoleChange}
-                className="cartoon-btn cartoon-btn-dark text-xs font-black py-2.5 px-4 rounded-2xl bg-[#151b2e] border-2 border-purple-500/30 text-white cursor-pointer focus:outline-none"
+                className="bg-white border border-slate-200 text-xs font-semibold text-slate-900 py-1.5 px-3 rounded-lg cursor-pointer focus:outline-none focus:border-indigo-600"
               >
                 {Object.entries(ROLE_PRESETS).map(([key, role]) => (
-                  <option key={key} value={key} className="bg-[#0d1220] text-white">
+                  <option key={key} value={key} className="text-slate-900">
                     {role.title}
                   </option>
                 ))}
               </select>
 
-              <div className="flex items-center gap-3 bg-[#0d1220] border-2 border-purple-500/30 px-4 py-2 rounded-2xl">
-                <span className="text-xl font-black text-purple-400">{matchPercentage}%</span>
-                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Fit</span>
+              <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg">
+                <span className="text-sm font-bold text-indigo-600">{matchPercentage}%</span>
+                <span className="text-[11px] text-slate-500 font-medium">Match</span>
               </div>
             </div>
           </div>
@@ -407,13 +368,13 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
           {/* Matrix Columns */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Required Role Skills */}
-            <div className="cartoon-card p-6 border-2 border-purple-500/30 space-y-5">
-              <div className="flex items-center justify-between border-b-2 border-white/10 pb-4">
+            <div className="saas-card p-6 space-y-4">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <div>
-                  <h3 className="text-sm font-black text-white">Required Role Competencies</h3>
-                  <p className="text-[10px] text-gray-400">Industry standard requirements for this position</p>
+                  <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider">Required Competencies</h3>
+                  <p className="text-[11px] text-slate-500">Industry standard requirements</p>
                 </div>
-                <span className="cartoon-badge cartoon-badge-purple text-xs">
+                <span className="saas-badge text-xs">
                   {allRoleSkills.length} Total
                 </span>
               </div>
@@ -421,10 +382,10 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
               <div className="space-y-4">
                 {Object.entries(roleSkills).map(([catKey, skills]) => (
                   <div key={catKey} className="space-y-2">
-                    <span className="text-[10px] font-black text-purple-300 uppercase tracking-wider block">
+                    <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
                       {CATEGORY_LABELS[catKey] || catKey}
                     </span>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-1.5">
                       {skills.map((skill, idx) => {
                         const isLearned = userSkills.some(
                           (uSkill) => uSkill.toLowerCase().trim() === skill.toLowerCase().trim()
@@ -432,16 +393,16 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
                         return (
                           <div
                             key={idx}
-                            className={`group relative inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-xl border-2 transition-all select-none ${
+                            className={`group relative inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-md border transition-all ${
                               isLearned
-                                ? 'bg-emerald-950/40 border-emerald-500/50 text-emerald-300 shadow-sm'
-                                : 'bg-[#151b2e] border-purple-500/20 text-gray-400 hover:border-purple-500/40'
+                                ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                                : 'bg-white border-slate-200 text-slate-600'
                             }`}
                           >
                             <span>{isLearned ? '✓' : '•'} {skill}</span>
                             <button
                               onClick={() => removeRoleSkill(catKey, skill)}
-                              className="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-rose-400 text-xs ml-0.5"
+                              className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-rose-600 text-xs ml-0.5"
                             >
                               ✕
                             </button>
@@ -450,7 +411,7 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
                       })}
                       <button
                         onClick={() => openAddRoleDialog(catKey)}
-                        className="text-xs font-bold px-2.5 py-1 rounded-xl border border-dashed border-purple-500/40 text-purple-400 hover:bg-purple-950/20"
+                        className="text-xs font-medium px-2 py-0.5 rounded border border-dashed border-slate-300 text-slate-500 hover:border-indigo-600 hover:text-indigo-600"
                       >
                         + Add
                       </button>
@@ -461,28 +422,28 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
             </div>
 
             {/* Your Skills */}
-            <div className="cartoon-card p-6 border-2 border-purple-500/30 space-y-5">
-              <div className="flex items-center justify-between border-b-2 border-white/10 pb-4">
+            <div className="saas-card p-6 space-y-4">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <div>
-                  <h3 className="text-sm font-black text-white">Your Current Skills</h3>
-                  <p className="text-[10px] text-gray-400">Extracted from resume or added manually</p>
+                  <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider">Your Profile Skills</h3>
+                  <p className="text-[11px] text-slate-500">From uploaded resume or added manually</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="cartoon-badge cartoon-badge-mint text-xs">
-                    {userSkills.length} Verified
+                  <span className="saas-badge text-xs">
+                    {userSkills.length} Skills
                   </span>
                   <button
                     onClick={openAddUserDialog}
-                    className="cartoon-btn cartoon-btn-mint text-xs font-black py-1 px-2.5"
+                    className="saas-btn-secondary py-1 px-2 text-xs"
                   >
                     + Add
                   </button>
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1.5">
                 {userSkills.length === 0 ? (
-                  <p className="text-xs text-gray-500 italic p-4">No skills loaded. Add custom skills or upload resume.</p>
+                  <p className="text-xs text-slate-400 italic p-2">No skills loaded yet.</p>
                 ) : (
                   userSkills.map((skill, idx) => {
                     const isRequired = allRoleSkills.some(
@@ -491,17 +452,17 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
                     return (
                       <div
                         key={idx}
-                        className={`group relative inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-xl border-2 transition-all ${
+                        className={`group relative inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-md border transition-all ${
                           isRequired
-                            ? 'bg-purple-950/40 border-purple-500/40 text-purple-200'
-                            : 'bg-[#151b2e] border-white/10 text-gray-300'
+                            ? 'bg-indigo-50 border-indigo-200 text-indigo-800'
+                            : 'bg-white border-slate-200 text-slate-700'
                         }`}
                       >
                         <span>{skill}</span>
                         {onOpenVerification && (
                           <button
                             onClick={() => onOpenVerification(skill)}
-                            className="text-[10px] text-emerald-400 hover:underline ml-1 font-black"
+                            className="text-[10px] text-indigo-600 hover:underline font-semibold ml-0.5"
                             title="Verify skill"
                           >
                             [Verify]
@@ -509,7 +470,7 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
                         )}
                         <button
                           onClick={() => removeUserSkill(skill)}
-                          className="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-rose-400 text-xs ml-0.5"
+                          className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-rose-600 text-xs ml-0.5"
                         >
                           ✕
                         </button>
@@ -520,18 +481,18 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
               </div>
 
               {missingRoleSkills.length > 0 && (
-                <div className="pt-4 border-t-2 border-white/10 space-y-3">
+                <div className="pt-4 border-t border-slate-100 space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-black text-rose-400 uppercase tracking-wider">
+                    <span className="text-xs font-semibold text-rose-700">
                       Identified Missing Skills ({missingRoleSkills.length})
                     </span>
                   </div>
                   <button
                     onClick={() => triggerGenerateRoadmap(missingRoleSkills)}
-                    className="cartoon-btn cartoon-btn-purple w-full py-3 text-xs font-black gap-2"
+                    className="saas-btn-primary w-full py-2.5 text-xs font-medium gap-2"
                   >
-                    <Sparkles className="w-4 h-4 text-yellow-300" />
-                    <span>Generate Personalized Roadmap for Missing Skills ›</span>
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Generate Personalized Learning Roadmap for Missing Skills</span>
                   </button>
                 </div>
               )}
@@ -540,30 +501,30 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
 
           {/* Add Skill Dialog Modal */}
           {activeCategory && (
-            <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
-              <div className="cartoon-card p-6 border-2 border-purple-400 max-w-sm w-full space-y-4 shadow-2xl">
+            <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+              <div className="saas-card p-6 border border-slate-200 max-w-sm w-full space-y-4 shadow-modal">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-black text-white">
+                  <h3 className="text-sm font-semibold text-slate-900">
                     Add New {activeCategory === 'user' ? 'Profile' : 'Role'} Skill
                   </h3>
-                  <button onClick={closeDialog} className="text-gray-400 hover:text-white font-bold">✕</button>
+                  <button onClick={closeDialog} className="text-slate-400 hover:text-slate-700 font-bold">✕</button>
                 </div>
 
                 <input
                   type="text"
-                  placeholder="Enter skill name (e.g. Docker, TypeScript)..."
+                  placeholder="e.g. TypeScript, Docker, Kubernetes..."
                   value={skillInput}
                   onChange={e => setSkillInput(e.target.value)}
                   onKeyDown={handleKeyDown}
                   autoFocus
-                  className="w-full px-4 py-3 bg-[#0d1220] border-2 border-purple-500/30 rounded-2xl text-xs text-white font-bold focus:outline-none focus:border-purple-400"
+                  className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs text-slate-900 focus:outline-none focus:border-indigo-600"
                 />
 
                 <div className="flex justify-end gap-2 pt-2">
-                  <button onClick={closeDialog} className="cartoon-btn cartoon-btn-dark py-2 px-4 text-xs font-bold">
+                  <button onClick={closeDialog} className="saas-btn-secondary py-1.5 px-3 text-xs">
                     Cancel
                   </button>
-                  <button onClick={activeCategory === 'user' ? addUserSkill : addRoleSkill} className="cartoon-btn cartoon-btn-purple py-2 px-5 text-xs font-black">
+                  <button onClick={activeCategory === 'user' ? addUserSkill : addRoleSkill} className="saas-btn-primary py-1.5 px-4 text-xs font-medium">
                     Add Skill
                   </button>
                 </div>
@@ -573,21 +534,19 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
         </div>
       )}
 
-      {/* ================================================================ */}
       {/* VIEW MODE 2: AI JOB DESCRIPTION & PRESET ANALYZER */}
-      {/* ================================================================ */}
       {viewMode === 'analyzer' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left Column */}
-          <div className="lg:col-span-5 space-y-6">
-            <div className="cartoon-card p-5 border-2 border-purple-500/25 space-y-3">
+          {/* Left Column: Inputs */}
+          <div className="lg:col-span-5 space-y-4">
+            <div className="saas-card p-5 space-y-2.5">
               <div className="flex items-center justify-between">
-                <h3 className="text-xs font-black text-purple-300 uppercase tracking-wider">
+                <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider">
                   1. Your Current Skills / Profile
                 </h3>
                 {profile && profile.skills && (
-                  <button onClick={handleLoadProfileSkills} className="text-xs font-bold text-cyan-300 hover:underline">
-                    Load Saved
+                  <button onClick={handleLoadProfileSkills} className="text-xs font-semibold text-indigo-600 hover:underline">
+                    Load Profile
                   </button>
                 )}
               </div>
@@ -595,46 +554,46 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
                 value={userSkillsText}
                 onChange={(e) => setUserSkillsText(e.target.value)}
                 rows={4}
-                className="w-full px-4 py-3 bg-[#0d1220] border-2 border-purple-500/30 rounded-2xl text-xs text-white focus:outline-none focus:border-purple-400 font-medium resize-none"
+                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs text-slate-900 focus:outline-none focus:border-indigo-600 resize-none"
               />
             </div>
 
-            <div className="cartoon-card p-5 border-2 border-purple-500/25 space-y-3">
-              <h3 className="text-xs font-black text-pink-300 uppercase tracking-wider">
-                2. Target Job Description / Role
+            <div className="saas-card p-5 space-y-2.5">
+              <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider">
+                2. Target Job Description
               </h3>
               <textarea
                 value={jdText}
                 onChange={(e) => setJdText(e.target.value)}
                 rows={4}
-                className="w-full px-4 py-3 bg-[#0d1220] border-2 border-purple-500/30 rounded-2xl text-xs text-white focus:outline-none focus:border-purple-400 font-mono resize-none"
+                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs text-slate-900 focus:outline-none focus:border-indigo-600 resize-none font-mono text-[11px]"
               />
             </div>
 
             <button
               onClick={handleAnalyze}
               disabled={!userSkillsText.trim() || !jdText.trim() || analyzing}
-              className="cartoon-btn cartoon-btn-purple w-full py-3.5 text-xs font-black gap-2 disabled:opacity-50"
+              className="saas-btn-primary w-full py-2.5 text-xs font-medium gap-2 disabled:opacity-50"
             >
-              {analyzing ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4 fill-current" />}
-              <span>{analyzing ? "Extracting Skills via Backend..." : "Compare Skills (Unified Analysis)"}</span>
+              {analyzing ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+              <span>{analyzing ? "Extracting & Matching Skills..." : "Compare Skills"}</span>
             </button>
 
             {/* Company Presets */}
-            <div className="cartoon-card p-5 border-2 border-purple-500/25 space-y-3">
-              <h3 className="text-xs font-black text-yellow-300 uppercase tracking-wider">Target Company Presets</h3>
+            <div className="saas-card p-5 space-y-3">
+              <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider">Company Job Presets</h3>
               <div className="space-y-2">
                 {JOB_PRESETS.map((preset) => (
                   <button
                     key={preset.id}
                     onClick={() => handleSelectPreset(preset)}
-                    className="cartoon-card cartoon-card-interactive w-full text-left p-3.5 border-2 border-purple-500/20 flex items-center justify-between text-xs"
+                    className="w-full text-left p-3 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-between text-xs transition-colors"
                   >
                     <div>
-                      <span className="font-black text-white block">{preset.company}</span>
-                      <span className="text-[10px] text-gray-400 font-medium">{preset.title}</span>
+                      <span className="font-semibold text-slate-900 block">{preset.company}</span>
+                      <span className="text-[11px] text-slate-500">{preset.title}</span>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-purple-400" />
+                    <ChevronRight className="w-4 h-4 text-slate-400" />
                   </button>
                 ))}
               </div>
@@ -644,35 +603,35 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
           {/* Right Column: Analysis Output */}
           <div className="lg:col-span-7 space-y-6">
             {!analyzing && gapReport && (
-              <div className="cartoon-card p-6 border-2 border-purple-500/30 space-y-6">
-                <div className="flex items-center gap-4 pb-6 border-b-2 border-white/10">
-                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 border-2 border-white/20 flex flex-col items-center justify-center text-white font-black shadow-lg">
-                    <span className="text-2xl leading-none">{gapReport.matchScore}%</span>
-                    <span className="text-[8px] uppercase tracking-wider mt-1 font-bold">Match</span>
+              <div className="saas-card p-6 space-y-6">
+                <div className="flex items-center gap-4 pb-4 border-b border-slate-100">
+                  <div className="w-16 h-16 rounded-xl bg-slate-900 text-white flex flex-col items-center justify-center font-bold">
+                    <span className="text-xl leading-none">{gapReport.matchScore}%</span>
+                    <span className="text-[9px] uppercase tracking-wider mt-1 text-slate-400 font-medium">Match</span>
                   </div>
                   <div>
-                    <div className="cartoon-badge cartoon-badge-purple text-[10px] mb-1">Detected Role</div>
-                    <h3 className="text-lg font-black text-white">{jobProfile?.roleTitle || "Full Stack Developer"}</h3>
-                    <p className="text-xs text-gray-300 font-medium">Matched {gapReport.matchedSkills.length} expected competencies</p>
+                    <div className="saas-badge text-[10px] mb-1">Target Role</div>
+                    <h3 className="text-base font-bold text-slate-900">{jobProfile?.roleTitle || "Full Stack Developer"}</h3>
+                    <p className="text-xs text-slate-500">Matched {gapReport.matchedSkills.length} expected competencies</p>
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <h4 className="text-xs font-black text-emerald-400 uppercase tracking-wider">Matched Skills ({gapReport.matchedSkills.length})</h4>
-                  <div className="flex flex-wrap gap-2">
+                <div className="space-y-2.5">
+                  <h4 className="text-xs font-semibold text-emerald-800 uppercase tracking-wider">Matched Skills ({gapReport.matchedSkills.length})</h4>
+                  <div className="flex flex-wrap gap-1.5">
                     {gapReport.matchedSkills.map((s, idx) => (
-                      <span key={idx} className="cartoon-badge cartoon-badge-mint text-xs">
+                      <span key={idx} className="saas-badge saas-badge-success text-xs">
                         ✓ {s}
                       </span>
                     ))}
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <h4 className="text-xs font-black text-rose-400 uppercase tracking-wider">Missing Skills ({gapReport.missingSkills.length})</h4>
-                  <div className="flex flex-wrap gap-2">
+                <div className="space-y-2.5">
+                  <h4 className="text-xs font-semibold text-rose-800 uppercase tracking-wider">Missing Skills ({gapReport.missingSkills.length})</h4>
+                  <div className="flex flex-wrap gap-1.5">
                     {gapReport.missingSkills.map((s, idx) => (
-                      <span key={idx} className="cartoon-badge cartoon-badge-pink text-xs">
+                      <span key={idx} className="saas-badge saas-badge-danger text-xs">
                         ✗ {s}
                       </span>
                     ))}
@@ -681,10 +640,10 @@ export default function JobAnalyzer({ profile, onGenerateRoadmap, onNavigate, on
 
                 <button
                   onClick={() => triggerGenerateRoadmap(gapReport.missingSkills)}
-                  className="cartoon-btn cartoon-btn-purple w-full py-3 text-xs font-black gap-2"
+                  className="saas-btn-primary w-full py-2.5 text-xs font-medium gap-2"
                 >
-                  <Sparkles className="w-4 h-4 text-yellow-300" />
-                  <span>Generate Tailored Roadmap</span>
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Generate Tailored Roadmap for Missing Skills</span>
                 </button>
               </div>
             )}

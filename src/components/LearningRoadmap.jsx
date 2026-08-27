@@ -1,17 +1,17 @@
-// agent-notes: { ctx: "Playful cartoon Learning Roadmap component with backend API integration, offline aiSimulator fallback, and persistent checked progress", deps: ["lucide-react", "../services/skillGapApi", "../utils/aiSimulator"], state: "active", last: "anti@2026-08-25" }
+// agent-notes: { ctx: "Clean minimal SaaS Learning Roadmap component with backend API integration, offline aiSimulator fallback, and persistent progress tracking", deps: ["lucide-react", "../services/skillGapApi", "../utils/aiSimulator"], state: "active", last: "anti@2026-08-27" }
 import React, { useState, useEffect } from 'react';
 import { 
   Map, 
   CheckCircle2, 
   Award, 
-  Zap, 
   Code2, 
   FolderGit2, 
   RefreshCw, 
   AlertCircle, 
-  FolderOpen,
-  BookOpen,
-  Sparkles
+  BookOpen, 
+  ChevronDown, 
+  ChevronUp,
+  ShieldCheck
 } from 'lucide-react';
 import { skillGapApi } from '../services/skillGapApi';
 import { generateRoadmap as generateAiSimulatorRoadmap } from '../utils/aiSimulator';
@@ -65,7 +65,6 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
     }
 
     try {
-      // 1. Authoritative Backend Roadmap Request
       const res = await skillGapApi.generateRoadmap({
         skillGapId: profile?.id || "guest_user",
         skill: skillToFetch,
@@ -82,13 +81,11 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
       if (res && res.roadmap && res.roadmap.stages) {
         loadedRoadmap = res.roadmap;
       } else {
-        // Fallback to simulated offline generator if backend response missing stages
         loadedRoadmap = formatFallbackRoadmap(skillToFetch, activeTargetRole, profile?.skills);
       }
 
       setRoadmapData(loadedRoadmap);
 
-      // Hydrate task completion map merging backend + persisted localStorage
       const initialMap = {};
       (loadedRoadmap.tasks || []).forEach(t => {
         if (t.taskId) {
@@ -103,9 +100,8 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
       setExpandedStage(0);
 
     } catch (err) {
-      console.warn("Backend roadmap fetch failed, using resilient offline aiSimulator generator:", err.message);
+      console.warn("Backend roadmap fetch failed, using offline fallback generator:", err.message);
       
-      // Fallback offline simulator
       const fallbackRoadmap = formatFallbackRoadmap(skillToFetch, activeTargetRole, profile?.skills);
       setRoadmapData(fallbackRoadmap);
 
@@ -137,7 +133,6 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
     };
     setTaskCompletionMap(nextMap);
 
-    // Persist immediately to localStorage so progress survives tab switches and refreshes
     const storageKey = `sb_roadmap_progress_${userId}_${activeSkill || roadmapData?.skillName}`;
     try {
       localStorage.setItem(storageKey, JSON.stringify(nextMap));
@@ -161,7 +156,7 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
         }));
       }
     } catch (err) {
-      console.warn("Task progress backend sync deferred, local persistence active:", err.message);
+      console.warn("Task progress backend sync deferred:", err.message);
     }
   };
 
@@ -202,28 +197,28 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
       stages: stages.length > 0 ? stages : [
         {
           stageNumber: 1,
-          title: `${skillName} Fundamentals & Core Patterns`,
+          title: `${skillName} Fundamentals & Core Concepts`,
           level: "Beginner",
-          topics: [`Introduction to ${skillName}`, `Core Syntax & Conventions`],
-          practiceTasks: [`Implement first ${skillName} script`],
+          topics: [`Introduction to ${skillName}`, `Core Architecture & Patterns`],
+          practiceTasks: [`Implement first ${skillName} exercise`],
           miniProject: `Basic ${skillName} Prototype`,
           stageProgress: 0
         }
       ],
       tasks,
       finalProject: {
-        title: `${skillName} Production Capstone Architecture`,
-        description: `Architect and deploy an enterprise-grade full-stack project applying all verified ${skillName} modules.`
+        title: `${skillName} Production Capstone Project`,
+        description: `Design and deploy a full-stack project applying all verified ${skillName} concepts.`
       },
       overallProgress: 0
     };
   }
 
   return (
-    <div className="space-y-6 animate-fade-in text-white pb-12 select-none">
+    <div className="space-y-6 text-slate-900 pb-12">
       {/* Skill Tabs */}
       {availableSkills.length > 1 && (
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
           {availableSkills.map((sk, idx) => (
             <button
               key={idx}
@@ -231,10 +226,10 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
                 setActiveSkill(sk);
                 loadRoadmap(sk);
               }}
-              className={`cartoon-btn text-xs font-black py-2 px-4 shrink-0 transition-all ${
+              className={`py-1.5 px-3.5 text-xs font-medium rounded-lg transition-colors shrink-0 ${
                 activeSkill === sk
-                  ? 'cartoon-btn-purple scale-105 shadow-lg'
-                  : 'bg-[#151b2e] text-gray-400 hover:text-white border-2 border-purple-500/20'
+                  ? 'bg-slate-900 text-white shadow-sm'
+                  : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
               }`}
             >
               {sk}
@@ -245,22 +240,22 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
 
       {/* States */}
       {status === 'LOADING' && (
-        <div className="cartoon-card p-12 text-center space-y-4">
-          <div className="w-12 h-12 rounded-full border-4 border-purple-500 border-t-transparent animate-spin mx-auto" />
-          <p className="text-sm font-black text-purple-300">Generating Personalized Learning Roadmap...</p>
+        <div className="saas-card p-12 text-center space-y-3">
+          <div className="w-8 h-8 rounded-full border-2 border-indigo-600 border-t-transparent animate-spin mx-auto" />
+          <p className="text-xs font-medium text-slate-500">Generating Personalized Roadmap...</p>
         </div>
       )}
 
       {status === 'EMPTY' && (
-        <div className="cartoon-card p-12 text-center space-y-4">
-          <BookOpen className="w-12 h-12 text-gray-500 mx-auto" />
-          <h3 className="text-base font-black text-white">No Skill Gaps Selected</h3>
-          <p className="text-xs text-gray-400 max-w-sm mx-auto">
-            Analyze your resume or select target role competencies to generate your custom multi-stage roadmap.
+        <div className="saas-card p-12 text-center space-y-3">
+          <BookOpen className="w-10 h-10 text-slate-400 mx-auto" />
+          <h3 className="text-sm font-semibold text-slate-900">No Skill Gaps Selected</h3>
+          <p className="text-xs text-slate-500 max-w-sm mx-auto">
+            Analyze your resume or select target role competencies to generate your structured learning roadmap.
           </p>
           {onNavigate && (
-            <button onClick={() => onNavigate('dashboard')} className="cartoon-btn cartoon-btn-purple text-xs font-black mx-auto">
-              Analyze Skill Gap ›
+            <button onClick={() => onNavigate('dashboard')} className="saas-btn-primary text-xs mx-auto">
+              Analyze Skill Gap
             </button>
           )}
         </div>
@@ -269,36 +264,36 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
       {status === 'SUCCESS' && roadmapData && (
         <>
           {/* Header Card */}
-          <div className="cartoon-card p-6 border-2 border-purple-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="saas-card p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <span className="cartoon-badge cartoon-badge-pink text-[10px]">
+                <span className="saas-badge text-[10px]">
                   Target: {activeTargetRole}
                 </span>
-                <span className="cartoon-badge cartoon-badge-yellow text-[10px]">
+                <span className="saas-badge text-[10px]">
                   {roadmapData.stages?.length || 3} Stages
                 </span>
               </div>
-              <h2 className="text-xl font-black text-white">{roadmapData.skillName} Roadmap</h2>
-              <p className="text-xs text-gray-400">
-                Action-oriented structured milestones tailored for industry placement readiness.
+              <h2 className="text-lg font-bold text-slate-900">{roadmapData.skillName} Roadmap</h2>
+              <p className="text-xs text-slate-500">
+                Action-oriented structured milestones tailored for industry placement
               </p>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5">
               <button
                 onClick={() => loadRoadmap(activeSkill || roadmapData.skillName, true)}
-                className="cartoon-btn bg-[#151b2e] hover:bg-purple-950/40 text-purple-300 border-2 border-purple-500/30 text-xs font-black py-2 px-3 flex items-center gap-1.5"
+                className="saas-btn-secondary py-1.5 px-3 text-xs gap-1.5"
                 title="Regenerate fresh roadmap"
               >
-                <RefreshCw className="w-3.5 h-3.5" /> Refresh
+                <RefreshCw className="w-3.5 h-3.5 text-slate-500" /> Refresh
               </button>
             </div>
           </div>
 
           {/* Main Content: Stages Accordion */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 space-y-4">
+            <div className="lg:col-span-2 space-y-3">
               {(roadmapData.stages || []).map((stage, sIdx) => {
                 const isExpanded = expandedStage === sIdx;
                 const stageTasks = (roadmapData.tasks || []).filter(
@@ -313,83 +308,86 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
                 return (
                   <div
                     key={sIdx}
-                    className={`cartoon-card border-2 transition-all overflow-hidden ${
-                      isExpanded ? 'border-purple-400 shadow-xl' : 'border-purple-500/20 hover:border-purple-500/50'
-                    }`}
+                    className="saas-card overflow-hidden"
                   >
                     {/* Stage Header */}
                     <button
                       onClick={() => setExpandedStage(isExpanded ? -1 : sIdx)}
-                      className="w-full text-left p-5 flex items-center justify-between gap-4"
+                      className="w-full text-left p-4 sm:p-5 flex items-center justify-between gap-4 hover:bg-slate-50/60 transition-colors"
                     >
-                      <div className="space-y-1 overflow-hidden">
+                      <div className="space-y-0.5 overflow-hidden">
                         <div className="flex items-center gap-2">
-                          <span className="text-[10px] uppercase font-black text-purple-300 tracking-wider">
+                          <span className="text-[11px] font-semibold text-indigo-600 uppercase tracking-wider">
                             Stage {stage.stageNumber || sIdx + 1}
                           </span>
-                          <span className="cartoon-badge cartoon-badge-cyan text-[10px]">
+                          <span className="saas-badge text-[10px]">
                             {stage.level || "Beginner"}
                           </span>
                         </div>
-                        <h4 className="text-sm font-black text-white truncate">{stage.title}</h4>
+                        <h4 className="text-sm font-semibold text-slate-900 truncate">{stage.title}</h4>
                       </div>
 
                       <div className="flex items-center gap-3 shrink-0">
                         {stageProgress === 100 ? (
-                          <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                          <CheckCircle2 className="w-5 h-5 text-emerald-600" />
                         ) : (
-                          <span className="cartoon-badge cartoon-badge-purple text-xs">
+                          <span className="text-xs font-semibold text-slate-600">
                             {stageProgress}%
                           </span>
+                        )}
+                        {isExpanded ? (
+                          <ChevronUp className="w-4 h-4 text-slate-400" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4 text-slate-400" />
                         )}
                       </div>
                     </button>
 
                     {/* Stage Body */}
                     {isExpanded && (
-                      <div className="px-6 pb-6 pt-2 border-t-2 border-white/10 space-y-4 animate-fade-in">
-                        <div className="space-y-2">
-                          <span className="text-[10px] uppercase font-black text-purple-300 block tracking-wider">
-                            1. Theoretical Core Modules ({stage.level || "Beginner"})
+                      <div className="px-5 pb-5 pt-1 border-t border-slate-100 space-y-4">
+                        <div className="space-y-2 pt-2">
+                          <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
+                            Core Modules ({stage.level || "Beginner"})
                           </span>
-                          {stageTasks.map((task, tIdx) => {
-                            const isChecked = !!taskCompletionMap[task.taskId];
+                          <div className="space-y-1.5">
+                            {stageTasks.map((task, tIdx) => {
+                              const isChecked = !!taskCompletionMap[task.taskId];
 
-                            return (
-                              <label
-                                key={task.taskId || tIdx}
-                                className={`flex items-start gap-3 p-3.5 rounded-2xl border-2 transition-all cursor-pointer ${
-                                  isChecked 
-                                    ? 'bg-emerald-950/30 border-emerald-500/30 text-gray-300' 
-                                    : 'bg-[#0d1220] border-purple-500/20 text-gray-200 hover:border-purple-500/50'
-                                }`}
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={isChecked}
-                                  onChange={() => handleToggleTask(task)}
-                                  className="mt-0.5 w-4 h-4 rounded accent-purple-500 cursor-pointer"
-                                />
-                                <div className="space-y-0.5">
-                                  <span className={`text-xs block ${isChecked ? 'line-through text-gray-400' : 'font-bold'}`}>
+                              return (
+                                <label
+                                  key={task.taskId || tIdx}
+                                  className={`flex items-start gap-2.5 p-2.5 rounded-lg border transition-colors cursor-pointer text-xs ${
+                                    isChecked 
+                                      ? 'bg-slate-50/80 border-slate-200 text-slate-400' 
+                                      : 'bg-white border-slate-200 hover:border-slate-300 text-slate-800'
+                                  }`}
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={isChecked}
+                                    onChange={() => handleToggleTask(task)}
+                                    className="mt-0.5 w-3.5 h-3.5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                                  />
+                                  <span className={`leading-relaxed ${isChecked ? 'line-through text-slate-400' : 'text-slate-800'}`}>
                                     {task.title}
                                   </span>
-                                </div>
-                              </label>
-                            );
-                          })}
+                                </label>
+                              );
+                            })}
+                          </div>
                         </div>
 
                         {/* Practical Exercises */}
                         {stage.practiceTasks && stage.practiceTasks.length > 0 && (
-                          <div className="space-y-2 pt-2 border-t-2 border-white/10">
-                            <span className="text-[10px] uppercase font-black text-cyan-300 block tracking-wider">
-                              2. Hands-on Practice Tasks
+                          <div className="space-y-1.5 pt-2 border-t border-slate-100">
+                            <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
+                              Hands-on Practice Tasks
                             </span>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                               {stage.practiceTasks.map((task, pIdx) => (
-                                <div key={pIdx} className="p-3 rounded-2xl bg-[#0d1220] border border-purple-500/20 text-xs text-gray-300 flex items-start gap-2 font-medium">
-                                  <Code2 className="w-3.5 h-3.5 text-pink-400 shrink-0 mt-0.5" />
+                                <div key={pIdx} className="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 flex items-start gap-2">
+                                  <Code2 className="w-3.5 h-3.5 text-indigo-600 shrink-0 mt-0.5" />
                                   <span>{task}</span>
                                 </div>
                               ))}
@@ -399,13 +397,12 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
 
                         {/* Mini Project */}
                         {stage.miniProject && (
-                          <div className="p-4 rounded-2xl bg-purple-950/40 border-2 border-purple-500/30 flex items-start gap-2.5">
-                            <Sparkles className="w-4 h-4 text-yellow-400 shrink-0 mt-0.5" />
+                          <div className="p-3.5 rounded-lg bg-indigo-50/50 border border-indigo-100 flex items-start gap-2.5">
                             <div className="space-y-0.5">
-                              <span className="text-[10px] uppercase font-black text-pink-300 tracking-wider block">
+                              <span className="text-[10px] uppercase font-semibold text-indigo-700 tracking-wider block">
                                 Stage Checkpoint Project
                               </span>
-                              <p className="text-xs font-bold text-white">{stage.miniProject}</p>
+                              <p className="text-xs font-semibold text-slate-900">{stage.miniProject}</p>
                             </div>
                           </div>
                         )}
@@ -416,19 +413,19 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
               })}
             </div>
 
-            {/* Right Column: Milestone */}
+            {/* Right Column: Milestone & Verification */}
             <div className="space-y-4">
               {roadmapData.finalProject && (
-                <div className="cartoon-card p-6 border-2 border-purple-500/30 space-y-3">
+                <div className="saas-card p-5 space-y-2.5">
                   <div className="flex items-center gap-2">
-                    <FolderGit2 className="w-5 h-5 text-pink-400" />
-                    <h4 className="text-xs font-black uppercase tracking-wider text-white">Capstone Milestone Project</h4>
+                    <FolderGit2 className="w-4 h-4 text-indigo-600" />
+                    <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-900">Capstone Project</h4>
                   </div>
-                  <div className="space-y-2 p-4 rounded-2xl bg-[#0d1220] border-2 border-purple-500/20">
-                    <h5 className="text-xs font-black text-white">
+                  <div className="space-y-1 p-3.5 rounded-lg bg-slate-50 border border-slate-200">
+                    <h5 className="text-xs font-semibold text-slate-900">
                       {roadmapData.finalProject.title}
                     </h5>
-                    <p className="text-xs text-gray-300 leading-relaxed font-medium">
+                    <p className="text-[11px] text-slate-500 leading-relaxed">
                       {roadmapData.finalProject.description}
                     </p>
                   </div>
@@ -436,19 +433,19 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
               )}
 
               {/* Direct Verification Trigger */}
-              <div className="cartoon-card p-6 border-2 border-emerald-500/40 bg-emerald-950/20 space-y-3">
+              <div className="saas-card p-5 space-y-3">
                 <div className="flex items-center gap-2">
-                  <Zap className="w-5 h-5 text-emerald-400 fill-emerald-400" />
-                  <h4 className="text-xs font-black uppercase tracking-wider text-white">Ready for Certification?</h4>
+                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                  <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-900">Skill Certification</h4>
                 </div>
-                <p className="text-xs text-gray-300 font-medium leading-relaxed">
-                  Completed the modules above? Prove your competency in <strong className="text-white font-black">{roadmapData.skillName}</strong> to earn verified badges.
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Ready to test your competency in <strong className="text-slate-800">{roadmapData.skillName}</strong> and earn verified credentials?
                 </p>
                 <button
                   onClick={() => onOpenVerification && onOpenVerification(roadmapData.skillName)}
-                  className="cartoon-btn cartoon-btn-mint w-full py-3 text-xs font-black gap-2"
+                  className="saas-btn-primary w-full py-2 text-xs font-medium gap-1.5"
                 >
-                  <Award className="w-4 h-4" /> Start Verification ›
+                  <Award className="w-3.5 h-3.5" /> Start Verification Test
                 </button>
               </div>
             </div>

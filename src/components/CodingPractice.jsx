@@ -1,9 +1,8 @@
-// agent-notes: { ctx: "Playful cartoon AI Coding Practice module with 3D buttons, bouncy option cards, syntax mode & console execution", deps: ["lucide-react", "../services/AIEngine"], state: "active", last: "anti@2026-08-21" }
+// agent-notes: { ctx: "Clean minimal SaaS AI Coding Practice module with language selector, syntax challenges & code execution console", deps: ["lucide-react", "../services/AIEngine"], state: "active", last: "anti@2026-08-27" }
 
 import React, { useState } from 'react';
 import { 
   Code2, 
-  Sparkles, 
   Play, 
   RotateCcw, 
   Terminal, 
@@ -12,9 +11,8 @@ import {
   Zap,
   Copy,
   Check,
-  Trophy,
-  Flame,
-  CheckCircle2
+  CheckCircle2,
+  AlertCircle
 } from 'lucide-react';
 import { generateQuestions } from '../services/AIEngine';
 
@@ -57,7 +55,6 @@ export default function CodingPractice({ _profile }) {
 
   const [editorCode, setEditorCode] = useState(problem.starterCode);
 
-  // Handle AI Question Generation using Gemini AIEngine
   const handleGenerateQuestion = async () => {
     setIsLoading(true);
     setShowSolution(false);
@@ -119,10 +116,10 @@ export default function CodingPractice({ _profile }) {
 
     setTimeout(() => {
       setOutput(
-        `[SUCCESS] Test Cases Passed (3/3) 🎉\nExecution Time: 24ms\nMemory Used: 14.2 MB\nOutput:\nStatus 200 OK - All constraints satisfied for ${problem.id}`
+        `[SUCCESS] Test Cases Passed (3/3)\nExecution Time: 24ms\nMemory Used: 14.2 MB\nOutput:\nStatus 200 OK - All constraints satisfied for ${problem.id}`
       );
       setIsRunningCode(false);
-    }, 1200);
+    }, 1000);
   };
 
   const handleCopyCode = () => {
@@ -132,40 +129,30 @@ export default function CodingPractice({ _profile }) {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in select-none">
+    <div className="space-y-6 text-slate-900 pb-12">
       {/* Header Banner */}
-      <div className="cartoon-card p-6 md:p-8 border-2 border-purple-500/30 relative overflow-hidden bg-gradient-to-r from-[#171d33] via-[#1c243f] to-[#1a2138]">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
-          <div>
-            <div className="cartoon-badge cartoon-badge-pink mb-2">
-              <Sparkles className="w-3.5 h-3.5" /> AI Coding & Algorithm Arena
-            </div>
-            <h1 className="text-2xl md:text-3xl font-black text-white flex items-center gap-2">
-              <Code2 className="w-8 h-8 text-yellow-400" />
-              <span>Interactive Code Practice</span>
-            </h1>
-            <p className="text-gray-300 text-xs mt-1 font-medium">
-              Real-time algorithmic challenges with instant execution, test cases & syntax quests!
-            </p>
+      <div className="saas-card p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <Code2 className="w-5 h-5 text-indigo-600" />
+            <h1 className="text-lg font-bold text-slate-900">Interactive Coding Practice</h1>
           </div>
-
-          <div className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-amber-500/20 text-amber-300 border-2 border-amber-400/40 text-xs font-black">
-            <Flame className="w-4 h-4 text-amber-400 animate-bounce" />
-            <span>4 Streak Solved Today</span>
-          </div>
+          <p className="text-xs text-slate-500">
+            Real-time algorithmic challenges with in-browser test execution and syntax verification
+          </p>
         </div>
       </div>
 
       {/* Control Toolbar */}
-      <div className="cartoon-card p-5 border-2 border-purple-500/25 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex flex-wrap items-center gap-4">
+      <div className="saas-card p-4 flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-wrap items-center gap-3">
           {/* Language Selector */}
-          <div className="space-y-1">
-            <label className="text-[10px] uppercase font-black text-purple-300 block">Language</label>
+          <div className="flex items-center gap-2">
+            <label className="text-xs font-medium text-slate-500">Language:</label>
             <select
               value={selectedLanguage}
               onChange={(e) => setSelectedLanguage(e.target.value)}
-              className="bg-[#0d1220] border-2 border-purple-500/30 text-white text-xs font-bold rounded-2xl px-4 py-2.5 focus:outline-none focus:border-purple-400 cursor-pointer"
+              className="bg-white border border-slate-200 text-slate-900 text-xs font-medium rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-indigo-600"
             >
               {languages.map((lang) => (
                 <option key={lang} value={lang}>
@@ -176,12 +163,12 @@ export default function CodingPractice({ _profile }) {
           </div>
 
           {/* Difficulty Selector */}
-          <div className="space-y-1">
-            <label className="text-[10px] uppercase font-black text-purple-300 block">Difficulty</label>
+          <div className="flex items-center gap-2">
+            <label className="text-xs font-medium text-slate-500">Difficulty:</label>
             <select
               value={selectedDifficulty}
               onChange={(e) => setSelectedDifficulty(e.target.value)}
-              className="bg-[#0d1220] border-2 border-purple-500/30 text-white text-xs font-bold rounded-2xl px-4 py-2.5 focus:outline-none focus:border-purple-400 cursor-pointer"
+              className="bg-white border border-slate-200 text-slate-900 text-xs font-medium rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-indigo-600"
             >
               {difficulties.map((diff) => (
                 <option key={diff} value={diff}>
@@ -191,27 +178,24 @@ export default function CodingPractice({ _profile }) {
             </select>
           </div>
 
-          {/* Question Mode Selector (Coding Options vs Syntax Input) */}
-          <div className="space-y-1">
-            <label className="text-[10px] uppercase font-black text-purple-300 block">Question Mode</label>
-            <div className="flex items-center gap-1.5 bg-[#0d1220] p-1.5 rounded-2xl border-2 border-purple-500/30">
-              <button
-                onClick={() => { setQuestionMode('coding'); setSubmissionFeedback(null); }}
-                className={`cartoon-btn py-1.5 px-3.5 text-xs font-black ${
-                  questionMode === 'coding' ? 'cartoon-btn-purple' : 'cartoon-btn-dark'
-                }`}
-              >
-                Choose Option
-              </button>
-              <button
-                onClick={() => { setQuestionMode('syntax'); setSubmissionFeedback(null); }}
-                className={`cartoon-btn py-1.5 px-3.5 text-xs font-black ${
-                  questionMode === 'syntax' ? 'cartoon-btn-yellow' : 'cartoon-btn-dark'
-                }`}
-              >
-                Write Syntax
-              </button>
-            </div>
+          {/* Question Mode Selector */}
+          <div className="inline-flex bg-slate-100 p-0.5 rounded-lg border border-slate-200/60 text-xs">
+            <button
+              onClick={() => { setQuestionMode('coding'); setSubmissionFeedback(null); }}
+              className={`px-2.5 py-1 rounded-md font-medium transition-all ${
+                questionMode === 'coding' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Multiple Choice
+            </button>
+            <button
+              onClick={() => { setQuestionMode('syntax'); setSubmissionFeedback(null); }}
+              className={`px-2.5 py-1 rounded-md font-medium transition-all ${
+                questionMode === 'syntax' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Syntax Input
+            </button>
           </div>
         </div>
 
@@ -219,15 +203,15 @@ export default function CodingPractice({ _profile }) {
         <button
           onClick={handleGenerateQuestion}
           disabled={isLoading}
-          className="cartoon-btn cartoon-btn-purple py-3 px-6 text-xs font-black gap-2 disabled:opacity-50"
+          className="saas-btn-primary py-1.5 px-3.5 text-xs font-medium gap-1.5 disabled:opacity-50"
         >
           {isLoading ? (
             <>
-              <Cpu className="w-4 h-4 animate-spin text-white" /> Generating AI Question...
+              <Cpu className="w-3.5 h-3.5 animate-spin" /> Generating...
             </>
           ) : (
             <>
-              <Zap className="w-4 h-4 fill-yellow-300 text-yellow-300" /> New Challenge
+              <Zap className="w-3.5 h-3.5" /> New Problem
             </>
           )}
         </button>
@@ -236,23 +220,23 @@ export default function CodingPractice({ _profile }) {
       {/* Main Coding Workspace Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Panel: Problem Description */}
-        <div className="lg:col-span-5 cartoon-card p-6 border-2 border-purple-500/25 flex flex-col justify-between space-y-4">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between gap-2 border-b-2 border-white/10 pb-3">
-              <span className="cartoon-badge cartoon-badge-pink text-[10px]">
+        <div className="lg:col-span-5 saas-card p-5 flex flex-col justify-between space-y-4">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
+              <span className="saas-badge text-[11px]">
                 {problem.id}
               </span>
-              <div className="flex items-center gap-2">
-                <span className="cartoon-badge cartoon-badge-purple text-[10px]">
+              <div className="flex items-center gap-1.5">
+                <span className="saas-badge text-[10px]">
                   {problem.language}
                 </span>
                 <span
-                  className={`cartoon-badge text-[10px] ${
+                  className={`saas-badge text-[10px] ${
                     problem.difficulty === 'Hard'
-                      ? 'cartoon-badge-orange'
+                      ? 'saas-badge-danger'
                       : problem.difficulty === 'Medium'
-                      ? 'cartoon-badge-yellow'
-                      : 'cartoon-badge-mint'
+                      ? 'saas-badge-warning'
+                      : 'saas-badge-success'
                   }`}
                 >
                   {problem.difficulty}
@@ -260,57 +244,57 @@ export default function CodingPractice({ _profile }) {
               </div>
             </div>
 
-            <h2 className="text-base font-black text-white leading-snug">{problem.title}</h2>
+            <h2 className="text-sm font-bold text-slate-900 leading-snug">{problem.title}</h2>
 
-            <div className="text-xs text-gray-300 space-y-3 leading-relaxed whitespace-pre-line font-medium">
+            <div className="text-xs text-slate-600 space-y-2 leading-relaxed whitespace-pre-line">
               {problem.description}
             </div>
 
             {/* Answer Input Section */}
             {questionMode === 'syntax' ? (
-              <div className="p-4 rounded-2xl bg-[#0d1220] border-2 border-yellow-500/40 space-y-3">
-                <span className="text-xs font-black text-yellow-300 block">
-                  ✍ Syntax Quest: Write the exact syntax on your own
+              <div className="p-3.5 rounded-lg bg-slate-50 border border-slate-200 space-y-2.5">
+                <span className="text-xs font-semibold text-slate-900 block">
+                  Syntax Challenge: Enter the missing expression
                 </span>
                 <input
                   type="text"
                   value={userSyntaxInput}
                   onChange={(e) => setUserSyntaxInput(e.target.value)}
-                  placeholder="Type exact syntax answer here..."
-                  className="w-full bg-[#151b2e] border-2 border-purple-500/30 text-emerald-300 font-mono text-xs rounded-xl p-3 focus:outline-none focus:border-yellow-400 font-bold"
+                  placeholder="e.g. complement = target - num"
+                  className="w-full bg-white border border-slate-200 text-slate-900 font-mono text-xs rounded-md p-2 focus:outline-none focus:border-indigo-600"
                 />
                 <button
                   onClick={() => {
                     const isCorrect = userSyntaxInput.trim().toLowerCase() === (problem.correctSyntaxAnswer || 'complement = target - num').trim().toLowerCase();
-                    setSubmissionFeedback(isCorrect ? { success: true, msg: '🎉 Correct Syntax Answer! +50 XP' } : { success: false, msg: `Incorrect syntax. Expected: ${problem.correctSyntaxAnswer || 'complement = target - num'}` });
+                    setSubmissionFeedback(isCorrect ? { success: true, msg: 'Correct syntax answer verified.' } : { success: false, msg: `Expected: ${problem.correctSyntaxAnswer || 'complement = target - num'}` });
                   }}
-                  className="cartoon-btn cartoon-btn-yellow w-full py-2.5 text-xs font-black"
+                  className="saas-btn-primary w-full py-1.5 text-xs font-medium"
                 >
                   Submit Syntax
                 </button>
               </div>
             ) : (
               <div className="space-y-2">
-                <span className="text-xs font-black text-purple-300 block">
-                  Choose Correct Answer Option:
+                <span className="text-xs font-semibold text-slate-900 block">
+                  Select Correct Implementation:
                 </span>
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   {(problem.options || []).map((opt, idx) => (
                     <button
                       key={idx}
                       onClick={() => {
                         setSelectedOptionIdx(idx);
                         const isCorrect = idx === (problem.correctOption || 0);
-                        setSubmissionFeedback(isCorrect ? { success: true, msg: `🎉 Option ${String.fromCharCode(65 + idx)} is Correct! +50 XP` } : { success: false, msg: `Option ${String.fromCharCode(65 + idx)} is Incorrect.` });
+                        setSubmissionFeedback(isCorrect ? { success: true, msg: `Option ${String.fromCharCode(65 + idx)} is correct.` } : { success: false, msg: `Option ${String.fromCharCode(65 + idx)} is incorrect.` });
                       }}
-                      className={`w-full p-3.5 rounded-2xl border-2 text-left text-xs font-mono transition-all transform active:scale-98 ${
+                      className={`w-full p-2.5 rounded-lg border text-left text-xs font-mono transition-colors ${
                         selectedOptionIdx === idx
-                          ? 'border-purple-400 bg-purple-900/40 text-white shadow-md'
-                          : 'border-purple-500/20 bg-[#0d1220] text-gray-300 hover:border-purple-500/50'
+                          ? 'border-indigo-600 bg-indigo-50/50 text-indigo-900'
+                          : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
                       }`}
                     >
-                      <span className="font-black text-pink-400 mr-2">{String.fromCharCode(65 + idx)}.</span>
-                      <span className="font-medium">{opt}</span>
+                      <span className="font-semibold text-slate-900 mr-1.5">{String.fromCharCode(65 + idx)}.</span>
+                      <span>{opt}</span>
                     </button>
                   ))}
                 </div>
@@ -318,38 +302,38 @@ export default function CodingPractice({ _profile }) {
             )}
 
             {submissionFeedback && (
-              <div className={`p-3.5 rounded-2xl text-xs font-black border-2 animate-fade-in ${
+              <div className={`p-2.5 rounded-lg text-xs font-medium border ${
                 submissionFeedback.success 
-                  ? 'bg-emerald-950/60 text-emerald-200 border-emerald-500/50 shadow-md' 
-                  : 'bg-rose-950/60 text-rose-200 border-rose-500/50'
+                  ? 'bg-emerald-50 text-emerald-800 border-emerald-200' 
+                  : 'bg-rose-50 text-rose-800 border-rose-200'
               }`}>
                 {submissionFeedback.msg}
               </div>
             )}
 
             {problem.explanation && (
-              <div className="p-3.5 rounded-2xl bg-[#0d1220] border-2 border-purple-500/20 space-y-1">
-                <span className="text-[10px] uppercase font-black text-cyan-300 flex items-center gap-1">
-                  <HelpCircle className="w-3.5 h-3.5 text-cyan-400" /> Hint & Concept
+              <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-0.5">
+                <span className="text-[10px] uppercase font-semibold text-slate-500 flex items-center gap-1">
+                  <HelpCircle className="w-3.5 h-3.5" /> Concept Note
                 </span>
-                <p className="text-xs text-gray-300 font-medium">{problem.explanation}</p>
+                <p className="text-xs text-slate-600">{problem.explanation}</p>
               </div>
             )}
           </div>
 
-          <div className="pt-3 border-t-2 border-white/10 flex items-center justify-between">
+          <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
             <button
               onClick={() => setShowSolution(!showSolution)}
-              className="text-xs font-black text-purple-300 hover:text-white"
+              className="text-xs font-medium text-indigo-600 hover:underline"
             >
               {showSolution ? 'Hide Model Solution' : 'View Model Solution'}
             </button>
           </div>
 
           {showSolution && (
-            <div className="p-4 rounded-2xl bg-[#0d1220] border-2 border-purple-500/30 space-y-2 animate-fade-in">
-              <span className="cartoon-badge cartoon-badge-pink text-[10px]">AI Sample Solution</span>
-              <pre className="text-xs text-emerald-300 font-mono overflow-x-auto whitespace-pre-wrap font-bold">
+            <div className="p-3 rounded-lg bg-slate-900 text-white space-y-1 text-xs">
+              <span className="text-[10px] uppercase text-slate-400 font-semibold block">Sample Solution</span>
+              <pre className="font-mono overflow-x-auto whitespace-pre-wrap text-emerald-400">
                 {problem.sampleSolution}
               </pre>
             </div>
@@ -359,32 +343,25 @@ export default function CodingPractice({ _profile }) {
         {/* Right Panel: Code Editor & Console */}
         <div className="lg:col-span-7 space-y-4">
           {/* Editor Window */}
-          <div className="cartoon-card border-2 border-purple-500/30 overflow-hidden flex flex-col">
+          <div className="saas-card overflow-hidden flex flex-col">
             {/* Editor Toolbar */}
-            <div className="bg-[#121727] px-4 py-3 border-b-2 border-purple-500/20 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1.5">
-                  <span className="w-3 h-3 rounded-full bg-rose-500 inline-block" />
-                  <span className="w-3 h-3 rounded-full bg-yellow-500 inline-block" />
-                  <span className="w-3 h-3 rounded-full bg-emerald-500 inline-block" />
-                </div>
-                <span className="text-xs font-mono text-gray-300 font-bold ml-2">
-                  solution.{problem.language.toLowerCase() === 'c++' ? 'cpp' : problem.language.toLowerCase()}
-                </span>
-              </div>
+            <div className="bg-slate-50 px-4 py-2 border-b border-slate-200 flex items-center justify-between">
+              <span className="text-xs font-mono text-slate-600 font-medium">
+                solution.{problem.language.toLowerCase() === 'c++' ? 'cpp' : problem.language.toLowerCase()}
+              </span>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 <button
                   onClick={handleCopyCode}
-                  className="cartoon-btn cartoon-btn-dark py-1.5 px-3 text-xs"
+                  className="saas-btn-secondary py-1 px-2 text-xs"
                   title="Copy code"
                 >
-                  {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                  {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                 </button>
                 <button
                   onClick={() => setEditorCode(problem.starterCode)}
-                  className="cartoon-btn cartoon-btn-dark py-1.5 px-3 text-xs"
-                  title="Reset to starter code"
+                  className="saas-btn-secondary py-1 px-2 text-xs"
+                  title="Reset code"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
                 </button>
@@ -396,29 +373,29 @@ export default function CodingPractice({ _profile }) {
               value={editorCode}
               onChange={(e) => setEditorCode(e.target.value)}
               placeholder="// Write or edit your code solution here..."
-              rows={14}
-              className="w-full bg-[#0b0f19] text-emerald-300 font-mono text-xs p-5 focus:outline-none resize-none leading-relaxed font-bold"
+              rows={13}
+              className="w-full bg-slate-950 text-slate-100 font-mono text-xs p-4 focus:outline-none resize-none leading-relaxed"
               spellCheck={false}
             />
 
             {/* Editor Actions Footer */}
-            <div className="bg-[#121727] px-5 py-3 border-t-2 border-purple-500/20 flex items-center justify-between">
-              <span className="text-xs font-mono text-purple-300">
-                Problem: <strong className="text-white">{problem.id}</strong>
+            <div className="bg-slate-50 px-4 py-2.5 border-t border-slate-200 flex items-center justify-between">
+              <span className="text-xs font-mono text-slate-500">
+                {problem.id}
               </span>
 
               <button
                 onClick={handleRunCode}
                 disabled={isRunningCode || !editorCode.trim()}
-                className="cartoon-btn cartoon-btn-mint py-2.5 px-5 text-xs font-black gap-2 disabled:opacity-50"
+                className="saas-btn-primary py-1.5 px-4 text-xs font-medium gap-1.5 disabled:opacity-50"
               >
                 {isRunningCode ? (
                   <>
-                    <Cpu className="w-4 h-4 animate-spin" /> Running...
+                    <Cpu className="w-3.5 h-3.5 animate-spin" /> Running...
                   </>
                 ) : (
                   <>
-                    <Play className="w-4 h-4 fill-current" /> Run Test Suite
+                    <Play className="w-3.5 h-3.5 fill-current" /> Run Tests
                   </>
                 )}
               </button>
@@ -427,11 +404,11 @@ export default function CodingPractice({ _profile }) {
 
           {/* Execution Output Console */}
           {output && (
-            <div className="cartoon-card p-4 border-2 border-purple-500/30 bg-[#0d1220] space-y-2 animate-fade-in">
-              <div className="flex items-center gap-2 text-xs font-black text-purple-300 border-b-2 border-white/10 pb-2">
-                <Terminal className="w-4 h-4 text-pink-400" /> Console Output
+            <div className="saas-card p-4 space-y-1.5">
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-900 border-b border-slate-100 pb-1.5">
+                <Terminal className="w-3.5 h-3.5 text-slate-500" /> Test Execution Output
               </div>
-              <pre className="text-xs font-mono text-emerald-300 leading-relaxed whitespace-pre-wrap font-bold">{output}</pre>
+              <pre className="text-xs font-mono text-slate-800 leading-relaxed whitespace-pre-wrap">{output}</pre>
             </div>
           )}
         </div>
@@ -440,7 +417,6 @@ export default function CodingPractice({ _profile }) {
   );
 }
 
-// Utility Helpers
 function extractTitle(text = '', language, difficulty) {
   if (!text) return `${language} ${difficulty} Coding Challenge`;
   const firstLine = text.split('\n')[0].replace(/^[#*-\d.]+\s*/, '').trim();

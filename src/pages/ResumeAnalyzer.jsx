@@ -449,54 +449,54 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in pb-12 resume-analyzer-page select-none">
+    <div className="space-y-6 animate-fade-in pb-12 resume-analyzer-page text-slate-900">
       {/* Header Bar */}
-      <div className="cartoon-card p-6 md:p-8 border-2 border-purple-500/30 flex flex-col lg:flex-row lg:items-center justify-between gap-4 relative overflow-hidden bg-gradient-to-r from-[#171d33] via-[#1c243f] to-[#1a2138]">
+      <div className="saas-card p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl md:text-3xl font-black text-white flex items-center gap-2 tracking-wide">
-              <Sparkles className="w-7 h-7 text-yellow-400" /> AI Resume Analyzer
+            <h1 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-indigo-600" /> AI Resume Analyzer
             </h1>
-            <span className="cartoon-badge cartoon-badge-purple text-[10px]">
-              Target: Full Stack Developer
+            <span className="saas-badge text-[11px]">
+              Full Stack Target
             </span>
           </div>
-          <p className="text-xs text-gray-300 font-medium mt-1">
-            Candidate: <strong className="text-white font-black">{profile?.name || 'Aarav Sharma'}</strong> — Upload, optimize, verify skills & generate certified resumes
+          <p className="text-xs text-slate-500 mt-0.5">
+            Candidate: <strong className="text-slate-900">{profile?.name || 'Aarav Sharma'}</strong> — Upload, optimize, verify skills & generate certified resumes
           </p>
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
           <button 
             onClick={() => setViewMode(prev => prev === 'tabs' ? 'scroll' : 'tabs')}
-            className="cartoon-btn cartoon-btn-dark py-2 px-3 text-xs font-bold gap-1.5"
+            className="saas-btn-secondary py-1.5 px-3 text-xs gap-1.5"
             title="Toggle between Tabbed and Full Scroll layouts"
           >
-            {viewMode === 'tabs' ? <Layers className="w-4 h-4 text-pink-400" /> : <LayoutGrid className="w-4 h-4 text-pink-400" />}
+            {viewMode === 'tabs' ? <Layers className="w-3.5 h-3.5 text-slate-500" /> : <LayoutGrid className="w-3.5 h-3.5 text-slate-500" />}
             <span>{viewMode === 'tabs' ? 'Tabbed View' : 'All Sections'}</span>
           </button>
 
           {!is100PercentComplete ? (
             <button 
               onClick={handleSimulateFullMastery} 
-              className="cartoon-btn cartoon-btn-yellow py-2 px-3.5 text-xs font-black gap-1.5"
+              className="saas-btn-secondary py-1.5 px-3 text-xs gap-1.5"
             >
-              <Trophy className="w-4 h-4" /> 100% Mastery
+              <Trophy className="w-3.5 h-3.5 text-amber-500" /> 100% Mastery
             </button>
           ) : (
             <button 
               onClick={handleResetDemo}
-              className="cartoon-btn cartoon-btn-dark py-2 px-3 text-xs font-bold gap-1.5"
+              className="saas-btn-secondary py-1.5 px-3 text-xs gap-1.5"
             >
-              <RefreshCw className="w-3.5 h-3.5" /> Reset Demo
+              <RefreshCw className="w-3.5 h-3.5 text-slate-500" /> Reset Demo
             </button>
           )}
 
-          <button onClick={() => setShowPreview(true)} className="cartoon-btn cartoon-btn-dark py-2 px-3.5 text-xs font-bold gap-1.5">
-            <Eye className="w-4 h-4 text-cyan-400" /> Preview
+          <button onClick={() => setShowPreview(true)} className="saas-btn-secondary py-1.5 px-3 text-xs gap-1.5">
+            <Eye className="w-3.5 h-3.5 text-slate-500" /> Preview
           </button>
-          <button onClick={handleDownload} className="cartoon-btn cartoon-btn-purple py-2 px-4 text-xs font-black gap-1.5">
-            <Download className="w-4 h-4" /> Download PDF
+          <button onClick={handleDownload} className="saas-btn-primary py-1.5 px-3.5 text-xs gap-1.5">
+            <Download className="w-3.5 h-3.5" /> Download PDF
           </button>
         </div>
       </div>
@@ -506,13 +506,13 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
 
       {/* Auto Progression Toast Notification Banner */}
       {toastMessage && (
-        <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-500/20 via-teal-500/20 to-purple-500/20 border-2 border-emerald-500/40 text-emerald-300 font-black text-xs flex items-center justify-between shadow-xl animate-pulse">
-          <span className="flex items-center gap-2">
-            <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+        <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center justify-between">
+          <span className="flex items-center gap-2 font-medium">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
             {toastMessage}
           </span>
-          <span className="cartoon-badge cartoon-badge-mint text-[10px]">
-            AUTO ADVANCING ›
+          <span className="saas-badge saas-badge-success text-[10px]">
+            Advancing ›
           </span>
         </div>
       )}
@@ -530,34 +530,34 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
 
       {/* Navigation Tabs Header */}
       {viewMode === 'tabs' && (
-        <div className="flex items-center gap-2 border-b-2 border-white/10 overflow-x-auto pb-2">
+        <div className="flex items-center gap-1.5 border-b border-slate-200 overflow-x-auto pb-1">
           <button
             onClick={() => setActiveTab('overview')}
-            className={`cartoon-btn py-2 px-4 text-xs font-black gap-2 whitespace-nowrap ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 whitespace-nowrap ${
               activeTab === 'overview'
-                ? 'cartoon-btn-purple scale-105 shadow-md'
-                : 'cartoon-btn-dark'
+                ? 'bg-slate-900 text-white'
+                : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
-            <Sparkles className="w-4 h-4 text-yellow-300" />
+            <Sparkles className="w-3.5 h-3.5" />
             <span>Overview & Upload</span>
             {pendingSuggestion && (
-              <span className="w-2 h-2 rounded-full bg-pink-400 animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
             )}
           </button>
 
           <button
             onClick={() => setActiveTab('issues')}
-            className={`cartoon-btn py-2 px-4 text-xs font-black gap-2 whitespace-nowrap ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 whitespace-nowrap ${
               activeTab === 'issues'
-                ? 'cartoon-btn-purple scale-105 shadow-md'
-                : 'cartoon-btn-dark'
+                ? 'bg-slate-900 text-white'
+                : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
-            <AlertCircle className="w-4 h-4 text-amber-400" />
+            <AlertCircle className="w-3.5 h-3.5" />
             <span>Issues & Fixes</span>
             {unfixedProblemsCount > 0 && (
-              <span className="cartoon-badge cartoon-badge-yellow text-[10px] py-0 px-1.5">
+              <span className="saas-badge saas-badge-warning text-[10px]">
                 {unfixedProblemsCount}
               </span>
             )}
@@ -565,16 +565,16 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
 
           <button
             onClick={() => setActiveTab('skills')}
-            className={`cartoon-btn py-2 px-4 text-xs font-black gap-2 whitespace-nowrap ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 whitespace-nowrap ${
               activeTab === 'skills'
-                ? 'cartoon-btn-purple scale-105 shadow-md'
-                : 'cartoon-btn-dark'
+                ? 'bg-slate-900 text-white'
+                : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
-            <Target className="w-4 h-4 text-emerald-400" />
-            <span>Skill Gap & Bridge</span>
+            <Target className="w-3.5 h-3.5" />
+            <span>Skill Gap</span>
             {learningSkillsCount > 0 && (
-              <span className="cartoon-badge cartoon-badge-mint text-[10px] py-0 px-1.5">
+              <span className="saas-badge text-[10px]">
                 {learningSkillsCount} learning
               </span>
             )}
@@ -582,22 +582,22 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
 
           <button
             onClick={() => setActiveTab('certs')}
-            className={`cartoon-btn py-2 px-4 text-xs font-black gap-2 whitespace-nowrap ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 whitespace-nowrap ${
               activeTab === 'certs'
-                ? 'cartoon-btn-purple scale-105 shadow-md'
-                : 'cartoon-btn-dark'
+                ? 'bg-slate-900 text-white'
+                : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
-            <Award className="w-4 h-4 text-pink-400" />
-            <span>Verified Certs & Export</span>
-            <span className="cartoon-badge cartoon-badge-pink text-[10px] py-0 px-1.5">
-              {certifiedCount} certs
+            <Award className="w-3.5 h-3.5" />
+            <span>Certificates & Export</span>
+            <span className="saas-badge saas-badge-success text-[10px]">
+              {certifiedCount}
             </span>
           </button>
         </div>
       )}
 
-      {/* Pending AI Suggestion Card (Global notification if patch ready) */}
+      {/* Pending AI Suggestion Card */}
       {pendingSuggestion && (
         <ResumeSuggestionCard
           patch={pendingSuggestion.patch}
@@ -611,7 +611,7 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
         <div className="space-y-6">
           {/* TAB 1: OVERVIEW & UPLOAD */}
           {activeTab === 'overview' && (
-            <div className="space-y-6 animate-fade-in">
+            <div className="space-y-6">
               {!analyzed ? (
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                   <div className="lg:col-span-7">
@@ -625,17 +625,17 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
                       profile={profile}
                     />
                   </div>
-                  <div className="lg:col-span-5 glass rounded-2xl p-8 border border-gray-800 flex flex-col justify-center items-center text-center space-y-4">
-                    <div className="w-14 h-14 rounded-2xl bg-accent-purple/15 border border-accent-purple/30 flex items-center justify-center text-accent-purple shadow-lg shadow-purple-500/10">
-                      <Sparkles className="w-7 h-7" />
+                  <div className="lg:col-span-5 saas-card p-6 flex flex-col justify-center items-center text-center space-y-3">
+                    <div className="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                      <Sparkles className="w-5 h-5" />
                     </div>
-                    <h3 className="text-lg font-black text-white">Upload Resume to Start Analysis</h3>
-                    <p className="text-xs text-gray-400 leading-relaxed max-w-sm">
-                      Upload your PDF or DOCX resume to let our AI API evaluate ATS compatibility, score formatting, check grammar mistakes, and generate customized skill recommendations.
+                    <h3 className="text-sm font-semibold text-slate-900">Upload Resume for Analysis</h3>
+                    <p className="text-xs text-slate-500 leading-relaxed max-w-sm">
+                      Upload your PDF or DOCX resume to analyze ATS compatibility, formatting quality, grammar nuances, and skill requirements.
                     </p>
-                    <div className="p-3 rounded-xl bg-gray-950 border border-gray-800 text-[11px] text-gray-300 font-semibold flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                      Scores & grammar feedback are generated strictly from your uploaded resume.
+                    <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-600 flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                      Evaluated against current industry role benchmarks.
                     </div>
                   </div>
                 </div>
@@ -660,10 +660,10 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
                         profile={profile}
                       />
                     </div>
-                    <div className="lg:col-span-6 glass rounded-2xl p-6 border border-gray-800 space-y-4 flex flex-col justify-between">
+                    <div className="lg:col-span-6 saas-card p-5 space-y-3 flex flex-col justify-between">
                       <div>
-                        <h3 className="text-sm font-bold text-white flex items-center gap-2 mb-3">
-                          <Sparkles className="w-4 h-4 text-accent-pink" /> AI ANALYSIS SUMMARY (FROM YOUR RESUME)
+                        <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider mb-2.5">
+                          Audit Summary
                         </h3>
                         <div className="space-y-3">
                           <GrammarIssues issues={grammarIssues} isFixed={problems[0]?.fixed} />
@@ -671,55 +671,18 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
                         </div>
                       </div>
 
-                      <div className="p-3.5 rounded-xl bg-accent-purple/10 border border-accent-purple/30 flex items-center justify-between text-xs">
-                        <span className="text-gray-300 font-semibold flex items-center gap-2">
-                          <CheckCircle2 className="w-4 h-4 text-accent-purple" />
-                          Quick Action: {unfixedProblemsCount > 0 ? `${unfixedProblemsCount} resume fixes waiting` : 'All issues fixed! Verify skills next.'}
+                      <div className="p-3 rounded-lg bg-indigo-50/50 border border-indigo-100 flex items-center justify-between text-xs">
+                        <span className="text-indigo-900 font-medium flex items-center gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-indigo-600" />
+                          {unfixedProblemsCount > 0 ? `${unfixedProblemsCount} fixes available` : 'All issues fixed'}
                         </span>
                         <button 
                           onClick={() => setActiveTab(unfixedProblemsCount > 0 ? 'issues' : 'skills')} 
-                          className="px-3 py-1 rounded-lg bg-accent-purple hover:bg-accent-purple/90 text-white font-bold text-[11px]"
+                          className="saas-btn-primary py-1 px-3 text-xs"
                         >
-                          {unfixedProblemsCount > 0 ? 'View Fixes ›' : 'Skill Gap ›'}
+                          {unfixedProblemsCount > 0 ? 'Review Fixes ›' : 'View Skills ›'}
                         </button>
                       </div>
-                    </div>
-                  </div>
-
-                  {/* Auto Jump / Feature Navigation Bar */}
-                  <div className="glass rounded-2xl p-4 border border-gray-800 bg-gray-950/80 flex flex-col sm:flex-row items-center justify-between gap-3">
-                    <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-accent-purple animate-ping" />
-                      <span className="text-xs font-bold text-white">Next Available Actions in Pipeline:</span>
-                    </div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <button
-                        onClick={() => {
-                          setActiveTab('issues');
-                          setTimeout(() => window.scrollBy({ top: 350, behavior: 'smooth' }), 50);
-                        }}
-                        className="px-3 py-1.5 rounded-xl bg-gray-900 hover:bg-gray-800 border border-gray-700 text-amber-300 font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm"
-                      >
-                        <AlertCircle className="w-3.5 h-3.5" /> 1. Review Fixes ({unfixedProblemsCount})
-                      </button>
-                      <button
-                        onClick={() => {
-                          setActiveTab('skills');
-                          setTimeout(() => window.scrollBy({ top: 350, behavior: 'smooth' }), 50);
-                        }}
-                        className="px-3 py-1.5 rounded-xl bg-accent-purple/20 hover:bg-accent-purple/30 border border-accent-purple/40 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm"
-                      >
-                        <Target className="w-3.5 h-3.5 text-emerald-400" /> 2. Skill Gap & Bridge
-                      </button>
-                      <button
-                        onClick={() => {
-                          setActiveTab('certs');
-                          setTimeout(() => window.scrollBy({ top: 350, behavior: 'smooth' }), 50);
-                        }}
-                        className="px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm"
-                      >
-                        <Award className="w-3.5 h-3.5" /> 3. Verified Certs & PDF
-                      </button>
                     </div>
                   </div>
                 </>
@@ -729,34 +692,30 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
 
           {/* TAB 2: ISSUES & FIXES */}
           {activeTab === 'issues' && (
-            <div className="space-y-6 animate-fade-in">
+            <div className="space-y-6">
               {!analyzed ? (
-                <div className="glass rounded-2xl p-8 border border-gray-800 text-center space-y-4">
-                  <AlertCircle className="w-10 h-10 text-amber-400 mx-auto" />
-                  <h3 className="text-base font-bold text-white">No Resume Uploaded Yet</h3>
-                  <p className="text-xs text-gray-400">Please upload your resume on the Overview tab to view issues and apply AI fixes.</p>
-                  <button onClick={() => setActiveTab('overview')} className="px-4 py-2 bg-accent-purple text-white font-bold text-xs rounded-xl">
+                <div className="saas-card p-8 text-center space-y-3">
+                  <AlertCircle className="w-8 h-8 text-amber-500 mx-auto" />
+                  <h3 className="text-sm font-semibold text-slate-900">No Resume Uploaded</h3>
+                  <p className="text-xs text-slate-500">Please upload your resume to view issues and suggestions.</p>
+                  <button onClick={() => setActiveTab('overview')} className="saas-btn-primary py-1.5 px-4 text-xs font-medium">
                     Go to Upload
                   </button>
                 </div>
               ) : (
                 <>
                   <ResumeProblems problems={problems} onApplyFix={handleApplyFix} />
-                  
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <GrammarIssues issues={grammarIssues} isFixed={problems[0]?.fixed} />
-                    <div className="space-y-4">
-                      <div className="glass rounded-2xl p-6 border border-gray-800 space-y-4">
-                        <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                          <AlertCircle className="w-4 h-4 text-amber-400" /> ATS FORMATTING & SCANNER CHECKS
-                        </h3>
-                        <ATSAnalysis warningsCount={atsProblems.length || 2} isFixed={problems[1]?.fixed} />
-                        <div className="p-3.5 rounded-xl bg-gray-900/60 border border-gray-800 text-xs text-gray-400 space-y-1.5">
-                          <div className="font-bold text-gray-200">ATS Parsing Verification:</div>
-                          <div>✓ Standard PDF font embedded</div>
-                          <div>✓ Single column clean structure</div>
-                          <div>{problems[1]?.fixed ? '✓ Link header updated' : '⚠ Missing GitHub profile URL link'}</div>
-                        </div>
+                    <div className="saas-card p-5 space-y-3">
+                      <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider">
+                        ATS Format Compliance
+                      </h3>
+                      <ATSAnalysis warningsCount={atsProblems.length || 2} isFixed={problems[1]?.fixed} />
+                      <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-600 space-y-1">
+                        <div>✓ Standard embedded typography</div>
+                        <div>✓ Single column hierarchical layout</div>
+                        <div>{problems[1]?.fixed ? '✓ Contact & portfolio header verified' : '⚠ Missing online portfolio link'}</div>
                       </div>
                     </div>
                   </div>
@@ -767,13 +726,13 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
 
           {/* TAB 3: SKILL GAP & BRIDGE */}
           {activeTab === 'skills' && (
-            <div className="space-y-6 animate-fade-in">
+            <div className="space-y-6">
               {!analyzed ? (
-                <div className="glass rounded-2xl p-8 border border-gray-800 text-center space-y-4">
-                  <Target className="w-10 h-10 text-emerald-400 mx-auto" />
-                  <h3 className="text-base font-bold text-white">No Resume Uploaded Yet</h3>
-                  <p className="text-xs text-gray-400">Please upload your resume to generate your custom Skill Gap & Bridge report.</p>
-                  <button onClick={() => setActiveTab('overview')} className="px-4 py-2 bg-accent-purple text-white font-bold text-xs rounded-xl">
+                <div className="saas-card p-8 text-center space-y-3">
+                  <Target className="w-8 h-8 text-indigo-600 mx-auto" />
+                  <h3 className="text-sm font-semibold text-slate-900">No Resume Uploaded</h3>
+                  <p className="text-xs text-slate-500">Please upload your resume to generate your Skill Gap breakdown.</p>
+                  <button onClick={() => setActiveTab('overview')} className="saas-btn-primary py-1.5 px-4 text-xs font-medium">
                     Go to Upload
                   </button>
                 </div>
@@ -795,7 +754,7 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
 
           {/* TAB 4: VERIFIED CERTS & EXPORT */}
           {activeTab === 'certs' && (
-            <div className="space-y-6 animate-fade-in">
+            <div className="space-y-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <VerifiedSkills skillsStatus={skillsStatus} />
                 <CertificateList certificates={certificates} candidateName={profile?.name || "Aarav Sharma"} />
@@ -806,12 +765,12 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
         </div>
       ) : (
         /* VIEW MODE: ALL SECTIONS (SCROLLABLE VIEW) */
-        <div className="space-y-8 animate-fade-in">
+        <div className="space-y-6">
           {!analyzed ? (
-            <div className="glass rounded-2xl p-8 border border-gray-800 text-center space-y-4">
-              <Sparkles className="w-10 h-10 text-accent-purple mx-auto" />
-              <h3 className="text-base font-bold text-white">Upload Your Resume to Start Analysis</h3>
-              <p className="text-xs text-gray-400">Scores, ATS checks, and grammar mistakes will be displayed after you upload your resume.</p>
+            <div className="saas-card p-8 text-center space-y-4">
+              <Sparkles className="w-8 h-8 text-indigo-600 mx-auto" />
+              <h3 className="text-sm font-semibold text-slate-900">Upload Your Resume to Start</h3>
+              <p className="text-xs text-slate-500">Scores, ATS checks, and grammar issues will be calculated automatically.</p>
               <UploadResume 
                 onFileSelect={handleFileSelect} 
                 onAnalysis={processAnalysisResult}
@@ -843,9 +802,9 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
                     profile={profile}
                   />
                 </div>
-                <div className="lg:col-span-6 glass rounded-2xl p-6 border border-gray-800 space-y-4">
-                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-accent-pink" /> AI ANALYSIS SUMMARY (FROM YOUR RESUME)
+                <div className="lg:col-span-6 saas-card p-5 space-y-3">
+                  <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider">
+                    Audit Overview
                   </h3>
                   <GrammarIssues issues={grammarIssues} isFixed={problems[0]?.fixed} />
                   <ATSAnalysis warningsCount={atsProblems.length || 2} isFixed={problems[1]?.fixed} />

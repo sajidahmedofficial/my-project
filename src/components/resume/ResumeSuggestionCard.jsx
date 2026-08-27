@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "AI Suggestion diff card rendering structured JSON patches with APPLY ALL SUGGESTIONS button", deps: ["react", "lucide-react"], state: "active", last: "anti@2026-08-06" }
+// agent-notes: { ctx: "Clean minimal SaaS AI Suggestion diff card rendering structured JSON patches", deps: ["react", "lucide-react"], state: "active", last: "anti@2026-08-27" }
 import React from 'react';
 import { Sparkles, Check, X, Plus, Edit2 } from 'lucide-react';
 
@@ -26,43 +26,43 @@ export default function ResumeSuggestionCard({
   const changes = patch?.changes || [];
 
   return (
-    <div className="glass rounded-2xl p-6 border border-accent-purple/40 bg-accent-purple/5 space-y-5 animate-fade-in">
-      <div className="flex items-center justify-between pb-3 border-b border-accent-purple/20">
+    <div className="saas-card p-5 space-y-4 border-indigo-200 bg-indigo-50/30">
+      <div className="flex items-center justify-between pb-2 border-b border-indigo-100">
         <div>
-          <h3 className="text-sm font-black text-white flex items-center gap-2 tracking-wider uppercase">
-            <Sparkles className="w-4 h-4 text-accent-purple" /> AI RESUME UPDATE ENGINE - STRUCTURED PATCH
+          <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-indigo-600" /> AI Resume Suggestion Patch
           </h3>
-          <p className="text-xs text-gray-400 mt-0.5">Review AI-proposed section edits before applying to your active resume</p>
+          <p className="text-[11px] text-slate-500">Review recommended edits before applying to your active resume</p>
         </div>
 
-        <span className="px-2.5 py-0.5 rounded bg-accent-purple/20 text-accent-purple text-[10px] font-bold uppercase">
-          {changes.length} PATCHES PENDING
+        <span className="saas-badge saas-badge-indigo text-[10px]">
+          {changes.length} Pending
         </span>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         {changes.map((item, idx) => (
-          <div key={idx} className="p-4 rounded-xl bg-gray-950 border border-gray-800 space-y-2 text-xs">
+          <div key={idx} className="p-3 rounded-lg bg-white border border-slate-200 space-y-1 text-xs">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase flex items-center gap-1 ${
-                  item.action === 'add' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-blue-500/20 text-blue-400'
+                <span className={`saas-badge text-[10px] ${
+                  item.action === 'add' ? 'saas-badge-success' : 'saas-badge-indigo'
                 }`}>
                   {item.action === 'add' ? <Plus className="w-3 h-3" /> : <Edit2 className="w-3 h-3" />}
                   {item.action} {item.section}
                 </span>
-                <span className="text-gray-400 text-[11px] italic">Reason: {item.reason}</span>
+                <span className="text-slate-400 text-[11px]">Reason: {item.reason}</span>
               </div>
             </div>
 
             {item.action === 'add' ? (
-              <div className="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 font-bold">
+              <div className="p-2 rounded bg-emerald-50 text-emerald-900 font-medium">
                 + Add "{item.value}" to {item.section}
               </div>
             ) : (
-              <div className="space-y-1">
-                <div className="text-gray-500 line-through">Original: {item.original}</div>
-                <div className="text-emerald-400 font-bold">Updated: {item.updated}</div>
+              <div className="space-y-0.5">
+                <div className="text-slate-400 line-through text-[11px]">Original: {item.original}</div>
+                <div className="text-emerald-800 font-medium">Updated: {item.updated}</div>
               </div>
             )}
           </div>
@@ -70,19 +70,19 @@ export default function ResumeSuggestionCard({
       </div>
 
       {/* Action Buttons */}
-      <div className="flex items-center justify-end gap-3 pt-2">
+      <div className="flex items-center justify-end gap-2 pt-1">
         <button
           onClick={onReject}
-          className="px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 hover:border-gray-700 text-gray-300 hover:text-white text-xs font-bold flex items-center gap-1.5 transition-all"
+          className="saas-btn-secondary py-1.5 px-3 text-xs gap-1"
         >
-          <X className="w-4 h-4 text-red-400" /> Reject
+          <X className="w-3.5 h-3.5 text-slate-400" /> Reject
         </button>
 
         <button
           onClick={onApplyAllSuggestions}
-          className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-white text-xs font-black flex items-center gap-2 shadow-lg shadow-emerald-500/20 transition-all"
+          className="saas-btn-primary py-1.5 px-4 text-xs font-medium gap-1.5"
         >
-          <Check className="w-4.5 h-4.5" /> APPLY ALL SUGGESTIONS
+          <Check className="w-3.5 h-3.5" /> Apply All Changes
         </button>
       </div>
     </div>

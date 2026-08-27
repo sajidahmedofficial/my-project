@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Main App Component redesigned with modern interactive cartoon visual style, Sparky avatar integration & playful navigation", deps: ["lucide-react", "./context/AuthContext", "./components/common/AIAssistantAvatar", "./components/common/CartoonDecorations"], state: "active", last: "anti@2026-08-25" }
+// agent-notes: { ctx: "Main App Component with clean, minimal SaaS visual design (Linear/Stripe/Vercel style) and unified navigation", deps: ["lucide-react", "./context/AuthContext", "./components/common/AIAssistantAvatar", "./components/common/CartoonDecorations"], state: "active", last: "anti@2026-08-27" }
 import React, { useState } from 'react';
 import { 
   LayoutDashboard, 
@@ -10,7 +10,6 @@ import {
   Code,
   Menu,
   X,
-  GraduationCap,
   Bell,
   LogOut,
   LogIn,
@@ -18,10 +17,11 @@ import {
   Zap,
   Brain,
   Layers,
-  Star,
-  Trophy,
-  Flame,
-  ChevronRight
+  ArrowRight,
+  ShieldCheck,
+  ChevronRight,
+  User,
+  CheckCircle2
 } from 'lucide-react';
 
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -47,9 +47,9 @@ const AptitudeDashboard = React.lazy(() => import('./components/aptitude/Aptitud
 const SkillVerificationModal = React.lazy(() => import('./components/resume/SkillVerificationModal'));
 
 const TabLoadingFallback = () => (
-  <div className="cartoon-card p-12 text-center space-y-4 my-6">
-    <div className="w-10 h-10 rounded-full border-4 border-purple-500 border-t-transparent animate-spin mx-auto" />
-    <p className="text-xs font-black text-purple-300">Loading module...</p>
+  <div className="saas-card p-12 text-center space-y-3 my-6">
+    <div className="w-8 h-8 rounded-full border-2 border-indigo-600 border-t-transparent animate-spin mx-auto" />
+    <p className="text-xs font-medium text-slate-500">Loading module...</p>
   </div>
 );
 
@@ -107,16 +107,16 @@ function MainLayout() {
   };
 
   const navigationItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, color: 'text-purple-400', bg: 'bg-purple-500/20' },
-    { id: 'skillgap', label: 'Skill Gap Hub', icon: Briefcase, color: 'text-cyan-400', bg: 'bg-cyan-500/20' },
-    { id: 'resume', label: 'Resume Analyzer', icon: FileText, color: 'text-pink-400', bg: 'bg-pink-500/20' },
-    { id: 'job', label: 'Job Matrix', icon: Layers, color: 'text-amber-400', bg: 'bg-amber-500/20' },
-    { id: 'roadmap', label: 'Learning Roadmap', icon: Map, color: 'text-mint-400', bg: 'bg-emerald-500/20' },
-    { id: 'chat', label: 'Career Mentor & Voice', icon: MessageSquare, color: 'text-fuchsia-400', bg: 'bg-fuchsia-500/20' },
-    { id: 'projects', label: 'Project Lab', icon: Code, color: 'text-blue-400', bg: 'bg-blue-500/20' },
-    { id: 'interview', label: 'Mock Interview', icon: Award, color: 'text-orange-400', bg: 'bg-orange-500/20' },
-    { id: 'coding', label: 'Coding Practice', icon: Zap, color: 'text-yellow-400', bg: 'bg-yellow-500/20' },
-    { id: 'aptitude', label: 'Aptitude Practice', icon: Brain, color: 'text-indigo-400', bg: 'bg-indigo-500/20' }
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'skillgap', label: 'Skill Gap Analysis', icon: Briefcase },
+    { id: 'resume', label: 'Resume Analyzer', icon: FileText },
+    { id: 'job', label: 'Job Matrix', icon: Layers },
+    { id: 'roadmap', label: 'Learning Roadmap', icon: Map },
+    { id: 'chat', label: 'Career Mentor', icon: MessageSquare },
+    { id: 'projects', label: 'Project Lab', icon: Code },
+    { id: 'interview', label: 'Mock Interview', icon: Award },
+    { id: 'coding', label: 'Coding Practice', icon: Zap },
+    { id: 'aptitude', label: 'Aptitude Practice', icon: Brain }
   ];
 
   const renderActiveView = () => {
@@ -133,148 +133,183 @@ function MainLayout() {
 
     return (
       <React.Suspense fallback={<TabLoadingFallback />}>
-        <div className="transition-all duration-300">
-        <div className={activeTab === 'dashboard' ? 'block' : 'hidden'}>
-          <Dashboard 
-            profile={activeProfile} 
-            setProfile={handleProfileChange} 
-            onNavigate={setActiveTab} 
-            onOpenVerification={handleOpenGlobalVerification}
-          />
+        <div>
+          <div className={activeTab === 'dashboard' ? 'block' : 'hidden'}>
+            <Dashboard 
+              profile={activeProfile} 
+              setProfile={handleProfileChange} 
+              onNavigate={setActiveTab} 
+              onOpenVerification={handleOpenGlobalVerification}
+            />
+          </div>
+          <div className={activeTab === 'skillgap' ? 'block' : 'hidden'}>
+            <SkillGapDashboard 
+              profile={activeProfile} 
+              onGenerateRoadmap={handleGenerateRoadmap} 
+              onNavigate={setActiveTab} 
+              onOpenVerification={handleOpenGlobalVerification}
+            />
+          </div>
+          <div className={activeTab === 'resume' ? 'block' : 'hidden'}>
+            <ResumeAnalyzer 
+              profile={activeProfile} 
+              setProfile={handleProfileChange} 
+              onNavigate={setActiveTab}
+            />
+          </div>
+          <div className={activeTab === 'job' ? 'block' : 'hidden'}>
+            <JobAnalyzer 
+              profile={activeProfile}
+              onGenerateRoadmap={handleGenerateRoadmap}
+              onNavigate={setActiveTab}
+              onOpenVerification={handleOpenGlobalVerification}
+            />
+          </div>
+          <div className={activeTab === 'roadmap' ? 'block' : 'hidden'}>
+            <LearningRoadmap 
+              profile={activeProfile} 
+              missingSkillsList={missingSkillsList} 
+              targetRole={targetRole || activeProfile?.careerGoal || "Frontend Developer"}
+              onOpenVerification={handleOpenGlobalVerification}
+            />
+          </div>
+          <div className={activeTab === 'chat' ? 'block' : 'hidden'}>
+            <CareerMentor 
+              profile={activeProfile} 
+            />
+          </div>
+          <div className={activeTab === 'projects' ? 'block' : 'hidden'}>
+            <ProjectRecommender 
+              profile={activeProfile} 
+            />
+          </div>
+          <div className={activeTab === 'interview' ? 'block' : 'hidden'}>
+            <MockInterview 
+              profile={activeProfile} 
+              setProfile={handleProfileChange} 
+              onNavigate={setActiveTab}
+            />
+          </div>
+          <div className={activeTab === 'coding' ? 'block' : 'hidden'}>
+            <CodingPractice 
+              profile={activeProfile} 
+            />
+          </div>
+          <div className={activeTab === 'aptitude' ? 'block' : 'hidden'}>
+            <AptitudeDashboard />
+          </div>
         </div>
-        <div className={activeTab === 'skillgap' ? 'block' : 'hidden'}>
-          <SkillGapDashboard 
-            profile={activeProfile} 
-            onGenerateRoadmap={handleGenerateRoadmap} 
-            onNavigate={setActiveTab} 
-            onOpenVerification={handleOpenGlobalVerification}
-          />
-        </div>
-        <div className={activeTab === 'resume' ? 'block' : 'hidden'}>
-          <ResumeAnalyzer 
-            profile={activeProfile} 
-            setProfile={handleProfileChange} 
-            onNavigate={setActiveTab}
-          />
-        </div>
-        <div className={activeTab === 'job' ? 'block' : 'hidden'}>
-          <JobAnalyzer 
-            profile={activeProfile}
-            onGenerateRoadmap={handleGenerateRoadmap}
-            onNavigate={setActiveTab}
-            onOpenVerification={handleOpenGlobalVerification}
-          />
-        </div>
-        <div className={activeTab === 'roadmap' ? 'block' : 'hidden'}>
-          <LearningRoadmap 
-            profile={activeProfile} 
-            missingSkillsList={missingSkillsList} 
-            targetRole={targetRole || activeProfile?.careerGoal || "Frontend Developer"}
-            onOpenVerification={handleOpenGlobalVerification}
-          />
-        </div>
-        <div className={activeTab === 'chat' ? 'block' : 'hidden'}>
-          <CareerMentor 
-            profile={activeProfile} 
-          />
-        </div>
-        <div className={activeTab === 'projects' ? 'block' : 'hidden'}>
-          <ProjectRecommender 
-            profile={activeProfile} 
-          />
-        </div>
-        <div className={activeTab === 'interview' ? 'block' : 'hidden'}>
-          <MockInterview 
-            profile={activeProfile} 
-            setProfile={handleProfileChange} 
-            onNavigate={setActiveTab}
-          />
-        </div>
-        <div className={activeTab === 'coding' ? 'block' : 'hidden'}>
-          <CodingPractice 
-            profile={activeProfile} 
-          />
-        </div>
-        <div className={activeTab === 'aptitude' ? 'block' : 'hidden'}>
-          <AptitudeDashboard />
-        </div>
-      </div>
       </React.Suspense>
     );
   };
 
-  // Gatekeeper: If user is not authenticated, require Task Flow login/signup first
+  // Unauthenticated Hero & Landing Section
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#0b0f19] text-gray-100 flex flex-col items-center justify-center p-6 relative overflow-hidden">
+      <div className="min-h-screen bg-[#fafafa] text-slate-900 flex flex-col justify-between relative overflow-hidden">
         <CartoonDecorations />
 
-        {/* Hero Cartoon Card */}
-        <div className="max-w-xl w-full cartoon-card p-8 md:p-10 text-center space-y-6 relative z-10 animate-fade-in">
-          {/* Avatar Icon */}
-          <div className="flex justify-center">
-            <AIAssistantAvatar 
-              size="lg" 
-              state="speaking" 
-              showSpeechBubble={true} 
-              speechText="Hi friend! Let's get started!" 
-            />
-          </div>
-          
-          <div>
-            <h1 className="text-3xl md:text-4xl font-black text-white tracking-wide mb-2 flex items-center justify-center gap-2">
-              <span>SkillBridge AI</span>
-              <Sparkles className="w-6 h-6 text-yellow-400 animate-spin" />
-            </h1>
-            <p className="text-sm text-gray-300 leading-relaxed font-medium">
-              Your playful AI-powered career assistant & interactive placement roadmap platform!
-            </p>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-purple-950/40 border-2 border-purple-500/30 text-left space-y-2 text-xs">
-            <div className="flex items-center gap-2 text-yellow-300 font-extrabold text-sm">
-              <Zap className="w-4 h-4 fill-yellow-400 text-yellow-400" /> 
-              <span>Interactive Task Flow Sign In</span>
+        {/* Minimal Navigation Header */}
+        <header className="max-w-6xl w-full mx-auto px-6 py-6 flex items-center justify-between relative z-10">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">
+              SB
             </div>
-            <p className="text-gray-300 leading-normal font-medium">
-              Log in or register to unlock your personalized cartoon dashboard, AI resume builder, skill gap challenges, and mock interviews!
-            </p>
+            <span className="font-semibold text-slate-900 text-base tracking-tight">SkillBridge AI</span>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 pt-2">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => { setAuthModalTab('login'); setIsAuthModalOpen(true); }}
+              className="text-sm font-medium text-slate-600 hover:text-slate-900 px-3 py-1.5 transition-colors"
+            >
+              Sign In
+            </button>
             <button
               onClick={() => { setTaskFlowMode('signup'); setIsTaskFlowAuthOpen(true); }}
-              className="cartoon-btn cartoon-btn-purple flex-1 py-3 px-5 text-sm font-bold gap-2"
+              className="saas-btn-primary text-sm px-4 py-2"
             >
-              <Zap className="w-4 h-4 fill-current" /> Start Sign Up
+              Get Started
+            </button>
+          </div>
+        </header>
+
+        {/* Hero Content Section */}
+        <main className="max-w-4xl mx-auto px-6 py-16 text-center space-y-8 relative z-10 my-auto">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-medium">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>AI-Powered Career & Skill Gap Intelligence</span>
+          </div>
+
+          <div className="space-y-4">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-slate-900 leading-tight">
+              Bridge the gap between your skills and your dream career.
+            </h1>
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
+              Analyze job descriptions, assess readiness, get verified certificates, and follow personalized learning roadmaps designed for placement success.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
+            <button
+              onClick={() => { setTaskFlowMode('signup'); setIsTaskFlowAuthOpen(true); }}
+              className="saas-btn-primary w-full sm:w-auto px-6 py-3 text-sm font-medium gap-2"
+            >
+              Start Free Assessment <ArrowRight className="w-4 h-4" />
             </button>
 
             <button
               onClick={() => { setTaskFlowMode('login'); setIsTaskFlowAuthOpen(true); }}
-              className="cartoon-btn cartoon-btn-dark flex-1 py-3 px-5 text-sm font-bold gap-2"
+              className="saas-btn-secondary w-full sm:w-auto px-6 py-3 text-sm font-medium gap-2"
             >
-              <LogIn className="w-4 h-4 text-purple-400" /> User Sign In
+              <LogIn className="w-4 h-4 text-slate-500" /> Sign In to Account
             </button>
           </div>
 
-          {/* Quick Demo Access */}
-          <div className="pt-2 border-t border-purple-500/20">
-            <button
-              onClick={async () => {
-                try {
-                  const { login } = useAuth; // hook in scope
-                } catch {}
-                setTaskFlowMode('login');
-                setIsTaskFlowAuthOpen(true);
-              }}
-              className="text-xs text-purple-300 hover:text-white font-bold flex items-center justify-center gap-1.5 mx-auto py-1 hover:underline"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-yellow-400" /> Open Guided Task Flow Authentication
-            </button>
-          </div>
-        </div>
+          {/* Clean Feature Highlights Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-12 text-left border-t border-slate-200/80">
+            <div className="saas-card p-5 space-y-2">
+              <div className="w-9 h-9 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-medium">
+                <FileText className="w-5 h-5" />
+              </div>
+              <h3 className="text-sm font-semibold text-slate-900">ATS Resume Optimizer</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Scan your resume against live job descriptions to find keyword gaps and formatting issues.
+              </p>
+            </div>
 
-        {/* Task Flow Modal */}
+            <div className="saas-card p-5 space-y-2">
+              <div className="w-9 h-9 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-medium">
+                <Layers className="w-5 h-5" />
+              </div>
+              <h3 className="text-sm font-semibold text-slate-900">Skill Gap Benchmarking</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Compare your current skills with industry standards and target roles in real-time.
+              </p>
+            </div>
+
+            <div className="saas-card p-5 space-y-2">
+              <div className="w-9 h-9 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-medium">
+                <Map className="w-5 h-5" />
+              </div>
+              <h3 className="text-sm font-semibold text-slate-900">Curated Learning Roadmaps</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Follow structured milestone roadmaps and earn verifiable skill badges through testing.
+              </p>
+            </div>
+          </div>
+        </main>
+
+        {/* Minimal Footer */}
+        <footer className="max-w-6xl w-full mx-auto px-6 py-8 border-t border-slate-200 text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-4 relative z-10">
+          <p>© 2026 SkillBridge AI. Professional career intelligence platform.</p>
+          <div className="flex items-center gap-6">
+            <button onClick={() => { setAuthModalTab('login'); setIsAuthModalOpen(true); }} className="hover:text-slate-900">Log In</button>
+            <button onClick={() => { setTaskFlowMode('signup'); setIsTaskFlowAuthOpen(true); }} className="hover:text-slate-900">Sign Up</button>
+          </div>
+        </footer>
+
+        {/* Task Flow Auth Overlay */}
         <TaskFlowAuth 
           isOpen={isTaskFlowAuthOpen} 
           onClose={() => setIsTaskFlowAuthOpen(false)} 
@@ -288,45 +323,48 @@ function MainLayout() {
             }
           }}
         />
+
+        {/* Standard Auth Modal */}
+        <AuthModal 
+          isOpen={isAuthModalOpen} 
+          onClose={() => setIsAuthModalOpen(false)} 
+          initialTab={authModalTab}
+          onStartOnboarding={() => setShowOnboarding(true)}
+        />
       </div>
     );
   }
 
+  // Authenticated App Layout
   return (
-    <div className="min-h-screen bg-[#0b0f19] text-gray-100 flex relative overflow-x-hidden">
-      {/* Background Cartoon Shapes */}
+    <div className="min-h-screen bg-[#fafafa] text-slate-900 flex relative overflow-x-hidden">
       <CartoonDecorations />
 
-      {/* Cartoon Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-40 w-72 bg-[#121727]/95 border-r-2 border-purple-500/20 backdrop-blur-xl flex flex-col justify-between transform transition-transform duration-300 md:translate-x-0 md:static ${sidebarOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'}`}>
+      {/* Minimal SaaS Sidebar */}
+      <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-slate-200 flex flex-col justify-between transform transition-transform duration-200 md:translate-x-0 md:static ${sidebarOpen ? 'translate-x-0 shadow-lg' : '-translate-x-full'}`}>
         <div className="overflow-y-auto">
           {/* Brand Logo Header */}
-          <div className="px-6 py-5 border-b-2 border-purple-500/10 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-purple-600 via-fuchsia-500 to-pink-500 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-purple-500/40 border-2 border-white/20 transform -rotate-3 hover:rotate-0 transition-transform">
+          <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">
                 SB
               </div>
               <div>
-                <span className="font-black text-base text-white tracking-wide block flex items-center gap-1.5">
-                  SkillBridge
-                  <Sparkles className="w-3.5 h-3.5 text-yellow-400" />
-                </span>
-                <span className="text-[10px] text-purple-300 font-extrabold uppercase tracking-wider block">
-                  Cartoon AI Career Engine
-                </span>
+                <span className="font-semibold text-sm text-slate-900 tracking-tight block">SkillBridge AI</span>
+                <span className="text-[11px] text-slate-500 font-normal block">Career Engine</span>
               </div>
             </div>
             
             <button 
               onClick={() => setSidebarOpen(false)}
-              className="p-2 rounded-xl bg-gray-800 text-gray-400 hover:text-white md:hidden border border-gray-700"
+              className="p-1.5 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 md:hidden"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
           {/* Navigation Links */}
-          <nav className="p-4 space-y-1.5">
+          <nav className="p-3 space-y-1">
             {navigationItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id && !showOnboarding;
@@ -339,125 +377,97 @@ function MainLayout() {
                     setActiveTab(item.id);
                     setSidebarOpen(false);
                   }}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-extrabold transition-all group ${
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
                     isActive 
-                      ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg shadow-purple-600/30 border-2 border-purple-300/40 translate-x-1' 
-                      : 'text-gray-300 hover:text-white hover:bg-purple-900/20 hover:translate-x-1'
+                      ? 'bg-indigo-50 text-indigo-700 font-semibold' 
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                   }`}
                 >
-                  <div className={`p-2 rounded-xl ${item.bg} ${item.color} group-hover:scale-110 transition-transform`}>
-                    <Icon className="w-4 h-4" />
-                  </div>
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-indigo-600' : 'text-slate-400'}`} />
                   <span className="flex-1 text-left">{item.label}</span>
-                  {isActive && (
-                    <div className="w-2 h-2 rounded-full bg-yellow-300 animate-ping" />
-                  )}
                 </button>
               );
             })}
           </nav>
         </div>
 
-        {/* Sidebar Footer with Animated Sparky Avatar */}
-        <div className="p-4 border-t-2 border-purple-500/10 bg-[#0d1220]/80 space-y-3">
-          <div className="flex items-center gap-3 p-2.5 rounded-2xl bg-purple-950/40 border border-purple-500/20">
+        {/* Sidebar Footer User Info */}
+        <div className="p-3 border-t border-slate-100 bg-white space-y-2">
+          <div className="flex items-center gap-2.5 p-2 rounded-lg bg-slate-50 border border-slate-200/60">
             <AIAssistantAvatar size="sm" state={avatarState} onClick={() => setAvatarState('success')} />
-            <div className="overflow-hidden flex-1">
-              <span className="text-xs font-black text-white block truncate">
-                {activeProfile.name?.split(' - ')[0] || 'Student'}
+            <div className="overflow-hidden flex-1 min-w-0">
+              <span className="text-xs font-semibold text-slate-900 block truncate">
+                {activeProfile.name?.split(' - ')[0] || 'User Profile'}
               </span>
-              <span className="text-[10px] text-purple-300 font-bold block truncate flex items-center gap-1">
-                <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
-                Level 4 Scholar
+              <span className="text-[11px] text-slate-500 font-normal block truncate">
+                {activeProfile.careerGoal || 'Frontend Developer'}
               </span>
             </div>
             
             {isAuthenticated && (
               <button 
                 onClick={logout}
-                className="p-2 rounded-xl bg-gray-800 hover:bg-rose-500/20 text-gray-400 hover:text-rose-400 border border-gray-700 transition-all"
+                className="p-1.5 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
                 title="Log Out"
               >
-                <LogOut className="w-4 h-4" />
+                <LogOut className="w-3.5 h-3.5" />
               </button>
             )}
           </div>
 
           <button
             onClick={() => setShowOnboarding(true)}
-            className="w-full py-2 px-3 rounded-xl bg-purple-900/30 hover:bg-purple-900/50 border-2 border-purple-500/30 text-xs font-bold text-purple-200 hover:text-white flex items-center justify-center gap-2 transition-all hover:scale-[1.02]"
+            className="w-full py-1.5 px-2.5 rounded-md bg-white hover:bg-slate-50 border border-slate-200 text-xs font-medium text-slate-700 flex items-center justify-center gap-1.5 transition-colors"
           >
-            <Sparkles className="w-3.5 h-3.5 text-yellow-400" /> Edit Profile Wizard
+            <Sparkles className="w-3 h-3 text-indigo-600" /> Edit Profile Setup
           </button>
         </div>
       </aside>
 
-      {/* Main Body Wrap */}
+      {/* Main Content Wrap */}
       <div className="flex-1 flex flex-col min-w-0 z-10">
         {/* Top Header */}
-        <header className="px-6 py-4 bg-[#121727]/80 backdrop-blur-md border-b-2 border-purple-500/10 flex items-center justify-between shrink-0 sticky top-0 z-30">
+        <header className="px-6 py-3.5 bg-white border-b border-slate-200/80 flex items-center justify-between shrink-0 sticky top-0 z-30">
           <div className="flex items-center gap-3">
             <button 
               onClick={() => setSidebarOpen(true)}
-              className="p-2 rounded-2xl bg-gray-800 border-2 border-gray-700 text-gray-300 hover:text-white md:hidden"
+              className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:text-slate-900 md:hidden"
             >
-              <Menu className="w-5 h-5" />
+              <Menu className="w-4 h-4" />
             </button>
 
-            {/* Sparky Status Indicator */}
-            <div className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-950/60 border-2 border-purple-500/30 text-xs font-bold text-purple-200">
-              <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping"></span>
-              <span>Sparky AI Assistant Active</span>
+            {/* Breadcrumb / Page Title */}
+            <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500">
+              <span>SkillBridge</span>
+              <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+              <span className="font-medium text-slate-900 capitalize">{navigationItems.find(i => i.id === activeTab)?.label || 'Dashboard'}</span>
             </div>
           </div>
 
           {/* Header Action Buttons */}
           <div className="flex items-center gap-3 text-xs">
-            {/* Gamified Placement Readiness Pill */}
-            <div className="hidden md:flex items-center gap-2 px-4 py-1.5 rounded-2xl bg-gradient-to-r from-purple-900/40 to-pink-900/40 border-2 border-pink-500/30">
-              <Trophy className="w-4 h-4 text-yellow-400 animate-bounce" />
-              <span className="font-extrabold text-white">
-                {activeProfile.scores?.placementReadiness || 81}% Ready
-              </span>
+            {/* Placement Readiness Pill */}
+            <div className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-xs font-medium">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Readiness: {activeProfile.scores?.placementReadiness || 81}%</span>
             </div>
 
-            {/* Notifications Toggle Button */}
+            {/* Notifications Toggle */}
             <button
               onClick={() => setIsNotificationsOpen(true)}
-              className="p-2.5 rounded-2xl bg-gray-900 border-2 border-purple-500/20 hover:border-purple-500/50 text-gray-300 hover:text-white relative transition-all hover:scale-105"
+              className="p-2 rounded-lg border border-slate-200 text-slate-500 hover:text-slate-900 hover:bg-slate-50 relative transition-colors"
               title="Notifications"
             >
               <Bell className="w-4 h-4" />
-              <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-pink-500 animate-ping"></span>
-              <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-pink-500 border border-white"></span>
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-indigo-600"></span>
             </button>
 
-            {/* Auth Buttons */}
-            {!isAuthenticated ? (
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => { setTaskFlowMode('signup'); setIsTaskFlowAuthOpen(true); }}
-                  className="cartoon-btn cartoon-btn-purple py-2 px-4 text-xs font-bold gap-1.5"
-                >
-                  <Zap className="w-3.5 h-3.5 fill-current" /> Sign Up
-                </button>
-                <button
-                  onClick={() => { setAuthModalTab('login'); setIsAuthModalOpen(true); }}
-                  className="cartoon-btn cartoon-btn-dark py-2 px-3 text-xs font-bold"
-                >
-                  Sign In
-                </button>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2 bg-gray-900/80 border-2 border-purple-500/20 px-3.5 py-1.5 rounded-2xl">
-                <span className="text-[11px] font-extrabold text-emerald-400 flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Online
-                </span>
-                <span className="text-white font-bold truncate max-w-[120px] sm:max-w-none text-xs">
-                  {activeProfile.name?.split(' - ')[0]}
-                </span>
-              </div>
-            )}
+            {/* User status */}
+            <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
+              <span className="text-xs font-medium text-slate-700 truncate max-w-[120px] sm:max-w-none">
+                {activeProfile.name?.split(' - ')[0]}
+              </span>
+            </div>
           </div>
         </header>
 
@@ -481,7 +491,7 @@ function MainLayout() {
         }}
       />
 
-      {/* Legacy/Standard Auth Modal Overlay */}
+      {/* Standard Auth Modal Overlay */}
       <AuthModal 
         isOpen={isAuthModalOpen} 
         onClose={() => setIsAuthModalOpen(false)} 

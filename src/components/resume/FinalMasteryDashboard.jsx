@@ -1,6 +1,6 @@
-// agent-notes: { ctx: "100% Final Mastery Dashboard component displaying completion banner, verified skills list, updated resume summary, and download actions", deps: ["react", "lucide-react"], state: "active", last: "anti@2026-08-06" }
+// agent-notes: { ctx: "Clean minimal SaaS 100% Final Mastery Dashboard component", deps: ["react", "lucide-react"], state: "active", last: "anti@2026-08-27" }
 import React from 'react';
-import { Trophy, CheckCircle, Eye, Download, Award, Sparkles } from 'lucide-react';
+import { Trophy, CheckCircle, Eye, Download, Award } from 'lucide-react';
 
 export default function FinalMasteryDashboard({ 
   targetRole = "Full Stack Developer", 
@@ -23,53 +23,53 @@ export default function FinalMasteryDashboard({
   ];
 
   const resumeImprovements = [
-    "Grammar corrected",
-    "ATS optimized",
-    "Formatting improved",
-    "Skills updated",
-    "Verified skills added",
-    "Projects improved"
+    "Grammar & style corrected",
+    "ATS format optimized",
+    "Quantifiable metrics added",
+    "Technical skills matrix updated",
+    "Verified credential badges embedded",
+    "Project bullet points enhanced"
   ];
 
   return (
-    <div className="glass rounded-3xl border-2 border-amber-400/50 bg-gradient-to-b from-amber-500/10 via-gray-950 to-black p-6 sm:p-8 space-y-8 shadow-2xl animate-fade-in">
+    <div className="saas-card p-6 sm:p-8 space-y-6 border-emerald-200 bg-emerald-50/20">
       {/* 100% COMPLETE BANNER */}
-      <div className="text-center space-y-3 pb-6 border-b border-amber-400/20">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-xs font-black tracking-widest uppercase shadow-lg shadow-amber-400/10">
-          <Sparkles className="w-4 h-4" /> 🎉 100% COMPLETE
+      <div className="text-center space-y-2 pb-4 border-b border-emerald-100">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-semibold">
+          <Trophy className="w-3.5 h-3.5" /> 100% Placement Ready
         </div>
 
-        <h2 className="text-2xl sm:text-3xl font-black text-white tracking-wide">
-          {targetRole} Skill Profile
+        <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
+          {targetRole} Profile Complete
         </h2>
 
-        <div className="text-4xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-emerald-400 to-teal-300 py-1">
-          100% ✓
+        <div className="text-3xl sm:text-4xl font-bold text-emerald-600">
+          100% Verified
         </div>
 
-        <p className="text-xs sm:text-sm text-amber-200/80 font-medium">
-          All required competencies verified through SkillBridge AI
+        <p className="text-xs text-slate-600">
+          All required role competencies verified through standardized assessments
         </p>
       </div>
 
       {/* VERIFIED SKILLS LIST */}
-      <div className="space-y-4">
-        <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-          <CheckCircle className="w-4 h-4 text-emerald-400" /> VERIFIED SKILLS
+      <div className="space-y-3">
+        <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
+          <CheckCircle className="w-4 h-4 text-emerald-600" /> Verified Competencies
         </h3>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {verifiedList.map((sk, idx) => (
             <div 
               key={idx} 
-              className="p-3.5 rounded-xl bg-gray-900/80 border border-gray-800 flex items-center justify-between text-xs"
+              className="p-2.5 rounded-lg bg-white border border-slate-200 flex items-center justify-between text-xs"
             >
-              <div className="flex items-center gap-2 font-bold text-white">
-                <span className="text-emerald-400 font-black">✓</span>
+              <div className="flex items-center gap-2 font-medium text-slate-900">
+                <span className="text-emerald-600 font-bold">✓</span>
                 <span>{sk.name || sk.skill}</span>
               </div>
-              <span className="px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-black tracking-wider uppercase border border-emerald-500/30">
-                CERTIFIED
+              <span className="saas-badge saas-badge-success text-[10px]">
+                Certified
               </span>
             </div>
           ))}
@@ -77,15 +77,15 @@ export default function FinalMasteryDashboard({
       </div>
 
       {/* UPDATED RESUME HIGHLIGHTS */}
-      <div className="space-y-4 pt-4 border-t border-gray-800">
-        <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-          <Trophy className="w-4 h-4 text-amber-400" /> UPDATED RESUME
+      <div className="space-y-3 pt-3 border-t border-slate-100">
+        <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider">
+          Applied Resume Enhancements
         </h3>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
           {resumeImprovements.map((imp, idx) => (
-            <div key={idx} className="p-3 rounded-xl bg-emerald-500/5 border border-emerald-500/20 text-emerald-300 text-xs font-semibold flex items-center gap-2">
-              <span className="text-emerald-400 font-black">✓</span>
+            <div key={idx} className="p-2.5 rounded-lg bg-white border border-slate-200 text-slate-700 text-xs flex items-center gap-2">
+              <span className="text-emerald-600 font-bold">✓</span>
               <span>{imp}</span>
             </div>
           ))}
@@ -93,26 +93,26 @@ export default function FinalMasteryDashboard({
       </div>
 
       {/* ACTION BUTTONS */}
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-6 border-t border-gray-800">
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 pt-4 border-t border-slate-100">
         <button
           onClick={onPreviewResume}
-          className="w-full sm:w-auto px-5 py-3 rounded-xl bg-gray-900 border border-gray-800 hover:border-accent-purple text-white text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-md"
+          className="w-full sm:w-auto saas-btn-secondary py-2 px-4 text-xs font-medium gap-1.5"
         >
-          <Eye className="w-4 h-4 text-accent-purple" /> PREVIEW RESUME
+          <Eye className="w-3.5 h-3.5 text-slate-500" /> Preview Resume
         </button>
 
         <button
           onClick={onDownloadFinalResume}
-          className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-amber-400 via-emerald-400 to-teal-400 hover:opacity-95 text-gray-950 text-xs font-black flex items-center justify-center gap-2 shadow-xl shadow-amber-400/20 transition-all"
+          className="w-full sm:w-auto saas-btn-primary py-2 px-4 text-xs font-medium gap-1.5"
         >
-          <Download className="w-4 h-4" /> DOWNLOAD FINAL RESUME
+          <Download className="w-3.5 h-3.5" /> Download Final Resume PDF
         </button>
 
         <button
           onClick={onDownloadCertificates}
-          className="w-full sm:w-auto px-5 py-3 rounded-xl bg-accent-purple hover:bg-accent-purple/90 text-white text-xs font-black flex items-center justify-center gap-2 shadow-lg shadow-accent-purple/20 transition-all"
+          className="w-full sm:w-auto saas-btn-secondary py-2 px-4 text-xs font-medium gap-1.5"
         >
-          <Award className="w-4 h-4" /> DOWNLOAD CERTIFICATES
+          <Award className="w-3.5 h-3.5 text-slate-500" /> Export Certificates
         </button>
       </div>
     </div>

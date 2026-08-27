@@ -1,18 +1,18 @@
-// agent-notes: { ctx: "Interactive clickable target pipeline flow with auto-scroll and tab-jump triggers", deps: ["react", "lucide-react"], state: "active", last: "anti@2026-08-20" }
+// agent-notes: { ctx: "Clean minimal SaaS interactive pipeline flow component", deps: ["react", "lucide-react"], state: "active", last: "anti@2026-08-27" }
 import React from 'react';
-import { Upload, Search, BarChart3, Target, BookOpen, ShieldCheck, FileCheck, Trophy, Download, ChevronRight } from 'lucide-react';
+import { Upload, Search, BarChart3, Target, BookOpen, ShieldCheck, FileCheck, Trophy, Download } from 'lucide-react';
 
 export default function TargetPipelineFlow({ currentStage = 1, onStepClick }) {
   const steps = [
-    { num: 1, label: "Upload Resume", icon: Upload, desc: "PDF / DOCX Upload", tab: 'overview', targetId: 'upload-section' },
-    { num: 2, label: "7-Dimensional Parser", icon: Search, desc: "Grammar, ATS & Skills", tab: 'overview', targetId: 'analysis-summary' },
-    { num: 3, label: "Resume Score", icon: BarChart3, desc: "Multi-Metric Evaluation", tab: 'overview', targetId: 'score-cards' },
-    { num: 4, label: "Skill Gap Engine", icon: Target, desc: "Target Role Matrix", tab: 'skills', targetId: 'skill-gap-section' },
-    { num: 5, label: "Skill Bridge AI", icon: BookOpen, desc: "Learning, MCQ & Code", tab: 'skills', targetId: 'skill-bridge-section' },
-    { num: 6, label: "Certification", icon: ShieldCheck, desc: "SBA PDF Certificate", tab: 'certs', targetId: 'certificates-section' },
-    { num: 7, label: "Update Resume", icon: FileCheck, desc: "Structured Patch App", tab: 'issues', targetId: 'problems-section' },
-    { num: 8, label: "100% Mastery", icon: Trophy, desc: "Master Profile", tab: 'certs', targetId: 'mastery-section' },
-    { num: 9, label: "Download", icon: Download, desc: "Export Clean Resume", tab: 'certs', targetId: 'download-section' }
+    { num: 1, label: "Upload", icon: Upload, desc: "PDF / DOCX", tab: 'overview', targetId: 'upload-section' },
+    { num: 2, label: "Audit", icon: Search, desc: "ATS & Grammar", tab: 'overview', targetId: 'analysis-summary' },
+    { num: 3, label: "Score", icon: BarChart3, desc: "Metrics", tab: 'overview', targetId: 'score-cards' },
+    { num: 4, label: "Skill Gap", icon: Target, desc: "Matrix", tab: 'skills', targetId: 'skill-gap-section' },
+    { num: 5, label: "Bridge", icon: BookOpen, desc: "Learning", tab: 'skills', targetId: 'skill-bridge-section' },
+    { num: 6, label: "Certify", icon: ShieldCheck, desc: "Credentials", tab: 'certs', targetId: 'certificates-section' },
+    { num: 7, label: "Fixes", icon: FileCheck, desc: "Apply Fixes", tab: 'issues', targetId: 'problems-section' },
+    { num: 8, label: "Mastery", icon: Trophy, desc: "100% Score", tab: 'certs', targetId: 'mastery-section' },
+    { num: 9, label: "Export", icon: Download, desc: "Download PDF", tab: 'certs', targetId: 'download-section' }
   ];
 
   const handleClick = (step) => {
@@ -22,12 +22,12 @@ export default function TargetPipelineFlow({ currentStage = 1, onStepClick }) {
   };
 
   return (
-    <div className="glass rounded-2xl p-4 border border-gray-800 space-y-2.5 bg-gray-950/70">
-      <div className="flex items-center justify-between">
-        <h3 className="text-xs font-black text-gray-300 uppercase tracking-widest flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" /> INTERACTIVE PIPELINE FLOW
+    <div className="saas-card p-3 space-y-2">
+      <div className="flex items-center justify-between px-1">
+        <h3 className="text-xs font-semibold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-emerald-500" /> Progression Pipeline
         </h3>
-        <span className="text-[10px] text-accent-purple font-semibold">Click any step to auto-scroll & view feature ›</span>
+        <span className="text-[11px] text-slate-500">Click any stage to navigate</span>
       </div>
 
       <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-9 gap-1.5 pt-0.5">
@@ -40,25 +40,24 @@ export default function TargetPipelineFlow({ currentStage = 1, onStepClick }) {
             <button
               key={st.num}
               onClick={() => handleClick(st)}
-              className={`p-2.5 rounded-xl text-center space-y-1.5 border transition-all cursor-pointer group hover:scale-[1.03] active:scale-95 ${
+              className={`p-2 rounded-lg text-center space-y-1 border transition-colors cursor-pointer ${
                 isCurrent 
-                  ? 'bg-accent-purple/20 border-accent-purple text-white shadow-lg shadow-accent-purple/15 ring-1 ring-accent-purple/50' 
+                  ? 'bg-indigo-50 border-indigo-600 text-indigo-900 font-semibold shadow-sm' 
                   : isPassed 
-                  ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20' 
-                  : 'bg-gray-900/60 border-gray-800 text-gray-400 hover:border-gray-700 hover:text-white'
+                  ? 'bg-emerald-50/60 border-emerald-200 text-emerald-800' 
+                  : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
               }`}
             >
-              <div className={`w-7 h-7 rounded-lg flex items-center justify-center mx-auto text-xs font-black transition-all ${
+              <div className={`w-6 h-6 rounded-md flex items-center justify-center mx-auto text-xs ${
                 isCurrent 
-                  ? 'bg-accent-purple text-white shadow-md' 
+                  ? 'bg-indigo-600 text-white' 
                   : isPassed 
-                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
-                  : 'bg-gray-950 border border-gray-800 text-gray-400 group-hover:text-white'
+                  ? 'bg-emerald-100 text-emerald-700' 
+                  : 'bg-slate-100 text-slate-500'
               }`}>
                 <Icon className="w-3.5 h-3.5" />
               </div>
-              <div className="text-[10px] font-extrabold truncate leading-tight">{st.label}</div>
-              <div className="text-[8px] text-gray-500 hidden lg:block truncate">{st.desc}</div>
+              <div className="text-[11px] truncate leading-tight">{st.label}</div>
             </button>
           );
         })}

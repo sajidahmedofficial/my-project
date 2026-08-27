@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Playful cartoon multi-metric score cards with color-coded states (Green, Yellow, Red) and micro-interactions", deps: ["react"], state: "active", last: "anti@2026-08-21" }
+// agent-notes: { ctx: "Clean minimal SaaS multi-metric score cards with neutral borders and status indicators", deps: ["react"], state: "active", last: "anti@2026-08-27" }
 import React from "react";
 
 function ResumeScore({
@@ -29,42 +29,39 @@ function ResumeScore({
   const getStatusBadge = (val) => {
     if (val >= 80) {
       return {
-        label: "🟢 Excellent",
-        color: "text-emerald-400 border-emerald-500/40 bg-emerald-950/30",
-        valColor: "text-emerald-300"
+        label: "Optimal",
+        badgeClass: "saas-badge-success"
       };
     }
     if (val >= 50) {
       return {
-        label: "🟡 Needs Polish",
-        color: "text-yellow-400 border-yellow-500/40 bg-yellow-950/30",
-        valColor: "text-yellow-300"
+        label: "Needs Polish",
+        badgeClass: "saas-badge-warning"
       };
     }
     return {
-      label: "🔴 Critical Gap",
-      color: "text-rose-400 border-rose-500/40 bg-rose-950/30",
-      valColor: "text-rose-300"
+      label: "Gap Found",
+      badgeClass: "saas-badge-danger"
     };
   };
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5 select-none">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
       {items.map((item) => {
         const status = getStatusBadge(item.value);
         return (
           <div
             key={item.name}
-            className={`cartoon-card p-4 text-center space-y-1.5 border-2 hover:scale-105 transition-all ${status.color}`}
+            className="saas-card p-3.5 text-center space-y-1"
           >
-            <div className={`text-2xl md:text-3xl font-black ${status.valColor}`}>
+            <div className="text-xl sm:text-2xl font-bold text-slate-900">
               {item.value}%
             </div>
-            <div className="text-[11px] font-black text-gray-300 uppercase tracking-wider truncate">
+            <div className="text-[11px] font-medium text-slate-500 truncate">
               {item.name}
             </div>
-            <div className="pt-1">
-              <span className="text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-white/10 text-gray-300">
+            <div className="pt-0.5">
+              <span className={`saas-badge text-[10px] ${status.badgeClass}`}>
                 {status.label}
               </span>
             </div>

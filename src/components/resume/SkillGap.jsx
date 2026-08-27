@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Compact & modern 3-column Skill Gap matrix with status filters, micro-bars, and quick verify triggers", deps: ["react", "lucide-react"], state: "active", last: "anti@2026-08-20" }
+// agent-notes: { ctx: "Clean minimal SaaS 3-column Skill Gap matrix with status filters & verify actions", deps: ["react", "lucide-react"], state: "active", last: "anti@2026-08-27" }
 import React, { useState } from "react";
 import { CheckCircle2, Zap, Award, Layers } from "lucide-react";
 
@@ -10,7 +10,6 @@ function SkillGap({
 }) {
   const [filter, setFilter] = useState("all");
 
-  // Normalize skills data format
   const rawList = skills.length > 0 ? skills : skillsStatus;
 
   const normalizedSkills = rawList.length > 0 ? rawList.map(item => {
@@ -41,18 +40,18 @@ function SkillGap({
   });
 
   return (
-    <section className="skill-gap glass rounded-2xl p-5 border border-gray-800 space-y-4">
+    <section className="saas-card p-5 space-y-4">
       {/* Header with Stats & Filter Chips */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-gray-800">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-accent-purple/20 text-accent-purple flex items-center justify-center font-bold">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
             <Layers className="w-4 h-4" />
           </div>
           <div>
-            <h2 className="text-sm font-black text-white tracking-wide flex items-center gap-2">
-              Skill Gap & Competency Matrix
+            <h2 className="text-sm font-semibold text-slate-900">
+              Competency Matrix
             </h2>
-            <p className="text-[11px] text-gray-400">
+            <p className="text-xs text-slate-500">
               {gainedCount} of {normalizedSkills.length} target role skills verified
             </p>
           </div>
@@ -62,20 +61,20 @@ function SkillGap({
         <div className="flex items-center gap-1.5 flex-wrap">
           <button
             onClick={() => setFilter("all")}
-            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${
+            className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
               filter === "all"
-                ? "bg-accent-purple text-white shadow-sm"
-                : "bg-gray-900 border border-gray-800 text-gray-400 hover:text-white"
+                ? "bg-slate-900 text-white"
+                : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
             }`}
           >
             All ({normalizedSkills.length})
           </button>
           <button
             onClick={() => setFilter("gained")}
-            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${
+            className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
               filter === "gained"
-                ? "bg-emerald-500 text-white shadow-sm"
-                : "bg-gray-900 border border-gray-800 text-emerald-400 hover:bg-emerald-500/10"
+                ? "bg-slate-900 text-white"
+                : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
             }`}
           >
             ✓ Gained ({gainedCount})
@@ -83,10 +82,10 @@ function SkillGap({
           {learningCount > 0 && (
             <button
               onClick={() => setFilter("learning")}
-              className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${
+              className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
                 filter === "learning"
-                  ? "bg-blue-500 text-white shadow-sm"
-                  : "bg-gray-900 border border-gray-800 text-blue-400 hover:bg-blue-500/10"
+                  ? "bg-slate-900 text-white"
+                  : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
               }`}
             >
               ◐ Learning ({learningCount})
@@ -95,27 +94,19 @@ function SkillGap({
           {missingCount > 0 && (
             <button
               onClick={() => setFilter("missing")}
-              className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${
+              className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
                 filter === "missing"
-                  ? "bg-amber-500 text-white shadow-sm"
-                  : "bg-gray-900 border border-gray-800 text-amber-400 hover:bg-amber-500/10"
+                  ? "bg-slate-900 text-white"
+                  : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
               }`}
             >
               ✗ Missing ({missingCount})
             </button>
           )}
-          {onOpenSkillBridge && (
-            <button
-              onClick={onOpenSkillBridge}
-              className="px-3 py-1 rounded-lg bg-gray-900 hover:bg-gray-800 border border-gray-700 text-white font-extrabold text-[11px] transition-all ml-auto sm:ml-2"
-            >
-              Open Skill Bridge ›
-            </button>
-          )}
         </div>
       </div>
 
-      {/* Compact 2/3-Column Matrix Grid (No Excessive Scrolling) */}
+      {/* Grid of Skill Chips */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5">
         {filteredSkills.map((item) => {
           const isGained = item.status === "GAINED" || item.currentLevel >= 100;
@@ -124,78 +115,47 @@ function SkillGap({
           return (
             <div
               key={item.skill}
-              className={`p-3 rounded-xl border transition-all flex flex-col justify-between space-y-2 ${
-                isGained
-                  ? "bg-emerald-950/20 border-emerald-500/30 hover:border-emerald-500/50"
-                  : isLearning
-                  ? "bg-blue-950/20 border-blue-500/30 hover:border-blue-500/50"
-                  : "bg-gray-900/60 border-gray-800 hover:border-amber-500/40"
-              }`}
+              className="p-3 rounded-lg border border-slate-200 bg-white flex flex-col justify-between space-y-2"
             >
               <div className="flex items-center justify-between gap-1.5">
                 <div className="flex items-center gap-1.5 min-w-0">
-                  <span className={`text-xs font-black shrink-0 ${
-                    isGained ? "text-emerald-400" : isLearning ? "text-blue-400" : "text-amber-400"
+                  <span className={`text-xs font-semibold shrink-0 ${
+                    isGained ? "text-emerald-600" : isLearning ? "text-amber-600" : "text-rose-600"
                   }`}>
                     {isGained ? "✓" : isLearning ? "◐" : "✗"}
                   </span>
-                  <h4 className="text-xs font-bold text-white truncate">{item.skill}</h4>
+                  <span className="text-xs font-medium text-slate-900 truncate">
+                    {item.skill}
+                  </span>
                 </div>
-
-                <span
-                  className={`px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider shrink-0 ${
-                    isGained
-                      ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
-                      : isLearning
-                      ? "bg-blue-500/20 text-blue-300 border border-blue-500/30"
-                      : "bg-amber-500/20 text-amber-300 border border-amber-500/30"
-                  }`}
-                >
-                  {isGained ? "GAINED" : isLearning ? "LEARNING" : "MISSING"}
+                <span className={`saas-badge text-[10px] ${
+                  isGained ? 'saas-badge-success' : isLearning ? 'saas-badge-warning' : 'saas-badge-danger'
+                }`}>
+                  {item.status}
                 </span>
               </div>
 
-              {/* Compact Progress Line */}
-              <div className="space-y-1">
-                <div className="w-full bg-gray-950 rounded-full h-1.5 overflow-hidden border border-gray-800">
-                  <div
-                    className={`h-full rounded-full transition-all duration-500 ${
-                      isGained
-                        ? "bg-emerald-400"
-                        : isLearning
-                        ? "bg-gradient-to-r from-blue-400 to-accent-purple"
-                        : "bg-gray-800"
-                    }`}
-                    style={{ width: `${item.currentLevel}%` }}
-                  />
-                </div>
-                <div className="flex items-center justify-between text-[10px] text-gray-400 font-semibold">
-                  <span>Score: {item.currentLevel}%</span>
-                  {!isGained && onOpenVerification && (
-                    <button
-                      onClick={() => onOpenVerification(item.skill)}
-                      className="text-amber-400 hover:text-amber-300 font-bold flex items-center gap-0.5"
-                    >
-                      <Zap className="w-2.5 h-2.5 fill-amber-400" /> Verify
-                    </button>
-                  )}
-                  {isGained && (
-                    <span className="text-emerald-400 font-bold flex items-center gap-0.5">
-                      <CheckCircle2 className="w-2.5 h-2.5" /> Certified
-                    </span>
-                  )}
-                </div>
+              <div className="w-full bg-slate-100 rounded-full h-1 overflow-hidden">
+                <div 
+                  className={`h-full rounded-full ${
+                    isGained ? "bg-emerald-600" : isLearning ? "bg-amber-500" : "bg-slate-300"
+                  }`} 
+                  style={{ width: `${item.currentLevel}%` }} 
+                />
               </div>
+
+              {!isGained && onOpenVerification && (
+                <button
+                  onClick={() => onOpenVerification(item.skill)}
+                  className="saas-btn-secondary py-0.5 px-2 text-[11px] w-full"
+                >
+                  Verify Skill
+                </button>
+              )}
             </div>
           );
         })}
       </div>
-
-      {filteredSkills.length === 0 && (
-        <div className="p-8 text-center text-gray-500 text-xs italic bg-gray-900/30 rounded-xl border border-gray-800">
-          No skills found under the selected filter.
-        </div>
-      )}
     </section>
   );
 }

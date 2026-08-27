@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Actionable resume problem list component with Apply Fix capability", deps: ["react", "lucide-react"], state: "active", last: "anti@2026-08-06" }
+// agent-notes: { ctx: "Clean minimal SaaS Resume Problems list component", deps: ["react", "lucide-react"], state: "active", last: "anti@2026-08-27" }
 import React from 'react';
 import { AlertCircle, Check } from 'lucide-react';
 
@@ -12,40 +12,42 @@ export default function ResumeProblems({ problems = [], onApplyFix }) {
   };
 
   return (
-    <div className="glass rounded-2xl p-6 border border-gray-800 space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-bold text-white flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 text-amber-400" /> RESUME PROBLEMS
+    <div className="saas-card p-5 space-y-3">
+      <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+        <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-1.5">
+          <AlertCircle className="w-4 h-4 text-amber-600" /> Resume Optimizations
         </h3>
 
         {unfixedCount > 0 && (
           <button
             onClick={handleApplyAll}
-            className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-white text-xs font-black flex items-center gap-1.5 shadow-md shadow-emerald-500/20 transition-all"
+            className="saas-btn-primary py-1 px-3 text-xs gap-1.5"
           >
-            <Check className="w-3.5 h-3.5" /> Apply All Fixes & Proceed Next Task
+            <Check className="w-3.5 h-3.5" /> Apply All Fixes
           </button>
         )}
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         {problems.map((prob) => (
-          <div key={prob.id} className="p-4 rounded-xl bg-gray-900/80 border border-gray-800 space-y-2">
+          <div key={prob.id} className="p-3.5 rounded-lg border border-slate-200 bg-white space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-gray-300">{prob.problem}</span>
+              <span className="text-xs font-semibold text-slate-900">{prob.problem}</span>
               {!prob.fixed ? (
                 <button
                   onClick={() => onApplyFix(prob.id)}
-                  className="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold flex items-center gap-1 transition-all"
+                  className="saas-btn-secondary py-1 px-2.5 text-xs font-medium gap-1"
                 >
-                  <Check className="w-3.5 h-3.5" /> Apply Fix & Continue
+                  <Check className="w-3.5 h-3.5" /> Apply Fix
                 </button>
               ) : (
-                <span className="text-xs font-bold text-emerald-400">Fixed ✓</span>
+                <span className="saas-badge saas-badge-success text-xs">Fixed ✓</span>
               )}
             </div>
-            <p className="text-xs text-gray-400 line-through">{prob.original}</p>
-            <p className="text-xs text-emerald-400">Suggested: {prob.suggested}</p>
+            <p className="text-xs text-slate-400 line-through">{prob.original}</p>
+            <p className="text-xs text-emerald-800 font-medium bg-emerald-50 p-2 rounded-md border border-emerald-100">
+              Suggested: {prob.suggested}
+            </p>
           </div>
         ))}
       </div>
