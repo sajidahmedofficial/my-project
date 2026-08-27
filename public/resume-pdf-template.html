@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Full Stack Developer - ATS Resume</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 12mm 15mm 12mm 15mm;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+      color: #111827;
+      background-color: #f8fafc;
+      line-height: 1.4;
+      font-size: 10pt;
+      padding: 20px 10px;
+    }
+    .page {
+      background: #ffffff;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 28px 32px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      border-radius: 8px;
+    }
+    .header {
+      text-align: center;
+      border-bottom: 2px solid #1e3a8a;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+    .name {
+      font-size: 21pt;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #1e3a8a;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    .headline {
+      font-size: 11pt;
+      font-weight: 700;
+      color: #2563eb;
+      margin-bottom: 6px;
+    }
+    .contact-info {
+      font-size: 9pt;
+      color: #4b5563;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+    }
+    .section {
+      margin-bottom: 11px;
+    }
+    .section-title {
+      font-size: 10.5pt;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #1e3a8a;
+      border-bottom: 1.5px solid #cbd5e1;
+      padding-bottom: 2px;
+      margin-bottom: 6px;
+    }
+    .summary-text {
+      text-align: justify;
+      font-size: 9.2pt;
+      color: #374151;
+    }
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 9.5pt;
+      font-weight: 700;
+      color: #1f2937;
+    }
+    .item-subheader {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 8.8pt;
+      font-style: italic;
+      color: #4b5563;
+      margin-bottom: 2px;
+    }
+    .bullet-list {
+      list-style-type: disc;
+      padding-left: 16px;
+      font-size: 8.8pt;
+      color: #374151;
+      margin-top: 2px;
+    }
+    .bullet-list li {
+      margin-bottom: 2px;
+    }
+    .skills-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 8.8pt;
+    }
+    .skills-table td {
+      padding: 2.5px 0;
+      vertical-align: top;
+    }
+    .skill-category {
+      font-weight: 700;
+      color: #1e3a8a;
+      width: 135px;
+    }
+    .skill-list {
+      color: #374151;
+    }
+    .verified-badge {
+      display: inline-block;
+      background-color: #eff6ff;
+      color: #1d4ed8;
+      font-size: 7.5pt;
+      font-weight: 700;
+      padding: 0.5px 4px;
+      border-radius: 3px;
+      border: 1px solid #bfdbfe;
+      margin-right: 4px;
+    }
+    .cert-item {
+      display: flex;
+      justify-content: space-between;
+      font-size: 8.8pt;
+      margin-bottom: 3px;
+      color: #374151;
+    }
+    .cert-code {
+      font-family: monospace;
+      font-size: 8pt;
+      color: #2563eb;
+      font-weight: 700;
+    }
+    .declaration {
+      margin-top: 10px;
+      padding-top: 6px;
+      border-top: 1px dashed #cbd5e1;
+      font-size: 8.2pt;
+      color: #6b7280;
+    }
+    .print-bar {
+      max-width: 800px;
+      margin: 0 auto 16px auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #1e293b;
+      padding: 12px 18px;
+      border-radius: 8px;
+      color: #ffffff;
+    }
+    .btn-print {
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-print:hover {
+      background: #1d4ed8;
+    }
+    @media print {
+      body {
+        padding: 0;
+        background-color: #ffffff;
+      }
+      .page {
+        box-shadow: none;
+        padding: 0;
+        border-radius: 0;
+        max-width: 100%;
+      }
+      .print-bar {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="print-bar">
+    <div>
+      <strong>SkillBridge ATS Resume</strong> — Ready for PDF Export
+    </div>
+    <button class="btn-print" onclick="window.print()">
+      🖨️ Save as PDF / Print
+    </button>
+  </div>
+
+  <div class="page">
+    <!-- Header -->
+    <div class="header">
+      <div class="name">Full Stack Web Developer</div>
+      <div class="headline">Full Stack Developer | AI & Web Systems</div>
+      <div class="contact-info">
+        <span>📍 Chennai, Tamil Nadu, India</span>
+        <span>✉️ developer@example.com</span>
+        <span>📞 +91 98765 43210</span>
+        <span>🔗 linkedin.com/in/developer</span>
+        <span>💻 github.com/developer</span>
+      </div>
+    </div>
+
+    <!-- Professional Summary -->
+    <div class="section">
+      <div class="section-title">Professional Summary</div>
+      <p class="summary-text">
+        Results-driven <strong>Full Stack Web Developer</strong> with strong practical expertise in building responsive, high-performance web applications using <strong>HTML5, CSS3, JavaScript, React.js, Node.js, Express, Python, and SQL</strong>. Proven capability in RESTful API engineering, modern database design, ATS-compliant resume systems, and AI-driven workflow integrations. Dedicated to writing clean, maintainable code, implementing automated testing, and optimizing full-stack application performance.
+      </p>
+    </div>
+
+    <!-- Technical Skills -->
+    <div class="section">
+      <div class="section-title">Technical Skills</div>
+      <table class="skills-table">
+        <tr>
+          <td class="skill-category">Frontend:</td>
+          <td class="skill-list"><strong>HTML5</strong> <span class="verified-badge">✓ Certified</span>, <strong>CSS3</strong> <span class="verified-badge">✓ Certified</span>, <strong>JavaScript</strong> <span class="verified-badge">✓ Certified</span>, <strong>React</strong> <span class="verified-badge">✓ Certified</span>, Vite, Tailwind CSS, Responsive Web Design</td>
+        </tr>
+        <tr>
+          <td class="skill-category">Backend & APIs:</td>
+          <td class="skill-list"><strong>Node.js</strong> <span class="verified-badge">✓ Certified</span>, <strong>Express</strong> <span class="verified-badge">✓ Certified</span>, <strong>Python</strong> <span class="verified-badge">✓ Certified</span>, <strong>REST API</strong> <span class="verified-badge">✓ Certified</span>, JWT Authentication, Middleware</td>
+        </tr>
+        <tr>
+          <td class="skill-category">Databases:</td>
+          <td class="skill-list"><strong>SQL</strong> <span class="verified-badge">✓ Certified</span>, MySQL, MongoDB, PostgreSQL, Database Schema Design</td>
+        </tr>
+        <tr>
+          <td class="skill-category">DevOps & Tools:</td>
+          <td class="skill-list"><strong>Git</strong> <span class="verified-badge">✓ Certified</span>, GitHub, Docker, Postman, Linux/Bash, VS Code, CI/CD Workflows</td>
+        </tr>
+        <tr>
+          <td class="skill-category">AI & Core Competencies:</td>
+          <td class="skill-list">Generative AI, Gemini API, Data Structures & Algorithms, Agile/Scrum, ATS Optimization</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Work Experience & Internships -->
+    <div class="section">
+      <div class="section-title">Work Experience & Internships</div>
+      
+      <div style="margin-bottom: 7px;">
+        <div class="item-header">
+          <span>Full Stack Development Intern</span>
+          <span>2024 – 2025</span>
+        </div>
+        <div class="item-subheader">
+          <span>Software Solutions Company</span>
+          <span>Chennai, India</span>
+        </div>
+        <ul class="bullet-list">
+          <li>Architected and deployed full-stack web applications using React, Node.js, and Express, cutting page render latency by 35%.</li>
+          <li>Engineered 15+ secure RESTful API endpoints with JWT authentication and comprehensive request validation.</li>
+          <li>Integrated relational and NoSQL database layers with SQL/MongoDB, optimizing query execution speed.</li>
+          <li>Collaborated in an Agile development environment, using Git feature-branch workflows and code reviews.</li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="item-header">
+          <span>Frontend Web Development Intern</span>
+          <span>2023 – 2024</span>
+        </div>
+        <div class="item-subheader">
+          <span>Tech Development Hub</span>
+          <span>Remote</span>
+        </div>
+        <ul class="bullet-list">
+          <li>Developed high-performance, mobile-first responsive interfaces using HTML5, modern CSS3, and JavaScript (ES6+).</li>
+          <li>Built reusable component libraries in React, improving frontend development velocity across product iterations.</li>
+          <li>Integrated client-side state with REST APIs, ensuring smooth UX with real-time feedback and error handling.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Key Projects -->
+    <div class="section">
+      <div class="section-title">Key Projects</div>
+
+      <div style="margin-bottom: 6px;">
+        <div class="item-header">
+          <span>SkillBridge — AI-Powered Skill Assessment & Resume Platform</span>
+          <span>React, Node.js, Express, Gemini API, SQL</span>
+        </div>
+        <ul class="bullet-list">
+          <li>Engineered an automated skill-gap analysis system matching candidate profiles against industry tech stacks.</li>
+          <li>Built multi-level MCQ assessment modules with instant skill verification badges and automated certificate issuance.</li>
+          <li>Implemented ATS score analyzer and 1-click resume optimization applying grammar and keyword improvements.</li>
+        </ul>
+      </div>
+
+      <div style="margin-bottom: 6px;">
+        <div class="item-header">
+          <span>AI Voice Assistant & Task Automation Platform</span>
+          <span>Python, React, Node.js, Whisper, Gemini API</span>
+        </div>
+        <ul class="bullet-list">
+          <li>Built real-time speech-to-text voice assistant with conversational memory, intent recognition, and automated action triggers.</li>
+          <li>Integrated multi-modal AI APIs to deliver sub-second response times for voice-based querying.</li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="item-header">
+          <span>Full Stack E-Commerce Web Application</span>
+          <span>HTML5, CSS3, JavaScript, React, REST API</span>
+        </div>
+        <ul class="bullet-list">
+          <li>Developed end-to-end shopping platform featuring dynamic product filtering, cart management, and mock checkout.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Education -->
+    <div class="section">
+      <div class="section-title">Education</div>
+      <div>
+        <div class="item-header">
+          <span>Bachelor of Engineering — Computer Science and Engineering</span>
+          <span>2023 – 2027</span>
+        </div>
+        <div class="item-subheader">
+          <span>Anna University</span>
+          <span>Chennai, India</span>
+        </div>
+        <ul class="bullet-list">
+          <li><strong>Relevant Coursework:</strong> Data Structures & Algorithms, DBMS, Operating Systems, Computer Networks, Artificial Intelligence, Web Development.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Certifications & Verified Badges -->
+    <div class="section">
+      <div class="section-title">Certifications & Verified Skills</div>
+      <div class="cert-item">
+        <span><strong>SkillBridge Certified Full Stack Developer</strong> (100% Mastery in React, Node.js, Express, SQL, Git)</span>
+        <span class="cert-code">ID: SBA-MASTER-2026-99482</span>
+      </div>
+      <div class="cert-item">
+        <span><strong>Full Stack Development Internship Certificate</strong> — Software Solutions Company</span>
+        <span class="cert-code">2025</span>
+      </div>
+      <div class="cert-item">
+        <span><strong>Frontend Web Development Certification</strong> — Tech Development Hub</span>
+        <span class="cert-code">2024</span>
+      </div>
+    </div>
+
+    <!-- Declaration -->
+    <div class="declaration">
+      <p><strong>Declaration:</strong> I hereby declare that the details provided above are true and accurate to the best of my knowledge.</p>
+      <p style="margin-top: 3px; font-weight: 700;">Full Stack Web Developer</p>
+    </div>
+  </div>
+</body>
+</html>
