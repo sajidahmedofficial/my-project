@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Task Flow guided login & sign up modal with step-by-step progress, quick demo fill, Supabase auth & resilient submission", deps: ["lucide-react", "../context/AuthContext", "../services/supabase"], state: "active", last: "anti@2026-08-26" }
+// agent-notes: { ctx: "Clean minimal SaaS Task Flow guided login & sign up modal with step-by-step progress & Supabase auth", deps: ["lucide-react", "../context/AuthContext", "../services/supabase"], state: "active", last: "anti@2026-08-27" }
 import React, { useState, useEffect } from 'react';
 import { 
   X, 
@@ -78,7 +78,6 @@ export default function TaskFlowAuth({ isOpen, onClose, initialMode = 'signup', 
     setSuccessMsg('Demo credentials filled! Click Next Step or Complete Task.');
   };
 
-  // Calculate password strength (0-100)
   const getPasswordStrength = (pass) => {
     if (!pass) return 0;
     let score = 0;
@@ -100,7 +99,6 @@ export default function TaskFlowAuth({ isOpen, onClose, initialMode = 'signup', 
     }
 
     if (step === 2) {
-      // Credentials validation
       if (!formData.email || !formData.email.includes('@')) {
         setErrorMsg('Please enter a valid email address.');
         return false;
@@ -127,7 +125,6 @@ export default function TaskFlowAuth({ isOpen, onClose, initialMode = 'signup', 
     }
 
     if (step === 3 && mode === 'signup') {
-      // Academic Profile validation
       if (!formData.college || !formData.careerGoal) {
         setErrorMsg('Please provide your university/college and target career role.');
         return false;
@@ -139,63 +136,68 @@ export default function TaskFlowAuth({ isOpen, onClose, initialMode = 'signup', 
   };
 
   const handleNextStep = () => {
-    if (validateStep(currentStep)) {
-      if (currentStep < totalSteps) {
-        setCurrentStep(prev => prev + 1);
-      } else {
-        handleSubmitFinalTask();
-      }
-    }
+    if (!validateStep(currentStep)) return;
+    setCurrentStep(prev => Math.min(totalSteps, prev + 1));
   };
 
   const handlePrevStep = () => {
     setErrorMsg('');
-    if (currentStep > 1) {
-      setCurrentStep(prev => prev - 1);
-    }
-  };
-
-  const handleSubmitFinalTask = async () => {
-    setLoading(true);
-    setErrorMsg('');
-    setSuccessMsg('');
-
-    try {
-      if (mode === 'signup') {
-        await register(
-          formData.name,
-          formData.email,
-          formData.password,
-          formData.college,
-          formData.careerGoal
-        );
-        setSuccessMsg('Account created successfully! Directing to your AI workspace...');
-      } else {
-        await login(formData.email, formData.password, formData.rememberMe);
-        setSuccessMsg('Signed in successfully! Launching your dashboard...');
-      }
-
-      setTimeout(() => {
-        onClose();
-        if (onComplete) onComplete(mode);
-      }, 700);
-    } catch (err) {
-      setErrorMsg(err.message || 'Authentication failed. Please check your credentials.');
-    } finally {
-      setLoading(false);
-    }
+    setCurrentStep(prev => Math.max(1, prev - 1));
   };
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      handleNextStep();
+      if (currentStep < totalSteps) {
+        handleNextStep();
+      } else {
+        handleFinalExecution();
+      }
+    }
+  };
+
+  const handleFinalExecution = async () => {
+    if (!validateStep(currentStep)) return;
+
+    setLoading(true);
+    setErrorMsg('');
+
+    try {
+      if (mode === 'login') {
+        await login(formData.email, formData.password, formData.rememberMe);
+        setSuccessMsg('Authentication successful! Initializing portal...');
+        setTimeout(() => {
+          onClose();
+          if (onComplete) onComplete('login');
+        }, 700);
+      } else {
+        await register(
+          formData.name,
+          formData.email,
+          formData.password,
+          {
+            college: formData.college,
+            degree: formData.degree,
+            careerGoal: formData.careerGoal,
+            experienceLevel: formData.experienceLevel
+          }
+        );
+        setSuccessMsg('Student account created successfully!');
+        setTimeout(() => {
+          onClose();
+          if (onComplete) onComplete('signup');
+        }, 700);
+      }
+    } catch (err) {
+      setErrorMsg(err.message || 'Authentication error. Please check your inputs.');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleSocialAuth = async (provider) => {
-    setLoading(true);
     setErrorMsg('');
+    setLoading(true);
     try {
       await socialLogin(provider);
       setSuccessMsg(`Authenticated via ${provider.toUpperCase()}!`);
@@ -218,180 +220,175 @@ export default function TaskFlowAuth({ isOpen, onClose, initialMode = 'signup', 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
-      {/* Background Radial Glow */}
-      <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
-      <div className="absolute bottom-1/4 right-1/3 w-96 h-96 bg-pink-600/20 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
-
-      {/* Main Task Flow Modal */}
-      <div className="relative w-full max-w-xl bg-[#13182b]/95 border-2 border-purple-500/30 rounded-3xl p-6 md:p-8 shadow-2xl shadow-purple-950/60 text-gray-200 overflow-hidden z-10">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fade-in text-slate-900">
+      <div className="relative w-full max-w-lg bg-white border border-slate-200 rounded-2xl p-6 sm:p-7 shadow-modal z-10 space-y-5">
         
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-purple-500/20 mb-5">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 flex items-center justify-center text-white font-black text-lg shadow-lg shadow-purple-500/40 border border-white/20">
+        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-xs">
               SB
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-base font-black text-white tracking-wide">SkillBridge Task Flow</h2>
-                <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-extrabold border border-emerald-500/40 flex items-center gap-1">
-                  <Database className="w-3 h-3 text-emerald-400" /> Supabase + AI
+              <div className="flex items-center gap-1.5">
+                <h2 className="text-sm font-bold text-slate-900">SkillBridge Task Flow</h2>
+                <span className="saas-badge saas-badge-success text-[10px]">
+                  <Database className="w-3 h-3" /> Supabase
                 </span>
               </div>
-              <p className="text-[11px] text-purple-300/80 font-medium">Guided Interactive Authentication</p>
+              <p className="text-[11px] text-slate-500">Interactive Authentication Flow</p>
             </div>
           </div>
           
           <button 
             onClick={onClose}
-            className="p-2 rounded-xl bg-gray-800/80 hover:bg-gray-700 text-gray-400 hover:text-white border border-gray-700 transition-all"
+            className="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
           >
-            <X className="w-4.5 h-4.5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Mode Quick Toggle Pills */}
-        <div className="grid grid-cols-2 p-1 bg-gray-900/90 rounded-2xl border border-purple-500/20 mb-5">
+        <div className="grid grid-cols-2 p-0.5 bg-slate-100 rounded-lg border border-slate-200/60">
           <button
             type="button"
             onClick={() => switchMode('signup')}
-            className={`py-2 text-xs font-black rounded-xl transition-all flex items-center justify-center gap-1.5 ${
+            className={`py-1.5 text-xs font-medium rounded-md transition-all flex items-center justify-center gap-1.5 ${
               mode === 'signup'
-                ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md shadow-purple-900/40'
-                : 'text-gray-400 hover:text-white'
+                ? 'bg-white text-slate-900 shadow-sm font-semibold'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            <Zap className="w-3.5 h-3.5" /> Student Sign Up
+            <Zap className="w-3.5 h-3.5 text-indigo-600" /> Student Sign Up
           </button>
           <button
             type="button"
             onClick={() => switchMode('login')}
-            className={`py-2 text-xs font-black rounded-xl transition-all flex items-center justify-center gap-1.5 ${
+            className={`py-1.5 text-xs font-medium rounded-md transition-all flex items-center justify-center gap-1.5 ${
               mode === 'login'
-                ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md shadow-purple-900/40'
-                : 'text-gray-400 hover:text-white'
+                ? 'bg-white text-slate-900 shadow-sm font-semibold'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            <ShieldCheck className="w-3.5 h-3.5" /> User Sign In
+            <ShieldCheck className="w-3.5 h-3.5 text-indigo-600" /> User Sign In
           </button>
         </div>
 
         {/* Task Step Progress Bar */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between text-xs font-bold text-gray-400 mb-2">
-            <span className="text-purple-300 font-extrabold">STEP {currentStep} OF {totalSteps}</span>
-            <span className="text-pink-400 uppercase tracking-wider font-extrabold">
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between text-xs text-slate-500">
+            <span className="font-semibold text-indigo-600">STEP {currentStep} OF {totalSteps}</span>
+            <span className="uppercase text-[11px] font-medium">
               {currentStep === 1 && 'Choose Action'}
               {currentStep === 2 && (mode === 'signup' ? 'Account Credentials' : 'Sign In Credentials')}
               {currentStep === 3 && (mode === 'signup' ? 'Academic Profile' : 'Summary & Launch')}
               {currentStep === 4 && 'Summary & Launch'}
             </span>
           </div>
-          <div className="w-full bg-gray-900 h-2.5 rounded-full overflow-hidden border border-purple-500/20 p-0.5">
+          <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
             <div 
-              className="bg-gradient-to-r from-purple-500 via-fuchsia-500 to-pink-500 h-full rounded-full transition-all duration-500 ease-out"
+              className="bg-indigo-600 h-full rounded-full transition-all duration-300 ease-out"
               style={{ width: `${(currentStep / totalSteps) * 100}%` }}
-            ></div>
+            />
           </div>
         </div>
 
         {/* Error / Success Notifications */}
         {errorMsg && (
-          <div className="mb-4 p-3.5 rounded-2xl bg-red-500/15 border-2 border-red-500/40 flex items-center gap-3 text-red-300 text-xs animate-shake">
-            <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />
+          <div className="p-3 rounded-lg bg-rose-50 border border-rose-200 flex items-center gap-2 text-rose-800 text-xs">
+            <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{errorMsg}</span>
           </div>
         )}
 
         {successMsg && (
-          <div className="mb-4 p-3.5 rounded-2xl bg-emerald-500/15 border-2 border-emerald-500/40 flex items-center gap-3 text-emerald-300 text-xs animate-fade-in">
-            <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+          <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center gap-2 text-emerald-800 text-xs">
+            <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
             <span>{successMsg}</span>
           </div>
         )}
 
         {/* ==================== STEP 1: TASK SELECTION ==================== */}
         {currentStep === 1 && (
-          <div className="space-y-5 animate-fade-in">
-            <div className="text-center space-y-1">
-              <h3 className="text-lg font-black text-white">Select Your Authentication Task</h3>
-              <p className="text-xs text-gray-300">Choose how you wish to access your AI Career & Placement Portal.</p>
+          <div className="space-y-4 animate-fade-in">
+            <div className="text-center space-y-0.5">
+              <h3 className="text-sm font-semibold text-slate-900">Select Authentication Task</h3>
+              <p className="text-xs text-slate-500">Choose how to access your SkillBridge account.</p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button
                 type="button"
                 onClick={() => { setMode('signup'); setCurrentStep(2); }}
-                className={`p-5 rounded-2xl border-2 text-left transition-all relative overflow-hidden group ${
+                className={`p-4 rounded-xl border text-left transition-colors ${
                   mode === 'signup' 
-                    ? 'bg-purple-900/30 border-purple-500 text-white shadow-lg shadow-purple-950/40' 
-                    : 'bg-gray-900/60 border-gray-800 text-gray-400 hover:border-gray-700'
+                    ? 'bg-indigo-50/70 border-indigo-600 text-indigo-950 shadow-sm' 
+                    : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
                 }`}
               >
-                <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-3 group-hover:scale-110 transition-transform">
-                  <Sparkles className="w-5 h-5" />
+                <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center mb-2 font-bold">
+                  <Sparkles className="w-4 h-4" />
                 </div>
-                <h4 className="font-black text-sm text-white mb-1">New Student Sign Up</h4>
-                <p className="text-[11px] text-gray-300 leading-relaxed">Create a fresh profile, configure academic goals, & generate your roadmap.</p>
+                <h4 className="font-semibold text-xs text-slate-900 mb-0.5">New Student Sign Up</h4>
+                <p className="text-[11px] text-slate-500">Create profile, configure goals, & generate roadmap.</p>
               </button>
 
               <button
                 type="button"
                 onClick={() => { setMode('login'); setCurrentStep(2); }}
-                className={`p-5 rounded-2xl border-2 text-left transition-all relative overflow-hidden group ${
+                className={`p-4 rounded-xl border text-left transition-colors ${
                   mode === 'login' 
-                    ? 'bg-pink-900/30 border-pink-500 text-white shadow-lg shadow-pink-950/40' 
-                    : 'bg-gray-900/60 border-gray-800 text-gray-400 hover:border-gray-700'
+                    ? 'bg-indigo-50/70 border-indigo-600 text-indigo-950 shadow-sm' 
+                    : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
                 }`}
               >
-                <div className="w-10 h-10 rounded-xl bg-pink-500/20 border border-pink-500/30 flex items-center justify-center text-pink-400 mb-3 group-hover:scale-110 transition-transform">
-                  <ShieldCheck className="w-5 h-5" />
+                <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center mb-2 font-bold">
+                  <ShieldCheck className="w-4 h-4" />
                 </div>
-                <h4 className="font-black text-sm text-white mb-1">Existing User Sign In</h4>
-                <p className="text-[11px] text-gray-300 leading-relaxed">Sign in with email, demo account, or OAuth to resume your placement prep.</p>
+                <h4 className="font-semibold text-xs text-slate-900 mb-0.5">Existing User Sign In</h4>
+                <p className="text-[11px] text-slate-500">Sign in with email, demo account, or OAuth.</p>
               </button>
             </div>
 
-            <div className="relative my-4">
-              <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-800"></div></div>
-              <div className="relative flex justify-center text-[10px] uppercase tracking-widest text-purple-300 font-black">
-                <span className="bg-[#13182b] px-3">Instant OAuth Sign In</span>
+            <div className="relative my-3">
+              <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-100"></div></div>
+              <div className="relative flex justify-center text-[10px] uppercase tracking-wider text-slate-400 font-medium">
+                <span className="bg-white px-2">Instant OAuth</span>
               </div>
             </div>
 
-            <div className="grid grid-cols-4 gap-3">
+            <div className="grid grid-cols-4 gap-2">
               <button
                 type="button"
                 onClick={() => handleSocialAuth('google')}
-                className="p-3 rounded-xl bg-gray-900/80 border border-gray-800 hover:border-purple-500 flex items-center justify-center hover:bg-gray-800 transition-all group"
+                className="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center transition-colors"
                 title="Google Login"
               >
-                <Chrome className="w-5 h-5 text-red-400 group-hover:scale-110 transition-transform" />
+                <Chrome className="w-4 h-4 text-red-500" />
               </button>
               <button
                 type="button"
                 onClick={() => handleSocialAuth('github')}
-                className="p-3 rounded-xl bg-gray-900/80 border border-gray-800 hover:border-purple-500 flex items-center justify-center hover:bg-gray-800 transition-all group"
+                className="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center transition-colors"
                 title="GitHub Login"
               >
-                <Github className="w-5 h-5 text-white group-hover:scale-110 transition-transform" />
+                <Github className="w-4 h-4 text-slate-800" />
               </button>
               <button
                 type="button"
                 onClick={() => handleSocialAuth('microsoft')}
-                className="p-3 rounded-xl bg-gray-900/80 border border-gray-800 hover:border-purple-500 flex items-center justify-center hover:bg-gray-800 transition-all group"
+                className="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center transition-colors"
                 title="Microsoft Login"
               >
-                <Briefcase className="w-5 h-5 text-blue-400 group-hover:scale-110 transition-transform" />
+                <Briefcase className="w-4 h-4 text-blue-600" />
               </button>
               <button
                 type="button"
                 onClick={() => handleSocialAuth('linkedin')}
-                className="p-3 rounded-xl bg-gray-900/80 border border-gray-800 hover:border-purple-500 flex items-center justify-center hover:bg-gray-800 transition-all group"
+                className="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center transition-colors"
                 title="LinkedIn Login"
               >
-                <Linkedin className="w-5 h-5 text-blue-500 group-hover:scale-110 transition-transform" />
+                <Linkedin className="w-4 h-4 text-blue-700" />
               </button>
             </div>
           </div>
@@ -399,31 +396,31 @@ export default function TaskFlowAuth({ isOpen, onClose, initialMode = 'signup', 
 
         {/* ==================== STEP 2: CREDENTIALS TASK ==================== */}
         {currentStep === 2 && (
-          <div className="space-y-4 animate-fade-in">
+          <div className="space-y-3.5 animate-fade-in">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-base font-black text-white">
+                <h3 className="text-sm font-semibold text-slate-900">
                   {mode === 'signup' ? 'Step 2: Account Credentials' : 'Step 2: Sign In Credentials'}
                 </h3>
-                <p className="text-xs text-purple-300/80">Secure authentication with Supabase & Node backend</p>
+                <p className="text-xs text-slate-500">Secure authentication with Supabase</p>
               </div>
               
               {mode === 'login' && (
                 <button
                   type="button"
                   onClick={handleQuickFillDemo}
-                  className="px-3 py-1.5 rounded-xl bg-purple-900/50 hover:bg-purple-900 border border-purple-500/40 text-[11px] font-bold text-purple-200 hover:text-white flex items-center gap-1.5 transition-all shadow-sm"
+                  className="saas-btn-secondary py-1 px-2.5 text-[11px] font-medium gap-1"
                 >
-                  <KeyRound className="w-3.5 h-3.5 text-yellow-400" /> Fill Demo Account
+                  <KeyRound className="w-3 h-3 text-indigo-600" /> Use Demo Account
                 </button>
               )}
             </div>
 
             {mode === 'signup' && (
-              <div>
-                <label className="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1">Full Name</label>
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-slate-700">Full Name</label>
                 <div className="relative">
-                  <User className="absolute left-3.5 top-3 w-4 h-4 text-gray-500" />
+                  <User className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
                   <input 
                     type="text"
                     required
@@ -431,16 +428,16 @@ export default function TaskFlowAuth({ isOpen, onClose, initialMode = 'signup', 
                     value={formData.name}
                     onChange={(e) => handleInputChange('name', e.target.value)}
                     onKeyDown={handleKeyDown}
-                    className="w-full bg-gray-900/80 border border-gray-700 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                    className="w-full bg-white border border-slate-200 rounded-lg pl-9 pr-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20"
                   />
                 </div>
               </div>
             )}
 
-            <div>
-              <label className="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1">Student Email</label>
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">Student Email</label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-3 w-4 h-4 text-gray-500" />
+                <Mail className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
                 <input 
                   type="email"
                   required
@@ -448,15 +445,15 @@ export default function TaskFlowAuth({ isOpen, onClose, initialMode = 'signup', 
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
                   onKeyDown={handleKeyDown}
-                  className="w-full bg-gray-900/80 border border-gray-700 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                  className="w-full bg-white border border-slate-200 rounded-lg pl-9 pr-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20"
                 />
               </div>
             </div>
 
-            <div>
-              <label className="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1">Password</label>
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">Password</label>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-3 w-4 h-4 text-gray-500" />
+                <Lock className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
                 <input 
                   type="password"
                   required
@@ -464,34 +461,33 @@ export default function TaskFlowAuth({ isOpen, onClose, initialMode = 'signup', 
                   value={formData.password}
                   onChange={(e) => handleInputChange('password', e.target.value)}
                   onKeyDown={handleKeyDown}
-                  className="w-full bg-gray-900/80 border border-gray-700 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                  className="w-full bg-white border border-slate-200 rounded-lg pl-9 pr-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20"
                 />
               </div>
 
-              {/* Password Strength Meter for Sign Up */}
               {mode === 'signup' && formData.password && (
-                <div className="mt-2 space-y-1">
-                  <div className="flex justify-between items-center text-[10px] font-bold">
-                    <span className="text-gray-400">Password Strength</span>
-                    <span className={passStrength > 60 ? 'text-emerald-400' : passStrength > 30 ? 'text-amber-400' : 'text-red-400'}>
+                <div className="pt-1 space-y-1">
+                  <div className="flex justify-between items-center text-[10px]">
+                    <span className="text-slate-500">Password Strength</span>
+                    <span className={passStrength > 60 ? 'text-emerald-700 font-medium' : passStrength > 30 ? 'text-amber-700 font-medium' : 'text-rose-700 font-medium'}>
                       {passStrength > 60 ? 'Strong' : passStrength > 30 ? 'Medium' : 'Weak (min 6 characters)'}
                     </span>
                   </div>
-                  <div className="w-full bg-gray-800 h-1.5 rounded-full overflow-hidden">
+                  <div className="w-full bg-slate-100 h-1 rounded-full overflow-hidden">
                     <div 
-                      className={`h-full transition-all duration-300 ${passStrength > 60 ? 'bg-emerald-400' : passStrength > 30 ? 'bg-amber-400' : 'bg-red-400'}`}
+                      className={`h-full transition-all duration-300 ${passStrength > 60 ? 'bg-emerald-600' : passStrength > 30 ? 'bg-amber-500' : 'bg-rose-500'}`}
                       style={{ width: `${passStrength}%` }}
-                    ></div>
+                    />
                   </div>
                 </div>
               )}
             </div>
 
             {mode === 'signup' && (
-              <div>
-                <label className="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1">Confirm Password</label>
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-slate-700">Confirm Password</label>
                 <div className="relative">
-                  <ShieldCheck className="absolute left-3.5 top-3 w-4 h-4 text-gray-500" />
+                  <ShieldCheck className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
                   <input 
                     type="password"
                     required
@@ -499,27 +495,27 @@ export default function TaskFlowAuth({ isOpen, onClose, initialMode = 'signup', 
                     value={formData.confirmPassword}
                     onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
                     onKeyDown={handleKeyDown}
-                    className="w-full bg-gray-900/80 border border-gray-700 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                    className="w-full bg-white border border-slate-200 rounded-lg pl-9 pr-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20"
                   />
                 </div>
               </div>
             )}
 
             {mode === 'login' && (
-              <div className="flex items-center justify-between text-xs py-1">
-                <label className="flex items-center gap-2 cursor-pointer text-gray-400 hover:text-gray-200">
+              <div className="flex items-center justify-between text-xs py-0.5">
+                <label className="flex items-center gap-1.5 cursor-pointer text-slate-600">
                   <input 
                     type="checkbox"
                     checked={formData.rememberMe}
                     onChange={(e) => handleInputChange('rememberMe', e.target.checked)}
-                    className="rounded border-gray-700 text-purple-600 focus:ring-purple-500 bg-gray-900"
+                    className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
                   />
-                  <span>Remember active session (30 Days)</span>
+                  <span>Remember session</span>
                 </label>
                 <button
                   type="button"
                   onClick={() => switchMode('signup')}
-                  className="text-[11px] text-purple-400 hover:text-purple-300 font-bold hover:underline"
+                  className="text-[11px] text-indigo-600 hover:underline font-medium"
                 >
                   Create account?
                 </button>
@@ -530,138 +526,131 @@ export default function TaskFlowAuth({ isOpen, onClose, initialMode = 'signup', 
 
         {/* ==================== STEP 3: ACADEMIC PROFILE TASK (SIGNUP) ==================== */}
         {currentStep === 3 && mode === 'signup' && (
-          <div className="space-y-4 animate-fade-in">
-            <div className="text-center space-y-1 mb-2">
-              <h3 className="text-base font-black text-white">Step 3: Academic Profile & Career Goal</h3>
-              <p className="text-xs text-purple-300/80">Configures your personalized AI recommendation engine</p>
+          <div className="space-y-3.5 animate-fade-in">
+            <div className="text-center space-y-0.5 mb-1">
+              <h3 className="text-sm font-semibold text-slate-900">Step 3: Academic Profile & Goals</h3>
+              <p className="text-xs text-slate-500">Configures your personalized recommendations</p>
             </div>
 
-            <div>
-              <label className="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1">University / College</label>
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">University / College</label>
               <div className="relative">
-                <GraduationCap className="absolute left-3.5 top-3 w-4 h-4 text-gray-500" />
+                <GraduationCap className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
                 <input 
                   type="text"
                   required
-                  placeholder="Stanford University / MIT Tech"
+                  placeholder="Stanford University"
                   value={formData.college}
                   onChange={(e) => handleInputChange('college', e.target.value)}
                   onKeyDown={handleKeyDown}
-                  className="w-full bg-gray-900/80 border border-gray-700 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+                  className="w-full bg-white border border-slate-200 rounded-lg pl-9 pr-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600"
                 />
               </div>
             </div>
 
-            <div>
-              <label className="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1">Degree & Major</label>
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">Degree Program</label>
               <div className="relative">
-                <User className="absolute left-3.5 top-3 w-4 h-4 text-gray-500" />
+                <Briefcase className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
                 <input 
                   type="text"
                   required
-                  placeholder="B.Tech in Computer Science"
+                  placeholder="B.Tech Computer Science"
                   value={formData.degree}
                   onChange={(e) => handleInputChange('degree', e.target.value)}
                   onKeyDown={handleKeyDown}
-                  className="w-full bg-gray-900/80 border border-gray-700 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+                  className="w-full bg-white border border-slate-200 rounded-lg pl-9 pr-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600"
                 />
               </div>
             </div>
 
-            <div>
-              <label className="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1">Target Career Role</label>
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">Target Role</label>
               <div className="relative">
-                <Target className="absolute left-3.5 top-3 w-4 h-4 text-gray-500" />
-                <select
+                <Target className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
+                <input 
+                  type="text"
+                  required
+                  placeholder="Full Stack AI Engineer"
                   value={formData.careerGoal}
                   onChange={(e) => handleInputChange('careerGoal', e.target.value)}
-                  className="w-full bg-gray-900/80 border border-gray-700 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-purple-500"
-                >
-                  <option value="Full Stack AI Engineer">Full Stack AI Engineer</option>
-                  <option value="Frontend Developer (React)">Frontend Developer (React)</option>
-                  <option value="Backend Software Engineer">Backend Software Engineer</option>
-                  <option value="Data Scientist & ML Analyst">Data Scientist & ML Analyst</option>
-                  <option value="DevOps & Cloud Engineer">DevOps & Cloud Engineer</option>
-                  <option value="Mobile App Developer">Mobile App Developer</option>
-                </select>
+                  onKeyDown={handleKeyDown}
+                  className="w-full bg-white border border-slate-200 rounded-lg pl-9 pr-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600"
+                />
               </div>
             </div>
           </div>
         )}
 
-        {/* ==================== STEP 3/4: VERIFICATION & SUMMARY ==================== */}
-        {((currentStep === 3 && mode === 'login') || (currentStep === 4 && mode === 'signup')) && (
-          <div className="space-y-4 text-center animate-fade-in py-2">
-            <div className="w-14 h-14 rounded-2xl bg-emerald-500/20 border-2 border-emerald-500/40 flex items-center justify-center mx-auto text-emerald-400 shadow-lg shadow-emerald-950/40">
-              <ShieldCheck className="w-8 h-8" />
-            </div>
-            <div>
-              <h3 className="text-base font-black text-white">Final Step: Complete Authentication</h3>
-              <p className="text-xs text-purple-300/80 mt-1">Confirm your details to launch your personalized AI Dashboard.</p>
+        {/* ==================== SUMMARY & LAUNCH (LAST STEP) ==================== */}
+        {((mode === 'signup' && currentStep === 4) || (mode === 'login' && currentStep === 3)) && (
+          <div className="space-y-4 animate-fade-in">
+            <div className="text-center space-y-1">
+              <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto">
+                <CheckCircle2 className="w-5 h-5" />
+              </div>
+              <h3 className="text-sm font-semibold text-slate-900">Task Flow Verification</h3>
+              <p className="text-xs text-slate-500">Ready to authenticate and access dashboard.</p>
             </div>
 
-            <div className="p-4 rounded-2xl bg-gray-900/90 border-2 border-purple-500/20 text-left space-y-2.5 text-xs">
-              <div className="flex justify-between py-1 border-b border-gray-800">
-                <span className="text-gray-400 font-semibold">Mode</span>
-                <span className="text-white font-black uppercase tracking-wider">{mode}</span>
+            <div className="p-3.5 rounded-lg bg-slate-50 border border-slate-200 space-y-2 text-xs">
+              <div className="flex justify-between pb-1.5 border-b border-slate-200">
+                <span className="text-slate-500">Action:</span>
+                <span className="font-semibold text-slate-900">{mode === 'signup' ? 'New Student Registration' : 'Account Sign In'}</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-gray-800">
-                <span className="text-gray-400 font-semibold">Email</span>
-                <span className="text-white font-bold truncate max-w-[200px]">{formData.email}</span>
+              <div className="flex justify-between pb-1.5 border-b border-slate-200">
+                <span className="text-slate-500">Email:</span>
+                <span className="font-semibold text-slate-900">{formData.email || 'student@university.edu'}</span>
               </div>
               {mode === 'signup' && (
                 <>
-                  <div className="flex justify-between py-1 border-b border-gray-800">
-                    <span className="text-gray-400 font-semibold">Name</span>
-                    <span className="text-white font-bold">{formData.name}</span>
+                  <div className="flex justify-between pb-1.5 border-b border-slate-200">
+                    <span className="text-slate-500">College:</span>
+                    <span className="font-semibold text-slate-900">{formData.college}</span>
                   </div>
-                  <div className="flex justify-between py-1 border-b border-gray-800">
-                    <span className="text-gray-400 font-semibold">Career Goal</span>
-                    <span className="text-purple-400 font-bold">{formData.careerGoal}</span>
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Target Role:</span>
+                    <span className="font-semibold text-slate-900">{formData.careerGoal}</span>
                   </div>
                 </>
               )}
-              <div className="flex justify-between py-1">
-                <span className="text-gray-400 font-semibold">Backend Engine</span>
-                <span className="text-emerald-400 font-extrabold flex items-center gap-1">
-                  <Database className="w-3.5 h-3.5" /> Supabase + Local Active
-                </span>
-              </div>
             </div>
           </div>
         )}
 
-        {/* Navigation & Action Footer */}
-        <div className="flex items-center justify-between pt-5 border-t border-purple-500/20 mt-6">
+        {/* Footer Navigation Controls */}
+        <div className="flex items-center justify-between pt-3 border-t border-slate-100">
           {currentStep > 1 ? (
             <button
               type="button"
               onClick={handlePrevStep}
-              disabled={loading}
-              className="px-4 py-2.5 rounded-xl bg-gray-900/80 border border-gray-700 hover:border-gray-600 text-gray-300 font-bold text-xs flex items-center gap-2 transition-all"
+              className="saas-btn-secondary py-1.5 px-3 text-xs gap-1"
             >
-              <ArrowLeft className="w-4 h-4" /> Back
+              <ArrowLeft className="w-3.5 h-3.5" /> Back
+            </button>
+          ) : <div />}
+
+          {currentStep < totalSteps ? (
+            <button
+              type="button"
+              onClick={handleNextStep}
+              className="saas-btn-primary py-1.5 px-4 text-xs font-medium gap-1"
+            >
+              <span>Next</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           ) : (
-            <div></div>
+            <button
+              type="button"
+              disabled={loading}
+              onClick={handleFinalExecution}
+              className="saas-btn-primary py-1.5 px-4 text-xs font-medium gap-1.5 disabled:opacity-50"
+            >
+              {loading ? 'Authenticating...' : mode === 'signup' ? 'Complete & Sign Up' : 'Authenticate & Launch'}
+              {!loading && <ArrowRight className="w-3.5 h-3.5" />}
+            </button>
           )}
-
-          <button
-            type="button"
-            onClick={handleNextStep}
-            disabled={loading}
-            className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-95 text-white font-black text-xs flex items-center gap-2 shadow-lg shadow-purple-600/30 transition-all hover:scale-[1.02]"
-          >
-            {loading ? (
-              'Authenticating...'
-            ) : currentStep === totalSteps ? (
-              <>Complete Task <CheckCircle2 className="w-4 h-4" /></>
-            ) : (
-              <>Next Step <ArrowRight className="w-4 h-4" /></>
-            )}
-          </button>
         </div>
-
       </div>
     </div>
   );

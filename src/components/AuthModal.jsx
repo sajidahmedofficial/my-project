@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Glassmorphism Login & Registration Modal with OAuth, 2FA, Remember Me & Validation", deps: ["lucide-react", "../context/AuthContext", "../services/api"], state: "active", last: "anti@2026-07-30" }
+// agent-notes: { ctx: "Clean minimal SaaS Login & Registration Modal with OAuth, 2FA & Validation", deps: ["lucide-react", "../context/AuthContext", "../services/api"], state: "active", last: "anti@2026-08-27" }
 import React, { useState } from 'react';
 import { 
   X, 
@@ -9,12 +9,10 @@ import {
   CheckCircle2, 
   AlertCircle, 
   ShieldCheck, 
-  KeyRound, 
-  Sparkles,
-  Github,
-  Chrome,
-  Briefcase,
-  Linkedin
+  Github, 
+  Chrome, 
+  Briefcase, 
+  Linkedin 
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
@@ -36,14 +34,14 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
 
   // 2FA state
   const [twoFactorCode, setTwoFactorCode] = useState('');
-  const [pendingUserId, setPendingUserId] = useState(null);
+  const [_pendingUserId, setPendingUserId] = useState(null);
 
   // Forgot password state
   const [forgotEmail, setForgotEmail] = useState('');
   const [forgotSent, setForgotSent] = useState(false);
   const [resetToken, setResetToken] = useState('');
   const [newResetPassword, setNewResetPassword] = useState('');
-  const [resetCompleted, setResetCompleted] = useState(false);
+  const [_resetCompleted, setResetCompleted] = useState(false);
 
   // UI state
   const [loading, setLoading] = useState(false);
@@ -213,29 +211,24 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fade-in">
-      {/* Dynamic Background Glow Elements */}
-      <div className="absolute top-1/4 left-1/3 w-72 h-72 bg-accent-purple/20 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
-      <div className="absolute bottom-1/4 right-1/3 w-72 h-72 bg-accent-pink/20 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
-
-      {/* Glassmorphic Container Card */}
-      <div className="relative w-full max-w-md glass border border-card-border rounded-3xl p-6 md:p-8 shadow-2xl shadow-purple-950/40 text-gray-200 overflow-hidden z-10">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fade-in text-slate-900">
+      <div className="relative w-full max-w-md bg-white border border-slate-200 rounded-2xl p-6 sm:p-7 shadow-modal z-10 space-y-5">
         
         {/* Header Bar */}
-        <div className="flex items-center justify-between pb-4 border-b border-card-border mb-6">
+        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-accent-purple to-accent-pink flex items-center justify-center text-white font-black shadow-lg shadow-accent-purple/30">
+            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-xs">
               SB
             </div>
             <div>
-              <h2 className="text-base font-extrabold text-white tracking-wide">SkillBridge AI</h2>
-              <p className="text-[10px] text-gray-400 font-medium">Personalized Roadmap Platform</p>
+              <h2 className="text-sm font-bold text-slate-900">SkillBridge AI</h2>
+              <p className="text-[11px] text-slate-500">Placement & Career Guidance</p>
             </div>
           </div>
           
           <button 
             onClick={onClose}
-            className="p-1.5 rounded-full bg-gray-800/80 hover:bg-gray-700 text-gray-400 hover:text-white transition-all"
+            className="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -243,16 +236,16 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
 
         {/* Tab Selector */}
         {activeTab !== 'forgot' && activeTab !== '2fa' && (
-          <div className="grid grid-cols-2 p-1 bg-gray-900/80 rounded-2xl border border-gray-800 mb-6">
+          <div className="grid grid-cols-2 p-0.5 bg-slate-100 rounded-lg border border-slate-200/60">
             <button
               onClick={() => { setActiveTab('login'); clearMessages(); }}
-              className={`py-2 text-xs font-bold rounded-xl transition-all ${activeTab === 'login' ? 'bg-gradient-to-r from-accent-purple to-purple-600 text-white shadow-md' : 'text-gray-400 hover:text-white'}`}
+              className={`py-1.5 text-xs font-medium rounded-md transition-all ${activeTab === 'login' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
             >
               Sign In
             </button>
             <button
               onClick={() => { setActiveTab('register'); clearMessages(); }}
-              className={`py-2 text-xs font-bold rounded-xl transition-all ${activeTab === 'register' ? 'bg-gradient-to-r from-accent-purple to-purple-600 text-white shadow-md' : 'text-gray-400 hover:text-white'}`}
+              className={`py-1.5 text-xs font-medium rounded-md transition-all ${activeTab === 'register' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
             >
               Register
             </button>
@@ -261,70 +254,70 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
 
         {/* Messages */}
         {errorMsg && (
-          <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center gap-2.5 text-red-400 text-xs animate-shake">
+          <div className="p-3 rounded-lg bg-rose-50 border border-rose-200 flex items-center gap-2 text-rose-800 text-xs">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{errorMsg}</span>
           </div>
         )}
 
         {successMsg && (
-          <div className="mb-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center gap-2.5 text-emerald-400 text-xs animate-fade-in">
-            <CheckCircle2 className="w-4 h-4 shrink-0" />
+          <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center gap-2 text-emerald-800 text-xs">
+            <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
             <span>{successMsg}</span>
           </div>
         )}
 
         {/* --- LOGIN TAB --- */}
         {activeTab === 'login' && (
-          <form onSubmit={handleLoginSubmit} className="space-y-4">
-            <div>
-              <label className="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1.5">Email Address</label>
+          <form onSubmit={handleLoginSubmit} className="space-y-3.5">
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">Email Address</label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-3 w-4 h-4 text-gray-500" />
+                <Mail className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
                 <input 
                   type="email"
                   required
                   placeholder="student@university.edu"
                   value={loginEmail}
                   onChange={(e) => setLoginEmail(e.target.value)}
-                  className="w-full bg-gray-900/60 border border-gray-800 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-accent-purple focus:ring-1 focus:ring-accent-purple transition-all"
+                  className="w-full bg-white border border-slate-200 rounded-lg pl-9 pr-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20"
                 />
               </div>
             </div>
 
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="text-[11px] font-bold text-gray-300 uppercase tracking-wider">Password</label>
+            <div className="space-y-1">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-medium text-slate-700">Password</label>
                 <button
                   type="button"
                   onClick={() => { setActiveTab('forgot'); clearMessages(); }}
-                  className="text-[11px] font-semibold text-accent-purple hover:underline"
+                  className="text-[11px] font-medium text-indigo-600 hover:underline"
                 >
                   Forgot Password?
                 </button>
               </div>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-3 w-4 h-4 text-gray-500" />
+                <Lock className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
                 <input 
                   type="password"
                   required
                   placeholder="••••••••"
                   value={loginPassword}
                   onChange={(e) => setLoginPassword(e.target.value)}
-                  className="w-full bg-gray-900/60 border border-gray-800 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-accent-purple focus:ring-1 focus:ring-accent-purple transition-all"
+                  className="w-full bg-white border border-slate-200 rounded-lg pl-9 pr-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20"
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-between text-xs py-1">
-              <label className="flex items-center gap-2 cursor-pointer text-gray-400 hover:text-gray-200">
+            <div className="flex items-center justify-between text-xs py-0.5">
+              <label className="flex items-center gap-1.5 cursor-pointer text-slate-600">
                 <input 
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="rounded border-gray-700 text-accent-purple focus:ring-accent-purple bg-gray-900"
+                  className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
                 />
-                <span>Remember me for 30 days</span>
+                <span>Remember me</span>
               </label>
               <button
                 type="button"
@@ -333,7 +326,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
                   setLoginPassword('Demo@123456');
                   setSuccessMsg('Demo credentials filled! Click Sign In.');
                 }}
-                className="text-[11px] font-bold text-accent-purple hover:underline"
+                className="text-[11px] font-medium text-indigo-600 hover:underline"
               >
                 Use Demo Login
               </button>
@@ -342,55 +335,55 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-accent-purple to-accent-pink hover:opacity-95 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-purple-600/30 transition-all hover:scale-[1.01]"
+              className="saas-btn-primary w-full py-2 text-xs font-medium gap-1.5"
             >
-              {loading ? 'Signing in...' : 'Sign In to SkillBridge'}
-              {!loading && <ArrowRight className="w-4 h-4" />}
+              {loading ? 'Signing in...' : 'Sign In'}
+              {!loading && <ArrowRight className="w-3.5 h-3.5" />}
             </button>
 
-            <div className="relative my-5">
-              <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-800"></div></div>
-              <div className="relative flex justify-center text-[10px] uppercase tracking-widest text-gray-500 font-bold">
-                <span className="bg-bg-dark px-3">Or continue with</span>
+            <div className="relative my-3">
+              <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-100"></div></div>
+              <div className="relative flex justify-center text-[10px] uppercase text-slate-400 font-medium">
+                <span className="bg-white px-2">Or continue with</span>
               </div>
             </div>
 
             {/* Social Logins */}
-            <div className="grid grid-cols-4 gap-2.5">
+            <div className="grid grid-cols-4 gap-2">
               <button
                 type="button"
                 onClick={() => handleSocialAuth('google')}
-                className="p-2.5 rounded-xl bg-gray-900/80 border border-gray-800 hover:border-gray-700 flex items-center justify-center hover:bg-gray-800 text-gray-300 transition-all group"
-                title="Sign in with Google"
+                className="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center transition-colors"
+                title="Google"
               >
-                <Chrome className="w-4 h-4 text-red-400 group-hover:scale-110 transition-transform" />
+                <Chrome className="w-4 h-4 text-red-500" />
               </button>
 
               <button
                 type="button"
                 onClick={() => handleSocialAuth('github')}
-                className="p-2.5 rounded-xl bg-gray-900/80 border border-gray-800 hover:border-gray-700 flex items-center justify-center hover:bg-gray-800 text-gray-300 transition-all group"
-                title="Sign in with GitHub"
+                className="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center transition-colors"
+                title="GitHub"
               >
-                <Github className="w-4 h-4 text-white group-hover:scale-110 transition-transform" />
+                <Github className="w-4 h-4 text-slate-800" />
               </button>
 
               <button
                 type="button"
                 onClick={() => handleSocialAuth('microsoft')}
-                className="p-2.5 rounded-xl bg-gray-900/80 border border-gray-800 hover:border-gray-700 flex items-center justify-center hover:bg-gray-800 text-gray-300 transition-all group"
-                title="Sign in with Microsoft"
+                className="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center transition-colors"
+                title="Microsoft"
               >
-                <Briefcase className="w-4 h-4 text-blue-400 group-hover:scale-110 transition-transform" />
+                <Briefcase className="w-4 h-4 text-blue-600" />
               </button>
 
               <button
                 type="button"
                 onClick={() => handleSocialAuth('linkedin')}
-                className="p-2.5 rounded-xl bg-gray-900/80 border border-gray-800 hover:border-gray-700 flex items-center justify-center hover:bg-gray-800 text-gray-300 transition-all group"
-                title="Sign in with LinkedIn"
+                className="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center transition-colors"
+                title="LinkedIn"
               >
-                <Linkedin className="w-4 h-4 text-blue-500 group-hover:scale-110 transition-transform" />
+                <Linkedin className="w-4 h-4 text-blue-700" />
               </button>
             </div>
           </form>
@@ -398,63 +391,63 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
 
         {/* --- REGISTER TAB --- */}
         {activeTab === 'register' && (
-          <form onSubmit={handleRegisterSubmit} className="space-y-3.5">
-            <div>
-              <label className="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1">Full Name</label>
+          <form onSubmit={handleRegisterSubmit} className="space-y-3">
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">Full Name</label>
               <div className="relative">
-                <User className="absolute left-3.5 top-3 w-4 h-4 text-gray-500" />
+                <User className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
                 <input 
                   type="text"
                   required
                   placeholder="Aarav Sharma"
                   value={regName}
                   onChange={(e) => setRegName(e.target.value)}
-                  className="w-full bg-gray-900/60 border border-gray-800 rounded-xl pl-10 pr-4 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-accent-purple focus:ring-1 focus:ring-accent-purple transition-all"
+                  className="w-full bg-white border border-slate-200 rounded-lg pl-9 pr-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20"
                 />
               </div>
             </div>
 
-            <div>
-              <label className="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1">Email Address</label>
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">Email Address</label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-3 w-4 h-4 text-gray-500" />
+                <Mail className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
                 <input 
                   type="email"
                   required
                   placeholder="student@university.edu"
                   value={regEmail}
                   onChange={(e) => setRegEmail(e.target.value)}
-                  className="w-full bg-gray-900/60 border border-gray-800 rounded-xl pl-10 pr-4 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-accent-purple focus:ring-1 focus:ring-accent-purple transition-all"
+                  className="w-full bg-white border border-slate-200 rounded-lg pl-9 pr-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20"
                 />
               </div>
             </div>
 
-            <div>
-              <label className="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1">Password</label>
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">Password</label>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-3 w-4 h-4 text-gray-500" />
+                <Lock className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
                 <input 
                   type="password"
                   required
                   placeholder="At least 6 characters"
                   value={regPassword}
                   onChange={(e) => setRegPassword(e.target.value)}
-                  className="w-full bg-gray-900/60 border border-gray-800 rounded-xl pl-10 pr-4 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-accent-purple focus:ring-1 focus:ring-accent-purple transition-all"
+                  className="w-full bg-white border border-slate-200 rounded-lg pl-9 pr-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20"
                 />
               </div>
             </div>
 
-            <div>
-              <label className="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1">Confirm Password</label>
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">Confirm Password</label>
               <div className="relative">
-                <ShieldCheck className="absolute left-3.5 top-3 w-4 h-4 text-gray-500" />
+                <ShieldCheck className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
                 <input 
                   type="password"
                   required
                   placeholder="Re-enter password"
                   value={regConfirmPassword}
                   onChange={(e) => setRegConfirmPassword(e.target.value)}
-                  className="w-full bg-gray-900/60 border border-gray-800 rounded-xl pl-10 pr-4 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-accent-purple focus:ring-1 focus:ring-accent-purple transition-all"
+                  className="w-full bg-white border border-slate-200 rounded-lg pl-9 pr-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20"
                 />
               </div>
             </div>
@@ -462,126 +455,102 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-accent-purple to-accent-pink hover:opacity-95 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-purple-600/30 transition-all hover:scale-[1.01] mt-2"
+              className="saas-btn-primary w-full py-2 text-xs font-medium gap-1.5"
             >
-              {loading ? 'Creating Account...' : 'Create Account & Continue'}
-              {!loading && <Sparkles className="w-4 h-4" />}
+              {loading ? 'Creating account...' : 'Create Account'}
+              {!loading && <ArrowRight className="w-3.5 h-3.5" />}
             </button>
           </form>
         )}
 
-        {/* --- FORGOT PASSWORD --- */}
+        {/* --- FORGOT PASSWORD TAB --- */}
         {activeTab === 'forgot' && (
-          <form onSubmit={handleForgotPassword} className="space-y-4">
-            <div className="text-center mb-2">
-              <div className="w-12 h-12 rounded-2xl bg-accent-purple/20 border border-accent-purple/30 flex items-center justify-center mx-auto mb-2 text-accent-purple">
-                <KeyRound className="w-6 h-6" />
+          <form onSubmit={forgotSent ? handleResetSubmit : handleForgotPassword} className="space-y-3.5">
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">Registered Email</label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
+                <input 
+                  type="email"
+                  required
+                  placeholder="student@university.edu"
+                  value={forgotEmail}
+                  onChange={(e) => setForgotEmail(e.target.value)}
+                  className="w-full bg-white border border-slate-200 rounded-lg pl-9 pr-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600"
+                />
               </div>
-              <h3 className="text-sm font-bold text-white">Reset Password</h3>
-              <p className="text-[11px] text-gray-400">Enter your registered student email address to receive password reset instructions.</p>
             </div>
 
-            {!forgotSent ? (
+            {forgotSent && (
               <>
-                <div>
-                  <label className="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1">Email Address</label>
-                  <div className="relative">
-                    <Mail className="absolute left-3.5 top-3 w-4 h-4 text-gray-500" />
-                    <input 
-                      type="email"
-                      required
-                      placeholder="student@university.edu"
-                      value={forgotEmail}
-                      onChange={(e) => setForgotEmail(e.target.value)}
-                      className="w-full bg-gray-900/60 border border-gray-800 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-accent-purple"
-                    />
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-accent-purple to-purple-600 text-white font-bold text-xs"
-                >
-                  {loading ? 'Generating Instructions...' : 'Request Password Reset'}
-                </button>
-              </>
-            ) : !resetCompleted ? (
-              <div className="space-y-3">
-                <div className="p-3 rounded-xl bg-purple-500/10 border border-purple-500/30 text-xs text-purple-300">
-                  Reset token generated for <strong>{forgotEmail}</strong>. Enter your token and new password below:
-                </div>
-                <div>
-                  <label className="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1">Reset Token</label>
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-slate-700">Reset Token</label>
                   <input 
                     type="text"
                     required
-                    placeholder="Enter security token"
+                    placeholder="Enter reset token"
                     value={resetToken}
                     onChange={(e) => setResetToken(e.target.value)}
-                    className="w-full bg-gray-900/60 border border-gray-800 rounded-xl px-3 py-2 text-xs text-white font-mono placeholder-gray-500 focus:outline-none focus:border-accent-purple"
+                    className="w-full bg-white border border-slate-200 rounded-lg px-3.5 py-2 text-xs text-slate-900 focus:outline-none focus:border-indigo-600"
                   />
                 </div>
-                <div>
-                  <label className="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1">New Password</label>
+
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-slate-700">New Password</label>
                   <input 
                     type="password"
                     required
-                    placeholder="At least 6 characters"
+                    placeholder="New password (min 6 chars)"
                     value={newResetPassword}
                     onChange={(e) => setNewResetPassword(e.target.value)}
-                    className="w-full bg-gray-900/60 border border-gray-800 rounded-xl px-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-accent-purple"
+                    className="w-full bg-white border border-slate-200 rounded-lg px-3.5 py-2 text-xs text-slate-900 focus:outline-none focus:border-indigo-600"
                   />
                 </div>
-                <button
-                  type="button"
-                  onClick={handleResetSubmit}
-                  disabled={loading}
-                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold text-xs shadow-md"
-                >
-                  {loading ? 'Updating Password...' : 'Save New Password'}
-                </button>
-              </div>
-            ) : (
-              <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-center text-xs text-emerald-400">
-                Password updated successfully! Returning to sign in...
-              </div>
+              </>
             )}
 
-            <button
-              type="button"
-              onClick={() => { setActiveTab('login'); clearMessages(); }}
-              className="w-full text-xs text-gray-400 hover:text-white font-medium text-center block pt-2"
-            >
-              ← Back to Sign In
-            </button>
+            <div className="flex items-center justify-between pt-1">
+              <button
+                type="button"
+                onClick={() => { setActiveTab('login'); clearMessages(); }}
+                className="text-xs text-slate-500 hover:text-slate-900 font-medium"
+              >
+                Back to Sign In
+              </button>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="saas-btn-primary py-1.5 px-4 text-xs font-medium"
+              >
+                {loading ? 'Processing...' : forgotSent ? 'Update Password' : 'Send Reset Link'}
+              </button>
+            </div>
           </form>
         )}
 
-        {/* --- 2FA VERIFICATION STEP --- */}
+        {/* --- 2FA TAB --- */}
         {activeTab === '2fa' && (
-          <form onSubmit={handleVerify2FA} className="space-y-4 text-center">
-            <div className="w-12 h-12 rounded-2xl bg-accent-pink/20 border border-accent-pink/30 flex items-center justify-center mx-auto mb-2 text-accent-pink">
-              <ShieldCheck className="w-6 h-6" />
+          <form onSubmit={handleVerify2FA} className="space-y-3.5">
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">6-Digit 2FA Code</label>
+              <input 
+                type="text"
+                maxLength={6}
+                required
+                placeholder="123456"
+                value={twoFactorCode}
+                onChange={(e) => setTwoFactorCode(e.target.value)}
+                className="w-full bg-white border border-slate-200 rounded-lg px-3.5 py-2 text-center text-sm font-mono text-slate-900 tracking-widest focus:outline-none focus:border-indigo-600"
+              />
             </div>
-            <h3 className="text-sm font-bold text-white">Two-Factor Authentication</h3>
-            <p className="text-[11px] text-gray-400">Enter the 6-digit code from your authenticator app or email notification.</p>
-
-            <input 
-              type="text"
-              maxLength={6}
-              placeholder="123456"
-              value={twoFactorCode}
-              onChange={(e) => setTwoFactorCode(e.target.value.replace(/\D/g, ''))}
-              className="w-full bg-gray-900/80 border border-accent-purple/50 rounded-xl py-3 text-center text-lg tracking-widest font-mono text-white focus:outline-none focus:ring-2 focus:ring-accent-purple"
-            />
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 rounded-xl bg-gradient-to-r from-accent-purple to-accent-pink text-white font-bold text-xs shadow-md"
+              className="saas-btn-primary w-full py-2 text-xs font-medium"
             >
-              {loading ? 'Verifying...' : 'Verify Code & Access Dashboard'}
+              {loading ? 'Verifying...' : 'Verify Code'}
             </button>
           </form>
         )}
