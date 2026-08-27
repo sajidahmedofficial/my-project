@@ -1,20 +1,14 @@
-// agent-notes: { ctx: "Playful cartoon Quiz Result Summary view with Sparky celebration, 3D buttons, bouncy metrics & placement readiness bar", deps: ["lucide-react", "../common/AIAssistantAvatar"], state: "active", last: "anti@2026-08-21" }
+// agent-notes: { ctx: "Clean minimal SaaS Quiz Result Summary view with metric cards, accuracy gauges & placement readiness bar", deps: ["lucide-react"], state: "active", last: "anti@2026-08-27" }
 
 import React from 'react';
 import { 
   Award, 
-  CheckCircle2, 
-  XCircle, 
-  Clock, 
   RotateCcw, 
   Eye, 
-  Zap, 
   TrendingUp, 
   ArrowLeft, 
-  Sparkles,
-  Trophy
+  Sparkles
 } from 'lucide-react';
-import AIAssistantAvatar from '../common/AIAssistantAvatar';
 
 export default function QuizResultView({ result, onReview, onRetry, onBackDashboard, onBackToHub }) {
   const {
@@ -33,82 +27,75 @@ export default function QuizResultView({ result, onReview, onRetry, onBackDashbo
   const avgTimePerQ = Math.round(totalTimeSeconds / (totalQuestions || 1));
 
   return (
-    <div className="space-y-6 animate-fade-in max-w-4xl mx-auto select-none">
-      {/* Header Card with Sparky Celebration */}
-      <div className="cartoon-card p-6 md:p-8 border-2 border-purple-500/30 text-center space-y-4 relative overflow-hidden bg-gradient-to-r from-[#171d33] via-[#1c243f] to-[#1a2138]">
-        <div className="flex justify-center">
-          <AIAssistantAvatar 
-            size="lg" 
-            state={accuracy >= 70 ? 'success' : 'speaking'} 
-            showSpeechBubble={true}
-            speechText={accuracy >= 70 ? "Amazing quest run! You're leveling up fast!" : "Good effort! Keep practicing to hit 75%!"}
-          />
+    <div className="space-y-6 animate-fade-in max-w-4xl mx-auto text-slate-900">
+      {/* Header Card */}
+      <div className="saas-card p-6 md:p-8 text-center space-y-4">
+        <div className="w-12 h-12 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto">
+          <Award className="w-6 h-6" />
         </div>
 
         <div>
-          <div className="cartoon-badge cartoon-badge-pink mb-1">
-            <Sparkles className="w-3.5 h-3.5" /> QUEST COMPLETE
+          <div className="saas-badge saas-badge-indigo mb-1.5 inline-block text-[10px]">
+            <Sparkles className="w-3 h-3" /> Assessment Complete
           </div>
-          <h1 className="text-3xl md:text-4xl font-black text-white">Performance Scorecard</h1>
-          <p className="text-xs text-gray-300 font-medium mt-1">
-            Rating: <strong className="text-emerald-400 font-black">{performance}</strong> • {accuracy}% Accuracy Achieved
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Performance Scorecard</h1>
+          <p className="text-xs text-slate-500 font-medium mt-1">
+            Rating: <strong className="text-emerald-700 font-semibold">{performance}</strong> • {accuracy}% Accuracy Achieved
           </p>
         </div>
 
         {/* 4 Key Metrics */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
-          <div className="p-4 rounded-2xl bg-[#0d1220] border-2 border-purple-500/20 space-y-1">
-            <span className="text-[10px] uppercase font-black text-purple-400 block">Total Score</span>
-            <div className="text-2xl font-black text-white">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+            <span className="text-[10px] uppercase font-semibold text-slate-500 block">Total Score</span>
+            <div className="text-xl font-bold text-slate-900">
               {score} / {totalQuestions}
             </div>
-            <span className="text-[10px] text-purple-300 font-bold">Points Earned</span>
+            <span className="text-[10px] text-slate-500">Points Earned</span>
           </div>
 
-          <div className="p-4 rounded-2xl bg-[#0d1220] border-2 border-emerald-500/20 space-y-1">
-            <span className="text-[10px] uppercase font-black text-emerald-400 block">Accuracy</span>
-            <div className="text-2xl font-black text-emerald-300">{accuracy}%</div>
-            <span className="text-[10px] text-gray-400 font-bold">Correct Ratio</span>
+          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+            <span className="text-[10px] uppercase font-semibold text-slate-500 block">Accuracy</span>
+            <div className="text-xl font-bold text-emerald-600">{accuracy}%</div>
+            <span className="text-[10px] text-slate-500">Correct Ratio</span>
           </div>
 
-          <div className="p-4 rounded-2xl bg-[#0d1220] border-2 border-cyan-500/20 space-y-1">
-            <span className="text-[10px] uppercase font-black text-cyan-400 block">Total Time</span>
-            <div className="text-2xl font-black text-white">
+          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+            <span className="text-[10px] uppercase font-semibold text-slate-500 block">Total Time</span>
+            <div className="text-xl font-bold text-slate-900">
               {Math.floor(totalTimeSeconds / 60)}m {totalTimeSeconds % 60}s
             </div>
-            <span className="text-[10px] text-cyan-300 font-bold">Avg {avgTimePerQ}s / q</span>
+            <span className="text-[10px] text-slate-500">Avg {avgTimePerQ}s / q</span>
           </div>
 
-          <div className="p-4 rounded-2xl bg-[#0d1220] border-2 border-pink-500/20 space-y-1">
-            <span className="text-[10px] uppercase font-black text-pink-400 block">Correct / Wrong</span>
-            <div className="text-xl font-black text-white flex items-center justify-center gap-2">
-              <span className="text-emerald-400">{correctCount}</span> / <span className="text-rose-400">{incorrectCount}</span>
+          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+            <span className="text-[10px] uppercase font-semibold text-slate-500 block">Correct / Wrong</span>
+            <div className="text-xl font-bold text-slate-900 flex items-center justify-center gap-2">
+              <span className="text-emerald-600">{correctCount}</span> / <span className="text-rose-600">{incorrectCount}</span>
             </div>
-            <span className="text-[10px] text-gray-400 font-bold">Skipped: {skippedCount}</span>
+            <span className="text-[10px] text-slate-500">Skipped: {skippedCount}</span>
           </div>
         </div>
       </div>
 
       {/* Breakdown Metrics */}
-      <div className="cartoon-card p-6 border-2 border-purple-500/25 space-y-4">
-        <h3 className="text-sm font-black text-white flex items-center gap-2">
-          <TrendingUp className="w-4 h-4 text-purple-400" /> Placement Readiness Analysis
+      <div className="saas-card p-6 space-y-4">
+        <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+          <TrendingUp className="w-4 h-4 text-indigo-600" /> Placement Readiness Analysis
         </h3>
 
         <div className="space-y-3">
           <div className="space-y-1">
-            <div className="flex justify-between text-xs font-black text-gray-200">
-              <span>Placement Benchmark Threshold (75% Target)</span>
-              <span className={accuracy >= 75 ? 'text-emerald-400 font-black' : 'text-amber-400 font-black'}>
-                {accuracy >= 75 ? 'PASSED 🎯' : 'PRACTICE REQUIRED ⚡'}
+            <div className="flex justify-between text-xs font-medium text-slate-700">
+              <span>Aptitude Threshold Target (70% Pass Mark)</span>
+              <span className={accuracy >= 70 ? "text-emerald-700 font-semibold" : "text-amber-700 font-semibold"}>
+                {accuracy >= 70 ? "Target Met ✓" : "Needs Improvement"}
               </span>
             </div>
-            <div className="w-full bg-[#0d1220] rounded-full h-3 overflow-hidden border border-white/10">
-              <div
-                className={`h-full transition-all duration-500 rounded-full ${
-                  accuracy >= 75 ? 'bg-gradient-to-r from-emerald-500 to-teal-400' : 'bg-gradient-to-r from-yellow-500 to-amber-400'
-                }`}
-                style={{ width: `${accuracy}%` }}
+            <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+              <div 
+                className={`h-full transition-all duration-500 ${accuracy >= 70 ? "bg-emerald-600" : "bg-amber-500"}`}
+                style={{ width: `${Math.min(100, accuracy)}%` }}
               />
             </div>
           </div>
@@ -116,29 +103,29 @@ export default function QuizResultView({ result, onReview, onRetry, onBackDashbo
       </div>
 
       {/* Action Buttons */}
-      <div className="flex flex-wrap items-center gap-3 pt-2">
+      <div className="flex flex-col sm:flex-row items-center gap-3">
+        {handleBack && (
+          <button
+            onClick={handleBack}
+            className="saas-btn-secondary w-full sm:w-auto py-2 px-4 text-xs gap-1.5"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" /> Back to Catalog
+          </button>
+        )}
+
         <button
           onClick={onReview}
-          className="cartoon-btn cartoon-btn-purple flex-1 py-3 px-5 text-xs font-black gap-2"
+          className="saas-btn-secondary flex-1 w-full sm:w-auto py-2 px-4 text-xs gap-1.5 font-medium"
         >
-          <Eye className="w-4 h-4" /> Review All Questions & Answers
+          <Eye className="w-3.5 h-3.5" /> Review Answers & Explanations
         </button>
 
         <button
           onClick={onRetry}
-          className="cartoon-btn cartoon-btn-pink py-3 px-5 text-xs font-black gap-2"
+          className="saas-btn-primary flex-1 w-full sm:w-auto py-2 px-4 text-xs gap-1.5 font-medium"
         >
-          <RotateCcw className="w-4 h-4" /> Retry Test
+          <RotateCcw className="w-3.5 h-3.5" /> Retake Test
         </button>
-
-        {handleBack && (
-          <button
-            onClick={handleBack}
-            className="cartoon-btn cartoon-btn-dark py-3 px-5 text-xs font-bold gap-2"
-          >
-            <ArrowLeft className="w-4 h-4" /> Back to Aptitude Hub
-          </button>
-        )}
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
-// agent-notes: { ctx: "Performance Analytics dashboard with category accuracy breakdowns & weekly progress charts", deps: ["recharts", "lucide-react"], state: "active", last: "anti@2026-08-04" }
+// agent-notes: { ctx: "Clean minimal SaaS Performance Analytics dashboard with category accuracy breakdowns & progress charts", deps: ["recharts", "lucide-react"], state: "active", last: "anti@2026-08-27" }
 
 import React from 'react';
-import { TrendingUp, Award, Clock, CheckCircle2, Zap, BarChart2 } from 'lucide-react';
+import { TrendingUp, BarChart2 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function AptitudeAnalytics({ stats }) {
@@ -27,78 +27,86 @@ export default function AptitudeAnalytics({ stats }) {
   ];
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="glass rounded-3xl p-6 border border-card-border">
-        <h2 className="text-xl font-bold text-white flex items-center gap-2">
-          <BarChart2 className="w-6 h-6 text-accent-purple" /> Aptitude Performance Analytics
+    <div className="space-y-6 animate-fade-in text-slate-900">
+      <div className="saas-card p-6">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="saas-badge saas-badge-indigo text-[10px]">
+            <BarChart2 className="w-3 h-3" /> Performance Metrics
+          </span>
+        </div>
+        <h2 className="text-lg font-bold text-slate-900">
+          Aptitude Performance Analytics
         </h2>
-        <p className="text-xs text-gray-400 mt-1">Deep analytics across 87 topics for campus placement readiness</p>
+        <p className="text-xs text-slate-500 mt-0.5">Deep analytics across 87 topics for campus placement readiness</p>
       </div>
 
       {/* 4 Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="glass rounded-2xl p-4 space-y-1 border border-gray-800">
-          <span className="text-[10px] font-bold text-gray-400 uppercase">Questions Solved</span>
-          <div className="text-2xl font-black text-white">{defaultStats.totalAttempted}</div>
-          <span className="text-[10px] text-emerald-400 font-bold">+25 this week</span>
+        <div className="saas-card p-4 space-y-1">
+          <span className="text-[10px] font-semibold text-slate-500 uppercase">Questions Solved</span>
+          <div className="text-2xl font-bold text-slate-900">{defaultStats.totalAttempted}</div>
+          <span className="text-[10px] text-emerald-600 font-medium">+25 this week</span>
         </div>
 
-        <div className="glass rounded-2xl p-4 space-y-1 border border-gray-800">
-          <span className="text-[10px] font-bold text-gray-400 uppercase">Overall Accuracy</span>
-          <div className="text-2xl font-black text-emerald-400">{defaultStats.overallAccuracy}%</div>
-          <span className="text-[10px] text-gray-400 font-bold">Placement Grade: High</span>
+        <div className="saas-card p-4 space-y-1">
+          <span className="text-[10px] font-semibold text-slate-500 uppercase">Overall Accuracy</span>
+          <div className="text-2xl font-bold text-indigo-600">{defaultStats.overallAccuracy}%</div>
+          <span className="text-[10px] text-slate-400 font-medium">Placement Grade: High</span>
         </div>
 
-        <div className="glass rounded-2xl p-4 space-y-1 border border-gray-800">
-          <span className="text-[10px] font-bold text-gray-400 uppercase">Average Speed</span>
-          <div className="text-2xl font-black text-white">{defaultStats.averageTimeSeconds}s</div>
-          <span className="text-[10px] text-blue-400 font-bold">Optimal Speed Range</span>
+        <div className="saas-card p-4 space-y-1">
+          <span className="text-[10px] font-semibold text-slate-500 uppercase">Average Speed</span>
+          <div className="text-2xl font-bold text-slate-900">{defaultStats.averageTimeSeconds}s</div>
+          <span className="text-[10px] text-slate-500 font-medium">Optimal Speed Range</span>
         </div>
 
-        <div className="glass rounded-2xl p-4 space-y-1 border border-gray-800">
-          <span className="text-[10px] font-bold text-gray-400 uppercase">Practice Streak</span>
-          <div className="text-2xl font-black text-accent-pink">{defaultStats.streakDays} Days</div>
-          <span className="text-[10px] text-accent-pink font-bold">Active Daily Streak</span>
+        <div className="saas-card p-4 space-y-1">
+          <span className="text-[10px] font-semibold text-slate-500 uppercase">Practice Streak</span>
+          <div className="text-2xl font-bold text-indigo-600">{defaultStats.streakDays} Days</div>
+          <span className="text-[10px] text-indigo-600 font-medium">Active Daily Streak</span>
         </div>
       </div>
 
       {/* Accuracy Chart */}
-      <div className="glass rounded-2xl p-6 border border-gray-800 space-y-4">
-        <h3 className="text-sm font-bold text-white flex items-center gap-2">
-          <TrendingUp className="w-4 h-4 text-accent-pink" /> Accuracy Trajectory
+      <div className="saas-card p-6 space-y-4">
+        <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+          <TrendingUp className="w-4 h-4 text-indigo-600" /> Accuracy Trajectory
         </h3>
 
-        <div className="h-64 w-full pt-4">
+        <div className="h-64 w-full pt-2">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData}>
               <defs>
                 <linearGradient id="accuracyGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#ec4899" stopOpacity={0.4} />
-                  <stop offset="95%" stopColor="#ec4899" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.15} />
+                  <stop offset="95%" stopColor="#4f46e5" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
-              <XAxis dataKey="day" stroke="#6b7280" fontSize={11} />
-              <YAxis stroke="#6b7280" fontSize={11} domain={[0, 100]} />
-              <Tooltip contentStyle={{ backgroundColor: '#111827', borderColor: '#374151', borderRadius: '12px' }} />
-              <Area type="monotone" dataKey="accuracy" stroke="#ec4899" strokeWidth={3} fillOpacity={1} fill="url(#accuracyGrad)" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+              <XAxis dataKey="day" stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} />
+              <YAxis stroke="#94a3b8" fontSize={11} domain={[0, 100]} tickLine={false} axisLine={false} />
+              <Tooltip contentStyle={{ backgroundColor: '#ffffff', borderColor: '#e2e8f0', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+              <Area type="monotone" dataKey="accuracy" stroke="#4f46e5" strokeWidth={2} fillOpacity={1} fill="url(#accuracyGrad)" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
       </div>
 
       {/* Category Breakdown */}
-      <div className="glass rounded-2xl p-6 border border-gray-800 space-y-4">
-        <h3 className="text-sm font-bold text-white">Category Performance Breakdown</h3>
-        <div className="space-y-4">
+      <div className="saas-card p-6 space-y-4">
+        <h3 className="text-sm font-semibold text-slate-900">Category Performance Breakdown</h3>
+        <div className="space-y-3">
           {defaultStats.categoryStats.map((cat, idx) => (
-            <div key={idx} className="space-y-1">
-              <div className="flex justify-between text-xs font-semibold">
-                <span className="text-gray-300">{cat.category}</span>
-                <span className="text-accent-pink font-bold">{cat.accuracy}% Accuracy ({cat.correct}/{cat.attempted})</span>
+            <div key={idx} className="space-y-1.5">
+              <div className="flex justify-between text-xs">
+                <span className="font-medium text-slate-700">{cat.category}</span>
+                <span className="text-slate-900 font-semibold">{cat.accuracy}% Accuracy ({cat.correct}/{cat.attempted})</span>
               </div>
-              <div className="w-full bg-gray-900 rounded-full h-2 overflow-hidden border border-gray-850">
-                <div className="bg-gradient-to-r from-accent-purple to-accent-pink h-full" style={{ width: `${cat.accuracy}%` }} />
+              <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                <div
+                  className="bg-indigo-600 h-full rounded-full"
+                  style={{ width: `${cat.accuracy}%` }}
+                />
               </div>
             </div>
           ))}

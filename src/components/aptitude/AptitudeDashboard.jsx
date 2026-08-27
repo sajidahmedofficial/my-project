@@ -176,8 +176,8 @@ export default function AptitudeDashboard() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`py-1.5 px-3 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 ${
                   isSelected
-                    ? 'bg-slate-900 text-white'
-                    : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+                    ? 'bg-indigo-600 text-white shadow-sm font-semibold'
+                    : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" /> {tab.label}
