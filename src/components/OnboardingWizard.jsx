@@ -196,13 +196,39 @@ export default function OnboardingWizard({ onComplete }) {
         const parsedAnalysis = response?.analysis || response || {};
         const cand = parsedAnalysis.candidate || {};
         
-        if (cand.firstName) setFirstName(cand.firstName);
-        else if (cand.name) {
-          const parts = cand.name.split(' ');
-          setFirstName(parts[0] || '');
-          setLastName(parts.slice(1).join(' ') || '');
+        const isTitleName = (str) => {
+          if (!str) return true;
+          const s = str.toLowerCase().trim();
+          const titleWords = ['developer', 'engineer', 'full', 'stack', 'fullstack', 'frontend', 'backend', 'web', 'software', 'architect', 'candidate', 'resume', 'profile'];
+          return titleWords.some(w => s === w || s.includes(w));
+        };
+
+        let extractedFirst = cand.firstName || '';
+        let extractedLast = cand.lastName || '';
+        if (!extractedFirst && cand.name) {
+          const parts = cand.name.split(/\s+/).filter(Boolean);
+          extractedFirst = parts[0] || '';
+          extractedLast = parts.slice(1).join(' ') || '';
         }
-        if (cand.lastName) setLastName(cand.lastName);
+
+        // Low-confidence guard: If name contains job title keywords, extract from email or leave clean
+        if (isTitleName(extractedFirst) || isTitleName(extractedLast)) {
+          if (cand.email) {
+            const emailUser = cand.email.split('@')[0]
+              .replace(/official|personal|mail|work|dev|pro|110|\d+/gi, '')
+              .replace(/[._-]+/g, ' ')
+              .trim();
+            const parts = emailUser.split(/\s+/).filter(Boolean);
+            extractedFirst = parts[0] ? parts[0].charAt(0).toUpperCase() + parts[0].slice(1).toLowerCase() : '';
+            extractedLast = parts.slice(1).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ') || '';
+          } else {
+            extractedFirst = '';
+            extractedLast = '';
+          }
+        }
+
+        setFirstName(extractedFirst);
+        setLastName(extractedLast);
         if (cand.email) setEmail(cand.email);
         if (cand.phone) setPhone(cand.phone);
         if (cand.linkedIn) setLinkedIn(cand.linkedIn);

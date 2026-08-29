@@ -20,7 +20,12 @@ Return JSON with exactly this structure:
 
 {
   "candidate": {
+    "firstName": "",
+    "lastName": "",
     "name": "",
+    "email": "",
+    "phone": "",
+    "linkedIn": "",
     "headline": ""
   },
 
@@ -110,23 +115,25 @@ Return JSON with exactly this structure:
 
 Rules:
 
-1. Detect actual grammar mistakes.
-2. Detect spelling mistakes.
-3. Detect weak professional wording.
-4. Detect bad formatting.
-5. Detect ATS problems.
-6. Detect missing resume sections.
-7. Extract technical skills.
-8. Identify weak skills.
-9. Identify missing skills for the target role.
-10. Analyze projects.
-11. Analyze experience.
-12. Suggest specific replacements.
-13. Do not invent experience.
-14. Do not invent certifications.
-15. Do not claim the user knows a skill without evidence.
-16. Score the resume objectively.
-17. Create a skill gap for ${targetRole}.
+1. Extract ONLY the candidate's actual personal name. DO NOT confuse this with a job title (e.g. "Full Stack Developer", "Software Engineer", "Web Developer"), headline, or professional summary. If uncertain, return null rather than guessing.
+2. Extract the candidate's email, phone number, and LinkedIn URL accurately.
+3. Detect actual grammar mistakes.
+4. Detect spelling mistakes.
+5. Detect weak professional wording.
+6. Detect bad formatting.
+7. Detect ATS problems.
+8. Detect missing resume sections.
+9. Extract technical skills.
+10. Identify weak skills.
+11. Identify missing skills for the target role.
+12. Analyze projects.
+13. Analyze experience accurately. If the user has 0 work experience, return empty experience array.
+14. Suggest specific replacements.
+15. Do not invent experience or companies.
+16. Do not invent certifications.
+17. Do not claim the user knows a skill without evidence.
+18. Score the resume objectively.
+19. Create a skill gap for ${targetRole}.
 `;
 
   try {
@@ -140,60 +147,146 @@ Rules:
   return generateRuleBasedAnalysis(resumeText, targetRole);
 }
 
+const JOB_TITLE_KEYWORDS = [
+  "developer", "engineer", "full", "stack", "fullstack", "frontend", "front-end",
+  "backend", "back-end", "web", "software", "architect", "programmer",
+  "curriculum", "vitae", "cv", "resume", "profile", "summary", "contact", "about",
+  "student", "fresher", "intern", "internship", "lead", "senior", "junior",
+  "specialist", "consultant", "analyst", "manager", "designer", "devops",
+  "cloud", "data", "scientist", "machine", "learning", "ai", "technology",
+  "technologies", "portfolio", "application", "experienced",
+  "objective", "education", "skills", "projects", "certifications"
+];
+
+function isInvalidOrJobTitleName(str) {
+  if (!str || typeof str !== 'string') return true;
+  const cleaned = str.trim().toLowerCase();
+  if (cleaned.length < 2 || cleaned.length > 40) return true;
+  
+  // Must contain only letters, dots, hyphens, and spaces
+  if (!/^[a-zA-Z\s.'-]+$/.test(cleaned)) return true;
+
+  // Check if the whole string or any token matches job title / resume header keywords
+  const words = cleaned.split(/\s+/).filter(Boolean);
+  return words.some(w => JOB_TITLE_KEYWORDS.includes(w) || w.length < 2);
+}
+
+function extractPhoneNumber(text) {
+  if (!text) return "";
+  
+  // 1. Explicit label match: "Phone: +91 9876543210" or "Mobile: (555) 019-2834"
+  const prefixMatch = text.match(/(?:phone|mobile|tel|contact|cell|call|ph|mob)[:\s]*([+\d\s().-]{7,25}\d)/i);
+  if (prefixMatch && prefixMatch[1]) {
+    const raw = prefixMatch[1].trim();
+    const digits = raw.replace(/\D/g, '');
+    if (digits.length >= 7 && digits.length <= 15) return raw;
+  }
+
+  // 2. International format: +91 98765 43210, +1 (555) 019-2834
+  const intlMatch = text.match(/\+\d{1,4}[-.\s]?(?:\(?\d{2,4}\)?[-.\s]?)?\d{3,5}[-.\s]?\d{3,5}/);
+  if (intlMatch && intlMatch[0]) {
+    const raw = intlMatch[0].trim();
+    if (raw.replace(/\D/g, '').length >= 8) return raw;
+  }
+
+  // 3. US/Standard dashed format: (555) 019-2834 or 555-019-2834
+  const stdMatch = text.match(/(?:\(\d{3}\)|\b\d{3}\b)[-.\s]?\d{3}[-.\s]?\d{4}\b/);
+  if (stdMatch && stdMatch[0]) {
+    return stdMatch[0].trim();
+  }
+
+  // 4. Standard 10-digit mobile number
+  const raw10Match = text.match(/\b[6-9]\d{9}\b/);
+  if (raw10Match && raw10Match[0]) {
+    return raw10Match[0].trim();
+  }
+
+  return "";
+}
+
+function extractCandidateName(lines, text, email, linkedIn) {
+  let candidateName = "";
+
+  // Step A: Scan top 15 lines for an isolated, clean person name (2-3 words, no title keywords)
+  for (let i = 0; i < Math.min(15, lines.length); i++) {
+    const line = lines[i].replace(/^[•\-\*|#]+\s*/, '').trim();
+    if (!line) continue;
+
+    // Skip lines with emails, links, or phone numbers
+    if (line.includes("@") || line.includes("http") || line.includes("www.") || line.includes(".com")) continue;
+    if (/\d{4,}/.test(line)) continue;
+
+    const words = line.split(/\s+/);
+    if (words.length >= 1 && words.length <= 4) {
+      if (!isInvalidOrJobTitleName(line)) {
+        candidateName = line;
+        break;
+      }
+    }
+  }
+
+  // Step B: If line scan failed, try extracting name from email address
+  if (!candidateName && email) {
+    let emailUser = email.split('@')[0]
+      .replace(/official|personal|mail|work|dev|pro|110|\d+/gi, '')
+      .replace(/[._-]+/g, ' ')
+      .trim();
+
+    // Check for common compound names like "sajidahmed" -> "sajid ahmed"
+    if (!emailUser.includes(' ') && emailUser.length >= 6) {
+      const splitCompound = emailUser.replace(/([a-z]{3,10})(ahmed|doe|smith|kumar|sharma|khan|patel|singh|verma|gupta|das|roy|reddy|ali|hassan|hussain|williams|brown|jones|miller|davis|wilson)/i, '$1 $2');
+      if (splitCompound.includes(' ')) {
+        emailUser = splitCompound;
+      }
+    }
+
+    if (emailUser.length >= 3 && !isInvalidOrJobTitleName(emailUser)) {
+      candidateName = emailUser.split(/\s+/)
+        .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+        .join(' ');
+    }
+  }
+
+  // Step C: If still not found, try LinkedIn slug
+  if (!candidateName && linkedIn) {
+    const slugMatch = linkedIn.match(/in\/([a-zA-Z0-9_-]+)/i);
+    if (slugMatch && slugMatch[1]) {
+      const slugClean = slugMatch[1].replace(/[._-]+/g, ' ').replace(/\d+/g, '').trim();
+      if (slugClean.length >= 3 && !isInvalidOrJobTitleName(slugClean)) {
+        candidateName = slugClean.split(' ')
+          .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+          .join(' ');
+      }
+    }
+  }
+
+  // Validation Guard: If extracted name still contains job titles, reject it completely
+  if (isInvalidOrJobTitleName(candidateName)) {
+    return { firstName: "", lastName: "", name: "" };
+  }
+
+  const nameParts = candidateName.split(/\s+/).filter(Boolean);
+  const firstName = nameParts[0] || "";
+  const lastName = nameParts.slice(1).join(" ") || "";
+
+  return { firstName, lastName, name: candidateName };
+}
+
 function generateRuleBasedAnalysis(text, targetRole) {
   const lowerText = text.toLowerCase();
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
 
   // 1. Extract email, phone, linkedIn
   const emailMatch = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-  const phoneMatch = text.match(/(?:\+?\d{1,3}[-.\s]?)?(?:\(?\d{2,4}\)?[-.\s]?)?\d{3,5}[-.\s]?\d{3,5}/);
-  const linkedInMatch = text.match(/linkedin\.com\/in\/([a-zA-Z0-9_-]+)/i);
-  const githubMatch = text.match(/github\.com\/([a-zA-Z0-9_-]+)/i);
+  const linkedInMatch = text.match(/(?:https?:\/\/)?(?:www\.)?linkedin\.com\/in\/([a-zA-Z0-9_-]+)/i);
+  const githubMatch = text.match(/(?:https?:\/\/)?(?:www\.)?github\.com\/([a-zA-Z0-9_-]+)/i);
 
   const email = emailMatch ? emailMatch[0] : "";
-  const phone = phoneMatch ? phoneMatch[0] : "";
+  const phone = extractPhoneNumber(text);
   const linkedIn = linkedInMatch ? `https://linkedin.com/in/${linkedInMatch[1]}` : "";
 
-  // 2. Smart Candidate Name Extraction (Avoid confusing job titles with names)
-  const titleKeywords = [
-    "developer", "engineer", "full stack", "fullstack", "frontend", "backend",
-    "web developer", "software", "architect", "programmer", "curriculum vitae",
-    "resume", "profile", "summary", "contact", "about", "student", "fresher"
-  ];
-
-  let candidateName = "";
-  for (let i = 0; i < Math.min(5, lines.length); i++) {
-    const line = lines[i];
-    const isTitleLine = titleKeywords.some(kw => line.toLowerCase().includes(kw));
-    const isEmailOrPhone = line.includes("@") || /\d{5,}/.test(line);
-    const wordCount = line.split(/\s+/).length;
-
-    if (!isTitleLine && !isEmailOrPhone && wordCount >= 1 && wordCount <= 4 && /^[a-zA-Z\s.'-]+$/.test(line)) {
-      candidateName = line;
-      break;
-    }
-  }
-
-  // Fallback: If name line was not found or was a title, extract clean name from email
-  if (!candidateName && email) {
-    const emailUser = email.split('@')[0]
-      .replace(/official|personal|mail|110|\d+/gi, '')
-      .replace(/[._-]+/g, ' ')
-      .trim();
-    if (emailUser.length > 2) {
-      candidateName = emailUser.split(' ')
-        .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
-        .join(' ');
-    }
-  }
-
-  if (!candidateName) {
-    candidateName = "Candidate";
-  }
-
-  const nameParts = candidateName.split(/\s+/);
-  const firstName = nameParts[0] || "Candidate";
-  const lastName = nameParts.slice(1).join(" ") || "";
+  // 2. High-Confidence Candidate Name Extraction
+  const { firstName, lastName, name: candidateName } = extractCandidateName(lines, text, email, linkedIn);
 
   const allKnownSkills = [
     "HTML", "CSS", "JavaScript", "TypeScript", "React", "Node.js", "Express", 
