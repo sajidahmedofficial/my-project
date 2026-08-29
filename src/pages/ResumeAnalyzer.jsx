@@ -1,6 +1,6 @@
 // agent-notes: { ctx: "Clean & modern tabbed ResumeAnalyzer page with complete feature set preserved", deps: ["react", "lucide-react", "../components/resume/*", "../services/resumeApi"], state: "active", last: "anti@2026-08-08" }
 import React, { useState, useEffect } from 'react';
-import { Sparkles, Eye, Download, Trophy, AlertCircle, Target, Award, LayoutGrid, Layers, RefreshCw, CheckCircle2 } from 'lucide-react';
+import { Sparkles, Eye, Download, Trophy, AlertCircle, Target, Award, LayoutGrid, Layers, RefreshCw, CheckCircle2, GraduationCap, Briefcase } from 'lucide-react';
 
 import UploadResume from '../components/resume/UploadResume';
 import ResumeScore from '../components/resume/ResumeScore';
