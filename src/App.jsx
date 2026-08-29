@@ -212,12 +212,12 @@ function MainLayout() {
         {/* Minimal Navigation Header */}
         <header className="max-w-6xl w-full mx-auto px-6 py-6 flex items-center justify-between relative z-10">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#00d084] flex items-center justify-center text-slate-950 font-black text-sm shadow-sm">
-              <span className="tracking-tighter">rm</span>
+            <div className="w-8 h-8 rounded-lg bg-[#0f766e] flex items-center justify-center text-white font-black text-sm shadow-sm">
+              <span>SB</span>
             </div>
             <div className="flex items-baseline gap-1">
-              <span className="font-extrabold text-slate-900 text-lg tracking-tight">role</span>
-              <span className="font-bold text-[#00a86b] text-lg tracking-tight">mint</span>
+              <span className="font-extrabold text-slate-900 text-lg tracking-tight">Skill</span>
+              <span className="font-bold text-[#0f766e] text-lg tracking-tight">Bridge</span>
             </div>
           </div>
 
@@ -354,13 +354,13 @@ function MainLayout() {
           {/* Brand Logo Header */}
           <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-[#00d084] flex items-center justify-center text-slate-950 font-black text-sm shadow-sm">
-                <span className="tracking-tighter">rm</span>
+              <div className="w-8 h-8 rounded-lg bg-[#0f766e] flex items-center justify-center text-white font-black text-sm shadow-sm">
+                <span>SB</span>
               </div>
               <div>
                 <div className="flex items-baseline gap-1">
-                  <span className="font-extrabold text-slate-900 text-sm tracking-tight">role</span>
-                  <span className="font-bold text-[#00a86b] text-sm tracking-tight">mint</span>
+                  <span className="font-extrabold text-slate-900 text-sm tracking-tight">Skill</span>
+                  <span className="font-bold text-[#0f766e] text-sm tracking-tight">Bridge</span>
                 </div>
                 <span className="text-[11px] text-slate-500 font-normal block">Software Career Engine</span>
               </div>

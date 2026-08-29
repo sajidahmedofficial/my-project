@@ -6,14 +6,9 @@
 
 ## 🌟 Key Features
 
-### 1. 🎭 AI Communication & Roleplay Simulator (Rolemint Integration)
-- **Dynamic In-Character AI Personas:** Practice high-stakes conversations (Senior Frontend Technical Screen, Offer & Salary Negotiation, Scope Pushback, Outage Postmortem, Client Pitch).
-- **Custom Scenario Builder:** Define your own counterparty persona, scenario objective, difficulty levels (*Easy*, *Medium*, *Hard*), and context.
-- **Scored Coaching Evaluation:** Turn-by-turn simulation analysis delivering an overall readiness score (0–100), key behavioral strengths, tactical next steps, and transcript replays.
-
-### 2. 📄 ATS Resume Analyzer & Fixer
-- **Deep Resume Parsing:** Extracts skills, experience, project impacts, and identifies missing competencies.
-- **Actionable ATS Optimization:** Scored feedback, keyword density checks, and one-click problem resolution.
+### 1. 📄 ATS Resume Analyzer & Fixer
+- **Deep Resume Parsing:** In-memory PDF and DOCX extraction, skills detection, experience benchmarking, and keyword gap analysis.
+- **Actionable ATS Optimization:** Scored feedback, keyword density checks, and one-click bullet point rewrites.
 
 ### 3. 🎯 Skill Gap Analysis & Job Market Matrix
 - **Benchmark vs Industry Benchmarks:** Compare your verified profile against real-world job roles (Frontend, Backend, Full Stack, DevOps, AI/ML).

@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Rolemint-themed SkillBridge dashboard with hero skill gap card, career benchmarks & software engineering tools", deps: ["lucide-react", "recharts", "./common/AIAssistantAvatar"], state: "active", last: "anti@2026-08-29" }
+// agent-notes: { ctx: "SkillBridge career dashboard with hero skill gap card, career benchmarks & software engineering tools", deps: ["lucide-react", "recharts", "./common/AIAssistantAvatar"], state: "active", last: "anti@2026-08-29" }
 
 import React, { useState } from 'react';
 import { 
