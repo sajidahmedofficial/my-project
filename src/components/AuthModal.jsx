@@ -349,41 +349,23 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
             </div>
 
             {/* Social Logins */}
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={() => handleSocialAuth('google')}
-                className="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center transition-colors"
-                title="Google"
+                className="py-2 px-3 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center gap-2 transition-colors text-xs font-medium text-slate-700"
               >
                 <Chrome className="w-4 h-4 text-red-500" />
+                <span>Google</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => handleSocialAuth('github')}
-                className="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center transition-colors"
-                title="GitHub"
+                className="py-2 px-3 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center gap-2 transition-colors text-xs font-medium text-slate-700"
               >
                 <Github className="w-4 h-4 text-slate-800" />
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleSocialAuth('microsoft')}
-                className="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center transition-colors"
-                title="Microsoft"
-              >
-                <Briefcase className="w-4 h-4 text-blue-600" />
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleSocialAuth('linkedin')}
-                className="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center transition-colors"
-                title="LinkedIn"
-              >
-                <Linkedin className="w-4 h-4 text-blue-700" />
+                <span>GitHub</span>
               </button>
             </div>
           </form>

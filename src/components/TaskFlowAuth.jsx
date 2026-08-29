@@ -355,42 +355,27 @@ export default function TaskFlowAuth({ isOpen, onClose, initialMode = 'signup', 
             <div className="relative my-3">
               <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-100"></div></div>
               <div className="relative flex justify-center text-[10px] uppercase tracking-wider text-slate-400 font-medium">
-                <span className="bg-white px-2">Instant OAuth</span>
+                <span className="bg-white px-2">Or One-Click Social Access</span>
               </div>
             </div>
 
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               <button
                 type="button"
                 onClick={() => handleSocialAuth('google')}
-                className="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center transition-colors"
-                title="Google Login"
+                className="w-full py-2.5 px-3 rounded-xl border border-slate-200 hover:bg-slate-50 flex items-center justify-center gap-2 transition-all font-medium text-xs text-slate-700 hover:border-slate-300 shadow-sm"
               >
                 <Chrome className="w-4 h-4 text-red-500" />
+                <span>Continue with Google</span>
               </button>
+
               <button
                 type="button"
                 onClick={() => handleSocialAuth('github')}
-                className="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center transition-colors"
-                title="GitHub Login"
+                className="w-full py-2.5 px-3 rounded-xl border border-slate-200 hover:bg-slate-50 flex items-center justify-center gap-2 transition-all font-medium text-xs text-slate-700 hover:border-slate-300 shadow-sm"
               >
-                <Github className="w-4 h-4 text-slate-800" />
-              </button>
-              <button
-                type="button"
-                onClick={() => handleSocialAuth('microsoft')}
-                className="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center transition-colors"
-                title="Microsoft Login"
-              >
-                <Briefcase className="w-4 h-4 text-blue-600" />
-              </button>
-              <button
-                type="button"
-                onClick={() => handleSocialAuth('linkedin')}
-                className="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center transition-colors"
-                title="LinkedIn Login"
-              >
-                <Linkedin className="w-4 h-4 text-blue-700" />
+                <Github className="w-4 h-4 text-slate-900" />
+                <span>Continue with GitHub</span>
               </button>
             </div>
           </div>

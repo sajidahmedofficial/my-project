@@ -252,17 +252,17 @@ function MainLayout() {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
             <button
-              onClick={() => { setTaskFlowMode('signup'); setIsTaskFlowAuthOpen(true); }}
+              onClick={() => { setTaskFlowMode('login'); setIsTaskFlowAuthOpen(true); }}
               className="saas-btn-primary w-full sm:w-auto px-6 py-3 text-sm font-medium gap-2"
             >
-              Start Free Assessment <ArrowRight className="w-4 h-4" />
+              <FileText className="w-4 h-4" /> Analyze Resume Step-by-Step <ArrowRight className="w-4 h-4" />
             </button>
 
             <button
-              onClick={() => { setTaskFlowMode('login'); setIsTaskFlowAuthOpen(true); }}
+              onClick={() => { setTaskFlowMode('signup'); setIsTaskFlowAuthOpen(true); }}
               className="saas-btn-secondary w-full sm:w-auto px-6 py-3 text-sm font-medium gap-2"
             >
-              <LogIn className="w-4 h-4 text-slate-500" /> Sign In to Account
+              <LogIn className="w-4 h-4 text-slate-500" /> Sign Up with Google / GitHub
             </button>
           </div>
 
@@ -314,13 +314,9 @@ function MainLayout() {
           isOpen={isTaskFlowAuthOpen} 
           onClose={() => setIsTaskFlowAuthOpen(false)} 
           initialMode={taskFlowMode}
-          onComplete={(completedMode) => {
-            if (completedMode === 'signup') {
-              setShowOnboarding(true);
-            } else {
-              setShowOnboarding(false);
-              setActiveTab('dashboard');
-            }
+          onComplete={(_completedMode) => {
+            setShowOnboarding(false);
+            setActiveTab('resume');
           }}
         />
 
@@ -329,7 +325,10 @@ function MainLayout() {
           isOpen={isAuthModalOpen} 
           onClose={() => setIsAuthModalOpen(false)} 
           initialTab={authModalTab}
-          onStartOnboarding={() => setShowOnboarding(true)}
+          onStartOnboarding={() => {
+            setShowOnboarding(false);
+            setActiveTab('resume');
+          }}
         />
       </div>
     );
