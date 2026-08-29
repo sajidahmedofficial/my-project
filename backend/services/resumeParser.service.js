@@ -1,8 +1,57 @@
 // agent-notes: { ctx: "Robust in-memory resume parser extracting plain text from PDF and DOCX buffers with graceful error handling", deps: ["pdf-parse", "mammoth", "fs"], state: "active", last: "anti@2026-08-29" }
 
 import fs from "fs";
+import zlib from "zlib";
 import pdfParse from "pdf-parse";
 import mammoth from "mammoth";
+
+/**
+ * Extracts plain text from raw PDF streams by decompressing FlateDecode blocks
+ */
+function extractTextFromPdfStreams(buffer) {
+  try {
+    const textChunks = [];
+    const bufferStr = buffer.toString("binary");
+
+    const streamRegex = /stream\r?\n([\s\S]*?)\r?\nendstream/g;
+    let match;
+    while ((match = streamRegex.exec(bufferStr)) !== null) {
+      const rawStream = match[1];
+      const streamBuffer = Buffer.from(rawStream, "binary");
+
+      try {
+        const decompressed = zlib.inflateSync(streamBuffer);
+        const decompStr = decompressed.toString("utf-8");
+
+        const tjMatches = decompStr.match(/\((.*?)\)\s*Tj/g) || [];
+        for (const m of tjMatches) {
+          const clean = m.replace(/^\(/, '').replace(/\)\s*Tj$/, '').trim();
+          if (clean && clean.length > 1) textChunks.push(clean);
+        }
+
+        const arrayMatches = decompStr.match(/\[(.*?)\]\s*TJ/g) || [];
+        for (const m of arrayMatches) {
+          const innerStrings = m.match(/\((.*?)\)/g) || [];
+          for (const s of innerStrings) {
+            const clean = s.replace(/^\(/, '').replace(/\)$/, '').trim();
+            if (clean && clean.length > 1) textChunks.push(clean);
+          }
+        }
+      } catch {
+        const tjMatches = rawStream.match(/\((.*?)\)\s*Tj/g) || [];
+        for (const m of tjMatches) {
+          const clean = m.replace(/^\(/, '').replace(/\)\s*Tj$/, '').trim();
+          if (clean && clean.length > 1) textChunks.push(clean);
+        }
+      }
+    }
+
+    return textChunks.join(" ").trim();
+  } catch (err) {
+    console.warn("[Resume Parser] Stream decompression notice:", err.message);
+    return "";
+  }
+}
 
 /**
  * Extracts plain text from an uploaded file object or buffer.
@@ -46,9 +95,9 @@ export async function extractResumeText(file) {
 
   // 1. PDF Parsing
   if (isPDF) {
+    // Attempt A: Standard pdf-parse
     try {
       const parsed = await pdfParse(buffer, {
-        // Max pages limit for safety and speed
         max: 10
       });
       const text = parsed?.text?.trim();
@@ -56,15 +105,22 @@ export async function extractResumeText(file) {
         return cleanExtractedText(text);
       }
     } catch (err) {
-      console.warn("[Resume Parser] pdf-parse failed, attempting UTF-8 fallback:", err.message);
+      console.warn("[Resume Parser] pdf-parse failed, attempting stream decompression fallback:", err.message);
     }
 
-    // Fallback: UTF-8 scan for plain-text embedded PDFs
+    // Attempt B: Decompress PDF streams using zlib and parse text operators
+    const streamText = extractTextFromPdfStreams(buffer);
+    if (streamText && streamText.length > 30) {
+      return cleanExtractedText(streamText);
+    }
+
+    // Attempt C: UTF-8 scan for plain-text embedded PDFs
     const utfText = buffer.toString("utf-8").replace(/[^\x20-\x7E\n\r\t]/g, " ").trim();
-    if (utfText.length > 50) {
+    if (utfText.length > 40) {
       return cleanExtractedText(utfText);
     }
-    throw new Error("Unable to parse text from the PDF file. The file may be image-only, scanned, encrypted, or corrupted.");
+
+    throw new Error("Unable to extract text from the PDF file. The file may be image-only, scanned, encrypted, or created with unsupported graphics filters.");
   }
 
   // 2. DOCX Parsing

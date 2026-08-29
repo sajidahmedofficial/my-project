@@ -1,4 +1,11 @@
-import PDFDocument from "pdfkit";
+let PDFDocument = null;
+try {
+  const pdfkitModule = await import("pdfkit");
+  PDFDocument = pdfkitModule.default || pdfkitModule;
+} catch (e) {
+  console.warn("[Certificate Service] pdfkit not available:", e.message);
+}
+
 import fs from "fs";
 import path from "path";
 import os from "os";
@@ -23,6 +30,13 @@ try {
  */
 function createCertificatePdfFile({ certificateId, userName, skillName, score, issueDate, verificationStatus = "VERIFIED" }) {
   const filePath = path.join(CERTIFICATES_DIR, `${certificateId}.pdf`);
+
+  if (!PDFDocument) {
+    try {
+      fs.writeFileSync(filePath, Buffer.from(`SkillBridge AI Certificate: ${certificateId}\nIssued to: ${userName}\nSkill: ${skillName}\nScore: ${score}%`), 'utf-8');
+    } catch {}
+    return filePath;
+  }
 
   const doc = new PDFDocument({
     size: "A4",

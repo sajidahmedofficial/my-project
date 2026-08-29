@@ -285,7 +285,8 @@ export default function OnboardingWizard({ onComplete }) {
       });
       setIsParsing(false);
       setUploadProgress(0);
-      setUploadError(err.message || 'Resume analysis failed. Please verify your connection or file format and try again.');
+      setUploadFile(null);
+      setUploadError(err.message || 'Resume analysis failed. Please verify your file format and try again.');
     }
   };
 
@@ -650,13 +651,15 @@ export default function OnboardingWizard({ onComplete }) {
             {/* Footer Buttons */}
             <div className="pt-4 flex items-center justify-between">
               <div className="text-xs text-slate-400">
-                {!uploadFile ? (
+                {uploadError ? (
+                  <span className="text-rose-600 font-medium">❌ Upload failed. Please try uploading again.</span>
+                ) : !uploadFile ? (
                   <span className="text-amber-600 font-medium">⚠️ Please upload your resume above to continue.</span>
                 ) : isParsing ? (
                   <span className="text-emerald-600 font-medium animate-pulse">⏳ Parsing resume details & internships...</span>
-                ) : (
+                ) : uploadProgress === 3 ? (
                   <span className="text-emerald-700 font-medium">✓ Resume ready for review</span>
-                )}
+                ) : null}
               </div>
 
               <button
