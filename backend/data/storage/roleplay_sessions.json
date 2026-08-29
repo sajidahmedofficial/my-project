@@ -1,5 +1,14 @@
 [
   {
+    "id": "sess_459b2555-b37d-4d31-9415-761981944ad9",
+    "user_id": "test_user_123",
+    "scenario_id": "sc_custom_8ed69589-e3b5-4e2a-af14-a5d26ed460f0",
+    "status": "completed",
+    "started_at": "2026-08-29T15:51:57.142Z",
+    "ended_at": "2026-08-29T15:51:57.153Z",
+    "overall_score": 70
+  },
+  {
     "id": "sess_b122242e-c322-4c9b-8ea2-dd09554b6c43",
     "user_id": "test_user_123",
     "scenario_id": "sc_custom_e3726107-52e4-4cd4-90c8-9a2b7f8d35f9",

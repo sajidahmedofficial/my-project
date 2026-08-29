@@ -40,5 +40,26 @@
     "role": "assistant",
     "content": "I hear your point. Given our constraints and the risks involved, walk me through how you plan to execute that step by step.",
     "created_at": "2026-08-29T15:33:48.650Z"
+  },
+  {
+    "id": "msg_d06e8d23-5a56-4c97-996f-2ed72931d329",
+    "session_id": "sess_459b2555-b37d-4d31-9415-761981944ad9",
+    "role": "assistant",
+    "content": "Hello. Thanks for joining today. I reviewed your background, and I want to dive straight into your approach to system architecture and problem solving. Shall we begin?",
+    "created_at": "2026-08-29T15:51:57.144Z"
+  },
+  {
+    "id": "msg_a68d332d-687f-4de5-9a80-b7e085da5e51",
+    "session_id": "sess_459b2555-b37d-4d31-9415-761981944ad9",
+    "role": "user",
+    "content": "In JavaScript, promises and microtasks execute before macro tasks like setTimeout in the event loop.",
+    "created_at": "2026-08-29T15:51:57.145Z"
+  },
+  {
+    "id": "msg_20f47082-f35a-40e9-842f-b0c5826bd188",
+    "session_id": "sess_459b2555-b37d-4d31-9415-761981944ad9",
+    "role": "assistant",
+    "content": "I hear your point. Given our constraints and the risks involved, walk me through how you plan to execute that step by step.",
+    "created_at": "2026-08-29T15:51:57.146Z"
   }
 ]
