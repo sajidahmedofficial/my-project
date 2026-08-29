@@ -142,28 +142,64 @@ Rules:
 
 function generateRuleBasedAnalysis(text, targetRole) {
   const lowerText = text.toLowerCase();
-  
-  // Extract candidate name candidate
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
-  const firstLine = lines[0] || "Candidate";
-  const nameParts = firstLine.split(/\s+/);
-  const firstName = nameParts[0] || "Candidate";
-  const lastName = nameParts.slice(1).join(" ") || "";
 
-  // Extract email, phone, linkedIn
+  // 1. Extract email, phone, linkedIn
   const emailMatch = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-  const phoneMatch = text.match(/(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/);
-  const linkedInMatch = text.match(/linkedin\.com\/in\/[a-zA-Z0-9_-]+/i);
+  const phoneMatch = text.match(/(?:\+?\d{1,3}[-.\s]?)?(?:\(?\d{2,4}\)?[-.\s]?)?\d{3,5}[-.\s]?\d{3,5}/);
+  const linkedInMatch = text.match(/linkedin\.com\/in\/([a-zA-Z0-9_-]+)/i);
+  const githubMatch = text.match(/github\.com\/([a-zA-Z0-9_-]+)/i);
 
   const email = emailMatch ? emailMatch[0] : "";
   const phone = phoneMatch ? phoneMatch[0] : "";
-  const linkedIn = linkedInMatch ? `https://${linkedInMatch[0]}` : "";
+  const linkedIn = linkedInMatch ? `https://linkedin.com/in/${linkedInMatch[1]}` : "";
+
+  // 2. Smart Candidate Name Extraction (Avoid confusing job titles with names)
+  const titleKeywords = [
+    "developer", "engineer", "full stack", "fullstack", "frontend", "backend",
+    "web developer", "software", "architect", "programmer", "curriculum vitae",
+    "resume", "profile", "summary", "contact", "about", "student", "fresher"
+  ];
+
+  let candidateName = "";
+  for (let i = 0; i < Math.min(5, lines.length); i++) {
+    const line = lines[i];
+    const isTitleLine = titleKeywords.some(kw => line.toLowerCase().includes(kw));
+    const isEmailOrPhone = line.includes("@") || /\d{5,}/.test(line);
+    const wordCount = line.split(/\s+/).length;
+
+    if (!isTitleLine && !isEmailOrPhone && wordCount >= 1 && wordCount <= 4 && /^[a-zA-Z\s.'-]+$/.test(line)) {
+      candidateName = line;
+      break;
+    }
+  }
+
+  // Fallback: If name line was not found or was a title, extract clean name from email
+  if (!candidateName && email) {
+    const emailUser = email.split('@')[0]
+      .replace(/official|personal|mail|110|\d+/gi, '')
+      .replace(/[._-]+/g, ' ')
+      .trim();
+    if (emailUser.length > 2) {
+      candidateName = emailUser.split(' ')
+        .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+        .join(' ');
+    }
+  }
+
+  if (!candidateName) {
+    candidateName = "Candidate";
+  }
+
+  const nameParts = candidateName.split(/\s+/);
+  const firstName = nameParts[0] || "Candidate";
+  const lastName = nameParts.slice(1).join(" ") || "";
 
   const allKnownSkills = [
     "HTML", "CSS", "JavaScript", "TypeScript", "React", "Node.js", "Express", 
     "MongoDB", "PostgreSQL", "SQL", "Python", "Git", "Tailwind CSS", "Redux", 
     "Docker", "AWS", "RESTful API", "WordPress", "Website development", "GraphQL", 
-    "Next.js", "System Architecture", "Machine Learning", "Data Analysis"
+    "Next.js", "System Architecture", "Machine Learning", "Data Analysis", "Java", "C++"
   ];
 
   const detectedSkills = allKnownSkills.filter(skill => 

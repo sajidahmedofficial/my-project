@@ -59,14 +59,13 @@ export default function OnboardingWizard({ onComplete }) {
   const [uploadError, setUploadError] = useState('');
   const [isParsing, setIsParsing] = useState(false);
 
-  // -------------------------------------------------------------
-  // STEP 2: PROFILE REVIEW STATE
-  // -------------------------------------------------------------
+  // Form State with clean initial values
   const [firstName, setFirstName] = useState(() => {
-    const rawName = currentUser?.name || '';
+    const rawName = currentUser?.firstName || currentUser?.name || '';
     return rawName.split(' ')[0] || '';
   });
   const [lastName, setLastName] = useState(() => {
+    if (currentUser?.lastName) return currentUser.lastName;
     const rawName = currentUser?.name || '';
     const parts = rawName.split(' ');
     return parts.slice(1).join(' ') || '';
@@ -75,45 +74,48 @@ export default function OnboardingWizard({ onComplete }) {
   const [phone, setPhone] = useState(() => currentUser?.phone || '');
   const [linkedIn, setLinkedIn] = useState(() => currentUser?.linkedIn || '');
 
-  // Skills as discrete chips (Fixing unbroken string bug)
+  // Skills as discrete chips
   const [skillsList, setSkillsList] = useState(() => {
     if (Array.isArray(currentUser?.skills) && currentUser.skills.length > 0) {
       return currentUser.skills;
     }
-    return ['JavaScript', 'React', 'Node.js', 'RESTful API', 'HTML/CSS', 'Git'];
+    return ['JavaScript', 'React', 'HTML', 'CSS', 'Git'];
   });
   const [newSkillInput, setNewSkillInput] = useState('');
 
-  // Education list (Fixing Add Education bug)
+  // Education list (Initializes with clean user data or blank entry)
   const [educationList, setEducationList] = useState(() => {
     if (Array.isArray(currentUser?.education) && currentUser.education.length > 0) {
       return currentUser.education;
     }
-    return [
-      {
-        id: 1,
-        school: currentUser?.college || 'Stanford University',
-        degree: currentUser?.degree || 'B.Tech in Computer Science',
-        field: currentUser?.department || 'Computer Science & Engineering',
-        year: currentUser?.graduationYear || '2025'
-      }
-    ];
-  });
-
-  // Work Experience list
-  const [experienceList, setExperienceList] = useState(() => {
-    if (Array.isArray(currentUser?.experience) && currentUser.experience.length > 0) {
-      return currentUser.experience;
+    if (currentUser?.college) {
+      return [
+        {
+          id: 1,
+          school: currentUser.college,
+          degree: currentUser.degree || 'Bachelor of Technology (B.Tech)',
+          field: currentUser.department || 'Computer Science',
+          year: currentUser.graduationYear || '2025'
+        }
+      ];
     }
     return [
       {
         id: 1,
-        company: 'Software Tech Labs',
-        role: 'Full Stack Engineering Intern',
-        duration: '2023 - 2024',
-        description: 'Developed scalable React components, optimized REST API endpoints, and integrated database storage.'
+        school: '',
+        degree: 'Bachelor of Technology (B.Tech)',
+        field: 'Computer Science & Engineering',
+        year: '2025'
       }
     ];
+  });
+
+  // Work Experience list (Defaults to empty for freshers)
+  const [experienceList, setExperienceList] = useState(() => {
+    if (Array.isArray(currentUser?.experience) && currentUser.experience.length > 0) {
+      return currentUser.experience;
+    }
+    return [];
   });
 
   // Validation errors
@@ -775,7 +777,7 @@ export default function OnboardingWizard({ onComplete }) {
                         type="text"
                         value={edu.school}
                         onChange={(e) => handleUpdateEducation(edu.id, 'school', e.target.value)}
-                        placeholder="e.g. Stanford University"
+                        placeholder="e.g. Stanford University or IIT Delhi"
                         className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-[#0f766e]"
                       />
                     </div>
@@ -786,7 +788,7 @@ export default function OnboardingWizard({ onComplete }) {
                         type="text"
                         value={edu.degree}
                         onChange={(e) => handleUpdateEducation(edu.id, 'degree', e.target.value)}
-                        placeholder="e.g. Bachelor of Science"
+                        placeholder="e.g. Bachelor of Technology (B.Tech)"
                         className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-[#0f766e]"
                       />
                     </div>
@@ -797,7 +799,7 @@ export default function OnboardingWizard({ onComplete }) {
                         type="text"
                         value={edu.field}
                         onChange={(e) => handleUpdateEducation(edu.id, 'field', e.target.value)}
-                        placeholder="e.g. Computer Science"
+                        placeholder="e.g. Computer Science & Engineering"
                         className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-[#0f766e]"
                       />
                     </div>
@@ -815,6 +817,101 @@ export default function OnboardingWizard({ onComplete }) {
                   </div>
                 </div>
               ))}
+            </div>
+
+            {/* Work Experience History */}
+            <div className="space-y-4 pt-2">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                  Work Experience ({experienceList.length > 0 ? `${experienceList.length} Role(s)` : 'Fresher'})
+                </h3>
+                <button
+                  type="button"
+                  onClick={handleAddExperience}
+                  className="text-xs font-semibold text-[#0f766e] hover:text-[#0d594f] flex items-center gap-1"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Add Experience</span>
+                </button>
+              </div>
+
+              {experienceList.length > 0 ? (
+                experienceList.map((exp, idx) => (
+                  <div key={exp.id || idx} className="p-5 rounded-2xl border border-slate-200 bg-white space-y-3 relative group">
+                    <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                      <span className="text-xs font-bold text-slate-700">Role #{idx + 1}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveExperience(exp.id)}
+                        className="text-xs text-rose-500 hover:text-rose-700 flex items-center gap-1"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Remove</span>
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div className="space-y-1">
+                        <label className="block text-[11px] font-semibold text-slate-600">Company Name</label>
+                        <input
+                          type="text"
+                          value={exp.company}
+                          onChange={(e) => handleUpdateExperience(exp.id, 'company', e.target.value)}
+                          placeholder="e.g. Google or Tech Startup"
+                          className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-[#0f766e]"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="block text-[11px] font-semibold text-slate-600">Job Title / Role</label>
+                        <input
+                          type="text"
+                          value={exp.role}
+                          onChange={(e) => handleUpdateExperience(exp.id, 'role', e.target.value)}
+                          placeholder="e.g. Full Stack Developer"
+                          className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-[#0f766e]"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="block text-[11px] font-semibold text-slate-600">Duration</label>
+                        <input
+                          type="text"
+                          value={exp.duration}
+                          onChange={(e) => handleUpdateExperience(exp.id, 'duration', e.target.value)}
+                          placeholder="e.g. 2023 - Present"
+                          className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-[#0f766e]"
+                        />
+                      </div>
+
+                      <div className="sm:col-span-3 space-y-1">
+                        <label className="block text-[11px] font-semibold text-slate-600">Key Responsibilities / Impact</label>
+                        <textarea
+                          rows={2}
+                          value={exp.description}
+                          onChange={(e) => handleUpdateExperience(exp.id, 'description', e.target.value)}
+                          placeholder="e.g. Developed and scaled REST APIs handling 50k+ requests/day."
+                          className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-[#0f766e]"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="p-4 rounded-xl bg-[#fffbeb] border border-[#fde68a] flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2 text-amber-900 font-medium">
+                    <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+                    <span>No work experience detected in resume (Fresher candidate profile).</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleAddExperience}
+                    className="text-xs font-semibold text-amber-900 hover:text-amber-950 underline"
+                  >
+                    + Add Experience
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Footer Buttons */}

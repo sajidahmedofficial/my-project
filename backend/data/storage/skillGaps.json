@@ -9747,11 +9747,11 @@
       "softSkills": [],
       "experienceRequirements": "Demonstrated production experience matching requirements"
     },
-    "overallMatchScore": 12,
-    "score": 12,
+    "overallMatchScore": 27,
+    "score": 27,
     "weightedSummary": {
-      "weightedMatchedRequirements": 3.5,
-      "weightedTotalRequirements": 29,
+      "weightedMatchedRequirements": 9.5,
+      "weightedTotalRequirements": 35,
       "formula": "(weightedMatchedRequirements / weightedTotalRequirements) * 100"
     },
     "priorityGaps": {
@@ -9769,34 +9769,6 @@
           "requirementType": "Required",
           "evidence": [],
           "reason": "No evidence of required skill Go found in uploaded resume."
-        },
-        {
-          "skill": "Node.js",
-          "name": "Node.js",
-          "category": "Frameworks",
-          "status": "MISSING",
-          "currentLevel": 0,
-          "progress": 0,
-          "requiredLevel": 100,
-          "gapPercentage": 100,
-          "priority": "high",
-          "requirementType": "Required",
-          "evidence": [],
-          "reason": "No evidence of required skill Node.js found in uploaded resume."
-        },
-        {
-          "skill": "Express.js",
-          "name": "Express.js",
-          "category": "Programming",
-          "status": "MISSING",
-          "currentLevel": 0,
-          "progress": 0,
-          "requiredLevel": 100,
-          "gapPercentage": 100,
-          "priority": "high",
-          "requirementType": "Required",
-          "evidence": [],
-          "reason": "No evidence of required skill Express.js found in uploaded resume."
         },
         {
           "skill": "MongoDB",
@@ -9872,7 +9844,7 @@
         }
       ],
       "low": [],
-      "highCount": 6,
+      "highCount": 4,
       "mediumCount": 2,
       "lowCount": 0
     },
@@ -9890,8 +9862,6 @@
         ],
         "missing": [
           "Go",
-          "Node.js",
-          "Express.js",
           "MongoDB",
           "Docker",
           "AWS"
@@ -9904,8 +9874,8 @@
       }
     },
     "categoryScores": {
-      "Programming": 12,
-      "Frameworks": 0,
+      "Programming": 26,
+      "Frameworks": 50,
       "Tools": 50,
       "Cloud/DevOps": 0
     },
@@ -9963,6 +9933,76 @@
         "reason": "React.js listed in Technical Skills"
       },
       {
+        "name": "Node.js",
+        "category": "Frameworks",
+        "status": "partial",
+        "currentLevel": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [
+          "Node.js listed in Technical Skills"
+        ],
+        "reason": "Node.js listed in Technical Skills"
+      },
+      {
+        "name": "Express.js",
+        "category": "Programming",
+        "status": "partial",
+        "currentLevel": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [
+          "Express.js listed in Technical Skills"
+        ],
+        "reason": "Express.js listed in Technical Skills"
+      },
+      {
+        "name": "Python",
+        "category": "Programming",
+        "status": "partial",
+        "currentLevel": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "Python listed in Technical Skills"
+        ],
+        "reason": "Python listed in Technical Skills"
+      },
+      {
+        "name": "SQL",
+        "category": "Programming",
+        "status": "partial",
+        "currentLevel": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "SQL listed in Technical Skills"
+        ],
+        "reason": "SQL listed in Technical Skills"
+      },
+      {
+        "name": "REST API",
+        "category": "Programming",
+        "status": "partial",
+        "currentLevel": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "REST API listed in Technical Skills"
+        ],
+        "reason": "REST API listed in Technical Skills"
+      },
+      {
         "name": "Git",
         "category": "Tools",
         "status": "partial",
@@ -9987,30 +10027,6 @@
         "requirementType": "Required",
         "evidence": [],
         "reason": "No evidence of required skill Go found in uploaded resume."
-      },
-      {
-        "name": "Node.js",
-        "category": "Frameworks",
-        "status": "missing",
-        "currentLevel": 0,
-        "requiredLevel": 100,
-        "gapPercentage": 100,
-        "priority": "high",
-        "requirementType": "Required",
-        "evidence": [],
-        "reason": "No evidence of required skill Node.js found in uploaded resume."
-      },
-      {
-        "name": "Express.js",
-        "category": "Programming",
-        "status": "missing",
-        "currentLevel": 0,
-        "requiredLevel": 100,
-        "gapPercentage": 100,
-        "priority": "high",
-        "requirementType": "Required",
-        "evidence": [],
-        "reason": "No evidence of required skill Express.js found in uploaded resume."
       },
       {
         "name": "MongoDB",
@@ -10084,6 +10100,86 @@
         "reason": "React.js listed in Technical Skills"
       },
       {
+        "skill": "Node.js",
+        "name": "Node.js",
+        "category": "Frameworks",
+        "status": "LEARNING",
+        "currentLevel": 50,
+        "progress": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [
+          "Node.js listed in Technical Skills"
+        ],
+        "reason": "Node.js listed in Technical Skills"
+      },
+      {
+        "skill": "Express.js",
+        "name": "Express.js",
+        "category": "Programming",
+        "status": "LEARNING",
+        "currentLevel": 50,
+        "progress": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [
+          "Express.js listed in Technical Skills"
+        ],
+        "reason": "Express.js listed in Technical Skills"
+      },
+      {
+        "skill": "Python",
+        "name": "Python",
+        "category": "Programming",
+        "status": "LEARNING",
+        "currentLevel": 50,
+        "progress": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "Python listed in Technical Skills"
+        ],
+        "reason": "Python listed in Technical Skills"
+      },
+      {
+        "skill": "SQL",
+        "name": "SQL",
+        "category": "Programming",
+        "status": "LEARNING",
+        "currentLevel": 50,
+        "progress": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "SQL listed in Technical Skills"
+        ],
+        "reason": "SQL listed in Technical Skills"
+      },
+      {
+        "skill": "REST API",
+        "name": "REST API",
+        "category": "Programming",
+        "status": "LEARNING",
+        "currentLevel": 50,
+        "progress": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "REST API listed in Technical Skills"
+        ],
+        "reason": "REST API listed in Technical Skills"
+      },
+      {
         "skill": "Git",
         "name": "Git",
         "category": "Tools",
@@ -10144,34 +10240,6 @@
         "reason": "No evidence of required skill Go found in uploaded resume."
       },
       {
-        "skill": "Node.js",
-        "name": "Node.js",
-        "category": "Frameworks",
-        "status": "MISSING",
-        "currentLevel": 0,
-        "progress": 0,
-        "requiredLevel": 100,
-        "gapPercentage": 100,
-        "priority": "high",
-        "requirementType": "Required",
-        "evidence": [],
-        "reason": "No evidence of required skill Node.js found in uploaded resume."
-      },
-      {
-        "skill": "Express.js",
-        "name": "Express.js",
-        "category": "Programming",
-        "status": "MISSING",
-        "currentLevel": 0,
-        "progress": 0,
-        "requiredLevel": 100,
-        "gapPercentage": 100,
-        "priority": "high",
-        "requirementType": "Required",
-        "evidence": [],
-        "reason": "No evidence of required skill Express.js found in uploaded resume."
-      },
-      {
         "skill": "MongoDB",
         "name": "MongoDB",
         "category": "Programming",
@@ -10214,9 +10282,9 @@
         "reason": "No evidence of required skill AWS found in uploaded resume."
       }
     ],
-    "analyzedAt": "2026-08-29T16:58:39.827Z",
-    "savedAt": "2026-08-29T16:58:39.827Z",
-    "updatedAt": "2026-08-29T16:58:39.828Z"
+    "analyzedAt": "2026-08-29T17:07:06.600Z",
+    "savedAt": "2026-08-29T17:07:06.600Z",
+    "updatedAt": "2026-08-29T17:07:06.600Z"
   },
   {
     "createdAt": "2026-08-26T17:34:24.526Z",
@@ -11087,9 +11155,9 @@
         "reason": "No evidence of required skill Team Collaboration found in uploaded resume."
       }
     ],
-    "analyzedAt": "2026-08-29T16:59:47.743Z",
-    "savedAt": "2026-08-29T16:59:47.743Z",
-    "updatedAt": "2026-08-29T16:59:47.743Z"
+    "analyzedAt": "2026-08-29T17:07:16.409Z",
+    "savedAt": "2026-08-29T17:07:16.409Z",
+    "updatedAt": "2026-08-29T17:07:16.409Z"
   },
   {
     "createdAt": "2026-08-29T16:21:07.572Z",
