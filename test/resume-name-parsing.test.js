@@ -22,11 +22,14 @@ JavaScript, React, Node.js, HTML, CSS, SQL
 
   const res1 = await analyzeResume(resume1, "Full Stack Developer");
   console.log("Test 1 Candidate Parsed:", res1.candidate);
+  console.log("Test 1 Education Parsed:", res1.education);
   assert.strictEqual(res1.candidate.firstName, "Sajid", "First name should be Sajid, not Full");
   assert.strictEqual(res1.candidate.lastName, "Ahmed", "Last name should be Ahmed, not Stack Web Developer");
   assert.strictEqual(res1.candidate.email, "sajidahmedofficial110@gmail.com");
   assert(res1.candidate.phone.includes("98765"), "Phone number should be parsed");
-  console.log("✅ Test 1 Passed: Job title ignored, personal name correctly extracted!\n");
+  assert(Array.isArray(res1.education) && res1.education.length > 0, "Education array must not be empty");
+  assert.strictEqual(res1.education[0].school, "Anna University - B.Tech in Computer Science (2025)");
+  console.log("✅ Test 1 Passed: Job title ignored, personal name and education correctly extracted!\n");
 
   // Test Case 2: Resume starts with "CURRICULUM VITAE", Name below it
   const resume2 = `
@@ -37,15 +40,20 @@ jdoe@example.com
 https://linkedin.com/in/janedoe
 
 EXPERIENCE
-Software Engineer at Acme Corp (2022 - Present)
+Acme Technologies Inc.
+Software Engineer
+2022 - Present
+Developed web components.
   `.trim();
 
   const res2 = await analyzeResume(resume2, "Frontend Developer");
   console.log("Test 2 Candidate Parsed:", res2.candidate);
+  console.log("Test 2 Experience Parsed:", res2.experience);
   assert.strictEqual(res2.candidate.firstName, "Jane");
   assert.strictEqual(res2.candidate.lastName, "Doe");
   assert(res2.candidate.phone.includes("555"));
-  console.log("✅ Test 2 Passed: Curriculum Vitae header skipped, name correctly extracted!\n");
+  assert(Array.isArray(res2.experience) && res2.experience.length > 0, "Experience array must not be empty");
+  console.log("✅ Test 2 Passed: Header skipped, name and experience correctly extracted!\n");
 
   // Test Case 3: Candidate Name derived from Email when only Title is present
   const resume3 = `

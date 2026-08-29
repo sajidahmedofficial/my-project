@@ -193,16 +193,11 @@ export default function OnboardingWizard({ onComplete }) {
         setIsParsing(false);
 
         // Populate parsed fields into Step 2 state
-        const parsedAnalysis = response?.analysis || response || {};
-        const cand = parsedAnalysis.candidate || {};
-        
-        const isTitleName = (str) => {
-          if (!str) return true;
-          const s = str.toLowerCase().trim();
-          const titleWords = ['developer', 'engineer', 'full', 'stack', 'fullstack', 'frontend', 'backend', 'web', 'software', 'architect', 'candidate', 'resume', 'profile'];
-          return titleWords.some(w => s === w || s.includes(w));
-        };
+        const parsedAnalysis = response?.analysis || response?.data?.analysis || response?.data || response || {};
+        console.log('[OnboardingWizard] Parsed Resume Payload:', parsedAnalysis);
 
+        const cand = parsedAnalysis.candidate || parsedAnalysis.data?.candidate || {};
+        
         let extractedFirst = cand.firstName || '';
         let extractedLast = cand.lastName || '';
         if (!extractedFirst && cand.name) {
@@ -211,8 +206,14 @@ export default function OnboardingWizard({ onComplete }) {
           extractedLast = parts.slice(1).join(' ') || '';
         }
 
-        // Low-confidence guard: If name contains job title keywords, extract from email or leave clean
-        if (isTitleName(extractedFirst) || isTitleName(extractedLast)) {
+        // Apply fallback only if name is completely empty or contains exact job keywords
+        const isTitleOnly = (str) => {
+          if (!str) return false;
+          const s = str.toLowerCase().trim();
+          return ['full', 'stack', 'developer', 'engineer', 'architect', 'resume', 'candidate'].includes(s);
+        };
+
+        if (isTitleOnly(extractedFirst) || isTitleOnly(extractedLast)) {
           if (cand.email) {
             const emailUser = cand.email.split('@')[0]
               .replace(/official|personal|mail|work|dev|pro|110|\d+/gi, '')
@@ -221,14 +222,11 @@ export default function OnboardingWizard({ onComplete }) {
             const parts = emailUser.split(/\s+/).filter(Boolean);
             extractedFirst = parts[0] ? parts[0].charAt(0).toUpperCase() + parts[0].slice(1).toLowerCase() : '';
             extractedLast = parts.slice(1).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ') || '';
-          } else {
-            extractedFirst = '';
-            extractedLast = '';
           }
         }
 
-        setFirstName(extractedFirst);
-        setLastName(extractedLast);
+        if (extractedFirst) setFirstName(extractedFirst);
+        if (extractedLast) setLastName(extractedLast);
         if (cand.email) setEmail(cand.email);
         if (cand.phone) setPhone(cand.phone);
         if (cand.linkedIn) setLinkedIn(cand.linkedIn);
@@ -241,8 +239,12 @@ export default function OnboardingWizard({ onComplete }) {
         }
 
         // Populate education
-        if (Array.isArray(parsedAnalysis.education) && parsedAnalysis.education.length > 0) {
-          setEducationList(parsedAnalysis.education.map((edu, idx) => ({
+        const parsedEdu = Array.isArray(parsedAnalysis.education) && parsedAnalysis.education.length > 0 
+          ? parsedAnalysis.education 
+          : Array.isArray(parsedAnalysis.data?.education) ? parsedAnalysis.data.education : [];
+          
+        if (parsedEdu.length > 0) {
+          setEducationList(parsedEdu.map((edu, idx) => ({
             id: idx + 1,
             school: edu.school || 'University',
             degree: edu.degree || 'Bachelor of Science',
@@ -252,14 +254,20 @@ export default function OnboardingWizard({ onComplete }) {
         }
 
         // Populate experience
-        if (Array.isArray(parsedAnalysis.experience) && parsedAnalysis.experience.length > 0) {
-          setExperienceList(parsedAnalysis.experience.map((exp, idx) => ({
+        const parsedExp = Array.isArray(parsedAnalysis.experience) && parsedAnalysis.experience.length > 0 
+          ? parsedAnalysis.experience 
+          : Array.isArray(parsedAnalysis.data?.experience) ? parsedAnalysis.data.experience : [];
+          
+        if (parsedExp.length > 0) {
+          setExperienceList(parsedExp.map((exp, idx) => ({
             id: idx + 1,
             company: exp.company || 'Tech Company',
             role: exp.role || 'Software Developer',
             duration: exp.duration || '2023 - Present',
             description: exp.description || 'Full-stack software engineering development.'
           })));
+        } else {
+          setExperienceList([]);
         }
 
         setAnalysisResult(parsedAnalysis);

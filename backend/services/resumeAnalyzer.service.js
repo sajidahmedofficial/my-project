@@ -492,8 +492,6 @@ function generateRuleBasedAnalysis(text, targetRole) {
     projects: [
       { name: "Web Application Project", description: "Interactive full stack application", technologies: detectedSkills.slice(0, 3) }
     ],
-    education: [],
-    experience: [],
     improvements: problems.map(p => ({
       section: p.section,
       original: p.problem,
