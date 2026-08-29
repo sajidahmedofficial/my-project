@@ -299,64 +299,219 @@ function generateRuleBasedAnalysis(text, targetRole) {
     lowerText.includes(skill.toLowerCase())
   );
 
-  if (detectedSkills.length === 0) {
-    detectedSkills.push("JavaScript", "React", "HTML", "CSS", "Git");
+function extractProfessionalSummary(text, lines) {
+  const summaryHeaderIndex = lines.findIndex(l => 
+    /^(?:professional\s+summary|summary|about\s+me|profile|career\s+objective|objective)$/i.test(l.trim())
+  );
+
+  if (summaryHeaderIndex !== -1) {
+    const summaryLines = [];
+    for (let i = summaryHeaderIndex + 1; i < Math.min(summaryHeaderIndex + 6, lines.length); i++) {
+      const line = lines[i].trim();
+      if (/^(?:skills|technical\s+skills|experience|work\s+experience|education|projects)$/i.test(line)) {
+        break;
+      }
+      if (line) summaryLines.push(line);
+    }
+    if (summaryLines.length > 0) {
+      return summaryLines.join(' ');
+    }
   }
 
-  // 1. Education Scanner & Deep Analyzer
+  // Fallback: check if the first paragraph after candidate contact is a summary paragraph
+  for (let i = 1; i < Math.min(5, lines.length); i++) {
+    const line = lines[i].trim();
+    if (line.length > 60 && !line.includes('@') && !line.includes('http') && !/^(?:education|skills|experience)/i.test(line)) {
+      return line;
+    }
+  }
+
+  return "";
+}
+
+function parseDateIntoExp(text, exp) {
+  const match = text.match(/(?:(?:(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|[a-zA-Z]+)?\s*(\d{4}|\d{2})\b|\b\d{4}\b))\s*(?:-|–|to)\s*(present|current|now|\d{4}|[a-zA-Z]+\s*\d{4})/i);
+  if (match) {
+    exp.duration = match[0].trim();
+    const parts = match[0].split(/-|–|to/i).map(s => s.trim());
+    exp.startDate = parts[0] || "";
+    const rawEnd = (parts[1] || "").toLowerCase();
+    exp.endDate = (rawEnd.includes('present') || rawEnd.includes('current') || rawEnd.includes('now')) ? "" : parts[1];
+  } else {
+    const singleYear = text.match(/\b(19|20)\d{2}\b/);
+    if (singleYear) {
+      exp.startDate = singleYear[0];
+      exp.duration = singleYear[0];
+    }
+  }
+}
+
+function parseHeaderLine(line, exp) {
+  // Check if line is "Role at Company (Date)" or "Role | Company | Date" or "Role - Company"
+  parseDateIntoExp(line, exp);
+
+  const cleanLine = line.replace(/(?:(?:(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|[a-zA-Z]+)?\s*(\d{4}|\d{2})\b|\b\d{4}\b))\s*(?:-|–|to)\s*(?:present|current|now|\d{4}|[a-zA-Z]+\s*\d{4})/i, '').trim();
+  const delimiters = /[\s|•·–-]\s*(?:at|@|–|-|\|)\s*|\s*,\s*/i;
+
+  if (delimiters.test(cleanLine)) {
+    const parts = cleanLine.split(delimiters).map(p => p.trim()).filter(Boolean);
+    if (parts.length >= 2) {
+      exp.role = parts[0];
+      exp.company = parts[1];
+    } else {
+      exp.role = cleanLine;
+    }
+  } else {
+    exp.role = cleanLine;
+  }
+}
+
+function finalizeExperience(exp) {
+  let formattedDesc = "";
+  if (exp.bullets && exp.bullets.length > 0) {
+    formattedDesc = exp.bullets.map(b => b.startsWith('•') ? b : `• ${b}`).join('\n');
+  }
+
+  return {
+    role: exp.role || "Software Developer",
+    company: exp.company || "",
+    startDate: exp.startDate || "",
+    endDate: exp.endDate || "",
+    duration: exp.duration || (exp.startDate ? `${exp.startDate} - ${exp.endDate || 'Present'}` : "2023 - Present"),
+    description: formattedDesc
+  };
+}
+
+function extractWorkExperiences(text, lines) {
+  const experiences = [];
+  
+  // 1. Locate the Experience section
+  const expHeaderIndex = lines.findIndex(l => 
+    /^(?:work\s+experience|professional\s+experience|employment\s+history|experience|internships|internship\s+experience)(?:\s*\(optional\))?$/i.test(l.trim()) ||
+    /^(?:work\s+experience|professional\s+experience|employment\s+history)/i.test(l.trim())
+  );
+
+  if (expHeaderIndex === -1) {
+    return [];
+  }
+
+  const nextSectionIndex = lines.findIndex((l, idx) => 
+    idx > expHeaderIndex && /^(?:education|academic|skills|technical\s+skills|projects|key\s+projects|certifications|awards|languages|interests)$/i.test(l.trim())
+  );
+
+  const expLines = lines.slice(expHeaderIndex + 1, nextSectionIndex !== -1 ? nextSectionIndex : expHeaderIndex + 40);
+  if (expLines.length === 0) return [];
+
+  const roleKeywords = /(?:developer|engineer|intern|internship|analyst|consultant|specialist|manager|lead|architect|designer|programmer|administrator|associate|director|coordinator|officer)/i;
+  const dateRangeRegex = /(?:(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|\d{4})\b.*?(\d{4}|present|current|now))/i;
+
+  let currentExp = null;
+
+  for (let i = 0; i < expLines.length; i++) {
+    const rawLine = expLines[i].trim();
+    if (!rawLine) continue;
+
+    const isBullet = /^[•\-\*|\d+\.]\s*/.test(rawLine);
+    const hasDate = dateRangeRegex.test(rawLine);
+    const hasRole = roleKeywords.test(rawLine) && !isBullet;
+
+    if ((hasRole || (hasDate && !currentExp)) && !isBullet) {
+      if (currentExp && (currentExp.role || currentExp.company)) {
+        experiences.push(finalizeExperience(currentExp));
+      }
+
+      currentExp = {
+        role: "",
+        company: "",
+        startDate: "",
+        endDate: "",
+        duration: "",
+        bullets: []
+      };
+
+      parseHeaderLine(rawLine, currentExp);
+    } else if (currentExp) {
+      if (hasDate && (!currentExp.startDate || !currentExp.duration)) {
+        parseDateIntoExp(rawLine, currentExp);
+      } else if (!currentExp.company && !isBullet && rawLine.length < 60 && !hasRole) {
+        currentExp.company = rawLine.replace(/^[•\-\*]\s*/, '').trim();
+      } else {
+        const cleanBullet = rawLine.replace(/^[•\-\*]\s*/, '').trim();
+        if (cleanBullet) {
+          currentExp.bullets.push(cleanBullet);
+        }
+      }
+    }
+  }
+
+  if (currentExp && (currentExp.role || currentExp.company)) {
+    experiences.push(finalizeExperience(currentExp));
+  }
+
+  return experiences;
+}
+
+function extractEducationList(text, lines) {
   const education = [];
-  const eduKeywords = ["education", "academic", "university", "college", "institute", "bachelor", "master", "b.tech", "b.e.", "b.s.", "m.s.", "m.tech", "degree", "diploma", "cgpa", "gpa", "school"];
-  const hasEduSection = eduKeywords.some(kw => lowerText.includes(kw));
+  const eduHeaderIndex = lines.findIndex(l => 
+    /^(?:education|academic\s+background|academics|qualifications|academic\s+qualifications)$/i.test(l.trim()) ||
+    /^(?:education|academic)/i.test(l.trim())
+  );
 
-  if (hasEduSection) {
-    const eduLines = lines.filter(l => /university|college|institute|bachelor|b\.tech|b\.e\.|b\.s\.|master|m\.s\.|m\.tech|degree|diploma|gpa|cgpa/i.test(l));
-    const yearMatch = text.match(/\b(19|20)\d{2}\b/g);
-    const gradYear = yearMatch ? yearMatch[yearMatch.length - 1] : "2025";
+  if (eduHeaderIndex !== -1) {
+    const nextSectionIndex = lines.findIndex((l, idx) => 
+      idx > eduHeaderIndex && /^(?:skills|technical\s+skills|experience|work\s+experience|projects|certifications)$/i.test(l.trim())
+    );
+
+    const eduLines = lines.slice(eduHeaderIndex + 1, nextSectionIndex !== -1 ? nextSectionIndex : eduHeaderIndex + 15);
     
-    // Extract degree name if present
-    let degreeName = "Bachelor of Science in Computer Science";
-    if (/b\.tech|bachelor of technology/i.test(text)) degreeName = "Bachelor of Technology (B.Tech)";
-    else if (/b\.e\.|bachelor of engineering/i.test(text)) degreeName = "Bachelor of Engineering (B.E.)";
-    else if (/m\.s\.|master of science/i.test(text)) degreeName = "Master of Science (M.S.)";
-    else if (/master|m\.tech/i.test(text)) degreeName = "Master of Technology (M.Tech)";
-    else if (/b\.s\.|bachelor/i.test(text)) degreeName = "Bachelor of Science (B.S.)";
-    else if (/diploma/i.test(text)) degreeName = "Diploma in Computer Science / IT";
+    for (const line of eduLines) {
+      const trimmed = line.trim();
+      if (!trimmed) continue;
+      
+      const yearMatch = trimmed.match(/\b(19|20)\d{2}\b/);
+      let degreeName = "Bachelor of Technology (B.Tech)";
+      if (/b\.tech|bachelor of technology/i.test(trimmed)) degreeName = "Bachelor of Technology (B.Tech)";
+      else if (/b\.e\.|bachelor of engineering/i.test(trimmed)) degreeName = "Bachelor of Engineering (B.E.)";
+      else if (/m\.s\.|master of science/i.test(trimmed)) degreeName = "Master of Science (M.S.)";
+      else if (/m\.tech/i.test(trimmed)) degreeName = "Master of Technology (M.Tech)";
+      else if (/b\.s\.|bachelor/i.test(trimmed)) degreeName = "Bachelor of Science (B.S.)";
+      else if (/diploma/i.test(trimmed)) degreeName = "Diploma in Computer Science / IT";
+      
+      const cleanSchool = trimmed.replace(/^[•\-\*]\s*/, '').replace(/\b(19|20)\d{2}\b.*$/, '').replace(/-\s*(b\.tech|b\.e|bachelor|m\.s|degree).*$/i, '').trim();
 
-    const schoolName = eduLines[0] || (lines.find(l => /institute|university|college/i.test(l))) || "University / College";
-
-    education.push({
-      school: schoolName.replace(/^[•\-\*]\s*/, '').slice(0, 70),
-      degree: degreeName,
-      field: /information technology|it/i.test(text) ? "Information Technology" : "Computer Science & Engineering",
-      year: gradYear
-    });
+      if (cleanSchool.length > 3) {
+        education.push({
+          school: cleanSchool,
+          degree: degreeName,
+          field: /information technology|it/i.test(trimmed) ? "Information Technology" : "Computer Science & Engineering",
+          year: yearMatch ? yearMatch[0] : "2025"
+        });
+        break;
+      }
+    }
+  } else if (/university|college|institute|b\.tech|bachelor/i.test(text)) {
+    const schoolLine = lines.find(l => /university|college|institute/i.test(l));
+    const yearMatch = text.match(/\b(19|20)\d{2}\b/g);
+    if (schoolLine) {
+      education.push({
+        school: schoolLine.replace(/^[•\-\*]\s*/, '').slice(0, 70),
+        degree: "Bachelor of Technology (B.Tech)",
+        field: "Computer Science & Engineering",
+        year: yearMatch ? yearMatch[yearMatch.length - 1] : "2025"
+      });
+    }
   }
 
-  // 2. Experience Scanner & No-Experience Detection
-  const experience = [];
-  const expSectionRegex = /(work experience|professional experience|employment history|experience|internships|internship)/i;
-  const hasExpHeader = expSectionRegex.test(text);
+  return education;
+}
 
-  // Check for company/date patterns (e.g. "Google - Software Engineer (2022 - 2023)" or "Company: XYZ")
-  const dateRangeRegex = /\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|\d{4})\b.*?(present|\d{4})/i;
-  const hasDateRange = dateRangeRegex.test(text);
+  const summary = extractProfessionalSummary(text, lines);
+  const experience = extractWorkExperiences(text, lines);
+  const education = extractEducationList(text, lines);
 
-  // Only populate experience if real indicators exist
-  if (hasExpHeader && (hasDateRange || /developer at|engineer at|intern at|software engineer|frontend developer|backend developer/i.test(text))) {
-    const expLines = lines.filter(l => /engineer|developer|intern|analyst|programmer|associate|consultant|specialist|manager/i.test(l));
-    const roleTitle = expLines[0] ? expLines[0].replace(/^[•\-\*]\s*/, '').slice(0, 50) : "Software Developer";
-
-    // Detect company line
-    const companyLines = lines.filter(l => /inc|llc|ltd|technologies|solutions|corp|pvt|labs|company|systems/i.test(l));
-    const companyName = companyLines[0] ? companyLines[0].replace(/^[•\-\*]\s*/, '').slice(0, 50) : "Tech Solutions";
-
-    experience.push({
-      company: companyName,
-      role: roleTitle,
-      duration: "2023 - Present",
-      description: "Developed and maintained full-stack web applications using modern programming stacks."
-    });
-  }
+  console.log(`[Resume Analyzer] Raw Resume Text (${text.length} chars)`);
+  console.log(`[Resume Analyzer] Parsed ${experience.length} Experience roles:`, experience.map(e => ({ role: e.role, company: e.company, dates: `${e.startDate} - ${e.endDate || 'Present'}` })));
 
   const hasExperience = experience.length > 0;
   const hasEducation = education.length > 0;
@@ -457,8 +612,10 @@ function generateRuleBasedAnalysis(text, targetRole) {
       email,
       phone,
       linkedIn,
+      summary,
       headline: `${targetRole} Candidate`
     },
+    summary,
     education,
     experience,
     hasExperience,

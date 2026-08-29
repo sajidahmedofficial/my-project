@@ -110,6 +110,9 @@ export default function OnboardingWizard({ onComplete }) {
     ];
   });
 
+  // Professional Summary state
+  const [summary, setSummary] = useState('');
+
   // Work Experience list (Defaults to empty for freshers)
   const [experienceList, setExperienceList] = useState(() => {
     if (Array.isArray(currentUser?.experience) && currentUser.experience.length > 0) {
@@ -231,6 +234,11 @@ export default function OnboardingWizard({ onComplete }) {
         if (cand.phone) setPhone(cand.phone);
         if (cand.linkedIn) setLinkedIn(cand.linkedIn);
 
+        // Populate professional summary
+        if (parsedAnalysis.summary || cand.summary) {
+          setSummary(parsedAnalysis.summary || cand.summary || '');
+        }
+
         // Populate skills as discrete array
         if (Array.isArray(parsedAnalysis.skills?.detected) && parsedAnalysis.skills.detected.length > 0) {
           setSkillsList(parsedAnalysis.skills.detected);
@@ -246,14 +254,14 @@ export default function OnboardingWizard({ onComplete }) {
         if (parsedEdu.length > 0) {
           setEducationList(parsedEdu.map((edu, idx) => ({
             id: idx + 1,
-            school: edu.school || 'University',
+            school: edu.school || '',
             degree: edu.degree || 'Bachelor of Science',
             field: edu.field || 'Computer Science',
-            year: edu.year || '2024'
+            year: edu.year || '2025'
           })));
         }
 
-        // Populate experience
+        // Populate experience directly from uploaded resume
         const parsedExp = Array.isArray(parsedAnalysis.experience) && parsedAnalysis.experience.length > 0 
           ? parsedAnalysis.experience 
           : Array.isArray(parsedAnalysis.data?.experience) ? parsedAnalysis.data.experience : [];
@@ -261,10 +269,12 @@ export default function OnboardingWizard({ onComplete }) {
         if (parsedExp.length > 0) {
           setExperienceList(parsedExp.map((exp, idx) => ({
             id: idx + 1,
-            company: exp.company || 'Tech Company',
-            role: exp.role || 'Software Developer',
-            duration: exp.duration || '2023 - Present',
-            description: exp.description || 'Full-stack software engineering development.'
+            company: exp.company || '',
+            role: exp.role || exp.title || exp.positionTitle || '',
+            startDate: exp.startDate || (exp.duration ? exp.duration.split(/\s*[-–]\s*/)[0] : ''),
+            endDate: exp.endDate || (exp.duration && !/present|current|now/i.test(exp.duration) ? exp.duration.split(/\s*[-–]\s*/)[1] || '' : ''),
+            duration: exp.duration || '',
+            description: exp.description || ''
           })));
         } else {
           setExperienceList([]);
@@ -733,26 +743,43 @@ export default function OnboardingWizard({ onComplete }) {
               </div>
             </div>
 
+            {/* Professional Summary (Optional) */}
+            <div className="bg-[#f0fdf4] border border-[#bbf7d0] rounded-2xl p-5 space-y-2">
+              <label className="block text-xs font-bold text-slate-800 tracking-wide">
+                Professional Summary <span className="text-slate-500 font-normal">(Optional)</span>
+              </label>
+              <textarea
+                rows={4}
+                value={summary}
+                onChange={(e) => setSummary(e.target.value)}
+                placeholder="Computer Science Engineering student and aspiring Full Stack Developer with hands-on experience building responsive web applications..."
+                className="w-full bg-white border border-[#86efac] rounded-xl p-3.5 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#10b981] leading-relaxed resize-y font-sans"
+              />
+            </div>
+
             {/* Skills List (Discrete Tags / Chips Layout) */}
-            <div className="space-y-3 pt-2">
+            <div className="bg-[#f0fdf4] border border-[#bbf7d0] rounded-2xl p-5 space-y-3">
               <div className="flex items-center justify-between">
-                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                  Extracted Skills & Competencies ({skillsList.length})
-                </h3>
+                <label className="block text-xs font-bold text-slate-800 tracking-wide">
+                  Skills
+                </label>
+                <span className="text-[11px] font-semibold text-[#10b981]">
+                  {skillsList.length} skills detected
+                </span>
               </div>
 
-              {/* Chips container with distinct spacing */}
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-wrap gap-2 min-h-[90px] items-center">
+              {/* Chips container with mint pill styling matching design */}
+              <div className="flex flex-wrap gap-2 pt-1 items-center">
                 {skillsList.map((skill, idx) => (
                   <div
                     key={`${skill}-${idx}`}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#eefaf4] border border-[#c3eed7] text-[#0f766e] text-xs font-semibold transition-all hover:bg-[#e4f7ee]"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#99f6e4] text-[#0f766e] text-xs font-semibold shadow-xs hover:bg-[#5eead4] transition-colors"
                   >
                     <span>{skill}</span>
                     <button
                       type="button"
                       onClick={() => handleRemoveSkill(skill)}
-                      className="p-0.5 rounded-full hover:bg-emerald-200/60 text-[#0f766e] transition-colors"
+                      className="p-0.5 rounded-full hover:bg-emerald-300/60 text-[#0f766e] transition-colors"
                     >
                       <X className="w-3 h-3" />
                     </button>
@@ -766,10 +793,113 @@ export default function OnboardingWizard({ onComplete }) {
                     value={newSkillInput}
                     onChange={(e) => setNewSkillInput(e.target.value)}
                     placeholder="+ Add skill..."
-                    className="bg-white border border-slate-200 rounded-xl px-3 py-1 text-xs text-slate-900 focus:outline-none focus:border-[#0f766e] w-28"
+                    className="bg-white border border-[#86efac] rounded-full px-3 py-1.5 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#10b981] w-28"
                   />
                 </form>
               </div>
+            </div>
+
+            {/* Work Experience History (Optional) */}
+            <div className="bg-[#f0fdf4] border border-[#bbf7d0] rounded-2xl p-5 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs font-bold text-slate-800 tracking-wide">
+                  Work Experience <span className="text-slate-500 font-normal">(Optional)</span>
+                </h3>
+                <button
+                  type="button"
+                  onClick={handleAddExperience}
+                  className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-[#10b981] hover:bg-[#059669] text-white text-xs font-semibold shadow-xs transition-all"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Add</span>
+                </button>
+              </div>
+
+              {experienceList.length > 0 ? (
+                experienceList.map((exp, idx) => (
+                  <div key={exp.id || idx} className="p-5 rounded-xl border border-slate-200 bg-white space-y-3.5 relative shadow-xs">
+                    <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                      <span className="text-xs font-bold text-slate-800">Experience #{idx + 1}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveExperience(exp.id)}
+                        className="text-[#10b981] hover:text-rose-600 transition-colors p-1 rounded-md"
+                        title="Remove Experience"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                      <div className="space-y-1">
+                        <label className="block text-[11px] font-semibold text-slate-700">Position Title</label>
+                        <input
+                          type="text"
+                          value={exp.role}
+                          onChange={(e) => handleUpdateExperience(exp.id, 'role', e.target.value)}
+                          placeholder="Full Stack Development Intern"
+                          className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-[#10b981]"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="block text-[11px] font-semibold text-slate-700">Company</label>
+                        <input
+                          type="text"
+                          value={exp.company}
+                          onChange={(e) => handleUpdateExperience(exp.id, 'company', e.target.value)}
+                          placeholder="Software Solutions Company"
+                          className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-[#10b981]"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="block text-[11px] font-semibold text-slate-700">Start Date</label>
+                        <input
+                          type="text"
+                          value={exp.startDate || ''}
+                          onChange={(e) => handleUpdateExperience(exp.id, 'startDate', e.target.value)}
+                          placeholder="e.g. 2018, Mar 2019, 2019-03"
+                          className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-[#10b981]"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="block text-[11px] font-semibold text-slate-700">End Date (Leave blank if current)</label>
+                        <input
+                          type="text"
+                          value={exp.endDate || ''}
+                          onChange={(e) => handleUpdateExperience(exp.id, 'endDate', e.target.value)}
+                          placeholder="Blank if current, or e.g. 2021, Aug 2021"
+                          className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-[#10b981]"
+                        />
+                      </div>
+
+                      <div className="sm:col-span-2 space-y-1">
+                        <label className="block text-[11px] font-semibold text-slate-700">Description</label>
+                        <textarea
+                          rows={3}
+                          value={exp.description}
+                          onChange={(e) => handleUpdateExperience(exp.id, 'description', e.target.value)}
+                          placeholder="• Built and integrated frontend and backend components for web applications..."
+                          className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-[#10b981] leading-relaxed resize-y"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="p-4 rounded-xl bg-white border border-[#bbf7d0] flex items-center justify-between text-xs">
+                  <span className="text-slate-600 font-medium">No work experience listed (Fresher candidate).</span>
+                  <button
+                    type="button"
+                    onClick={handleAddExperience}
+                    className="text-xs font-semibold text-[#10b981] hover:underline"
+                  >
+                    + Add Experience
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Education History (Dynamic Add/Remove) */}
@@ -851,101 +981,6 @@ export default function OnboardingWizard({ onComplete }) {
                   </div>
                 </div>
               ))}
-            </div>
-
-            {/* Work Experience History */}
-            <div className="space-y-4 pt-2">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                  Work Experience ({experienceList.length > 0 ? `${experienceList.length} Role(s)` : 'Fresher'})
-                </h3>
-                <button
-                  type="button"
-                  onClick={handleAddExperience}
-                  className="text-xs font-semibold text-[#0f766e] hover:text-[#0d594f] flex items-center gap-1"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Add Experience</span>
-                </button>
-              </div>
-
-              {experienceList.length > 0 ? (
-                experienceList.map((exp, idx) => (
-                  <div key={exp.id || idx} className="p-5 rounded-2xl border border-slate-200 bg-white space-y-3 relative group">
-                    <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                      <span className="text-xs font-bold text-slate-700">Role #{idx + 1}</span>
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveExperience(exp.id)}
-                        className="text-xs text-rose-500 hover:text-rose-700 flex items-center gap-1"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                        <span>Remove</span>
-                      </button>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      <div className="space-y-1">
-                        <label className="block text-[11px] font-semibold text-slate-600">Company Name</label>
-                        <input
-                          type="text"
-                          value={exp.company}
-                          onChange={(e) => handleUpdateExperience(exp.id, 'company', e.target.value)}
-                          placeholder="e.g. Google or Tech Startup"
-                          className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-[#0f766e]"
-                        />
-                      </div>
-
-                      <div className="space-y-1">
-                        <label className="block text-[11px] font-semibold text-slate-600">Job Title / Role</label>
-                        <input
-                          type="text"
-                          value={exp.role}
-                          onChange={(e) => handleUpdateExperience(exp.id, 'role', e.target.value)}
-                          placeholder="e.g. Full Stack Developer"
-                          className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-[#0f766e]"
-                        />
-                      </div>
-
-                      <div className="space-y-1">
-                        <label className="block text-[11px] font-semibold text-slate-600">Duration</label>
-                        <input
-                          type="text"
-                          value={exp.duration}
-                          onChange={(e) => handleUpdateExperience(exp.id, 'duration', e.target.value)}
-                          placeholder="e.g. 2023 - Present"
-                          className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-[#0f766e]"
-                        />
-                      </div>
-
-                      <div className="sm:col-span-3 space-y-1">
-                        <label className="block text-[11px] font-semibold text-slate-600">Key Responsibilities / Impact</label>
-                        <textarea
-                          rows={2}
-                          value={exp.description}
-                          onChange={(e) => handleUpdateExperience(exp.id, 'description', e.target.value)}
-                          placeholder="e.g. Developed and scaled REST APIs handling 50k+ requests/day."
-                          className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-[#0f766e]"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="p-4 rounded-xl bg-[#fffbeb] border border-[#fde68a] flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2 text-amber-900 font-medium">
-                    <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
-                    <span>No work experience detected in resume (Fresher candidate profile).</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleAddExperience}
-                    className="text-xs font-semibold text-amber-900 hover:text-amber-950 underline"
-                  >
-                    + Add Experience
-                  </button>
-                </div>
-              )}
             </div>
 
             {/* Footer Buttons */}
