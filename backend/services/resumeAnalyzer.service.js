@@ -174,34 +174,92 @@ function generateRuleBasedAnalysis(text, targetRole) {
     detectedSkills.push("JavaScript", "React", "HTML", "CSS", "Git");
   }
 
-  // Extract education stubs
+  // 1. Education Scanner & Deep Analyzer
   const education = [];
-  if (lowerText.includes("university") || lowerText.includes("college") || lowerText.includes("institute") || lowerText.includes("bachelor") || lowerText.includes("b.tech") || lowerText.includes("b.s.")) {
-    const eduLines = lines.filter(l => /university|college|institute|bachelor|b\.tech|b\.s\.|master|m\.s\./i.test(l));
+  const eduKeywords = ["education", "academic", "university", "college", "institute", "bachelor", "master", "b.tech", "b.e.", "b.s.", "m.s.", "m.tech", "degree", "diploma", "cgpa", "gpa", "school"];
+  const hasEduSection = eduKeywords.some(kw => lowerText.includes(kw));
+
+  if (hasEduSection) {
+    const eduLines = lines.filter(l => /university|college|institute|bachelor|b\.tech|b\.e\.|b\.s\.|master|m\.s\.|m\.tech|degree|diploma|gpa|cgpa/i.test(l));
+    const yearMatch = text.match(/\b(19|20)\d{2}\b/g);
+    const gradYear = yearMatch ? yearMatch[yearMatch.length - 1] : "2025";
+    
+    // Extract degree name if present
+    let degreeName = "Bachelor of Science in Computer Science";
+    if (/b\.tech|bachelor of technology/i.test(text)) degreeName = "Bachelor of Technology (B.Tech)";
+    else if (/b\.e\.|bachelor of engineering/i.test(text)) degreeName = "Bachelor of Engineering (B.E.)";
+    else if (/m\.s\.|master of science/i.test(text)) degreeName = "Master of Science (M.S.)";
+    else if (/master|m\.tech/i.test(text)) degreeName = "Master of Technology (M.Tech)";
+    else if (/b\.s\.|bachelor/i.test(text)) degreeName = "Bachelor of Science (B.S.)";
+    else if (/diploma/i.test(text)) degreeName = "Diploma in Computer Science / IT";
+
+    const schoolName = eduLines[0] || (lines.find(l => /institute|university|college/i.test(l))) || "University / College";
+
     education.push({
-      school: eduLines[0] || "University / College",
-      degree: "Bachelor of Science in Computer Science",
-      field: "Computer Science & Engineering",
-      year: "2024"
-    });
-  } else {
-    education.push({
-      school: "University / College",
-      degree: "B.Tech in Computer Science",
-      field: "Computer Science",
-      year: "2025"
+      school: schoolName.replace(/^[•\-\*]\s*/, '').slice(0, 70),
+      degree: degreeName,
+      field: /information technology|it/i.test(text) ? "Information Technology" : "Computer Science & Engineering",
+      year: gradYear
     });
   }
 
-  // Extract experience stubs
-  const experience = [
-    {
-      company: "Software Solutions Inc.",
-      role: "Full Stack Developer",
+  // 2. Experience Scanner & No-Experience Detection
+  const experience = [];
+  const expSectionRegex = /(work experience|professional experience|employment history|experience|internships|internship)/i;
+  const hasExpHeader = expSectionRegex.test(text);
+
+  // Check for company/date patterns (e.g. "Google - Software Engineer (2022 - 2023)" or "Company: XYZ")
+  const dateRangeRegex = /\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|\d{4})\b.*?(present|\d{4})/i;
+  const hasDateRange = dateRangeRegex.test(text);
+
+  // Only populate experience if real indicators exist
+  if (hasExpHeader && (hasDateRange || /developer at|engineer at|intern at|software engineer|frontend developer|backend developer/i.test(text))) {
+    const expLines = lines.filter(l => /engineer|developer|intern|analyst|programmer|associate|consultant|specialist|manager/i.test(l));
+    const roleTitle = expLines[0] ? expLines[0].replace(/^[•\-\*]\s*/, '').slice(0, 50) : "Software Developer";
+
+    // Detect company line
+    const companyLines = lines.filter(l => /inc|llc|ltd|technologies|solutions|corp|pvt|labs|company|systems/i.test(l));
+    const companyName = companyLines[0] ? companyLines[0].replace(/^[•\-\*]\s*/, '').slice(0, 50) : "Tech Solutions";
+
+    experience.push({
+      company: companyName,
+      role: roleTitle,
       duration: "2023 - Present",
-      description: "Developed and maintained full-stack web applications using React, Node.js, and modern REST APIs."
-    }
-  ];
+      description: "Developed and maintained full-stack web applications using modern programming stacks."
+    });
+  }
+
+  const hasExperience = experience.length > 0;
+  const hasEducation = education.length > 0;
+
+  const experienceAnalysis = hasExperience ? {
+    status: "experienced",
+    hasExperience: true,
+    count: experience.length,
+    label: `${experience.length} Roles Detected`,
+    message: "Work experience detected and evaluated against industry role expectations."
+  } : {
+    status: "no_experience",
+    hasExperience: false,
+    count: 0,
+    label: "Fresher / Entry-Level (0 Years)",
+    message: "No formal work experience detected in this resume.",
+    suggestion: "For freshers, recruiters prioritize technical projects, verified skill certifications, and problem-solving aptitude."
+  };
+
+  const educationAnalysis = hasEducation ? {
+    status: "verified",
+    hasEducation: true,
+    count: education.length,
+    label: `${education[0]?.degree || 'Degree'} Detected`,
+    message: "Education background verified and aligned with engineering prerequisites."
+  } : {
+    status: "missing",
+    hasEducation: false,
+    count: 0,
+    label: "No Education Section Detected",
+    message: "No formal degree or university section was detected in this resume text."
+  };
 
   const roleSkillRequirements = {
     "Full Stack Developer": ["HTML", "CSS", "JavaScript", "React", "Node.js", "Express", "MongoDB", "Git", "REST API"],
@@ -274,13 +332,17 @@ function generateRuleBasedAnalysis(text, targetRole) {
     },
     education,
     experience,
+    hasExperience,
+    hasEducation,
+    experienceAnalysis,
+    educationAnalysis,
     scores: {
       overall: overallScore,
       ats: atsScore,
       grammar: 85,
       format: 80,
       skills: Math.round((detectedSkills.length / requiredForRole.length) * 100),
-      experience: 75,
+      experience: hasExperience ? 80 : 60,
       projects: 78
     },
     grammarIssues,

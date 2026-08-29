@@ -84,6 +84,13 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
   // Pending AI Suggestion Review State
   const [pendingSuggestion, setPendingSuggestion] = useState(() => savedState?.pendingSuggestion || null);
 
+  const [education, setEducation] = useState(() => savedState?.education || []);
+  const [experience, setExperience] = useState(() => savedState?.experience || []);
+  const [hasExperience, setHasExperience] = useState(() => savedState?.hasExperience ?? false);
+  const [hasEducation, setHasEducation] = useState(() => savedState?.hasEducation ?? false);
+  const [experienceAnalysis, setExperienceAnalysis] = useState(() => savedState?.experienceAnalysis || null);
+  const [educationAnalysis, setEducationAnalysis] = useState(() => savedState?.educationAnalysis || null);
+
   const [problems, setProblems] = useState(() => savedState?.problems || []);
   const [grammarIssues, setGrammarIssues] = useState(() => savedState?.grammarIssues || []);
   const [atsProblems, setAtsProblems] = useState(() => savedState?.atsProblems || []);
@@ -114,6 +121,12 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
         atsProblems,
         skillsStatus,
         certificates,
+        education,
+        experience,
+        hasExperience,
+        hasEducation,
+        experienceAnalysis,
+        educationAnalysis,
         apiResumeScore,
         apiAtsScore,
         apiGrammarScore,
@@ -121,7 +134,7 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
       };
       localStorage.setItem('sb_resume_analysis', JSON.stringify(stateToSave));
     }
-  }, [analyzed, selectedFile, activeTab, viewMode, problems, grammarIssues, atsProblems, skillsStatus, certificates, apiResumeScore, apiAtsScore, apiGrammarScore, pendingSuggestion]);
+  }, [analyzed, selectedFile, activeTab, viewMode, problems, grammarIssues, atsProblems, skillsStatus, certificates, education, experience, hasExperience, hasEducation, experienceAnalysis, educationAnalysis, apiResumeScore, apiAtsScore, apiGrammarScore, pendingSuggestion]);
 
   const resumeScore = is100PercentComplete ? 100 : (apiResumeScore || Math.min(100, 75 + fixedCount * 8 + gainedCount * 3));
   const atsScore = is100PercentComplete ? 100 : (apiAtsScore || Math.min(100, 72 + fixedCount * 6));
@@ -137,6 +150,18 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
     const skillScoreVal = analysis.scores?.skills || 78;
     const resumeId = data.resumeId || analysis.resumeId;
     const resumeText = data.resumeText || "";
+
+    const parsedEdu = Array.isArray(analysis.education) ? analysis.education : [];
+    const parsedExp = Array.isArray(analysis.experience) ? analysis.experience : [];
+    const isExpFound = Boolean(analysis.hasExperience || parsedExp.length > 0);
+    const isEduFound = Boolean(analysis.hasEducation || parsedEdu.length > 0);
+
+    setEducation(parsedEdu);
+    setExperience(parsedExp);
+    setHasExperience(isExpFound);
+    setHasEducation(isEduFound);
+    setExperienceAnalysis(analysis.experienceAnalysis || null);
+    setEducationAnalysis(analysis.educationAnalysis || null);
 
     if (resumeId) {
       localStorage.setItem('sb_active_resume_id', resumeId);
@@ -708,6 +733,114 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
                           {unfixedProblemsCount > 0 ? 'Review Fixes ›' : 'View Skills ›'}
                         </button>
                       </div>
+                    </div>
+                  </div>
+
+                  {/* Scanned Education & Experience Breakdown */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-2">
+                    {/* 1. Scanned Education Analysis */}
+                    <div className="lg:col-span-6 saas-card p-5 space-y-4">
+                      <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold">
+                            <GraduationCap className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                              Scanned Education Analysis
+                            </h3>
+                            <span className="text-[11px] text-slate-500">Degree & Institution Verification</span>
+                          </div>
+                        </div>
+                        <span className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-full ${
+                          hasEducation ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-600'
+                        }`}>
+                          {hasEducation ? `${education.length} Detected` : 'Not Listed'}
+                        </span>
+                      </div>
+
+                      {hasEducation && education.length > 0 ? (
+                        <div className="space-y-3">
+                          {education.map((edu, idx) => (
+                            <div key={idx} className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+                              <div className="flex items-start justify-between gap-2">
+                                <h4 className="text-xs font-bold text-slate-900">{edu.school || 'University / College'}</h4>
+                                <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-100/70 px-2 py-0.5 rounded-md">
+                                  {edu.year || '2025'}
+                                </span>
+                              </div>
+                              <p className="text-[11px] text-slate-600 font-medium">
+                                {edu.degree || 'Degree Program'} • {edu.field || 'Computer Science'}
+                              </p>
+                            </div>
+                          ))}
+                          <div className="p-2.5 rounded-lg bg-emerald-50/60 border border-emerald-200/80 text-[11px] text-emerald-800 flex items-center gap-2">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                            <span>Education background qualifies for technical roles.</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-center space-y-1.5">
+                          <p className="text-xs font-semibold text-slate-700">No Education Section Detected</p>
+                          <p className="text-[11px] text-slate-500 leading-relaxed">
+                            No university or degree was found in your resume text. Adding your degree enhances ATS parsing.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 2. Scanned Work Experience Analysis */}
+                    <div className="lg:col-span-6 saas-card p-5 space-y-4">
+                      <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold">
+                            <Briefcase className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                              Work Experience Analysis
+                            </h3>
+                            <span className="text-[11px] text-slate-500">Employment & Internship History</span>
+                          </div>
+                        </div>
+                        <span className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-full ${
+                          hasExperience ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' : 'bg-amber-50 text-amber-800 border border-amber-200'
+                        }`}>
+                          {hasExperience ? `${experience.length} Role(s)` : 'Fresher (0 Years)'}
+                        </span>
+                      </div>
+
+                      {hasExperience && experience.length > 0 ? (
+                        <div className="space-y-3">
+                          {experience.map((exp, idx) => (
+                            <div key={idx} className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+                              <div className="flex items-start justify-between gap-2">
+                                <h4 className="text-xs font-bold text-slate-900">{exp.role || 'Software Role'}</h4>
+                                <span className="text-[10px] font-medium text-slate-500">{exp.duration || 'Past'}</span>
+                              </div>
+                              <p className="text-[11px] text-slate-700 font-semibold">{exp.company || 'Company'}</p>
+                              {exp.description && (
+                                <p className="text-[11px] text-slate-500 leading-relaxed pt-0.5">{exp.description}</p>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="p-4 rounded-xl bg-amber-50/70 border border-amber-200 space-y-2">
+                          <div className="flex items-center gap-2 text-xs font-bold text-amber-900">
+                            <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+                            <span>No Work Experience Detected (Fresher)</span>
+                          </div>
+                          <p className="text-[11px] text-amber-800 leading-relaxed">
+                            No employment history was detected in your uploaded resume. Your profile is evaluated as a <strong>Fresher / Student Candidate</strong>.
+                          </p>
+                          <div className="pt-1 text-[11px] text-amber-900 font-medium space-y-1 bg-white/70 p-2.5 rounded-lg border border-amber-200/60">
+                            <p className="font-bold text-[10px] uppercase tracking-wider text-amber-800">Tips to stand out as a Fresher:</p>
+                            <p>• Highlight 2-3 technical personal projects with live GitHub links.</p>
+                            <p>• Earn verified skill certificates in the SkillBridge lab.</p>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </>
