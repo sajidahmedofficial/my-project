@@ -480,14 +480,37 @@ function parseHeaderLine(line, exp) {
 }
 
 function finalizeExperience(exp) {
+  if (!exp) return null;
+
+  // If role is an action verb sentence with no company, this is a stray bullet, not a job role
+  const isActionVerbOnly = /^(?:engineered|developed|implemented|built|designed|created|optimized|maintained|managed|led|assisted|wrote|integrated|configured|collaborated|enhanced|resolved|delivered|automated|worked|researched)\b/i.test(exp.role || '');
+  if (isActionVerbOnly && !exp.company) {
+    return null;
+  }
+
+  // Parse start/end dates from duration if missing
+  if ((!exp.startDate || !exp.endDate) && exp.duration) {
+    const parts = exp.duration.split(/\s*(?:-|–|to)\s*/i).map(s => s.trim());
+    if (!exp.startDate && parts[0]) exp.startDate = parts[0];
+    if (!exp.endDate && parts[1]) {
+      const rawEnd = parts[1].toLowerCase();
+      exp.endDate = (rawEnd.includes('present') || rawEnd.includes('current') || rawEnd.includes('now')) ? "" : parts[1];
+    }
+  }
+
   let formattedDesc = "";
   if (exp.bullets && exp.bullets.length > 0) {
     formattedDesc = exp.bullets.map(b => b.startsWith('•') ? b : `• ${b}`).join('\n');
   }
 
+  const role = (exp.role || "").trim();
+  const company = (exp.company || "").trim();
+
+  if (!role && !company) return null;
+
   return {
-    role: exp.role || "Software Developer",
-    company: exp.company || "",
+    role: role || "Software Developer",
+    company: company,
     startDate: exp.startDate || "",
     endDate: exp.endDate || "",
     duration: exp.duration || (exp.startDate ? `${exp.startDate} - ${exp.endDate || 'Present'}` : "2023 - Present"),
@@ -517,8 +540,9 @@ function extractWorkExperiences(text, lines) {
       for (const line of implicitExpLines) {
         const exp = { role: "", company: "", startDate: "", endDate: "", duration: "", bullets: [] };
         parseHeaderLine(line.trim(), exp);
-        if (exp.role || exp.company) {
-          experiences.push(finalizeExperience(exp));
+        const finalized = finalizeExperience(exp);
+        if (finalized) {
+          experiences.push(finalized);
         }
       }
       return experiences;
@@ -527,6 +551,7 @@ function extractWorkExperiences(text, lines) {
   }
 
   const roleKeywords = /(?:developer|engineer|intern|internship|trainee|apprentice|fellow|assistant|analyst|consultant|specialist|manager|lead|architect|designer|programmer|administrator|associate|director|coordinator|officer)/i;
+  const actionVerbRegex = /^(?:engineered|developed|implemented|built|designed|created|optimized|maintained|managed|led|assisted|wrote|integrated|configured|collaborated|enhanced|resolved|delivered|automated|worked|researched|trained|tested|published)\b/i;
   const dateRangeRegex = /(?:(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|\d{4})\b.*?(\d{4}|present|current|now))/i;
 
   for (const headerIdx of sectionHeaderIndices) {
@@ -547,13 +572,15 @@ function extractWorkExperiences(text, lines) {
       const rawLine = expLines[i].trim();
       if (!rawLine) continue;
 
-      const isBullet = /^[•\-\*|\d+\.]\s*/.test(rawLine);
+      const isAction = actionVerbRegex.test(rawLine);
+      const isBullet = /^[•\-\*|\d+\.]\s*/.test(rawLine) || isAction;
       const hasDate = dateRangeRegex.test(rawLine);
-      const hasRole = roleKeywords.test(rawLine) && !isBullet;
+      const hasRole = roleKeywords.test(rawLine) && !isBullet && !isAction && rawLine.length < 60;
 
-      if ((hasRole || (hasDate && !currentExp)) && !isBullet) {
+      if ((hasRole || (hasDate && !currentExp)) && !isBullet && !isAction) {
         if (currentExp && (currentExp.role || currentExp.company)) {
-          experiences.push(finalizeExperience(currentExp));
+          const finalized = finalizeExperience(currentExp);
+          if (finalized) experiences.push(finalized);
         }
 
         currentExp = {
@@ -569,7 +596,7 @@ function extractWorkExperiences(text, lines) {
       } else if (currentExp) {
         if (hasDate && (!currentExp.startDate || !currentExp.duration)) {
           parseDateIntoExp(rawLine, currentExp);
-        } else if (!currentExp.company && !isBullet && rawLine.length < 60 && !hasRole) {
+        } else if (!currentExp.company && !isBullet && !isAction && rawLine.length < 60 && !hasRole) {
           currentExp.company = rawLine.replace(/^[•\-\*]\s*/, '').trim();
         } else {
           const cleanBullet = rawLine.replace(/^[•\-\*]\s*/, '').trim();
@@ -581,7 +608,8 @@ function extractWorkExperiences(text, lines) {
     }
 
     if (currentExp && (currentExp.role || currentExp.company)) {
-      experiences.push(finalizeExperience(currentExp));
+      const finalized = finalizeExperience(currentExp);
+      if (finalized) experiences.push(finalized);
     }
   }
 

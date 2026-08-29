@@ -254,20 +254,40 @@ export default function OnboardingWizard({ onComplete }) {
       }
 
       // Populate Work Experience History (including Internships)
-      const parsedExp = Array.isArray(parsedAnalysis.experience) && parsedAnalysis.experience.length > 0 
+      const rawParsedExp = Array.isArray(parsedAnalysis.experience) && parsedAnalysis.experience.length > 0 
         ? parsedAnalysis.experience 
         : Array.isArray(parsedAnalysis.data?.experience) ? parsedAnalysis.data.experience : [];
         
-      if (parsedExp.length > 0) {
-        setExperienceList(parsedExp.map((exp, idx) => ({
-          id: idx + 1,
-          company: exp.company || exp.organization || exp.employer || '',
-          role: exp.role || exp.title || exp.positionTitle || exp.position || '',
-          startDate: exp.startDate || (exp.duration ? exp.duration.split(/\s*[-–]\s*/)[0] : ''),
-          endDate: exp.endDate || (exp.duration && !/present|current|now/i.test(exp.duration) ? exp.duration.split(/\s*[-–]\s*/)[1] || '' : ''),
-          duration: exp.duration || '',
-          description: exp.description || ''
-        })));
+      const validParsedExp = rawParsedExp.filter(exp => {
+        const role = (exp.role || exp.title || '').trim();
+        const company = (exp.company || exp.organization || '').trim();
+        if (!role && !company) return false;
+        // Filter out bullet action sentences parsed as roles when there is no company
+        if (!company && /^(?:engineered|developed|implemented|built|designed|created|optimized|worked|maintained|managed|led)\b/i.test(role)) return false;
+        return true;
+      });
+
+      if (validParsedExp.length > 0) {
+        setExperienceList(validParsedExp.map((exp, idx) => {
+          let start = exp.startDate || '';
+          let end = exp.endDate || '';
+          if (!start && exp.duration) {
+            const parts = exp.duration.split(/\s*(?:-|–|to)\s*/i);
+            start = parts[0] || '';
+            if (parts[1] && !/present|current|now/i.test(parts[1])) {
+              end = parts[1];
+            }
+          }
+          return {
+            id: idx + 1,
+            company: exp.company || exp.organization || exp.employer || '',
+            role: exp.role || exp.title || exp.positionTitle || exp.position || '',
+            startDate: start,
+            endDate: end,
+            duration: exp.duration || (start ? `${start} - ${end || 'Present'}` : ''),
+            description: exp.description || ''
+          };
+        }));
       } else {
         setExperienceList([]);
       }
