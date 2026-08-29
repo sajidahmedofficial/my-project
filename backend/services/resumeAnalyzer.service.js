@@ -5,6 +5,41 @@ export async function analyzeResume(
   resumeText,
   targetRole = "Full Stack Developer"
 ) {
+  if (!resumeText || typeof resumeText !== 'string' || resumeText.trim().length === 0) {
+    return {
+      candidate: {
+        firstName: "",
+        lastName: "",
+        name: "",
+        email: "",
+        phone: "",
+        linkedIn: "",
+        summary: "",
+        headline: ""
+      },
+      summary: "",
+      education: [],
+      experience: [],
+      hasExperience: false,
+      hasEducation: false,
+      scores: { overall: 0, ats: 0, grammar: 0, format: 0, skills: 0, experience: 0, projects: 0 },
+      grammarIssues: [],
+      resumeProblems: [],
+      formatProblems: [],
+      atsProblems: [],
+      missingSections: ["Resume Content"],
+      skills: {
+        detected: [],
+        strong: [],
+        weak: [],
+        missing: []
+      },
+      projects: [],
+      improvements: [],
+      skillGap: []
+    };
+  }
+
   const prompt = `
 Analyze this resume for the target role:
 
@@ -151,11 +186,11 @@ const JOB_TITLE_KEYWORDS = [
   "developer", "engineer", "full", "stack", "fullstack", "frontend", "front-end",
   "backend", "back-end", "web", "software", "architect", "programmer",
   "curriculum", "vitae", "cv", "resume", "profile", "summary", "contact", "about",
-  "student", "fresher", "intern", "internship", "lead", "senior", "junior",
+  "student", "fresher", "intern", "internship", "internships", "lead", "senior", "junior",
   "specialist", "consultant", "analyst", "manager", "designer", "devops",
   "cloud", "data", "scientist", "machine", "learning", "ai", "technology",
-  "technologies", "portfolio", "application", "experienced",
-  "objective", "education", "skills", "projects", "certifications"
+  "technologies", "portfolio", "application", "experienced", "work", "experience",
+  "objective", "education", "skills", "projects", "certifications", "history", "employment"
 ];
 
 function isInvalidOrJobTitleName(str) {
@@ -207,8 +242,8 @@ function extractPhoneNumber(text) {
 function extractCandidateName(lines, text, email, linkedIn) {
   let candidateName = "";
 
-  // Step A: Scan top 15 lines for an isolated, clean person name (2-3 words, no title keywords)
-  for (let i = 0; i < Math.min(15, lines.length); i++) {
+  // Step A: Scan top 5 lines for an isolated, clean person name (1-3 words, no title/section keywords)
+  for (let i = 0; i < Math.min(5, lines.length); i++) {
     const line = lines[i].replace(/^[•\-\*|#]+\s*/, '').trim();
     if (!line) continue;
 
@@ -217,7 +252,7 @@ function extractCandidateName(lines, text, email, linkedIn) {
     if (/\d{4,}/.test(line)) continue;
 
     const words = line.split(/\s+/);
-    if (words.length >= 1 && words.length <= 4) {
+    if (words.length >= 1 && words.length <= 3) {
       if (!isInvalidOrJobTitleName(line)) {
         candidateName = line;
         break;
@@ -273,6 +308,27 @@ function extractCandidateName(lines, text, email, linkedIn) {
 }
 
 function generateRuleBasedAnalysis(text, targetRole) {
+  if (!text || typeof text !== 'string' || text.trim().length === 0) {
+    return {
+      candidate: { firstName: "", lastName: "", name: "", email: "", phone: "", linkedIn: "", summary: "", headline: "" },
+      summary: "",
+      education: [],
+      experience: [],
+      hasExperience: false,
+      hasEducation: false,
+      scores: { overall: 0, ats: 0, grammar: 0, format: 0, skills: 0, experience: 0, projects: 0 },
+      grammarIssues: [],
+      resumeProblems: [],
+      formatProblems: [],
+      atsProblems: [],
+      missingSections: ["Resume Content"],
+      skills: { detected: [], strong: [], weak: [], missing: [] },
+      projects: [],
+      improvements: [],
+      skillGap: []
+    };
+  }
+
   const lowerText = text.toLowerCase();
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
 
@@ -502,7 +558,12 @@ function extractEducationList(text, lines) {
       else if (/b\.s\.|bachelor/i.test(trimmed)) degreeName = "Bachelor of Science (B.S.)";
       else if (/diploma/i.test(trimmed)) degreeName = "Diploma in Computer Science / IT";
       
-      const cleanSchool = trimmed.replace(/^[•\-\*]\s*/, '').replace(/\b(19|20)\d{2}\b.*$/, '').replace(/-\s*(b\.tech|b\.e|bachelor|m\.s|degree).*$/i, '').trim();
+      const cleanSchool = trimmed
+        .replace(/^[•\-\*]\s*/, '')
+        .replace(/\b(19|20)\d{2}\b.*$/, '')
+        .replace(/-\s*(b\.tech|b\.e|b\.s\.|b\.s|bachelor|m\.s\.|m\.s|m\.tech|degree).*$/i, '')
+        .replace(/[\s\(\)-]+$/, '')
+        .trim();
 
       if (cleanSchool.length > 3) {
         education.push({

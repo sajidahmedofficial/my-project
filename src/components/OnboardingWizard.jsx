@@ -74,16 +74,16 @@ export default function OnboardingWizard({ onComplete }) {
   const [phone, setPhone] = useState(() => currentUser?.phone || '');
   const [linkedIn, setLinkedIn] = useState(() => currentUser?.linkedIn || '');
 
-  // Skills as discrete chips
+  // Skills as discrete chips (Defaults to empty unless user profile already has skills)
   const [skillsList, setSkillsList] = useState(() => {
     if (Array.isArray(currentUser?.skills) && currentUser.skills.length > 0) {
       return currentUser.skills;
     }
-    return ['JavaScript', 'React', 'HTML', 'CSS', 'Git'];
+    return [];
   });
   const [newSkillInput, setNewSkillInput] = useState('');
 
-  // Education list (Initializes with clean user data or blank entry)
+  // Education list (Defaults to empty unless user profile already has education)
   const [educationList, setEducationList] = useState(() => {
     if (Array.isArray(currentUser?.education) && currentUser.education.length > 0) {
       return currentUser.education;
@@ -99,21 +99,13 @@ export default function OnboardingWizard({ onComplete }) {
         }
       ];
     }
-    return [
-      {
-        id: 1,
-        school: '',
-        degree: 'Bachelor of Technology (B.Tech)',
-        field: 'Computer Science & Engineering',
-        year: '2025'
-      }
-    ];
+    return [];
   });
 
-  // Professional Summary state
+  // Professional Summary state (Defaults to empty)
   const [summary, setSummary] = useState('');
 
-  // Work Experience list (Defaults to empty for freshers)
+  // Work Experience list (Defaults to empty)
   const [experienceList, setExperienceList] = useState(() => {
     if (Array.isArray(currentUser?.experience) && currentUser.experience.length > 0) {
       return currentUser.experience;
@@ -298,6 +290,15 @@ export default function OnboardingWizard({ onComplete }) {
     setUploadProgress(0);
     setAnalyzingText('');
     setUploadError('');
+    setFirstName(currentUser?.firstName || '');
+    setLastName(currentUser?.lastName || '');
+    setEmail(currentUser?.email || '');
+    setPhone(currentUser?.phone || '');
+    setLinkedIn(currentUser?.linkedIn || '');
+    setSummary('');
+    setSkillsList(Array.isArray(currentUser?.skills) ? currentUser.skills : []);
+    setEducationList(Array.isArray(currentUser?.education) ? currentUser.education : []);
+    setExperienceList(Array.isArray(currentUser?.experience) ? currentUser.experience : []);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -946,11 +947,11 @@ export default function OnboardingWizard({ onComplete }) {
                 </button>
               </div>
 
-              {educationList.map((edu, idx) => (
-                <div key={edu.id || idx} className="p-5 rounded-2xl border border-slate-200 bg-white space-y-3 relative group">
-                  <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                    <span className="text-xs font-bold text-slate-700">Education #{idx + 1}</span>
-                    {educationList.length > 1 && (
+              {educationList.length > 0 ? (
+                educationList.map((edu, idx) => (
+                  <div key={edu.id || idx} className="p-5 rounded-2xl border border-slate-200 bg-white space-y-3 relative group">
+                    <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                      <span className="text-xs font-bold text-slate-700">Education #{idx + 1}</span>
                       <button
                         type="button"
                         onClick={() => handleRemoveEducation(edu.id)}
@@ -959,56 +960,67 @@ export default function OnboardingWizard({ onComplete }) {
                         <Trash2 className="w-3.5 h-3.5" />
                         <span>Remove</span>
                       </button>
-                    )}
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <label className="block text-[11px] font-semibold text-slate-600">College / University</label>
+                        <input
+                          type="text"
+                          value={edu.school}
+                          onChange={(e) => handleUpdateEducation(edu.id, 'school', e.target.value)}
+                          placeholder="e.g. Stanford University or IIT Delhi"
+                          className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-[#0f766e]"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="block text-[11px] font-semibold text-slate-600">Degree</label>
+                        <input
+                          type="text"
+                          value={edu.degree}
+                          onChange={(e) => handleUpdateEducation(edu.id, 'degree', e.target.value)}
+                          placeholder="e.g. Bachelor of Technology (B.Tech)"
+                          className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-[#0f766e]"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="block text-[11px] font-semibold text-slate-600">Field of Study</label>
+                        <input
+                          type="text"
+                          value={edu.field}
+                          onChange={(e) => handleUpdateEducation(edu.id, 'field', e.target.value)}
+                          placeholder="e.g. Computer Science & Engineering"
+                          className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-[#0f766e]"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="block text-[11px] font-semibold text-slate-600">Graduation Year</label>
+                        <input
+                          type="text"
+                          value={edu.year}
+                          onChange={(e) => handleUpdateEducation(edu.id, 'year', e.target.value)}
+                          placeholder="e.g. 2025"
+                          className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-[#0f766e]"
+                        />
+                      </div>
+                    </div>
                   </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="block text-[11px] font-semibold text-slate-600">College / University</label>
-                      <input
-                        type="text"
-                        value={edu.school}
-                        onChange={(e) => handleUpdateEducation(edu.id, 'school', e.target.value)}
-                        placeholder="e.g. Stanford University or IIT Delhi"
-                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-[#0f766e]"
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="block text-[11px] font-semibold text-slate-600">Degree</label>
-                      <input
-                        type="text"
-                        value={edu.degree}
-                        onChange={(e) => handleUpdateEducation(edu.id, 'degree', e.target.value)}
-                        placeholder="e.g. Bachelor of Technology (B.Tech)"
-                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-[#0f766e]"
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="block text-[11px] font-semibold text-slate-600">Field of Study</label>
-                      <input
-                        type="text"
-                        value={edu.field}
-                        onChange={(e) => handleUpdateEducation(edu.id, 'field', e.target.value)}
-                        placeholder="e.g. Computer Science & Engineering"
-                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-[#0f766e]"
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="block text-[11px] font-semibold text-slate-600">Graduation Year</label>
-                      <input
-                        type="text"
-                        value={edu.year}
-                        onChange={(e) => handleUpdateEducation(edu.id, 'year', e.target.value)}
-                        placeholder="e.g. 2025"
-                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-[#0f766e]"
-                      />
-                    </div>
-                  </div>
+                ))
+              ) : (
+                <div className="p-4 rounded-xl bg-white border border-slate-200 flex items-center justify-between text-xs">
+                  <span className="text-slate-600 font-medium">No education history added yet.</span>
+                  <button
+                    type="button"
+                    onClick={handleAddEducation}
+                    className="text-xs font-semibold text-[#0f766e] hover:underline"
+                  >
+                    + Add Education
+                  </button>
                 </div>
-              ))}
+              )}
             </div>
 
             {/* Footer Buttons */}
