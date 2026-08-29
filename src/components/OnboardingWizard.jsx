@@ -279,12 +279,10 @@ export default function OnboardingWizard({ onComplete }) {
       }, 1800);
 
     } catch (err) {
-      console.warn('[Wizard Parser] Fallback triggered:', err.message);
-      setTimeout(() => {
-        setUploadProgress(3);
-        setAnalyzingText('Analyzed successfully.');
-        setIsParsing(false);
-      }, 1200);
+      console.error('[OnboardingWizard] Resume parsing error:', err);
+      setIsParsing(false);
+      setUploadProgress(0);
+      setUploadError(err.message || 'Resume analysis failed. Please verify your connection or file format and try again.');
     }
   };
 
