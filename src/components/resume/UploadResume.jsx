@@ -68,11 +68,9 @@ function UploadResume({ onAnalysis, onFileSelect, parsing, selectedFile, onSelec
   };
 
   const isLoading = loading || parsing;
-  const isUploadedAndAnalyzed = Boolean(analyzed || selectedFile || profile?.hasUploadedResume);
+  const isUploadedAndAnalyzed = Boolean(analyzed && selectedFile);
   
-  const activeFileName = selectedFile?.name 
-    ? selectedFile.name 
-    : `${(profile?.name || 'Candidate').replace(/[^a-zA-Z0-9]/g, '_')}_Resume.pdf`;
+  const activeFileName = selectedFile?.name || "Uploaded_Resume.pdf";
 
   return (
     <div 

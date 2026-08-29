@@ -27,12 +27,14 @@ const getInitialResumeState = (profile) => {
     const savedStr = localStorage.getItem('sb_resume_analysis');
     if (savedStr) {
       const parsed = JSON.parse(savedStr);
-      if (parsed && typeof parsed === 'object') return parsed;
+      if (parsed && typeof parsed === 'object' && parsed.analyzed && parsed.selectedFile) {
+        return parsed;
+      }
     }
   } catch (e) {
     console.warn('Failed to parse sb_resume_analysis:', e);
   }
-  return profile?.resumeAnalysis || null;
+  return null;
 };
 
 export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
@@ -41,9 +43,9 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
   const [activeTab, setActiveTab] = useState(savedState?.activeTab || 'overview'); // 'overview' | 'issues' | 'skills' | 'certs'
   const [viewMode, setViewMode] = useState(savedState?.viewMode || 'tabs'); // 'tabs' | 'scroll'
   
-  const [analyzed, setAnalyzed] = useState(() => savedState?.analyzed ?? Boolean(profile?.hasUploadedResume));
+  const [analyzed, setAnalyzed] = useState(() => Boolean(savedState?.analyzed && savedState?.selectedFile));
   const [parsing, setParsing] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(() => savedState?.selectedFile || (profile?.hasUploadedResume ? { name: `${(profile?.name || 'User').replace(/\s+/g, '_')}_Resume.pdf` } : null));
+  const [selectedFile, setSelectedFile] = useState(() => savedState?.selectedFile || null);
   const [showPreview, setShowPreview] = useState(false);
   const [verifyingSkillName, setVerifyingSkillName] = useState(null);
   const [toastMessage, setToastMessage] = useState(null);
@@ -51,48 +53,11 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
   // Pending AI Suggestion Review State
   const [pendingSuggestion, setPendingSuggestion] = useState(() => savedState?.pendingSuggestion || null);
 
-  const [problems, setProblems] = useState(() => savedState?.problems || (profile?.hasUploadedResume ? [
-    {
-      id: 1,
-      problem: "Quantifiable impact metrics missing from work experience",
-      original: "Responsible for developing web applications using React.",
-      suggested: "Developed responsive React applications improving user engagement by 35%.",
-      fixed: false
-    },
-    {
-      id: 2,
-      problem: "Missing portfolio / proof of work link in header",
-      original: "GitHub / Portfolio URL missing",
-      suggested: "Add GitHub profile link to contact header",
-      fixed: false
-    }
-  ] : []));
-
-  const [grammarIssues, setGrammarIssues] = useState(() => savedState?.grammarIssues || (profile?.hasUploadedResume ? [
-    {
-      id: 1,
-      severity: "medium",
-      original: "Responsible for managing web apps and backend services.",
-      problem: "Weak action verb without quantifiable impact metrics.",
-      correction: "Architected scalable full-stack web applications handling 50k+ active users."
-    }
-  ] : []));
-
-  const [atsProblems, setAtsProblems] = useState(() => savedState?.atsProblems || (profile?.hasUploadedResume ? [{ problem: "Missing links", suggestion: "Add GitHub portfolio link" }] : []));
-
-  const [skillsStatus, setSkillsStatus] = useState(() => savedState?.skillsStatus || (profile?.hasUploadedResume ? [
-    { name: "HTML", status: "GAINED", progress: 100, certified: true },
-    { name: "CSS", status: "GAINED", progress: 100, certified: true },
-    { name: "JavaScript", status: "GAINED", progress: 100, certified: true },
-    { name: "React", status: "LEARNING", progress: 75, certified: false },
-    { name: "Node.js", status: "LEARNING", progress: 40, certified: false }
-  ] : []));
-
-  const [certificates, setCertificates] = useState(() => savedState?.certificates || (profile?.hasUploadedResume ? [
-    { skillName: "HTML", certificateCode: "CERT-HTML-839201" },
-    { skillName: "CSS", certificateCode: "CERT-CSS-482910" },
-    { skillName: "JavaScript", certificateCode: "CERT-JS-918234" }
-  ] : []));
+  const [problems, setProblems] = useState(() => savedState?.problems || []);
+  const [grammarIssues, setGrammarIssues] = useState(() => savedState?.grammarIssues || []);
+  const [atsProblems, setAtsProblems] = useState(() => savedState?.atsProblems || []);
+  const [skillsStatus, setSkillsStatus] = useState(() => savedState?.skillsStatus || []);
+  const [certificates, setCertificates] = useState(() => savedState?.certificates || []);
 
   const fixedCount = problems.filter(p => p.fixed).length;
   const gainedCount = skillsStatus.filter(s => s.status === 'GAINED').length;
@@ -102,12 +67,12 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
 
   const is100PercentComplete = skillsStatus.length > 0 && skillsStatus.every(s => s.status === 'GAINED' || s.progress === 100);
 
-  const [apiResumeScore, setApiResumeScore] = useState(() => savedState?.apiResumeScore || profile?.scores?.resumeScore || null);
-  const [apiAtsScore, setApiAtsScore] = useState(() => savedState?.apiAtsScore || profile?.scores?.placementReadiness || null);
-  const [apiGrammarScore, setApiGrammarScore] = useState(() => savedState?.apiGrammarScore || profile?.scores?.interviewReadiness || null);
+  const [apiResumeScore, setApiResumeScore] = useState(() => savedState?.apiResumeScore || null);
+  const [apiAtsScore, setApiAtsScore] = useState(() => savedState?.apiAtsScore || null);
+  const [apiGrammarScore, setApiGrammarScore] = useState(() => savedState?.apiGrammarScore || null);
 
   useEffect(() => {
-    if (analyzed) {
+    if (analyzed && selectedFile) {
       const stateToSave = {
         analyzed,
         selectedFile,
@@ -432,6 +397,24 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
     });
   };
 
+  const handleUploadNew = () => {
+    setAnalyzed(false);
+    setSelectedFile(null);
+    setProblems([]);
+    setGrammarIssues([]);
+    setAtsProblems([]);
+    setSkillsStatus([]);
+    setCertificates([]);
+    setPendingSuggestion(null);
+    setApiResumeScore(null);
+    setApiAtsScore(null);
+    setApiGrammarScore(null);
+    localStorage.removeItem('sb_resume_analysis');
+    localStorage.removeItem('sb_active_resume_id');
+    localStorage.removeItem('sb_resume_text');
+    setActiveTab('overview');
+  };
+
   const currentStage = is100PercentComplete ? 9 : (pendingSuggestion ? 7 : (verifyingSkillName ? 5 : (selectedFile ? 3 : 1)));
 
   const handleStepClick = (step) => {
@@ -467,6 +450,17 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
+          {analyzed && (
+            <button 
+              onClick={handleUploadNew}
+              className="saas-btn-secondary py-1.5 px-3 text-xs gap-1.5"
+              title="Upload another resume"
+            >
+              <RefreshCw className="w-3.5 h-3.5 text-slate-500" />
+              <span>Upload New Resume</span>
+            </button>
+          )}
+
           <button 
             onClick={() => setViewMode(prev => prev === 'tabs' ? 'scroll' : 'tabs')}
             className="saas-btn-secondary py-1.5 px-3 text-xs gap-1.5"
