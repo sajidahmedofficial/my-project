@@ -169,17 +169,17 @@ Return JSON with exactly this structure:
 }
 
 Extraction Rules:
-1. Extract ALL candidate details: firstName, lastName, email, phone, linkedIn, summary, skills, education, and work experience/internships.
-2. Extract ONLY the candidate's actual personal name. DO NOT confuse with job title (e.g. "Full Stack Developer", "Software Engineer"), headline, or objective.
-3. If the resume has internship experience, include it in the experience array with title, company, dates, and bulleted description.
-4. If the user is a fresher with 0 work experience or internships, return an empty experience array [].
+1. The candidate's name is a person's name (2-3 words), NEVER a job title — job titles like 'Full Stack Developer' or 'Software Engineer' must never be split into firstName/lastName.
+2. If a field is not present in the resume, return an empty string or empty array for that key. Never fabricate data.
+3. If the resume has internship or work experience, include all entries in the experience array with title, company, dates, and bulleted descriptions.
+4. If the candidate is a fresher with 0 work experience or internships, return an empty experience array [].
 5. Do not invent fake companies, fake schools, or fake certifications.
-6. Score the resume objectively and generate a tailored skill gap for ${targetRole}.
+6. Return ONLY valid JSON. No markdown formatting, no explanation text, no code fences.
 `;
 
   try {
     const aiResult = await analyzeJSON(prompt);
-    if (aiResult && (aiResult.scores || aiResult.candidate || aiResult.skills)) {
+    if (aiResult && (aiResult.scores || aiResult.candidate || aiResult.skills || aiResult.analysis)) {
       // Normalize Education array
       const rawEdu = Array.isArray(aiResult.education) ? aiResult.education : [];
       aiResult.education = rawEdu.map(edu => ({
@@ -215,10 +215,24 @@ Extraction Rules:
         aiResult.summary = cand.summary;
       }
 
+      // Normalize Analysis & Scores
+      if (!aiResult.analysis) {
+        aiResult.analysis = {
+          overallScore: aiResult.scores?.overall || 85,
+          atsCompatibility: `${aiResult.scores?.ats || 80}%`,
+          keywordGaps: aiResult.skills?.missing || [],
+          strengths: aiResult.skills?.strong || [],
+          improvements: (aiResult.improvements || []).map(imp => ({
+            section: imp.section || 'General',
+            suggestion: imp.suggested || imp.suggestion || imp.reason || ''
+          }))
+        };
+      }
+
       return aiResult;
     }
   } catch (err) {
-    console.warn("[Resume Analyzer] Gemini API fallback notice:", err.message);
+    console.warn("[Resume Analyzer] Primary AI API call failed or unconfigured; activating fallback parser. Reason:", err.message);
   }
 
   // Fallback: Rule-based intelligent text analysis if Gemini API key is unconfigured or rate limited

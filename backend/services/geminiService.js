@@ -41,7 +41,8 @@ export async function analyzeWithGemini(prompt, {
   jsonMode = false,
   temperature = 0.7,
   modelChain = DEFAULT_MODEL_NAMES,
-  maxAttempts = 3
+  maxAttempts = 2,
+  timeoutMs = 18000
 } = {}) {
   const ai = getGenAIClient();
   if (!ai) {
@@ -63,26 +64,31 @@ export async function analyzeWithGemini(prompt, {
           config.responseMimeType = 'application/json';
         }
 
-        const result = await model.generateContent({
-          contents: [{ role: 'user', parts: [{ text: prompt }] }],
-          generationConfig: config
+        const callPromise = (async () => {
+          const result = await model.generateContent({
+            contents: [{ role: 'user', parts: [{ text: prompt }] }],
+            generationConfig: config
+          });
+          const response = await result.response;
+          return response.text();
+        })();
+
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error(`Gemini API request timed out after ${timeoutMs}ms`)), timeoutMs);
         });
 
-        const response = await result.response;
-        const text = response.text();
+        const text = await Promise.race([callPromise, timeoutPromise]);
         if (text) {
           return text;
         }
       } catch (err) {
         console.warn(`[GEMINI CLIENT] Model ${modelName} attempt ${attempts}/${maxAttempts} failed: ${err.message}`);
 
-        if (err.message.includes('404') || err.message.includes('not found')) {
-          console.warn(`[GEMINI CLIENT] Model ${modelName} not available, switching to next model in chain...`);
+        if (err.message.includes('404') || err.message.includes('not found') || err.message.includes('timed out')) {
           break;
         }
 
         if (attempts >= maxAttempts) {
-          console.warn(`[GEMINI CLIENT] ${modelName} max attempts reached. Trying next model...`);
           break;
         }
 
@@ -105,26 +111,67 @@ export async function analyzeWithGemini(prompt, {
 export async function analyzeJSON(prompt, options = {}) {
   const enhancedPrompt = `
 Return ONLY valid JSON.
-Do not use markdown.
+Do not use markdown formatting.
 Do not use code fences.
 
 ${prompt}
 `;
 
-  const text = await analyzeWithGemini(enhancedPrompt, {
-    ...options,
-    jsonMode: true
-  });
-
-  if (!text) return null;
-
   try {
-    return JSON.parse(text);
-  } catch (err) {
-    const cleaned = text
+    const text = await analyzeWithGemini(enhancedPrompt, {
+      ...options,
+      jsonMode: true
+    });
+
+    if (!text) return null;
+
+    try {
+      return JSON.parse(text);
+    } catch (err) {
+      const cleaned = text
+        .replace(/```json/gi, '')
+        .replace(/```/g, '')
+        .trim();
+      try {
+        return JSON.parse(cleaned);
+      } catch (err2) {
+        // Extract substring between first { and last }
+        const firstBrace = cleaned.indexOf('{');
+        const lastBrace = cleaned.lastIndexOf('}');
+        if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+          return JSON.parse(cleaned.substring(firstBrace, lastBrace + 1));
+        }
+        throw err2;
+      }
+    }
+  } catch (initialErr) {
+    // Retry once with a stricter instruction if not an auth error
+    if (initialErr.message && (initialErr.message.includes('API_KEY') || initialErr.message.includes('timed out'))) {
+      throw initialErr;
+    }
+
+    console.warn('[GEMINI CLIENT] Retrying JSON generation with stricter prompt...');
+    const retryPrompt = `
+CRITICAL: Return ONLY a raw RFC8259 valid JSON object. No explanation, no intro, no markdown.
+
+${prompt}
+`;
+    const retryText = await analyzeWithGemini(retryPrompt, {
+      ...options,
+      jsonMode: true,
+      maxAttempts: 1
+    });
+
+    if (!retryText) return null;
+    const cleaned = retryText
       .replace(/```json/gi, '')
       .replace(/```/g, '')
       .trim();
+    const firstBrace = cleaned.indexOf('{');
+    const lastBrace = cleaned.lastIndexOf('}');
+    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+      return JSON.parse(cleaned.substring(firstBrace, lastBrace + 1));
+    }
     return JSON.parse(cleaned);
   }
 }
