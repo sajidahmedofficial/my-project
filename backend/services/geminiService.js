@@ -12,7 +12,16 @@ let cachedGenAI = null;
  * @returns {GoogleGenerativeAI | null}
  */
 export function getGenAIClient() {
-  const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || '';
+  const apiKey = (
+    process.env.GEMINI_API_KEY || 
+    process.env.VITE_GEMINI_API_KEY || 
+    process.env.GOOGLE_API_KEY || 
+    process.env.GOOGLE_GENERATIVE_AI_API_KEY ||
+    process.env.GEMINI_KEY ||
+    process.env.VITE_API_KEY ||
+    ''
+  ).trim();
+
   if (!apiKey) {
     console.warn('[GEMINI CLIENT] WARNING: GEMINI_API_KEY is not configured in backend environment.');
     return null;
