@@ -158,7 +158,7 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
             {/* Primary Action Button */}
             <div className="pt-2 flex flex-wrap items-center gap-3">
               <button
-                onClick={() => onNavigate('resume')}
+                onClick={() => onNavigate('wizard')}
                 className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-[#0d594f] hover:bg-[#09473f] text-white text-sm font-semibold shadow-md transition-all transform hover:-translate-y-0.5"
               >
                 <span>Start Your Analysis</span>

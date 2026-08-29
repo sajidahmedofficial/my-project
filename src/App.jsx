@@ -195,6 +195,14 @@ function MainLayout() {
               profile={activeProfile} 
             />
           </div>
+          <div className={activeTab === 'wizard' ? 'block' : 'hidden'}>
+            <OnboardingWizard 
+              onComplete={() => {
+                setShowOnboarding(false);
+                setActiveTab('dashboard');
+              }} 
+            />
+          </div>
           <div className={activeTab === 'aptitude' ? 'block' : 'hidden'}>
             <AptitudeDashboard />
           </div>
