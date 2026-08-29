@@ -55,14 +55,17 @@ export async function connectDB() {
 // Immediately initiate connection on module load
 connectDB().catch(() => {});
 
-// Middleware ensuring DB connection check completes before routes handle requests (critical for serverless / cold starts)
+// Middleware ensuring DB connection check does not block or timeout serverless requests
 app.use(async (req, res, next) => {
-  if (mongoose.connection.readyState !== 1 && process.env.MONGODB_URI) {
-    try {
-      await connectDB();
-    } catch (err) {
-      console.error('[DB Middleware] Error checking DB connection:', err.message);
+  try {
+    if (mongoose.connection.readyState !== 1 && process.env.MONGODB_URI) {
+      await Promise.race([
+        connectDB(),
+        new Promise(resolve => setTimeout(resolve, 1500))
+      ]);
     }
+  } catch (err) {
+    console.error('[DB Middleware] Error checking DB connection:', err.message);
   }
   next();
 });
@@ -86,35 +89,47 @@ app.use("/api/aptitude", aptitudeRoutes);
 app.use("/api", aptitudeRoutes);
 
 app.get("/api/health", async (req, res) => {
-  const supabaseCheck = await checkSupabaseConnection();
-  const readyState = mongoose.connection.readyState;
-  const stateLabels = {
-    0: "DISCONNECTED",
-    1: "CONNECTED",
-    2: "CONNECTING",
-    3: "DISCONNECTING"
-  };
+  try {
+    const supabaseCheck = await Promise.race([
+      checkSupabaseConnection(),
+      new Promise(resolve => setTimeout(() => resolve({ connected: false, status: 'TIMEOUT' }), 1000))
+    ]);
+    const readyState = mongoose.connection.readyState;
+    const stateLabels = {
+      0: "DISCONNECTED",
+      1: "CONNECTED",
+      2: "CONNECTING",
+      3: "DISCONNECTING"
+    };
 
-  res.json({
-    status: "OK",
-    service: "SkillBridge AI API",
-    database: readyState === 1 ? "CONNECTED" : (process.env.MONGODB_URI ? `ERROR_${stateLabels[readyState] || "OFFLINE"}` : "LOCAL_FALLBACK"),
-    databaseReadyState: readyState,
-    databaseStatus: stateLabels[readyState] || "UNKNOWN",
-    supabaseStatus: supabaseCheck.connected ? (supabaseCheck.status || "CONNECTED") : "DISCONNECTED",
-    endpoints: [
-      "/api/auth",
-      "/api/ai",
-      "/api/skill-gap",
-      "/api/resume",
-      "/api/skills",
-      "/api/certificates",
-      "/api/roadmap",
-      "/api/aptitude",
-      "/api/topics",
-      "/api/categories"
-    ]
-  });
+    res.json({
+      status: "OK",
+      service: "SkillBridge AI API",
+      database: readyState === 1 ? "CONNECTED" : (process.env.MONGODB_URI ? `ERROR_${stateLabels[readyState] || "OFFLINE"}` : "LOCAL_FALLBACK"),
+      databaseReadyState: readyState,
+      databaseStatus: stateLabels[readyState] || "UNKNOWN",
+      supabaseStatus: supabaseCheck?.connected ? (supabaseCheck.status || "CONNECTED") : "DISCONNECTED",
+      endpoints: [
+        "/api/auth",
+        "/api/ai",
+        "/api/skill-gap",
+        "/api/resume",
+        "/api/skills",
+        "/api/certificates",
+        "/api/roadmap",
+        "/api/aptitude",
+        "/api/topics",
+        "/api/categories"
+      ]
+    });
+  } catch (err) {
+    res.json({
+      status: "OK",
+      service: "SkillBridge AI API",
+      fallback: true,
+      message: err.message
+    });
+  }
 });
 
 const PORT = process.env.PORT || 5000;
