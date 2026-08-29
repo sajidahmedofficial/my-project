@@ -129,8 +129,12 @@ Rules:
 17. Create a skill gap for ${targetRole}.
 `;
 
-  const aiResult = await analyzeJSON(prompt);
-  if (aiResult) return aiResult;
+  try {
+    const aiResult = await analyzeJSON(prompt);
+    if (aiResult && aiResult.scores) return aiResult;
+  } catch (err) {
+    console.warn("[Resume Analyzer] Gemini API fallback notice:", err.message);
+  }
 
   // Fallback: Rule-based intelligent text analysis if Gemini API key is unconfigured or rate limited
   return generateRuleBasedAnalysis(resumeText, targetRole);
