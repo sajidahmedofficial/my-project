@@ -28,8 +28,8 @@ JavaScript, React, Node.js, HTML, CSS, SQL
   assert.strictEqual(res1.candidate.email, "sajidahmedofficial110@gmail.com");
   assert(res1.candidate.phone.includes("98765"), "Phone number should be parsed");
   assert(Array.isArray(res1.education) && res1.education.length > 0, "Education array must not be empty");
-  assert.strictEqual(res1.education[0].school, "Anna University - B.Tech in Computer Science (2025)");
-  console.log("✅ Test 1 Passed: Job title ignored, personal name and education correctly extracted!\n");
+  assert.strictEqual(res1.education[0].school, "Anna University");
+  console.log("✅ Test 1 Passed: Job title ignored, personal name and clean education correctly extracted!\n");
 
   // Test Case 2: Resume starts with "CURRICULUM VITAE", Name below it
   const resume2 = `

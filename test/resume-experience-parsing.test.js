@@ -125,7 +125,46 @@ Python, JavaScript, React, PostgreSQL
   assert.strictEqual(res3.hasExperience, false, "hasExperience must be false");
   console.log("✅ Test 3 Passed: Fresher candidate has strictly 0 experience with no mock data!\n");
 
-  console.log("🎉 ALL REAL WORK EXPERIENCE PARSER TESTS PASSED (3/3)!");
+  // TEST 4: Resume with explicitly named INTERNSHIPS Section
+  const resume4 = `
+Priya Sharma
+priya.sharma@example.com
++91 98765 12345
+
+PROFESSIONAL SUMMARY
+Passionate software engineer specializing in frontend engineering and cloud tools.
+
+INTERNSHIPS
+Web Development Intern
+CodeCraft Technologies
+Jun 2023 - Aug 2023
+• Built responsive UI pages using React and Tailwind CSS.
+• Optimized asset load times by 40%.
+
+AI Research Intern
+National Science Labs
+Jan 2024 - May 2024
+• Implemented computer vision pipelines in Python and OpenCV.
+
+EDUCATION
+IIT Delhi - B.Tech (2024)
+  `.trim();
+
+  const res4 = await analyzeResume(resume4, "Frontend Developer");
+  console.log("▶ Test 4 Result (Internships Section):", res4.experience);
+  assert.strictEqual(res4.experience.length, 2, "Must find both internships");
+  assert.strictEqual(res4.experience[0].role, "Web Development Intern");
+  assert.strictEqual(res4.experience[0].company, "CodeCraft Technologies");
+  assert.strictEqual(res4.experience[0].startDate, "Jun 2023");
+  assert.strictEqual(res4.experience[0].endDate, "Aug 2023");
+
+  assert.strictEqual(res4.experience[1].role, "AI Research Intern");
+  assert.strictEqual(res4.experience[1].company, "National Science Labs");
+  assert.strictEqual(res4.experience[1].startDate, "Jan 2024");
+  assert.strictEqual(res4.experience[1].endDate, "May 2024");
+  console.log("✅ Test 4 Passed: Explicit INTERNSHIPS section parsed accurately with dates & roles!\n");
+
+  console.log("🎉 ALL REAL WORK EXPERIENCE & INTERNSHIP PARSER TESTS PASSED (4/4)!");
 }
 
 runTests().catch(err => {

@@ -385,67 +385,91 @@ function finalizeExperience(exp) {
 function extractWorkExperiences(text, lines) {
   const experiences = [];
   
-  // 1. Locate the Experience section
-  const expHeaderIndex = lines.findIndex(l => 
-    /^(?:work\s+experience|professional\s+experience|employment\s+history|experience|internships|internship\s+experience)(?:\s*\(optional\))?$/i.test(l.trim()) ||
-    /^(?:work\s+experience|professional\s+experience|employment\s+history)/i.test(l.trim())
-  );
+  // Find all sections that contain work experience or internship headers
+  const sectionHeaderIndices = [];
+  const expHeaderRegex = /^(?:work\s+experience|professional\s+experience|employment\s+history|experience|internships|internship\s+experience|internship|training\s*&\s*internships|industrial\s+training)(?:\s*\(optional\))?$/i;
+  const nonExpSectionRegex = /^(?:education|academic\s+background|academics|skills|technical\s+skills|projects|key\s+projects|certifications|awards|languages|interests|hobbies)$/i;
 
-  if (expHeaderIndex === -1) {
-    return [];
-  }
-
-  const nextSectionIndex = lines.findIndex((l, idx) => 
-    idx > expHeaderIndex && /^(?:education|academic|skills|technical\s+skills|projects|key\s+projects|certifications|awards|languages|interests)$/i.test(l.trim())
-  );
-
-  const expLines = lines.slice(expHeaderIndex + 1, nextSectionIndex !== -1 ? nextSectionIndex : expHeaderIndex + 40);
-  if (expLines.length === 0) return [];
-
-  const roleKeywords = /(?:developer|engineer|intern|internship|analyst|consultant|specialist|manager|lead|architect|designer|programmer|administrator|associate|director|coordinator|officer)/i;
-  const dateRangeRegex = /(?:(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|\d{4})\b.*?(\d{4}|present|current|now))/i;
-
-  let currentExp = null;
-
-  for (let i = 0; i < expLines.length; i++) {
-    const rawLine = expLines[i].trim();
-    if (!rawLine) continue;
-
-    const isBullet = /^[•\-\*|\d+\.]\s*/.test(rawLine);
-    const hasDate = dateRangeRegex.test(rawLine);
-    const hasRole = roleKeywords.test(rawLine) && !isBullet;
-
-    if ((hasRole || (hasDate && !currentExp)) && !isBullet) {
-      if (currentExp && (currentExp.role || currentExp.company)) {
-        experiences.push(finalizeExperience(currentExp));
-      }
-
-      currentExp = {
-        role: "",
-        company: "",
-        startDate: "",
-        endDate: "",
-        duration: "",
-        bullets: []
-      };
-
-      parseHeaderLine(rawLine, currentExp);
-    } else if (currentExp) {
-      if (hasDate && (!currentExp.startDate || !currentExp.duration)) {
-        parseDateIntoExp(rawLine, currentExp);
-      } else if (!currentExp.company && !isBullet && rawLine.length < 60 && !hasRole) {
-        currentExp.company = rawLine.replace(/^[•\-\*]\s*/, '').trim();
-      } else {
-        const cleanBullet = rawLine.replace(/^[•\-\*]\s*/, '').trim();
-        if (cleanBullet) {
-          currentExp.bullets.push(cleanBullet);
-        }
-      }
+  for (let i = 0; i < lines.length; i++) {
+    const trimmed = lines[i].trim();
+    if (expHeaderRegex.test(trimmed) || /^(?:work\s+experience|professional\s+experience|internships|internship)/i.test(trimmed)) {
+      sectionHeaderIndices.push(i);
     }
   }
 
-  if (currentExp && (currentExp.role || currentExp.company)) {
-    experiences.push(finalizeExperience(currentExp));
+  // If no explicit header, check if individual lines contain "Intern at", "Developer at", "Internship"
+  if (sectionHeaderIndices.length === 0) {
+    const implicitExpLines = lines.filter(l => /(?:intern\s+at|developer\s+at|engineer\s+at|internship\s+-)/i.test(l));
+    if (implicitExpLines.length > 0) {
+      for (const line of implicitExpLines) {
+        const exp = { role: "", company: "", startDate: "", endDate: "", duration: "", bullets: [] };
+        parseHeaderLine(line.trim(), exp);
+        if (exp.role || exp.company) {
+          experiences.push(finalizeExperience(exp));
+        }
+      }
+      return experiences;
+    }
+    return [];
+  }
+
+  const roleKeywords = /(?:developer|engineer|intern|internship|trainee|apprentice|fellow|assistant|analyst|consultant|specialist|manager|lead|architect|designer|programmer|administrator|associate|director|coordinator|officer)/i;
+  const dateRangeRegex = /(?:(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|\d{4})\b.*?(\d{4}|present|current|now))/i;
+
+  for (const headerIdx of sectionHeaderIndices) {
+    // Find where this section ends
+    let sectionEnd = lines.length;
+    for (let j = headerIdx + 1; j < lines.length; j++) {
+      const lineText = lines[j].trim();
+      if (nonExpSectionRegex.test(lineText) || expHeaderRegex.test(lineText)) {
+        sectionEnd = j;
+        break;
+      }
+    }
+
+    const expLines = lines.slice(headerIdx + 1, sectionEnd);
+    let currentExp = null;
+
+    for (let i = 0; i < expLines.length; i++) {
+      const rawLine = expLines[i].trim();
+      if (!rawLine) continue;
+
+      const isBullet = /^[•\-\*|\d+\.]\s*/.test(rawLine);
+      const hasDate = dateRangeRegex.test(rawLine);
+      const hasRole = roleKeywords.test(rawLine) && !isBullet;
+
+      if ((hasRole || (hasDate && !currentExp)) && !isBullet) {
+        if (currentExp && (currentExp.role || currentExp.company)) {
+          experiences.push(finalizeExperience(currentExp));
+        }
+
+        currentExp = {
+          role: "",
+          company: "",
+          startDate: "",
+          endDate: "",
+          duration: "",
+          bullets: []
+        };
+
+        parseHeaderLine(rawLine, currentExp);
+      } else if (currentExp) {
+        if (hasDate && (!currentExp.startDate || !currentExp.duration)) {
+          parseDateIntoExp(rawLine, currentExp);
+        } else if (!currentExp.company && !isBullet && rawLine.length < 60 && !hasRole) {
+          currentExp.company = rawLine.replace(/^[•\-\*]\s*/, '').trim();
+        } else {
+          const cleanBullet = rawLine.replace(/^[•\-\*]\s*/, '').trim();
+          if (cleanBullet) {
+            currentExp.bullets.push(cleanBullet);
+          }
+        }
+      }
+    }
+
+    if (currentExp && (currentExp.role || currentExp.company)) {
+      experiences.push(finalizeExperience(currentExp));
+    }
   }
 
   return experiences;

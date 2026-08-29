@@ -366,8 +366,12 @@ export default function OnboardingWizard({ onComplete }) {
   const validateAndProceed = (targetStep) => {
     setStepErrors({});
 
-    // Step 1 validation
+    // Step 1 validation (Strictly require resume upload first)
     if (currentStep === 1 && targetStep > 1) {
+      if (!uploadFile || uploadProgress !== 3) {
+        setUploadError('Please upload your resume first to proceed.');
+        return;
+      }
       setCurrentStep(2);
       return;
     }
@@ -639,14 +643,38 @@ export default function OnboardingWizard({ onComplete }) {
             </div>
 
             {/* Footer Buttons */}
-            <div className="pt-4 flex justify-end">
+            <div className="pt-4 flex items-center justify-between">
+              <div className="text-xs text-slate-400">
+                {!uploadFile ? (
+                  <span className="text-amber-600 font-medium">⚠️ Please upload your resume above to continue.</span>
+                ) : isParsing ? (
+                  <span className="text-emerald-600 font-medium animate-pulse">⏳ Parsing resume details & internships...</span>
+                ) : (
+                  <span className="text-emerald-700 font-medium">✓ Resume ready for review</span>
+                )}
+              </div>
+
               <button
                 type="button"
                 onClick={() => validateAndProceed(2)}
-                className="px-6 py-3 rounded-xl bg-[#0f766e] hover:bg-[#0d594f] text-white text-xs sm:text-sm font-semibold shadow-sm transition-all flex items-center gap-2"
+                disabled={isParsing || !uploadFile || uploadProgress !== 3}
+                className={`px-6 py-3 rounded-xl text-xs sm:text-sm font-semibold shadow-sm transition-all flex items-center gap-2 ${
+                  uploadProgress === 3 && uploadFile && !isParsing
+                    ? 'bg-[#10b981] hover:bg-[#059669] text-white cursor-pointer shadow-md'
+                    : 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
+                }`}
               >
-                <span>Continue</span>
-                <ArrowRight className="w-4 h-4" />
+                {isParsing ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Analyzing Resume...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Continue to Profile Review</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </>
+                )}
               </button>
             </div>
           </div>
