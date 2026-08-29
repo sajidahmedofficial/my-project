@@ -173,112 +173,109 @@ export default function OnboardingWizard({ onComplete }) {
     setUploadProgress(1);
     setAnalyzingText('Analyzing your resume (professional summary)...');
 
-    // Stage 1 -> Stage 2 transition
-    setTimeout(() => {
+    let stageTimer = setTimeout(() => {
       setUploadProgress(2);
-      setAnalyzingText('Analyzing your resume (education)...');
-    }, 900);
+      setAnalyzingText('Analyzing your resume (education & experience)...');
+    }, 600);
 
     try {
       const response = await analyzeResume(file, targetRole);
+      clearTimeout(stageTimer);
+
+      setUploadProgress(3);
+      setAnalyzingText('Analyzed successfully.');
+      setIsParsing(false);
+
+      // Populate parsed fields into Step 2 state
+      const parsedAnalysis = response?.analysis || response?.data?.analysis || response?.data || response || {};
+      console.log('[OnboardingWizard] Parsed Resume Payload:', parsedAnalysis);
+
+      const cand = parsedAnalysis.candidate || parsedAnalysis.data?.candidate || {};
       
-      setTimeout(() => {
-        setUploadProgress(3);
-        setAnalyzingText('Analyzed successfully.');
-        setIsParsing(false);
+      let extractedFirst = cand.firstName || '';
+      let extractedLast = cand.lastName || '';
+      if (!extractedFirst && cand.name) {
+        const parts = cand.name.split(/\s+/).filter(Boolean);
+        extractedFirst = parts[0] || '';
+        extractedLast = parts.slice(1).join(' ') || '';
+      }
 
-        // Populate parsed fields into Step 2 state
-        const parsedAnalysis = response?.analysis || response?.data?.analysis || response?.data || response || {};
-        console.log('[OnboardingWizard] Parsed Resume Payload:', parsedAnalysis);
+      // Apply fallback only if name is completely empty or contains exact job keywords
+      const isTitleOnly = (str) => {
+        if (!str) return false;
+        const s = str.toLowerCase().trim();
+        return ['full', 'stack', 'developer', 'engineer', 'architect', 'resume', 'candidate'].includes(s);
+      };
 
-        const cand = parsedAnalysis.candidate || parsedAnalysis.data?.candidate || {};
+      if (isTitleOnly(extractedFirst) || isTitleOnly(extractedLast)) {
+        if (cand.email) {
+          const emailUser = cand.email.split('@')[0]
+            .replace(/official|personal|mail|work|dev|pro|110|\d+/gi, '')
+            .replace(/[._-]+/g, ' ')
+            .trim();
+          const parts = emailUser.split(/\s+/).filter(Boolean);
+          extractedFirst = parts[0] ? parts[0].charAt(0).toUpperCase() + parts[0].slice(1).toLowerCase() : '';
+          extractedLast = parts.slice(1).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ') || '';
+        }
+      }
+
+      // Populate Candidate Contact Details
+      if (extractedFirst) setFirstName(extractedFirst);
+      if (extractedLast) setLastName(extractedLast);
+      if (cand.email) setEmail(cand.email);
+      if (cand.phone) setPhone(cand.phone);
+      if (cand.linkedIn) setLinkedIn(cand.linkedIn);
+
+      // Populate Professional Summary
+      if (parsedAnalysis.summary || cand.summary) {
+        setSummary(parsedAnalysis.summary || cand.summary || '');
+      }
+
+      // Populate Extracted Skills as discrete array
+      if (Array.isArray(parsedAnalysis.skills?.detected) && parsedAnalysis.skills.detected.length > 0) {
+        setSkillsList(parsedAnalysis.skills.detected);
+      } else if (Array.isArray(parsedAnalysis.skills) && parsedAnalysis.skills.length > 0) {
+        setSkillsList(parsedAnalysis.skills);
+      }
+
+      // Populate Education Details (multi-alias support)
+      const parsedEdu = Array.isArray(parsedAnalysis.education) && parsedAnalysis.education.length > 0 
+        ? parsedAnalysis.education 
+        : Array.isArray(parsedAnalysis.data?.education) ? parsedAnalysis.data.education : [];
         
-        let extractedFirst = cand.firstName || '';
-        let extractedLast = cand.lastName || '';
-        if (!extractedFirst && cand.name) {
-          const parts = cand.name.split(/\s+/).filter(Boolean);
-          extractedFirst = parts[0] || '';
-          extractedLast = parts.slice(1).join(' ') || '';
-        }
+      if (parsedEdu.length > 0) {
+        setEducationList(parsedEdu.map((edu, idx) => ({
+          id: idx + 1,
+          school: edu.school || edu.institution || edu.university || edu.college || '',
+          degree: edu.degree || 'Bachelor of Technology (B.Tech)',
+          field: edu.field || edu.fieldOfStudy || edu.major || edu.department || 'Computer Science & Engineering',
+          year: String(edu.year || edu.graduationYear || '2025').slice(0, 4)
+        })));
+      }
 
-        // Apply fallback only if name is completely empty or contains exact job keywords
-        const isTitleOnly = (str) => {
-          if (!str) return false;
-          const s = str.toLowerCase().trim();
-          return ['full', 'stack', 'developer', 'engineer', 'architect', 'resume', 'candidate'].includes(s);
-        };
+      // Populate Work Experience History (including Internships)
+      const parsedExp = Array.isArray(parsedAnalysis.experience) && parsedAnalysis.experience.length > 0 
+        ? parsedAnalysis.experience 
+        : Array.isArray(parsedAnalysis.data?.experience) ? parsedAnalysis.data.experience : [];
+        
+      if (parsedExp.length > 0) {
+        setExperienceList(parsedExp.map((exp, idx) => ({
+          id: idx + 1,
+          company: exp.company || exp.organization || exp.employer || '',
+          role: exp.role || exp.title || exp.positionTitle || exp.position || '',
+          startDate: exp.startDate || (exp.duration ? exp.duration.split(/\s*[-–]\s*/)[0] : ''),
+          endDate: exp.endDate || (exp.duration && !/present|current|now/i.test(exp.duration) ? exp.duration.split(/\s*[-–]\s*/)[1] || '' : ''),
+          duration: exp.duration || '',
+          description: exp.description || ''
+        })));
+      } else {
+        setExperienceList([]);
+      }
 
-        if (isTitleOnly(extractedFirst) || isTitleOnly(extractedLast)) {
-          if (cand.email) {
-            const emailUser = cand.email.split('@')[0]
-              .replace(/official|personal|mail|work|dev|pro|110|\d+/gi, '')
-              .replace(/[._-]+/g, ' ')
-              .trim();
-            const parts = emailUser.split(/\s+/).filter(Boolean);
-            extractedFirst = parts[0] ? parts[0].charAt(0).toUpperCase() + parts[0].slice(1).toLowerCase() : '';
-            extractedLast = parts.slice(1).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ') || '';
-          }
-        }
-
-        console.log('[OnboardingWizard] Parsed Resume Payload:', parsedAnalysis);
-
-        // Populate Candidate Contact Details
-        if (extractedFirst) setFirstName(extractedFirst);
-        if (extractedLast) setLastName(extractedLast);
-        if (cand.email) setEmail(cand.email);
-        if (cand.phone) setPhone(cand.phone);
-        if (cand.linkedIn) setLinkedIn(cand.linkedIn);
-
-        // Populate Professional Summary
-        if (parsedAnalysis.summary || cand.summary) {
-          setSummary(parsedAnalysis.summary || cand.summary || '');
-        }
-
-        // Populate Extracted Skills as discrete array
-        if (Array.isArray(parsedAnalysis.skills?.detected) && parsedAnalysis.skills.detected.length > 0) {
-          setSkillsList(parsedAnalysis.skills.detected);
-        } else if (Array.isArray(parsedAnalysis.skills) && parsedAnalysis.skills.length > 0) {
-          setSkillsList(parsedAnalysis.skills);
-        }
-
-        // Populate Education Details (multi-alias support)
-        const parsedEdu = Array.isArray(parsedAnalysis.education) && parsedAnalysis.education.length > 0 
-          ? parsedAnalysis.education 
-          : Array.isArray(parsedAnalysis.data?.education) ? parsedAnalysis.data.education : [];
-          
-        if (parsedEdu.length > 0) {
-          setEducationList(parsedEdu.map((edu, idx) => ({
-            id: idx + 1,
-            school: edu.school || edu.institution || edu.university || edu.college || '',
-            degree: edu.degree || 'Bachelor of Technology (B.Tech)',
-            field: edu.field || edu.fieldOfStudy || edu.major || edu.department || 'Computer Science & Engineering',
-            year: String(edu.year || edu.graduationYear || '2025').slice(0, 4)
-          })));
-        }
-
-        // Populate Work Experience History (including Internships)
-        const parsedExp = Array.isArray(parsedAnalysis.experience) && parsedAnalysis.experience.length > 0 
-          ? parsedAnalysis.experience 
-          : Array.isArray(parsedAnalysis.data?.experience) ? parsedAnalysis.data.experience : [];
-          
-        if (parsedExp.length > 0) {
-          setExperienceList(parsedExp.map((exp, idx) => ({
-            id: idx + 1,
-            company: exp.company || exp.organization || exp.employer || '',
-            role: exp.role || exp.title || exp.positionTitle || exp.position || '',
-            startDate: exp.startDate || (exp.duration ? exp.duration.split(/\s*[-–]\s*/)[0] : ''),
-            endDate: exp.endDate || (exp.duration && !/present|current|now/i.test(exp.duration) ? exp.duration.split(/\s*[-–]\s*/)[1] || '' : ''),
-            duration: exp.duration || '',
-            description: exp.description || ''
-          })));
-        } else {
-          setExperienceList([]);
-        }
-
-        setAnalysisResult(parsedAnalysis);
-      }, 1800);
+      setAnalysisResult(parsedAnalysis);
 
     } catch (err) {
+      clearTimeout(stageTimer);
       console.error('[OnboardingWizard] Resume parsing error:', err);
       setIsParsing(false);
       setUploadProgress(0);
