@@ -23,11 +23,20 @@ import { downloadResumeAsPdf } from '../utils/resumePdfGenerator';
 import '../styles/ResumeAnalyzer.css';
 
 const getInitialResumeState = (profile) => {
+  if (!profile?.hasUploadedResume && !profile?.resumeId) {
+    try {
+      localStorage.removeItem('sb_resume_analysis');
+      localStorage.removeItem('sb_active_resume_id');
+      localStorage.removeItem('sb_resume_text');
+    } catch {}
+    return null;
+  }
   try {
-    const savedStr = localStorage.getItem('sb_resume_analysis');
+    const userKey = `sb_resume_analysis_${profile?.id || profile?.email || 'user'}`;
+    const savedStr = localStorage.getItem(userKey) || localStorage.getItem('sb_resume_analysis');
     if (savedStr) {
       const parsed = JSON.parse(savedStr);
-      if (parsed && typeof parsed === 'object' && parsed.analyzed && parsed.selectedFile) {
+      if (parsed && typeof parsed === 'object' && parsed.analyzed && parsed.selectedFile && parsed.selectedFile?.name && parsed.selectedFile.name !== 'Uploaded_Resume.pdf') {
         return parsed;
       }
     }
@@ -49,6 +58,28 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
   const [showPreview, setShowPreview] = useState(false);
   const [verifyingSkillName, setVerifyingSkillName] = useState(null);
   const [toastMessage, setToastMessage] = useState(null);
+
+  // Clear any residual demo data if profile does not have an uploaded resume
+  useEffect(() => {
+    if (!profile?.hasUploadedResume && !profile?.resumeId) {
+      setAnalyzed(false);
+      setSelectedFile(null);
+      setProblems([]);
+      setGrammarIssues([]);
+      setAtsProblems([]);
+      setSkillsStatus([]);
+      setCertificates([]);
+      setPendingSuggestion(null);
+      setApiResumeScore(null);
+      setApiAtsScore(null);
+      setApiGrammarScore(null);
+      try {
+        localStorage.removeItem('sb_resume_analysis');
+        localStorage.removeItem('sb_active_resume_id');
+        localStorage.removeItem('sb_resume_text');
+      } catch {}
+    }
+  }, [profile?.id, profile?.email, profile?.hasUploadedResume, profile?.resumeId]);
   
   // Pending AI Suggestion Review State
   const [pendingSuggestion, setPendingSuggestion] = useState(() => savedState?.pendingSuggestion || null);
