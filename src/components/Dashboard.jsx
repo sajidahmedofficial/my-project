@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Clean minimal SaaS student dashboard with clear metric cards, growth chart, missions checklist & tool shortcuts", deps: ["recharts", "lucide-react", "./common/AIAssistantAvatar"], state: "active", last: "anti@2026-08-27" }
+// agent-notes: { ctx: "Clean minimal SaaS student dashboard with metric cards, growth chart, missions checklist & tool shortcuts including roleplay simulation", deps: ["recharts", "lucide-react", "./common/AIAssistantAvatar"], state: "active", last: "anti@2026-08-29" }
 import React, { useState } from 'react';
 import { 
   Award, 
@@ -15,7 +15,8 @@ import {
   Brain,
   MessageSquare,
   Layers,
-  CheckCircle2
+  CheckCircle2,
+  Bot
 } from 'lucide-react';
 import { 
   AreaChart, 
@@ -124,6 +125,13 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
       desc: 'Simulate technical interview rounds',
       icon: Award,
       badge: 'Prep'
+    },
+    {
+      id: 'roleplay',
+      title: 'AI Roleplay Simulator',
+      desc: 'Simulate high-stakes scenarios & negotiations',
+      icon: Bot,
+      badge: 'Interactive'
     },
     {
       id: 'aptitude',

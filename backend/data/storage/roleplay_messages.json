@@ -1,0 +1,44 @@
+[
+  {
+    "id": "msg_a8c99ca7-1d6f-4a80-bf7b-35a29084ed8a",
+    "session_id": "sess_192bca8b-a794-4323-bcad-56c7b277adda",
+    "role": "assistant",
+    "content": "Hello. Thanks for joining today. I reviewed your background, and I want to dive straight into your approach to system architecture and problem solving. Shall we begin?",
+    "created_at": "2026-08-29T15:30:24.596Z"
+  },
+  {
+    "id": "msg_f94ab4b8-2883-4087-9780-cd3f51b1ea0f",
+    "session_id": "sess_192bca8b-a794-4323-bcad-56c7b277adda",
+    "role": "user",
+    "content": "In JavaScript, promises and microtasks execute before macro tasks like setTimeout in the event loop.",
+    "created_at": "2026-08-29T15:30:24.597Z"
+  },
+  {
+    "id": "msg_78d90910-67e6-46fa-ac58-10c7f224ad77",
+    "session_id": "sess_192bca8b-a794-4323-bcad-56c7b277adda",
+    "role": "assistant",
+    "content": "I hear your point. Given our constraints and the risks involved, walk me through how you plan to execute that step by step.",
+    "created_at": "2026-08-29T15:30:24.598Z"
+  },
+  {
+    "id": "msg_59ff4cbe-cd48-4b36-90b1-c6501dbc9238",
+    "session_id": "sess_b122242e-c322-4c9b-8ea2-dd09554b6c43",
+    "role": "assistant",
+    "content": "Hello. Thanks for joining today. I reviewed your background, and I want to dive straight into your approach to system architecture and problem solving. Shall we begin?",
+    "created_at": "2026-08-29T15:33:48.647Z"
+  },
+  {
+    "id": "msg_a30fa33f-5083-435a-8c8f-f0399eb6ebbf",
+    "session_id": "sess_b122242e-c322-4c9b-8ea2-dd09554b6c43",
+    "role": "user",
+    "content": "In JavaScript, promises and microtasks execute before macro tasks like setTimeout in the event loop.",
+    "created_at": "2026-08-29T15:33:48.649Z"
+  },
+  {
+    "id": "msg_08a75ef3-6639-4184-a0bd-5e6aa1a19677",
+    "session_id": "sess_b122242e-c322-4c9b-8ea2-dd09554b6c43",
+    "role": "assistant",
+    "content": "I hear your point. Given our constraints and the risks involved, walk me through how you plan to execute that step by step.",
+    "created_at": "2026-08-29T15:33:48.650Z"
+  }
+]

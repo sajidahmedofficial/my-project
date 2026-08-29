@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Main Express API server with MongoDB connection, CORS, health check, and route mounts", deps: ["dotenv", "express", "cors", "mongoose", "./routes/*"], state: "active", last: "anti@2026-08-25" }
+// agent-notes: { ctx: "Main Express API server with MongoDB connection, CORS, health check, and route mounts including roleplay simulation", deps: ["dotenv", "express", "cors", "mongoose", "./routes/*"], state: "active", last: "anti@2026-08-29" }
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -14,6 +14,7 @@ import authRoutes from './routes/auth.js';
 import aptitudeRoutes from './routes/aptitude.routes.js';
 import skillGapRoutes from './routes/skillGap.routes.js';
 import aiRoutes from './routes/ai.js';
+import { roleplayRouter } from './routes/roleplay.routes.js';
 import { checkSupabaseConnection } from './services/supabase.service.js';
 import { aiRateLimiter } from './middleware/rateLimiter.js';
 
@@ -78,6 +79,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/ai", aiRateLimiter, aiRoutes);
 app.use("/api/skill-gap", aiRateLimiter, skillGapRoutes);
+app.use("/api/roleplay", roleplayRouter);
 app.use("/api/resume", resumeRoutes);
 app.use("/api/skills", skillRoutes);
 app.use("/api/certificates", certificateRoutes);
@@ -106,6 +108,7 @@ app.get("/api/health", async (req, res) => {
       "/api/auth",
       "/api/ai",
       "/api/skill-gap",
+      "/api/roleplay",
       "/api/resume",
       "/api/skills",
       "/api/certificates",

@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Main App Component with clean, minimal SaaS visual design (Linear/Stripe/Vercel style) and unified navigation", deps: ["lucide-react", "./context/AuthContext", "./components/common/AIAssistantAvatar", "./components/common/CartoonDecorations"], state: "active", last: "anti@2026-08-27" }
+// agent-notes: { ctx: "Main App Component with clean minimal SaaS visual design, unified navigation including AI Roleplay Simulator", deps: ["lucide-react", "./context/AuthContext", "./components/common/AIAssistantAvatar", "./components/common/CartoonDecorations", "./components/roleplay/RoleplayHub"], state: "active", last: "anti@2026-08-29" }
 import React, { useState } from 'react';
 import { 
   LayoutDashboard, 
@@ -21,7 +21,8 @@ import {
   ShieldCheck,
   ChevronRight,
   User,
-  CheckCircle2
+  CheckCircle2,
+  Bot
 } from 'lucide-react';
 
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -44,6 +45,7 @@ const ProjectRecommender = React.lazy(() => import('./components/ProjectRecommen
 const MockInterview = React.lazy(() => import('./components/MockInterview'));
 const CodingPractice = React.lazy(() => import('./components/CodingPractice'));
 const AptitudeDashboard = React.lazy(() => import('./components/aptitude/AptitudeDashboard'));
+const RoleplayHub = React.lazy(() => import('./components/roleplay/RoleplayHub'));
 const SkillVerificationModal = React.lazy(() => import('./components/resume/SkillVerificationModal'));
 
 const TabLoadingFallback = () => (
@@ -115,6 +117,7 @@ function MainLayout() {
     { id: 'chat', label: 'Career Mentor', icon: MessageSquare },
     { id: 'projects', label: 'Project Lab', icon: Code },
     { id: 'interview', label: 'Mock Interview', icon: Award },
+    { id: 'roleplay', label: 'AI Roleplay', icon: Bot },
     { id: 'coding', label: 'Coding Practice', icon: Zap },
     { id: 'aptitude', label: 'Aptitude Practice', icon: Brain }
   ];
@@ -189,6 +192,9 @@ function MainLayout() {
               setProfile={handleProfileChange} 
               onNavigate={setActiveTab}
             />
+          </div>
+          <div className={activeTab === 'roleplay' ? 'block' : 'hidden'}>
+            <RoleplayHub />
           </div>
           <div className={activeTab === 'coding' ? 'block' : 'hidden'}>
             <CodingPractice 
