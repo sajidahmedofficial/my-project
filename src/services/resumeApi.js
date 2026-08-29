@@ -43,11 +43,17 @@ export async function analyzeResume(
   );
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
-    throw new Error(
-      error.message ||
-      "Resume analysis failed"
-    );
+    let errorDetail = "";
+    try {
+      const errorJson = await response.json();
+      errorDetail = errorJson.error || errorJson.message || errorJson.details || (errorJson.step ? `Error during ${errorJson.step}: ${errorJson.error || errorJson.message}` : JSON.stringify(errorJson));
+    } catch {
+      errorDetail = await response.text().catch(() => response.statusText);
+    }
+    const fullError = new Error(`[HTTP ${response.status}] ${errorDetail || response.statusText || 'Resume analysis failed'}`);
+    fullError.status = response.status;
+    fullError.details = errorDetail;
+    throw fullError;
   }
 
   return response.json();

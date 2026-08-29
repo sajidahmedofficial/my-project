@@ -35,30 +35,35 @@ router.post(
   upload.single("resume"),
   async (req, res) => {
     const tempFilePath = req.file?.path;
+    let pipelineStep = "file_validation";
     try {
       if (!req.file) {
         return res.status(400).json({
-          message: "Resume file is required"
+          success: false,
+          error: "Resume file is required"
         });
       }
 
-      const targetRole = req.body.targetRole || "Full Stack Developer";
-      // Authoritatively derive userId from verified JWT or explicit guest mode
-      const userId = getAuthenticatedUserId(req);
-
+      pipelineStep = "text_extraction";
       const resumeText = await extractResumeText(req.file);
 
       if (!resumeText || !resumeText.trim()) {
         return res.status(400).json({
-          message: "Could not extract text from resume."
+          success: false,
+          error: "Could not extract text from the uploaded document. The file might be an image-only scan or encrypted."
         });
       }
+
+      pipelineStep = "ai_analysis";
+      const targetRole = req.body.targetRole || "Full Stack Developer";
+      const userId = getAuthenticatedUserId(req);
 
       const analysis = await analyzeResume(
         resumeText,
         targetRole
       );
 
+      pipelineStep = "store_saving";
       // Save to centralized resume store
       const record = saveParsedResume({
         userId,
@@ -78,11 +83,12 @@ router.post(
       });
 
     } catch (error) {
-      console.error('Resume Analysis Error:', error);
+      console.error(`[Resume Analysis Error during ${pipelineStep}]:`, error);
       res.status(500).json({
         success: false,
-        message: "Resume analysis failed",
-        error: error.message
+        error: error.message || "Resume analysis failed",
+        message: error.message || "Resume analysis failed",
+        step: pipelineStep
       });
     } finally {
       cleanupUploadedFile(tempFilePath);

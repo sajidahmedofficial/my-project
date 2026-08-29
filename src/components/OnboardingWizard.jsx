@@ -276,7 +276,13 @@ export default function OnboardingWizard({ onComplete }) {
 
     } catch (err) {
       clearTimeout(stageTimer);
-      console.error('[OnboardingWizard] Resume parsing error:', err);
+      console.error('[ResumeAnalysis] Failed:', err);
+      console.error('[ResumeAnalysis] Error Diagnostic Info:', {
+        message: err.message,
+        status: err.status,
+        details: err.details,
+        stack: err.stack
+      });
       setIsParsing(false);
       setUploadProgress(0);
       setUploadError(err.message || 'Resume analysis failed. Please verify your connection or file format and try again.');
