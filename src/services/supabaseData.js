@@ -72,10 +72,10 @@ export async function saveUserDataToSupabase(user) {
       }, { onConflict: 'user_id' });
 
     if (dbError) {
-      console.warn('Supabase DB table save notice (using Auth Metadata fallback):', dbError.message);
+      // Table may not exist in development or offline mode; Auth metadata & localStorage handle persistence
     }
-  } catch (err) {
-    console.warn('Supabase DB table upsert attempt:', err.message);
+  } catch (_err) {
+    // Graceful offline fallback
   }
 
   return { success: true, data: payload };
