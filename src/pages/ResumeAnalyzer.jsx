@@ -1,10 +1,17 @@
-// agent-notes: { ctx: "AI Resume Analyzer page with drag-and-drop PDF/DOCX parsing, JD matching, radial score gauge, and expandable feedback", deps: ["react", "react-router-dom", "../services/resumeApi"], state: "active", last: "anti@2026-08-29" }
+// agent-notes: { ctx: "AI Resume Analyzer page with PDF/DOCX parsing, JD comparison, radial score gauge, export download, and scan history", deps: ["react", "react-router-dom", "../services/resumeApi"], state: "active", last: "anti@2026-08-29" }
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { analyzeResumeFile } from '../services/resumeApi.js';
+import {
+  analyzeResumeFile,
+  getResumeHistory,
+  getResumeRecord,
+  deleteResumeRecord,
+  downloadAnalysisReport
+} from '../services/resumeApi.js';
 
 export default function ResumeAnalyzer() {
+  const [activeTab, setActiveTab] = useState('scan'); // 'scan' | 'history'
   const [file, setFile] = useState(null);
   const [resumeText, setResumeText] = useState('');
   const [useTextInput, setUseTextInput] = useState(false);
@@ -14,10 +21,33 @@ export default function ResumeAnalyzer() {
   const [loadingStep, setLoadingStep] = useState('');
   const [error, setError] = useState('');
   const [result, setResult] = useState(null);
+  const [currentFileName, setCurrentFileName] = useState('Uploaded_Resume.pdf');
   const [copied, setCopied] = useState(false);
   const [dragOver, setDragOver] = useState(false);
 
+  // History state
+  const [history, setHistory] = useState([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
+
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    loadHistory();
+  }, []);
+
+  const loadHistory = async () => {
+    try {
+      setHistoryLoading(true);
+      const data = await getResumeHistory();
+      if (data?.history) {
+        setHistory(data.history);
+      }
+    } catch {
+      // Graceful ignore
+    } finally {
+      setHistoryLoading(false);
+    }
+  };
 
   const handleFileChange = (e) => {
     const selected = e.target.files?.[0];
@@ -77,6 +107,8 @@ export default function ResumeAnalyzer() {
 
       if (res?.analysis) {
         setResult(res.analysis);
+        setCurrentFileName(res.fileName || file?.name || 'Resume.pdf');
+        loadHistory();
       } else {
         throw new Error('Analysis response was empty.');
       }
@@ -93,12 +125,43 @@ export default function ResumeAnalyzer() {
     setResumeText('');
     setResult(null);
     setError('');
+    setActiveTab('scan');
+  };
+
+  const handleViewHistoryItem = async (id) => {
+    try {
+      setLoading(true);
+      setLoadingStep('Loading past scan record…');
+      const data = await getResumeRecord(id);
+      if (data?.record?.analysis) {
+        setResult(data.record.analysis);
+        setCurrentFileName(data.record.fileName || 'Resume.pdf');
+        setActiveTab('scan');
+      }
+    } catch (err) {
+      setError(err.message || 'Failed to load past scan.');
+    } finally {
+      setLoading(false);
+      setLoadingStep('');
+    }
+  };
+
+  const handleDeleteHistoryItem = async (e, id) => {
+    e.stopPropagation();
+    if (!confirm('Are you sure you want to delete this past resume scan?')) return;
+    try {
+      await deleteResumeRecord(id);
+      setHistory((prev) => prev.filter((item) => item.id !== id));
+    } catch (err) {
+      alert('Could not delete record.');
+    }
   };
 
   const handleCopyReport = () => {
     if (!result) return;
     const textReport = [
       `=== AI RESUME ANALYSIS REPORT ===`,
+      `File: ${currentFileName}`,
       `Overall Score: ${result.overall_score}/100`,
       `ATS Compatibility: ${result.ats_compatibility?.score}/100`,
       `Keyword Match: ${result.keyword_gaps?.match_percentage}%`,
@@ -111,7 +174,7 @@ export default function ResumeAnalyzer() {
       `Matched: ${(result.keyword_gaps?.matched_keywords || []).join(', ') || 'None'}`,
       ``,
       `--- REWRITE SUGGESTIONS ---`,
-      ...(result.rewrite_suggestions || []).map((r, i) => 
+      ...(result.rewrite_suggestions || []).map((r, i) =>
         `[#${i + 1}] ORIGINAL: ${r.original}\nSUGGESTED: ${r.suggested}\nREASON: ${r.reason}\n`
       ),
       ``,
@@ -139,22 +202,50 @@ export default function ResumeAnalyzer() {
           <h1>AI Resume Analyzer</h1>
           <p>Scan your resume for ATS compliance, keyword gaps, and get instant bullet-point rewrites.</p>
         </div>
-        {result && (
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <button className="btn btn-ghost" onClick={handleCopyReport}>
-              {copied ? '✓ Copied report' : 'Copy report'}
-            </button>
-            <button className="btn btn-primary" onClick={handleReset}>
-              Analyze another
-            </button>
-          </div>
-        )}
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          {result && (
+            <>
+              <button className="btn btn-ghost" onClick={() => downloadAnalysisReport(result, currentFileName)}>
+                Download report
+              </button>
+              <button className="btn btn-ghost" onClick={handleCopyReport}>
+                {copied ? '✓ Copied' : 'Copy report'}
+              </button>
+              <button className="btn btn-primary" onClick={handleReset}>
+                New scan
+              </button>
+            </>
+          )}
+        </div>
       </div>
+
+      {/* Subnav Tabs */}
+      {!result && (
+        <div style={{ display: 'flex', gap: '10px', marginBottom: '24px', borderBottom: '1px solid var(--line)', paddingBottom: '12px' }}>
+          <button
+            onClick={() => setActiveTab('scan')}
+            className={`btn ${activeTab === 'scan' ? 'btn-primary' : 'btn-ghost'}`}
+            style={{ fontSize: '13px', padding: '6px 16px' }}
+          >
+            New Resume Scan
+          </button>
+          <button
+            onClick={() => {
+              setActiveTab('history');
+              loadHistory();
+            }}
+            className={`btn ${activeTab === 'history' ? 'btn-primary' : 'btn-ghost'}`}
+            style={{ fontSize: '13px', padding: '6px 16px' }}
+          >
+            Scan History ({history.length})
+          </button>
+        </div>
+      )}
 
       {error && <div className="error-banner">{error}</div>}
 
-      {/* 1. UPLOAD & INPUT FORM (Visible when no result) */}
-      {!result && (
+      {/* TAB 1: UPLOAD & INPUT FORM (Visible when no result) */}
+      {!result && activeTab === 'scan' && (
         <div className="card" style={{ padding: '32px' }}>
           <form onSubmit={handleAnalyze}>
             {/* Input Mode Toggle */}
@@ -269,6 +360,49 @@ export default function ResumeAnalyzer() {
               {loading ? (loadingStep || 'Analyzing resume…') : 'Run AI Resume Analysis'}
             </button>
           </form>
+        </div>
+      )}
+
+      {/* TAB 2: HISTORY LIST */}
+      {!result && activeTab === 'history' && (
+        <div>
+          {historyLoading && <p className="loading-line">Loading past scans…</p>}
+          {!historyLoading && history.length === 0 && (
+            <div className="empty-state">
+              No saved resume scans yet. Run your first analysis above.
+            </div>
+          )}
+          {!historyLoading && history.length > 0 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {history.map((item) => (
+                <div
+                  key={item.id}
+                  className="session-row"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleViewHistoryItem(item.id)}
+                >
+                  <div>
+                    <div style={{ fontWeight: 600, color: 'var(--paper)' }}>{item.fileName}</div>
+                    <div className="meta">
+                      {item.createdAt ? new Date(item.createdAt).toLocaleString() : 'Recent'} · {item.targetRole || 'General Analysis'}
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                    <span className={`score-pill ${item.overall_score >= 75 ? 'score-good' : 'score-mid'}`}>
+                      {item.overall_score} / 100
+                    </span>
+                    <button
+                      onClick={(e) => handleDeleteHistoryItem(e, item.id)}
+                      style={{ background: 'none', border: 'none', color: 'var(--muted)', fontSize: '14px', cursor: 'pointer' }}
+                      title="Delete scan"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

@@ -1,12 +1,17 @@
-// agent-notes: { ctx: "Express router handling resume file upload, text extraction, and structured AI evaluation", deps: ["express", "multer", "../services/resumeParser.service.js", "../services/resumeAnalyzer.service.js", "../middleware/rateLimiter.js"], state: "active", last: "anti@2026-08-29" }
+// agent-notes: { ctx: "Express router handling resume file upload, text extraction, structured AI evaluation, and scan history", deps: ["express", "multer", "../services/resumeParser.service.js", "../services/resumeAnalyzer.service.js", "../services/resumeStore.service.js", "../middleware/rateLimiter.js"], state: "active", last: "anti@2026-08-29" }
 
 import express from "express";
 import multer from "multer";
 import { extractResumeText } from "../services/resumeParser.service.js";
 import { analyzeResume } from "../services/resumeAnalyzer.service.js";
+import { saveParsedResume, getAllResumes, getParsedResume, deleteParsedResume } from "../services/resumeStore.service.js";
 import { resumeAnalyzeLimiter } from "../middleware/rateLimiter.js";
 
 const router = express.Router();
+
+function getUserId(req) {
+  return req.user?.id || req.headers["x-user-id"] || "guest_user";
+}
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -56,6 +61,7 @@ router.post(
       const jobDescription = req.body.jobDescription || "";
       const targetRole = req.body.targetRole || "";
       let resumeText = req.body.resumeText || "";
+      const userId = getUserId(req);
 
       // 1. Extract text from uploaded file if present
       if (req.file) {
@@ -75,9 +81,20 @@ router.post(
         targetRole
       });
 
+      // 3. Persist record in storage
+      const savedRecord = saveParsedResume({
+        userId,
+        fileName: req.file?.originalname || "Pasted Resume Text",
+        resumeText,
+        analysis,
+        targetRole,
+        jobDescription
+      });
+
       res.json({
         success: true,
-        fileName: req.file?.originalname || "Pasted Resume Text",
+        id: savedRecord.id,
+        fileName: savedRecord.fileName,
         fileSize: req.file?.size || resumeText.length,
         resumeText,
         jobDescription,
@@ -95,37 +112,64 @@ router.post(
 );
 
 /**
- * POST /api/resume/upload (Legacy / Compatibility Alias)
+ * GET /api/resume/history
+ * List past resume analyses
  */
-router.post(
-  "/upload",
-  upload.single("resume"),
-  async (req, res) => {
-    try {
-      let resumeText = req.body.resumeText || "";
-      if (req.file) {
-        resumeText = await extractResumeText(req.file);
-      } else if (!resumeText) {
-        resumeText = "Sample developer resume with JavaScript, React, Node.js, and SQL.";
-      }
-
-      const analysis = await analyzeResume(resumeText, {
-        targetRole: req.body.targetRole || "Full Stack Developer"
-      });
-
-      res.json({
-        success: true,
-        fileName: req.file?.originalname || "Sample_Resume.pdf",
-        resumeText,
-        analysis
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: error.message || "Upload processing failed."
-      });
-    }
+router.get("/history", async (req, res) => {
+  try {
+    const userId = getUserId(req);
+    const history = getAllResumes(userId);
+    res.json({
+      success: true,
+      history: history.map(item => ({
+        id: item.id || item.resumeId,
+        fileName: item.fileName,
+        overall_score: item.overall_score || item.analysis?.overall_score || 75,
+        ats_score: item.ats_score || item.analysis?.ats_compatibility?.score || 75,
+        targetRole: item.targetRole,
+        createdAt: item.createdAt || item.updatedAt
+      }))
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: "Failed to load history." });
   }
-);
+});
+
+/**
+ * GET /api/resume/history/:id
+ * Retrieve a specific past analysis
+ */
+router.get("/history/:id", async (req, res) => {
+  try {
+    const userId = getUserId(req);
+    const record = getParsedResume(req.params.id, userId);
+    if (!record) {
+      return res.status(404).json({ success: false, error: "Resume analysis record not found." });
+    }
+    res.json({
+      success: true,
+      record
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: "Failed to retrieve record." });
+  }
+});
+
+/**
+ * DELETE /api/resume/history/:id
+ * Delete a past scan record
+ */
+router.delete("/history/:id", async (req, res) => {
+  try {
+    const userId = getUserId(req);
+    const deleted = deleteParsedResume(req.params.id, userId);
+    if (!deleted) {
+      return res.status(404).json({ success: false, error: "Record not found or not deletable." });
+    }
+    res.json({ success: true, message: "Record deleted successfully." });
+  } catch (error) {
+    res.status(500).json({ success: false, error: "Failed to delete record." });
+  }
+});
 
 export default router;
