@@ -1,109 +1,56 @@
-// agent-notes: { ctx: "Frontend API client for resume parsing, analysis, problem fixes & skill gap updates", deps: [], state: "active", last: "anti@2026-08-25" }
+// agent-notes: { ctx: "Frontend API client for uploading resumes, job descriptions, and receiving structured AI analysis", deps: [], state: "active", last: "anti@2026-08-29" }
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
-const getHeaders = (extraHeaders = {}) => {
-  const token = typeof localStorage !== 'undefined'
-    ? (localStorage.getItem('sb_token') || sessionStorage?.getItem('sb_token'))
-    : null;
-  return {
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    ...extraHeaders
-  };
-};
-
-export async function analyzeResume(
-  file,
-  targetRole = "Full Stack Developer"
-) {
+/**
+ * Uploads a resume file (or text) and optional job description for AI evaluation.
+ * 
+ * @param {Object} params
+ * @param {File} [params.file] - Resume PDF/DOCX file
+ * @param {string} [params.resumeText] - Raw text alternative
+ * @param {string} [params.jobDescription] - Optional target job description
+ * @param {string} [params.targetRole] - Optional target role title
+ * @returns {Promise<Object>} Analysis response
+ */
+export async function analyzeResumeFile({ file, resumeText, jobDescription = '', targetRole = '' }) {
   const formData = new FormData();
 
-  formData.append(
-    "resume",
-    file
-  );
-
-  formData.append(
-    "targetRole",
-    targetRole
-  );
-
-  const token = typeof localStorage !== 'undefined'
-    ? (localStorage.getItem('sb_token') || sessionStorage?.getItem('sb_token'))
-    : null;
-  const headers = token ? { Authorization: `Bearer ${token}` } : {};
-
-  const response = await fetch(
-    `${API_BASE_URL}/resume/analyze`,
-    {
-      method: "POST",
-      headers,
-      body: formData
-    }
-  );
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
-    throw new Error(
-      error.message ||
-      "Resume analysis failed"
-    );
+  if (file) {
+    formData.append('resume', file);
+  }
+  if (resumeText) {
+    formData.append('resumeText', resumeText);
+  }
+  if (jobDescription) {
+    formData.append('jobDescription', jobDescription);
+  }
+  if (targetRole) {
+    formData.append('targetRole', targetRole);
   }
 
-  return response.json();
+  const token = localStorage.getItem('sb_token') || sessionStorage.getItem('sb_token');
+  const headers = {};
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const res = await fetch(`${API_BASE_URL}/resume/analyze`, {
+    method: 'POST',
+    headers,
+    body: formData
+  });
+
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}));
+    const errorMsg = errData.error || errData.message || `Analysis request failed with status ${res.status}`;
+    throw new Error(errorMsg);
+  }
+
+  return await res.json();
 }
 
-export const uploadResume = analyzeResume;
-export const analyzeResumeApi = analyzeResume;
-
-export const applyProblemFix = async (problemId) => {
-  try {
-    const res = await fetch(`${API_BASE_URL}/resume/apply-fix`, {
-      method: 'POST',
-      headers: getHeaders({ 'Content-Type': 'application/json' }),
-      body: JSON.stringify({ problemId })
-    });
-    return await res.json();
-  } catch (error) {
-    return { success: false, error: error.message };
-  }
+export const resumeApi = {
+  analyzeResumeFile
 };
 
-export const fetchSkillGap = async (userSkills, roleRequirements) => {
-  try {
-    const res = await fetch(`${API_BASE_URL}/skills/gap`, {
-      method: 'POST',
-      headers: getHeaders({ 'Content-Type': 'application/json' }),
-      body: JSON.stringify({ userSkills, roleRequirements })
-    });
-    return await res.json();
-  } catch (error) {
-    return { success: false, error: error.message };
-  }
-};
-
-export const advanceSkillProgress = async (skillName, currentProgress) => {
-  try {
-    const res = await fetch(`${API_BASE_URL}/skills/advance`, {
-      method: 'POST',
-      headers: getHeaders({ 'Content-Type': 'application/json' }),
-      body: JSON.stringify({ skillName, currentProgress })
-    });
-    return await res.json();
-  } catch (error) {
-    return { success: false, error: error.message };
-  }
-};
-
-export const generateCertificate = async (userName, skillName) => {
-  try {
-    const res = await fetch(`${API_BASE_URL}/certificates/generate`, {
-      method: 'POST',
-      headers: getHeaders({ 'Content-Type': 'application/json' }),
-      body: JSON.stringify({ userName, skillName })
-    });
-    return await res.json();
-  } catch (error) {
-    return { success: false, error: error.message };
-  }
-};
+export default resumeApi;

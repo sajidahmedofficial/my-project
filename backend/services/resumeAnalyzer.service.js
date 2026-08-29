@@ -1,267 +1,235 @@
-// agent-notes: { ctx: "Comprehensive AI Resume Analyzer service leveraging Gemini prompt schemas", deps: ["./geminiService.js"], state: "active", last: "anti@2026-08-25" }
+// agent-notes: { ctx: "AI-powered resume analyzer comparing parsed resume and optional job description with strict JSON output validation", deps: ["./geminiService.js"], state: "active", last: "anti@2026-08-29" }
+
 import { analyzeJSON } from "./geminiService.js";
 
-export async function analyzeResume(
-  resumeText,
-  targetRole = "Full Stack Developer"
-) {
-  const prompt = `
-Analyze this resume for the target role:
+/**
+ * Analyzes resume text against optional job description using Gemini AI with fallback.
+ * 
+ * @param {string} resumeText - Extracted resume content
+ * @param {Object} options
+ * @param {string} [options.jobDescription=""] - Optional target job description
+ * @param {string} [options.targetRole=""] - Optional target role title
+ * @returns {Promise<Object>} Structured analysis report
+ */
+export async function analyzeResume(resumeText, { jobDescription = "", targetRole = "" } = {}) {
+  if (!resumeText || !resumeText.trim()) {
+    throw new Error("Resume content is empty. Cannot analyze.");
+  }
 
-TARGET ROLE:
-${targetRole}
+  const prompt = [
+    `You are an expert Senior Technical Recruiter and ATS (Applicant Tracking System) Specialist.`,
+    `Evaluate the candidate's resume objectively against current industry standards and the target job description (if provided).`,
+    ``,
+    `--- CANDIDATE RESUME ---`,
+    resumeText,
+    ``,
+    `--- TARGET JOB DESCRIPTION (OPTIONAL) ---`,
+    jobDescription ? jobDescription : (targetRole ? `Target Role: ${targetRole}` : `General Technology & Software Engineering Industry Standards`),
+    ``,
+    `--- INSTRUCTIONS ---`,
+    `Analyze the resume and return a STRICT JSON object (no markdown fences, no conversational prose) matching EXACTLY this structure:`,
+    `{`,
+    `  "overall_score": <integer 0-100 reflecting ATS optimization, clarity, and keyword alignment>,`,
+    `  "ats_compatibility": {`,
+    `    "score": <integer 0-100>,`,
+    `    "formatting_issues": [<array of specific formatting warnings, e.g. tables, columns, unusual fonts>],`,
+    `    "missing_standard_sections": [<array of missing standard headers like 'Professional Summary', 'Skills', 'Experience', 'Education'>],`,
+    `    "parsing_risks": [<array of risks that could cause ATS parsing failures>]`,
+    `  },`,
+    `  "keyword_gaps": {`,
+    `    "missing_keywords": [<array of 3-8 critical technical/domain keywords present in JD or standard for role but absent in resume>],`,
+    `    "matched_keywords": [<array of 3-10 relevant keywords found in both resume and role>],`,
+    `    "match_percentage": <integer 0-100 estimate of keyword overlap>`,
+    `  },`,
+    `  "section_feedback": [`,
+    `    { "section": "Summary", "feedback": "<concise actionable critique of the summary or note if missing>" },`,
+    `    { "section": "Experience", "feedback": "<critique on impact, action verbs, and quantifiable metrics>" },`,
+    `    { "section": "Skills", "feedback": "<critique on skill organization, relevancy, and categorization>" },`,
+    `    { "section": "Education", "feedback": "<critique on degree and certification presentation>" }`,
+    `  ],`,
+    `  "rewrite_suggestions": [`,
+    `    {`,
+    `      "original": "<an actual weak bullet point from the resume or realistic representative phrasing>",`,
+    `      "suggested": "<an impactful rewrite using Action Verb + Context + Quantifiable Result>",`,
+    `      "reason": "<why the suggested version performs significantly better>"`,
+    `    }`,
+    `  ],`,
+    `  "strengths": [`,
+    `    <array of 2-5 specific positive attributes, verified achievements, or clear strengths observed in the resume>`,
+    `  ]`,
+    `}`
+  ].join("\n");
 
-RESUME:
-${resumeText}
-
-Perform a complete professional analysis.
-
-Return JSON with exactly this structure:
-
-{
-  "candidate": {
-    "name": "",
-    "headline": ""
-  },
-
-  "scores": {
-    "overall": 0,
-    "ats": 0,
-    "grammar": 0,
-    "format": 0,
-    "skills": 0,
-    "experience": 0,
-    "projects": 0
-  },
-
-  "grammarIssues": [
-    {
-      "original": "",
-      "problem": "",
-      "correction": "",
-      "severity": "low|medium|high"
+  try {
+    const aiResult = await analyzeJSON(prompt, { temperature: 0.3 });
+    if (aiResult && typeof aiResult.overall_score === 'number') {
+      return normalizeAnalysisResult(aiResult, resumeText, jobDescription);
     }
-  ],
+  } catch (err) {
+    console.warn("[Resume Analyzer] Gemini API call fallback triggered:", err.message);
+  }
 
-  "resumeProblems": [
-    {
-      "section": "",
-      "problem": "",
-      "whyItMatters": "",
-      "suggestion": "",
-      "priority": "low|medium|high"
-    }
-  ],
-
-  "formatProblems": [
-    {
-      "problem": "",
-      "suggestion": ""
-    }
-  ],
-
-  "atsProblems": [
-    {
-      "problem": "",
-      "suggestion": ""
-    }
-  ],
-
-  "missingSections": [],
-
-  "skills": {
-    "detected": [],
-    "strong": [],
-    "weak": [],
-    "missing": []
-  },
-
-  "projects": [
-    {
-      "name": "",
-      "description": "",
-      "technologies": []
-    }
-  ],
-
-  "education": [],
-
-  "experience": [],
-
-  "improvements": [
-    {
-      "section": "",
-      "original": "",
-      "suggested": "",
-      "reason": ""
-    }
-  ],
-
-  "skillGap": [
-    {
-      "skill": "",
-      "category": "",
-      "importance": "high|medium|low",
-      "currentLevel": 0,
-      "requiredLevel": 100
-    }
-  ]
+  // Fallback: Robust rule-based analysis
+  return generateRuleBasedAnalysis(resumeText, jobDescription, targetRole);
 }
 
-Rules:
-
-1. Detect actual grammar mistakes.
-2. Detect spelling mistakes.
-3. Detect weak professional wording.
-4. Detect bad formatting.
-5. Detect ATS problems.
-6. Detect missing resume sections.
-7. Extract technical skills.
-8. Identify weak skills.
-9. Identify missing skills for the target role.
-10. Analyze projects.
-11. Analyze experience.
-12. Suggest specific replacements.
-13. Do not invent experience.
-14. Do not invent certifications.
-15. Do not claim the user knows a skill without evidence.
-16. Score the resume objectively.
-17. Create a skill gap for ${targetRole}.
-`;
-
-  const aiResult = await analyzeJSON(prompt);
-  if (aiResult) return aiResult;
-
-  // Fallback: Rule-based intelligent text analysis if Gemini API key is unconfigured or rate limited
-  return generateRuleBasedAnalysis(resumeText, targetRole);
+/**
+ * Normalizes and validates analysis shape defensively
+ */
+function normalizeAnalysisResult(data, resumeText, jobDescription) {
+  return {
+    overall_score: Math.max(0, Math.min(100, Math.round(Number(data.overall_score) || 75))),
+    ats_compatibility: {
+      score: Math.max(0, Math.min(100, Math.round(Number(data.ats_compatibility?.score) || data.overall_score || 80))),
+      formatting_issues: Array.isArray(data.ats_compatibility?.formatting_issues) ? data.ats_compatibility.formatting_issues : [],
+      missing_standard_sections: Array.isArray(data.ats_compatibility?.missing_standard_sections) ? data.ats_compatibility.missing_standard_sections : [],
+      parsing_risks: Array.isArray(data.ats_compatibility?.parsing_risks) ? data.ats_compatibility.parsing_risks : []
+    },
+    keyword_gaps: {
+      missing_keywords: Array.isArray(data.keyword_gaps?.missing_keywords) ? data.keyword_gaps.missing_keywords : [],
+      matched_keywords: Array.isArray(data.keyword_gaps?.matched_keywords) ? data.keyword_gaps.matched_keywords : [],
+      match_percentage: Math.max(0, Math.min(100, Math.round(Number(data.keyword_gaps?.match_percentage) || 70)))
+    },
+    section_feedback: Array.isArray(data.section_feedback) && data.section_feedback.length ? data.section_feedback : [
+      { section: "Summary", feedback: "Ensure a strong 2-3 line value proposition at the top." },
+      { section: "Experience", feedback: "Emphasize quantifiable achievements over routine responsibilities." },
+      { section: "Skills", feedback: "Highlight modern tech stack competencies clearly." },
+      { section: "Education", feedback: "Keep degree details and honors concise." }
+    ],
+    rewrite_suggestions: Array.isArray(data.rewrite_suggestions) && data.rewrite_suggestions.length ? data.rewrite_suggestions.slice(0, 5) : [
+      {
+        original: "Responsible for writing code and fixing bugs.",
+        suggested: "Engineered scalable features and resolved high-priority defects, improving system stability by 25%.",
+        reason: "Uses active language and demonstrates business impact."
+      }
+    ],
+    strengths: Array.isArray(data.strengths) && data.strengths.length ? data.strengths : [
+      "Clear chronological career progression",
+      "Demonstrated core technical competency in software development"
+    ]
+  };
 }
 
-function generateRuleBasedAnalysis(text, targetRole) {
-  const lowerText = text.toLowerCase();
-  
-  // Extract candidate name candidate
-  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
-  const candidateName = lines[0]?.length < 40 ? lines[0] : "Candidate";
+/**
+ * Intelligent heuristic fallback analyzer when AI service is unavailable
+ */
+function generateRuleBasedAnalysis(resumeText, jobDescription = "", targetRole = "") {
+  const textLower = resumeText.toLowerCase();
+  const jdLower = jobDescription.toLowerCase();
 
-  const allKnownSkills = [
-    "HTML", "CSS", "JavaScript", "React", "Node.js", "Express", "MongoDB",
-    "TypeScript", "Python", "SQL", "Git", "Tailwind CSS", "Redux", "Docker", "AWS", "REST API"
+  const commonKeywords = [
+    "JavaScript", "TypeScript", "React", "Node.js", "Express", "Python",
+    "SQL", "PostgreSQL", "MongoDB", "REST API", "GraphQL", "Git", "Docker",
+    "Kubernetes", "AWS", "CI/CD", "Tailwind CSS", "Redux", "Unit Testing", "Agile"
   ];
 
-  const detectedSkills = allKnownSkills.filter(skill => 
-    lowerText.includes(skill.toLowerCase())
-  );
-
-  if (detectedSkills.length === 0) {
-    detectedSkills.push("HTML", "CSS", "JavaScript");
+  const matchedInResume = commonKeywords.filter(k => textLower.includes(k.toLowerCase()));
+  
+  let targetKeywords = [];
+  if (jdLower.length > 30) {
+    targetKeywords = commonKeywords.filter(k => jdLower.includes(k.toLowerCase()));
+  } else {
+    targetKeywords = ["React", "TypeScript", "Node.js", "REST API", "Git", "SQL", "Unit Testing"];
   }
 
-  const roleSkillRequirements = {
-    "Full Stack Developer": ["HTML", "CSS", "JavaScript", "React", "Node.js", "Express", "MongoDB", "Git", "REST API"],
-    "Frontend Developer": ["HTML", "CSS", "JavaScript", "React", "Tailwind CSS", "TypeScript", "Redux", "Git"],
-    "Backend Engineer": ["Node.js", "Express", "MongoDB", "SQL", "Python", "Docker", "REST API", "Git"]
-  };
+  const matchedKeywords = targetKeywords.filter(k => matchedInResume.includes(k));
+  const missingKeywords = targetKeywords.filter(k => !matchedInResume.includes(k));
+  const matchPercentage = targetKeywords.length > 0
+    ? Math.round((matchedKeywords.length / targetKeywords.length) * 100)
+    : 75;
 
-  const requiredForRole = roleSkillRequirements[targetRole] || roleSkillRequirements["Full Stack Developer"];
-  const missingSkills = requiredForRole.filter(s => !detectedSkills.includes(s));
-  const strongSkills = detectedSkills.slice(0, Math.ceil(detectedSkills.length * 0.6));
-  const weakSkills = detectedSkills.slice(Math.ceil(detectedSkills.length * 0.6));
+  const hasMetrics = /\d+%|\$\d+|\d+\s*users|\d+\s*ms/i.test(resumeText);
+  const hasSummary = textLower.includes("summary") || textLower.includes("about") || textLower.includes("profile");
+  const hasExperience = textLower.includes("experience") || textLower.includes("employment") || textLower.includes("work history");
+  const hasEducation = textLower.includes("education") || textLower.includes("university") || textLower.includes("degree");
+  const hasSkills = textLower.includes("skills") || textLower.includes("technical competencies");
 
-  const hasGithub = lowerText.includes("github.com") || lowerText.includes("github");
-  const hasQuantifiableImpact = /\d+%|\$\d+|\d+\s*users|\d+\s*projects/i.test(text);
+  const missingSections = [];
+  if (!hasSummary) missingSections.push("Professional Summary");
+  if (!hasExperience) missingSections.push("Experience");
+  if (!hasEducation) missingSections.push("Education");
+  if (!hasSkills) missingSections.push("Technical Skills");
 
-  const problems = [];
-  if (!hasQuantifiableImpact) {
-    problems.push({
-      section: "Experience & Projects",
-      problem: "Bullet points lack quantifiable metrics (e.g. percentages, performance gains, numbers)",
-      whyItMatters: "Recruiters and ATS favor resumes showing measured impact.",
-      suggestion: "Rephrase achievements to include metrics like 'improved performance by 35%' or 'served 10k+ users'.",
-      priority: "high"
-    });
+  let baseScore = 65;
+  if (hasMetrics) baseScore += 10;
+  if (missingSections.length === 0) baseScore += 10;
+  baseScore += Math.round(matchPercentage * 0.15);
+  const overallScore = Math.min(94, Math.max(50, baseScore));
+
+  const formattingIssues = [];
+  const parsingRisks = [];
+  if (!hasMetrics) {
+    formattingIssues.push("Experience bullet points lack quantifiable metrics (percentages, team sizes, latency improvements).");
   }
-
-  if (!hasGithub) {
-    problems.push({
-      section: "Contact & Header",
-      problem: "Missing GitHub / Portfolio URL link",
-      whyItMatters: "Technical recruiters verify proof of work through live project links.",
-      suggestion: "Add your GitHub profile link (https://github.com/your-username) at the top of your resume.",
-      priority: "medium"
-    });
+  if (resumeText.split("\n").length > 150) {
+    formattingIssues.push("Resume length appears to exceed standard 1-2 pages.");
   }
-
-  const grammarIssues = [];
-  if (lowerText.includes("responsible for")) {
-    grammarIssues.push({
-      original: "Responsible for developing web applications",
-      problem: "Passive language ('Responsible for')",
-      correction: "Engineered and delivered responsive web applications",
-      severity: "medium"
-    });
+  if (!textLower.includes("github.com") && !textLower.includes("linkedin.com")) {
+    parsingRisks.push("No LinkedIn or GitHub profile hyperlinks detected in header.");
   }
-
-  const overallScore = Math.min(95, Math.max(55, 60 + detectedSkills.length * 4));
-  const atsScore = hasGithub ? 85 : 72;
-
-  const skillGap = requiredForRole.map(skill => {
-    const isDetected = detectedSkills.includes(skill);
-    return {
-      skill,
-      category: "Technical",
-      importance: "high",
-      currentLevel: isDetected ? 80 : 20,
-      requiredLevel: 100
-    };
-  });
 
   return {
-    candidate: {
-      name: candidateName,
-      headline: `${targetRole} Candidate`
+    overall_score: overallScore,
+    ats_compatibility: {
+      score: Math.min(95, overallScore + 5),
+      formatting_issues: formattingIssues.length ? formattingIssues : ["Standard formatting detected."],
+      missing_standard_sections: missingSections,
+      parsing_risks: parsingRisks.length ? parsingRisks : ["No major ATS parsing bottlenecks detected."]
     },
-    scores: {
-      overall: overallScore,
-      ats: atsScore,
-      grammar: 85,
-      format: 80,
-      skills: Math.round((detectedSkills.length / requiredForRole.length) * 100),
-      experience: 75,
-      projects: 78
+    keyword_gaps: {
+      missing_keywords: missingKeywords.length ? missingKeywords : ["CI/CD", "Docker"],
+      matched_keywords: matchedKeywords.length ? matchedKeywords : (matchedInResume.length ? matchedInResume.slice(0, 6) : ["JavaScript", "HTML", "CSS"]),
+      match_percentage: matchPercentage
     },
-    grammarIssues,
-    resumeProblems: problems,
-    formatProblems: [
-      { problem: "Check section spacing and margin consistency", suggestion: "Use standard 0.5 - 1 inch margins" }
+    section_feedback: [
+      {
+        section: "Summary",
+        feedback: hasSummary
+          ? "Summary is present. Refine it into a punchy 3-sentence value proposition targeted specifically at the role."
+          : "Add a 2-3 sentence Professional Summary at the top to immediately communicate your core value."
+      },
+      {
+        section: "Experience",
+        feedback: hasMetrics
+          ? "Strong employment history with metrics. Ensure every bullet point starts with a powerful action verb."
+          : "Transform passive job duty descriptions into metric-driven accomplishments (e.g., 'Optimized database queries by 40%')."
+      },
+      {
+        section: "Skills",
+        feedback: "Categorize technical skills into distinct groups (Languages, Frameworks, Cloud & Databases, Developer Tools)."
+      },
+      {
+        section: "Education",
+        feedback: hasEducation
+          ? "Education section is clear and well-structured."
+          : "Ensure institution, degree name, and graduation year are clearly listed."
+      }
     ],
-    atsProblems: hasGithub ? [] : [
-      { problem: "Missing proof of work link in contact header", suggestion: "Add GitHub profile link" }
+    rewrite_suggestions: [
+      {
+        original: "Responsible for developing UI components and working with API endpoints.",
+        suggested: "Engineered 15+ responsive React components with TypeScript and integrated REST endpoints, reducing render latency by 35%.",
+        reason: "Replaces passive duty wording with active verbs and measurable performance results."
+      },
+      {
+        original: "Helped team maintain database and write SQL queries.",
+        suggested: "Architected optimized PostgreSQL schema queries and indexing, cutting query execution times by 50%.",
+        reason: "Quantifies technical depth and demonstrates tangible business value."
+      },
+      {
+        original: "Fixed bug reports and wrote documentation for software.",
+        suggested: "Resolved 40+ high-severity application defects and authored comprehensive API documentation, accelerating developer onboarding by 2x.",
+        reason: "Shows ownership, team impact, and measurable efficiency gains."
+      }
     ],
-    missingSections: lowerText.includes("education") ? [] : ["Education"],
-    skills: {
-      detected: detectedSkills,
-      strong: strongSkills,
-      weak: weakSkills,
-      missing: missingSkills
-    },
-    projects: [
-      { name: "Web Application Project", description: "Interactive full stack application", technologies: detectedSkills.slice(0, 3) }
-    ],
-    education: [],
-    experience: [],
-    improvements: problems.map(p => ({
-      section: p.section,
-      original: p.problem,
-      suggested: p.suggestion,
-      reason: p.whyItMatters
-    })),
-    skillGap
+    strengths: [
+      "Good foundational technical skill alignment",
+      "Clear chronological presentation of career and project experience",
+      "Legible and parseable document structure"
+    ]
   };
 }
 
-export const analyzeResumeData = analyzeResume;
-
 export default {
-  analyzeResume,
-  analyzeResumeData
+  analyzeResume
 };

@@ -20,6 +20,7 @@ export default function NavBar() {
         Rolemint <span className="cue">(V.O.)</span>
       </Link>
       <div className="nav-links">
+        <Link to="/resume">Resume Analyzer</Link>
         {user ? (
           <>
             <Link to="/dashboard">Rehearsal Room</Link>

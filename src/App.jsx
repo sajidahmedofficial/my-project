@@ -10,6 +10,7 @@ import Dashboard from './pages/Dashboard.jsx';
 import ScenarioBuilder from './pages/ScenarioBuilder.jsx';
 import Roleplay from './pages/Roleplay.jsx';
 import Feedback from './pages/Feedback.jsx';
+import ResumeAnalyzer from './pages/ResumeAnalyzer.jsx';
 import { getStoredUser } from './services/roleplayApi.js';
 
 function RequireAuth({ children }) {
@@ -25,6 +26,7 @@ export default function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/resume" element={<ResumeAnalyzer />} />
         <Route
           path="/dashboard"
           element={

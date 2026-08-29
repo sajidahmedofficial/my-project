@@ -61,5 +61,26 @@
     "role": "assistant",
     "content": "I hear your point. Given our constraints and the risks involved, walk me through how you plan to execute that step by step.",
     "created_at": "2026-08-29T15:51:57.146Z"
+  },
+  {
+    "id": "msg_2a243d98-d9a0-4c7f-8471-458a5274d33a",
+    "session_id": "sess_b233f040-e8b6-45c3-8e86-49d57d4bde2f",
+    "role": "assistant",
+    "content": "Hello. Thanks for joining today. I reviewed your background, and I want to dive straight into your approach to system architecture and problem solving. Shall we begin?",
+    "created_at": "2026-08-29T15:53:16.526Z"
+  },
+  {
+    "id": "msg_0240b7a3-1b21-4ecb-8d63-4879e7b7f5b0",
+    "session_id": "sess_b233f040-e8b6-45c3-8e86-49d57d4bde2f",
+    "role": "user",
+    "content": "hi",
+    "created_at": "2026-08-29T15:53:21.328Z"
+  },
+  {
+    "id": "msg_8a5a4413-a4b5-4e98-9e14-54b954c2d43f",
+    "session_id": "sess_b233f040-e8b6-45c3-8e86-49d57d4bde2f",
+    "role": "assistant",
+    "content": "Could you expand on that with more technical specifics or concrete examples?",
+    "created_at": "2026-08-29T15:53:21.329Z"
   }
 ]
