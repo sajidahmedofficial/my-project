@@ -49,29 +49,60 @@ ${targetRole}
 RESUME:
 ${resumeText}
 
-Perform a complete professional analysis.
+Perform a complete professional analysis. Extract ALL sections as structured JSON.
+If a field is genuinely not present in the resume, return an empty string "" or empty array [] — DO NOT omit any key.
 
 Return JSON with exactly this structure:
 
 {
   "candidate": {
-    "firstName": "",
-    "lastName": "",
-    "name": "",
-    "email": "",
-    "phone": "",
-    "linkedIn": "",
-    "headline": ""
+    "firstName": "Candidate First Name",
+    "lastName": "Candidate Last Name",
+    "name": "Candidate Full Name",
+    "email": "candidate@example.com",
+    "phone": "+1 (555) 019-2834",
+    "linkedIn": "https://linkedin.com/in/username",
+    "summary": "Candidate professional summary or career objective",
+    "headline": "Full Stack Developer"
+  },
+
+  "summary": "Professional summary or objective statement from the resume",
+
+  "education": [
+    {
+      "school": "University / College / Institute Name",
+      "degree": "Degree (e.g. B.Tech, B.S. in Computer Science, Master of Science)",
+      "field": "Field of Study (e.g. Computer Science, Information Technology)",
+      "year": "Graduation Year (e.g. 2025)"
+    }
+  ],
+
+  "experience": [
+    {
+      "company": "Company / Organization Name",
+      "role": "Position Title / Internship Title (e.g. Full Stack Development Intern)",
+      "startDate": "Start Date (e.g. Jan 2023)",
+      "endDate": "End Date or empty string if Present/Current",
+      "duration": "e.g. Jan 2023 - Present",
+      "description": "• Built responsive UI pages with React\\n• Integrated REST APIs"
+    }
+  ],
+
+  "skills": {
+    "detected": ["HTML", "CSS", "JavaScript", "React", "Node.js", "Python"],
+    "strong": ["React", "JavaScript"],
+    "weak": ["Docker"],
+    "missing": ["AWS", "Kubernetes"]
   },
 
   "scores": {
-    "overall": 0,
-    "ats": 0,
-    "grammar": 0,
-    "format": 0,
-    "skills": 0,
-    "experience": 0,
-    "projects": 0
+    "overall": 85,
+    "ats": 80,
+    "grammar": 90,
+    "format": 85,
+    "skills": 80,
+    "experience": 75,
+    "projects": 80
   },
 
   "grammarIssues": [
@@ -109,13 +140,6 @@ Return JSON with exactly this structure:
 
   "missingSections": [],
 
-  "skills": {
-    "detected": [],
-    "strong": [],
-    "weak": [],
-    "missing": []
-  },
-
   "projects": [
     {
       "name": "",
@@ -123,10 +147,6 @@ Return JSON with exactly this structure:
       "technologies": []
     }
   ],
-
-  "education": [],
-
-  "experience": [],
 
   "improvements": [
     {
@@ -148,32 +168,55 @@ Return JSON with exactly this structure:
   ]
 }
 
-Rules:
-
-1. Extract ONLY the candidate's actual personal name. DO NOT confuse this with a job title (e.g. "Full Stack Developer", "Software Engineer", "Web Developer"), headline, or professional summary. If uncertain, return null rather than guessing.
-2. Extract the candidate's email, phone number, and LinkedIn URL accurately.
-3. Detect actual grammar mistakes.
-4. Detect spelling mistakes.
-5. Detect weak professional wording.
-6. Detect bad formatting.
-7. Detect ATS problems.
-8. Detect missing resume sections.
-9. Extract technical skills.
-10. Identify weak skills.
-11. Identify missing skills for the target role.
-12. Analyze projects.
-13. Analyze experience accurately. If the user has 0 work experience, return empty experience array.
-14. Suggest specific replacements.
-15. Do not invent experience or companies.
-16. Do not invent certifications.
-17. Do not claim the user knows a skill without evidence.
-18. Score the resume objectively.
-19. Create a skill gap for ${targetRole}.
+Extraction Rules:
+1. Extract ALL candidate details: firstName, lastName, email, phone, linkedIn, summary, skills, education, and work experience/internships.
+2. Extract ONLY the candidate's actual personal name. DO NOT confuse with job title (e.g. "Full Stack Developer", "Software Engineer"), headline, or objective.
+3. If the resume has internship experience, include it in the experience array with title, company, dates, and bulleted description.
+4. If the user is a fresher with 0 work experience or internships, return an empty experience array [].
+5. Do not invent fake companies, fake schools, or fake certifications.
+6. Score the resume objectively and generate a tailored skill gap for ${targetRole}.
 `;
 
   try {
     const aiResult = await analyzeJSON(prompt);
-    if (aiResult && aiResult.scores) return aiResult;
+    if (aiResult && (aiResult.scores || aiResult.candidate || aiResult.skills)) {
+      // Normalize Education array
+      const rawEdu = Array.isArray(aiResult.education) ? aiResult.education : [];
+      aiResult.education = rawEdu.map(edu => ({
+        school: edu.school || edu.institution || edu.university || edu.college || '',
+        degree: edu.degree || 'Bachelor of Technology (B.Tech)',
+        field: edu.field || edu.fieldOfStudy || edu.major || edu.department || 'Computer Science',
+        year: String(edu.year || edu.graduationYear || '2025').slice(0, 4)
+      })).filter(e => e.school || e.degree);
+
+      // Normalize Experience array (including internships)
+      const rawExp = Array.isArray(aiResult.experience) ? aiResult.experience : [];
+      aiResult.experience = rawExp.map(exp => ({
+        company: exp.company || exp.organization || exp.employer || '',
+        role: exp.role || exp.title || exp.positionTitle || exp.position || '',
+        startDate: exp.startDate || '',
+        endDate: exp.endDate || '',
+        duration: exp.duration || (exp.startDate && exp.endDate ? `${exp.startDate} - ${exp.endDate}` : exp.startDate || ''),
+        description: exp.description || (Array.isArray(exp.responsibilities) ? exp.responsibilities.join('\n') : '')
+      })).filter(e => e.company || e.role);
+
+      aiResult.hasExperience = aiResult.experience.length > 0;
+      aiResult.hasEducation = aiResult.education.length > 0;
+
+      // Normalize Candidate details
+      if (!aiResult.candidate) aiResult.candidate = {};
+      const cand = aiResult.candidate;
+      if (!cand.firstName && cand.name) {
+        const parts = cand.name.split(/\s+/).filter(Boolean);
+        cand.firstName = parts[0] || '';
+        cand.lastName = parts.slice(1).join(' ') || '';
+      }
+      if (!aiResult.summary && cand.summary) {
+        aiResult.summary = cand.summary;
+      }
+
+      return aiResult;
+    }
   } catch (err) {
     console.warn("[Resume Analyzer] Gemini API fallback notice:", err.message);
   }

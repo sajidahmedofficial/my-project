@@ -220,25 +220,28 @@ export default function OnboardingWizard({ onComplete }) {
           }
         }
 
+        console.log('[OnboardingWizard] Parsed Resume Payload:', parsedAnalysis);
+
+        // Populate Candidate Contact Details
         if (extractedFirst) setFirstName(extractedFirst);
         if (extractedLast) setLastName(extractedLast);
         if (cand.email) setEmail(cand.email);
         if (cand.phone) setPhone(cand.phone);
         if (cand.linkedIn) setLinkedIn(cand.linkedIn);
 
-        // Populate professional summary
+        // Populate Professional Summary
         if (parsedAnalysis.summary || cand.summary) {
           setSummary(parsedAnalysis.summary || cand.summary || '');
         }
 
-        // Populate skills as discrete array
+        // Populate Extracted Skills as discrete array
         if (Array.isArray(parsedAnalysis.skills?.detected) && parsedAnalysis.skills.detected.length > 0) {
           setSkillsList(parsedAnalysis.skills.detected);
         } else if (Array.isArray(parsedAnalysis.skills) && parsedAnalysis.skills.length > 0) {
           setSkillsList(parsedAnalysis.skills);
         }
 
-        // Populate education
+        // Populate Education Details (multi-alias support)
         const parsedEdu = Array.isArray(parsedAnalysis.education) && parsedAnalysis.education.length > 0 
           ? parsedAnalysis.education 
           : Array.isArray(parsedAnalysis.data?.education) ? parsedAnalysis.data.education : [];
@@ -246,14 +249,14 @@ export default function OnboardingWizard({ onComplete }) {
         if (parsedEdu.length > 0) {
           setEducationList(parsedEdu.map((edu, idx) => ({
             id: idx + 1,
-            school: edu.school || '',
-            degree: edu.degree || 'Bachelor of Science',
-            field: edu.field || 'Computer Science',
-            year: edu.year || '2025'
+            school: edu.school || edu.institution || edu.university || edu.college || '',
+            degree: edu.degree || 'Bachelor of Technology (B.Tech)',
+            field: edu.field || edu.fieldOfStudy || edu.major || edu.department || 'Computer Science & Engineering',
+            year: String(edu.year || edu.graduationYear || '2025').slice(0, 4)
           })));
         }
 
-        // Populate experience directly from uploaded resume
+        // Populate Work Experience History (including Internships)
         const parsedExp = Array.isArray(parsedAnalysis.experience) && parsedAnalysis.experience.length > 0 
           ? parsedAnalysis.experience 
           : Array.isArray(parsedAnalysis.data?.experience) ? parsedAnalysis.data.experience : [];
@@ -261,8 +264,8 @@ export default function OnboardingWizard({ onComplete }) {
         if (parsedExp.length > 0) {
           setExperienceList(parsedExp.map((exp, idx) => ({
             id: idx + 1,
-            company: exp.company || '',
-            role: exp.role || exp.title || exp.positionTitle || '',
+            company: exp.company || exp.organization || exp.employer || '',
+            role: exp.role || exp.title || exp.positionTitle || exp.position || '',
             startDate: exp.startDate || (exp.duration ? exp.duration.split(/\s*[-–]\s*/)[0] : ''),
             endDate: exp.endDate || (exp.duration && !/present|current|now/i.test(exp.duration) ? exp.duration.split(/\s*[-–]\s*/)[1] || '' : ''),
             duration: exp.duration || '',
