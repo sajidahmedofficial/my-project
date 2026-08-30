@@ -1,15 +1,8 @@
-let PDFDocument = null;
-try {
-  const pdfkitModule = await import("pdfkit");
-  PDFDocument = pdfkitModule.default || pdfkitModule;
-} catch (e) {
-  console.warn("[Certificate Service] pdfkit not available:", e.message);
-}
-
 import fs from "fs";
 import path from "path";
 import os from "os";
 import crypto from "crypto";
+import PDFDocument from "pdfkit";
 import persistentStore from "../storage/persistentStore.js";
 
 const isServerless = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.NODE_ENV === 'production');
