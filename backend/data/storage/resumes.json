@@ -8860,5 +8860,207 @@
     "overall_score": 75,
     "ats_score": 75,
     "updatedAt": "2026-08-30T03:36:46.631Z"
+  },
+  {
+    "createdAt": "2026-08-30T03:37:48.298Z",
+    "id": "res_1788061068298_aib8h6g",
+    "resumeId": "res_1788061068298_aib8h6g",
+    "userId": "usr_1788021323799",
+    "fileName": "Sajid_Ahmed_M_Full_Stack_Developer_Resume.pdf",
+    "resumeText": "SAJID AHMED M\nFULL STACK DEVELOPER | AI APPLICATION DEVELOPER\nMadurai, India • 8778513050 • sajidahmedofficialio@gmail.com\nlinkedin.com/in/sajid-ahmed-official • github.com/sajidahmedofficial/my-project\nPROFESSIONAL SUMMARY\nComputer Science Engineering student and aspiring Full Stack Developer with hands-on experience building responsive web applications\nand AI-powered solutions. Skilled in HTML, CSS, JavaScript, React.js, Node.js, Express.js, Python, SQL, REST APIs, WordPress, and AI\nAPI integration. Built projects including an AI Voice Assistant, AI Skill Gap Analyzer, AI Resume Maker, and Task Diary. Strong in\nproblem solving, UI development, API integration, debugging, and learning emerging technologies.\nTECHNICAL SKILLS\nLanguages: JavaScript, Python, C, C++, SQL\nFrontend: HTML5, CSS3, React.js, Responsive Web Design, UI Development\nBackend & APIs: Node.js, Express.js, REST APIs, API Integration\nAI & Tools: Generative AI, Gemini/API Integration, Prompt Engineering, Git, GitHub, npm, Vite\nWeb: WordPress, SEO, Website Performance, Cross-Browser Compatibility\nEXPERIENCE\nFull Stack Development Intern — Software Solutions Company\n• Built and integrated frontend and backend components for web applications using JavaScript and modern web technologies.\n• Worked with APIs, databases, responsive interfaces, debugging, and application integration.\nWeb Development / AI Application Intern — Celite\n• Developed responsive web interfaces and AI-enabled application features using frontend technologies and API integration.\n• Gained practical experience in SEO, WordPress, API integration, and usability-focused web development.\nPROJECTS\nAI Voice Assistant — Full Stack & AI Developer\nDeveloped an Alexa-inspired conversational assistant with voice interaction, speech processing, memory, intent handling, and intelligent task\nautomation.\nAI Skill Gap Analyzer — Full Stack & AI Developer\nBuilt an AI-powered platform that analyzes resumes, identifies skill gaps and resume issues, and recommends targeted improvements and\nskill-development actions.\nAI Resume Maker — Full Stack Developer\nCreated a resume-building platform for structured, professional resumes with content improvement, formatting, and template-oriented generation.\nTask Diary — Full Stack Developer\nDeveloped a task-management application for creating, organizing, updating, and tracking daily tasks through a responsive user interface.\nEDUCATION\nB.E. Computer Science and Engineering — Vaigai College of Engineering, Madurai\nExpected January 2027 • CGPA/Percentage: 82%\nRelevant Coursework\nData Structures & Algorithms, Object-Oriented Programming, DBMS, Computer Networks, Operating Systems, Web Development, Artificial\nIntelligence, Machine Learning\nLEADERSHIP\nVice President — ELITE Forum, Vaigai College of Engineering\nCERTIFICATIONS & ACHIEVEMENTS\n• IBM Enterprise AI Certificate\n• Spring 5 Basics with Spring Boot / Spring Data JPA — Infosis course certificate\n• Web Development / Full Stack Development internship certifications\n• SEO Analysis and WordPress certifications\nADDITIONAL\nPaper presentation: “E-Vehicle, Artificial General Intelligence, Certificate Validator” — Vaigai College of Engineering. Languages: English, Tamil,\nMalayalam.",
+    "analysis": {
+      "candidate": {
+        "firstName": "Sajid",
+        "lastName": "Ahmedio",
+        "name": "Sajid Ahmedio",
+        "email": "sajidahmedofficialio@gmail.com",
+        "phone": "8778513050",
+        "linkedIn": "https://linkedin.com/in/sajid-ahmed-official",
+        "summary": "Computer Science Engineering student and aspiring Full Stack Developer with hands-on experience building responsive web applications and AI-powered solutions. Skilled in HTML, CSS, JavaScript, React.js, Node.js, Express.js, Python, SQL, REST APIs, WordPress, and AI API integration. Built projects including an AI Voice Assistant, AI Skill Gap Analyzer, AI Resume Maker, and Task Diary. Strong in problem solving, UI development, API integration, debugging, and learning emerging technologies.",
+        "headline": "Full Stack AI Engineer Candidate"
+      },
+      "summary": "Computer Science Engineering student and aspiring Full Stack Developer with hands-on experience building responsive web applications and AI-powered solutions. Skilled in HTML, CSS, JavaScript, React.js, Node.js, Express.js, Python, SQL, REST APIs, WordPress, and AI API integration. Built projects including an AI Voice Assistant, AI Skill Gap Analyzer, AI Resume Maker, and Task Diary. Strong in problem solving, UI development, API integration, debugging, and learning emerging technologies.",
+      "education": [
+        {
+          "school": "B.E. Computer Science and Engineering — Vaigai College of Engineering, Madurai",
+          "degree": "Bachelor of Engineering (B.E.)",
+          "field": "Computer Science & Engineering",
+          "year": "2025"
+        }
+      ],
+      "experience": [
+        {
+          "role": "Full Stack Development Intern — Software Solutions Company",
+          "company": "",
+          "startDate": "",
+          "endDate": "",
+          "duration": "2023 - Present",
+          "description": "• Built and integrated frontend and backend components for web applications using JavaScript and modern web technologies.\n• Worked with APIs, databases, responsive interfaces, debugging, and application integration."
+        },
+        {
+          "role": "Web Development / AI Application Intern — Celite",
+          "company": "",
+          "startDate": "",
+          "endDate": "",
+          "duration": "2023 - Present",
+          "description": "• Developed responsive web interfaces and AI-enabled application features using frontend technologies and API integration.\n• Gained practical experience in SEO, WordPress, API integration, and usability-focused web development."
+        }
+      ],
+      "hasExperience": true,
+      "hasEducation": true,
+      "experienceAnalysis": {
+        "status": "experienced",
+        "hasExperience": true,
+        "count": 2,
+        "label": "2 Roles Detected",
+        "message": "Work experience detected and evaluated against industry role expectations."
+      },
+      "educationAnalysis": {
+        "status": "verified",
+        "hasEducation": true,
+        "count": 1,
+        "label": "Bachelor of Engineering (B.E.) Detected",
+        "message": "Education background verified and aligned with engineering prerequisites."
+      },
+      "scores": {
+        "overall": 95,
+        "ats": 85,
+        "grammar": 85,
+        "format": 80,
+        "skills": 144,
+        "experience": 80,
+        "projects": 78
+      },
+      "grammarIssues": [],
+      "resumeProblems": [],
+      "formatProblems": [
+        {
+          "problem": "Check section spacing and margin consistency",
+          "suggestion": "Use standard 0.5 - 1 inch margins"
+        }
+      ],
+      "atsProblems": [],
+      "missingSections": [],
+      "skills": {
+        "detected": [
+          "HTML",
+          "CSS",
+          "JavaScript",
+          "React",
+          "Node.js",
+          "Express",
+          "SQL",
+          "Python",
+          "Git",
+          "WordPress",
+          "Machine Learning",
+          "Java",
+          "C++"
+        ],
+        "strong": [
+          "HTML",
+          "CSS",
+          "JavaScript",
+          "React",
+          "Node.js",
+          "Express",
+          "SQL",
+          "Python"
+        ],
+        "weak": [
+          "Git",
+          "WordPress",
+          "Machine Learning",
+          "Java",
+          "C++"
+        ],
+        "missing": [
+          "MongoDB",
+          "REST API"
+        ]
+      },
+      "projects": [
+        {
+          "name": "Web Application Project",
+          "description": "Interactive full stack application",
+          "technologies": [
+            "HTML",
+            "CSS",
+            "JavaScript"
+          ]
+        }
+      ],
+      "improvements": [],
+      "skillGap": [
+        {
+          "skill": "HTML",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "CSS",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "JavaScript",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "React",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Node.js",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Express",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "MongoDB",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Git",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "REST API",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        }
+      ]
+    },
+    "targetRole": "Full Stack AI Engineer",
+    "jobDescription": "",
+    "overall_score": 75,
+    "ats_score": 75,
+    "updatedAt": "2026-08-30T03:37:48.298Z"
   }
 ]

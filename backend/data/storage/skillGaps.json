@@ -9720,9 +9720,8 @@
       "isCustomJD": true,
       "extractedRole": "Full Stack Developer",
       "requiredSkills": [
-        "Go",
-        "React.js",
         "Node.js",
+        "React.js",
         "Express.js",
         "MongoDB",
         "Docker",
@@ -9730,50 +9729,37 @@
       ],
       "preferredSkills": [],
       "programmingLanguages": [
-        "Go",
-        "React.js",
-        "Express.js",
-        "MongoDB",
-        "Docker"
-      ],
-      "frameworks": [
         "Node.js"
       ],
-      "databases": [],
-      "tools": [],
+      "frameworks": [
+        "React.js",
+        "Express.js"
+      ],
+      "databases": [
+        "MongoDB"
+      ],
+      "tools": [
+        "Docker"
+      ],
       "cloud": [
         "AWS"
       ],
       "softSkills": [],
-      "experienceRequirements": "Demonstrated production experience matching requirements"
+      "experienceRequirements": "Not specified"
     },
-    "overallMatchScore": 27,
-    "score": 27,
+    "overallMatchScore": 32,
+    "score": 32,
     "weightedSummary": {
-      "weightedMatchedRequirements": 9.5,
-      "weightedTotalRequirements": 35,
+      "weightedMatchedRequirements": 8,
+      "weightedTotalRequirements": 25,
       "formula": "(weightedMatchedRequirements / weightedTotalRequirements) * 100"
     },
     "priorityGaps": {
       "high": [
         {
-          "skill": "Go",
-          "name": "Go",
-          "category": "Programming",
-          "status": "MISSING",
-          "currentLevel": 0,
-          "progress": 0,
-          "requiredLevel": 100,
-          "gapPercentage": 100,
-          "priority": "high",
-          "requirementType": "Required",
-          "evidence": [],
-          "reason": "No evidence of required skill Go found in uploaded resume."
-        },
-        {
           "skill": "MongoDB",
           "name": "MongoDB",
-          "category": "Programming",
+          "category": "Databases",
           "status": "MISSING",
           "currentLevel": 0,
           "progress": 0,
@@ -9782,12 +9768,12 @@
           "priority": "high",
           "requirementType": "Required",
           "evidence": [],
-          "reason": "No evidence of required skill MongoDB found in uploaded resume."
+          "reason": "No evidence of MongoDB found in uploaded resume."
         },
         {
           "skill": "Docker",
           "name": "Docker",
-          "category": "Programming",
+          "category": "Cloud/DevOps",
           "status": "MISSING",
           "currentLevel": 0,
           "progress": 0,
@@ -9796,7 +9782,7 @@
           "priority": "high",
           "requirementType": "Required",
           "evidence": [],
-          "reason": "No evidence of required skill Docker found in uploaded resume."
+          "reason": "No evidence of Docker found in uploaded resume."
         },
         {
           "skill": "AWS",
@@ -9810,58 +9796,27 @@
           "priority": "high",
           "requirementType": "Required",
           "evidence": [],
-          "reason": "No evidence of required skill AWS found in uploaded resume."
+          "reason": "No evidence of AWS found in uploaded resume."
         }
       ],
-      "medium": [
-        {
-          "skill": "HTML5",
-          "name": "HTML5",
-          "category": "Programming",
-          "status": "MISSING",
-          "currentLevel": 0,
-          "progress": 0,
-          "requiredLevel": 100,
-          "gapPercentage": 100,
-          "priority": "medium",
-          "requirementType": "Supplementary",
-          "evidence": [],
-          "reason": "No evidence of HTML5 found in uploaded resume."
-        },
-        {
-          "skill": "CSS3",
-          "name": "CSS3",
-          "category": "Programming",
-          "status": "MISSING",
-          "currentLevel": 0,
-          "progress": 0,
-          "requiredLevel": 100,
-          "gapPercentage": 100,
-          "priority": "medium",
-          "requirementType": "Supplementary",
-          "evidence": [],
-          "reason": "No evidence of CSS3 found in uploaded resume."
-        }
-      ],
+      "medium": [],
       "low": [],
-      "highCount": 4,
-      "mediumCount": 2,
+      "highCount": 3,
+      "mediumCount": 0,
       "lowCount": 0
     },
     "requirementsBreakdown": {
       "required": {
-        "total": 7,
+        "total": 6,
         "skills": [
-          "Go",
-          "React.js",
           "Node.js",
+          "React.js",
           "Express.js",
           "MongoDB",
           "Docker",
           "AWS"
         ],
         "missing": [
-          "Go",
           "MongoDB",
           "Docker",
           "AWS"
@@ -9874,64 +9829,13 @@
       }
     },
     "categoryScores": {
-      "Programming": 26,
+      "Programming": 50,
       "Frameworks": 50,
+      "Databases": 13,
       "Tools": 50,
       "Cloud/DevOps": 0
     },
     "skills": [
-      {
-        "name": "HTML5",
-        "category": "Programming",
-        "status": "missing",
-        "currentLevel": 0,
-        "requiredLevel": 100,
-        "gapPercentage": 100,
-        "priority": "medium",
-        "requirementType": "Supplementary",
-        "evidence": [],
-        "reason": "No evidence of HTML5 found in uploaded resume."
-      },
-      {
-        "name": "CSS3",
-        "category": "Programming",
-        "status": "missing",
-        "currentLevel": 0,
-        "requiredLevel": 100,
-        "gapPercentage": 100,
-        "priority": "medium",
-        "requirementType": "Supplementary",
-        "evidence": [],
-        "reason": "No evidence of CSS3 found in uploaded resume."
-      },
-      {
-        "name": "JavaScript",
-        "category": "Programming",
-        "status": "partial",
-        "currentLevel": 50,
-        "requiredLevel": 100,
-        "gapPercentage": 50,
-        "priority": "medium",
-        "requirementType": "Supplementary",
-        "evidence": [
-          "JavaScript listed in Technical Skills"
-        ],
-        "reason": "JavaScript listed in Technical Skills"
-      },
-      {
-        "name": "React.js",
-        "category": "Programming",
-        "status": "partial",
-        "currentLevel": 50,
-        "requiredLevel": 100,
-        "gapPercentage": 50,
-        "priority": "high",
-        "requirementType": "Required",
-        "evidence": [
-          "React.js listed in Technical Skills"
-        ],
-        "reason": "React.js listed in Technical Skills"
-      },
       {
         "name": "Node.js",
         "category": "Frameworks",
@@ -9942,13 +9846,29 @@
         "priority": "high",
         "requirementType": "Required",
         "evidence": [
+          "Node.js",
           "Node.js listed in Technical Skills"
         ],
-        "reason": "Node.js listed in Technical Skills"
+        "reason": "Node.js; Node.js listed in Technical Skills"
+      },
+      {
+        "name": "React.js",
+        "category": "Frameworks",
+        "status": "partial",
+        "currentLevel": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [
+          "React",
+          "React.js listed in Technical Skills"
+        ],
+        "reason": "React; React.js listed in Technical Skills"
       },
       {
         "name": "Express.js",
-        "category": "Programming",
+        "category": "Frameworks",
         "status": "partial",
         "currentLevel": 50,
         "requiredLevel": 100,
@@ -9956,81 +9876,14 @@
         "priority": "high",
         "requirementType": "Required",
         "evidence": [
+          "Express",
           "Express.js listed in Technical Skills"
         ],
-        "reason": "Express.js listed in Technical Skills"
-      },
-      {
-        "name": "Python",
-        "category": "Programming",
-        "status": "partial",
-        "currentLevel": 50,
-        "requiredLevel": 100,
-        "gapPercentage": 50,
-        "priority": "medium",
-        "requirementType": "Supplementary",
-        "evidence": [
-          "Python listed in Technical Skills"
-        ],
-        "reason": "Python listed in Technical Skills"
-      },
-      {
-        "name": "SQL",
-        "category": "Programming",
-        "status": "partial",
-        "currentLevel": 50,
-        "requiredLevel": 100,
-        "gapPercentage": 50,
-        "priority": "medium",
-        "requirementType": "Supplementary",
-        "evidence": [
-          "SQL listed in Technical Skills"
-        ],
-        "reason": "SQL listed in Technical Skills"
-      },
-      {
-        "name": "REST API",
-        "category": "Programming",
-        "status": "partial",
-        "currentLevel": 50,
-        "requiredLevel": 100,
-        "gapPercentage": 50,
-        "priority": "medium",
-        "requirementType": "Supplementary",
-        "evidence": [
-          "REST API listed in Technical Skills"
-        ],
-        "reason": "REST API listed in Technical Skills"
-      },
-      {
-        "name": "Git",
-        "category": "Tools",
-        "status": "partial",
-        "currentLevel": 50,
-        "requiredLevel": 100,
-        "gapPercentage": 50,
-        "priority": "medium",
-        "requirementType": "Supplementary",
-        "evidence": [
-          "Git listed in Technical Skills"
-        ],
-        "reason": "Git listed in Technical Skills"
-      },
-      {
-        "name": "Go",
-        "category": "Programming",
-        "status": "missing",
-        "currentLevel": 0,
-        "requiredLevel": 100,
-        "gapPercentage": 100,
-        "priority": "high",
-        "requirementType": "Required",
-        "evidence": [],
-        "reason": "No evidence of required skill Go found in uploaded resume."
+        "reason": "Express; Express.js listed in Technical Skills"
       },
       {
         "name": "MongoDB",
-        "category": "Programming",
+        "category": "Databases",
         "status": "missing",
         "currentLevel": 0,
         "requiredLevel": 100,
@@ -10038,11 +9891,11 @@
         "priority": "high",
         "requirementType": "Required",
         "evidence": [],
-        "reason": "No evidence of required skill MongoDB found in uploaded resume."
+        "reason": "No evidence of MongoDB found in uploaded resume."
       },
       {
         "name": "Docker",
-        "category": "Programming",
+        "category": "Cloud/DevOps",
         "status": "missing",
         "currentLevel": 0,
         "requiredLevel": 100,
@@ -10050,7 +9903,7 @@
         "priority": "high",
         "requirementType": "Required",
         "evidence": [],
-        "reason": "No evidence of required skill Docker found in uploaded resume."
+        "reason": "No evidence of Docker found in uploaded resume."
       },
       {
         "name": "AWS",
@@ -10062,43 +9915,114 @@
         "priority": "high",
         "requirementType": "Required",
         "evidence": [],
-        "reason": "No evidence of required skill AWS found in uploaded resume."
+        "reason": "No evidence of AWS found in uploaded resume."
+      },
+      {
+        "name": "HTML5",
+        "category": "Programming",
+        "status": "partial",
+        "currentLevel": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "low",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "HTML"
+        ],
+        "reason": "HTML"
+      },
+      {
+        "name": "CSS3",
+        "category": "Programming",
+        "status": "partial",
+        "currentLevel": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "low",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "CSS"
+        ],
+        "reason": "CSS"
+      },
+      {
+        "name": "JavaScript",
+        "category": "Programming",
+        "status": "partial",
+        "currentLevel": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "low",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "JavaScript",
+          "JavaScript listed in Technical Skills"
+        ],
+        "reason": "JavaScript; JavaScript listed in Technical Skills"
+      },
+      {
+        "name": "Python",
+        "category": "Programming",
+        "status": "partial",
+        "currentLevel": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "low",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "Python",
+          "Python listed in Technical Skills"
+        ],
+        "reason": "Python; Python listed in Technical Skills"
+      },
+      {
+        "name": "SQL",
+        "category": "Databases",
+        "status": "partial",
+        "currentLevel": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "low",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "SQL",
+          "SQL listed in Technical Skills"
+        ],
+        "reason": "SQL; SQL listed in Technical Skills"
+      },
+      {
+        "name": "Git",
+        "category": "Tools",
+        "status": "partial",
+        "currentLevel": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "low",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "Git",
+          "Git listed in Technical Skills"
+        ],
+        "reason": "Git; Git listed in Technical Skills"
+      },
+      {
+        "name": "REST API",
+        "category": "Frameworks",
+        "status": "partial",
+        "currentLevel": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "low",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "REST API",
+          "REST API listed in Technical Skills"
+        ],
+        "reason": "REST API; REST API listed in Technical Skills"
       }
     ],
     "strongSkills": [],
     "partialSkills": [
-      {
-        "skill": "JavaScript",
-        "name": "JavaScript",
-        "category": "Programming",
-        "status": "LEARNING",
-        "currentLevel": 50,
-        "progress": 50,
-        "requiredLevel": 100,
-        "gapPercentage": 50,
-        "priority": "medium",
-        "requirementType": "Supplementary",
-        "evidence": [
-          "JavaScript listed in Technical Skills"
-        ],
-        "reason": "JavaScript listed in Technical Skills"
-      },
-      {
-        "skill": "React.js",
-        "name": "React.js",
-        "category": "Programming",
-        "status": "LEARNING",
-        "currentLevel": 50,
-        "progress": 50,
-        "requiredLevel": 100,
-        "gapPercentage": 50,
-        "priority": "high",
-        "requirementType": "Required",
-        "evidence": [
-          "React.js listed in Technical Skills"
-        ],
-        "reason": "React.js listed in Technical Skills"
-      },
       {
         "skill": "Node.js",
         "name": "Node.js",
@@ -10111,14 +10035,15 @@
         "priority": "high",
         "requirementType": "Required",
         "evidence": [
+          "Node.js",
           "Node.js listed in Technical Skills"
         ],
-        "reason": "Node.js listed in Technical Skills"
+        "reason": "Node.js; Node.js listed in Technical Skills"
       },
       {
-        "skill": "Express.js",
-        "name": "Express.js",
-        "category": "Programming",
+        "skill": "React.js",
+        "name": "React.js",
+        "category": "Frameworks",
         "status": "LEARNING",
         "currentLevel": 50,
         "progress": 50,
@@ -10127,9 +10052,76 @@
         "priority": "high",
         "requirementType": "Required",
         "evidence": [
+          "React",
+          "React.js listed in Technical Skills"
+        ],
+        "reason": "React; React.js listed in Technical Skills"
+      },
+      {
+        "skill": "Express.js",
+        "name": "Express.js",
+        "category": "Frameworks",
+        "status": "LEARNING",
+        "currentLevel": 50,
+        "progress": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [
+          "Express",
           "Express.js listed in Technical Skills"
         ],
-        "reason": "Express.js listed in Technical Skills"
+        "reason": "Express; Express.js listed in Technical Skills"
+      },
+      {
+        "skill": "HTML5",
+        "name": "HTML5",
+        "category": "Programming",
+        "status": "LEARNING",
+        "currentLevel": 50,
+        "progress": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "low",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "HTML"
+        ],
+        "reason": "HTML"
+      },
+      {
+        "skill": "CSS3",
+        "name": "CSS3",
+        "category": "Programming",
+        "status": "LEARNING",
+        "currentLevel": 50,
+        "progress": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "low",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "CSS"
+        ],
+        "reason": "CSS"
+      },
+      {
+        "skill": "JavaScript",
+        "name": "JavaScript",
+        "category": "Programming",
+        "status": "LEARNING",
+        "currentLevel": 50,
+        "progress": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "low",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "JavaScript",
+          "JavaScript listed in Technical Skills"
+        ],
+        "reason": "JavaScript; JavaScript listed in Technical Skills"
       },
       {
         "skill": "Python",
@@ -10140,44 +10132,30 @@
         "progress": 50,
         "requiredLevel": 100,
         "gapPercentage": 50,
-        "priority": "medium",
+        "priority": "low",
         "requirementType": "Supplementary",
         "evidence": [
+          "Python",
           "Python listed in Technical Skills"
         ],
-        "reason": "Python listed in Technical Skills"
+        "reason": "Python; Python listed in Technical Skills"
       },
       {
         "skill": "SQL",
         "name": "SQL",
-        "category": "Programming",
+        "category": "Databases",
         "status": "LEARNING",
         "currentLevel": 50,
         "progress": 50,
         "requiredLevel": 100,
         "gapPercentage": 50,
-        "priority": "medium",
+        "priority": "low",
         "requirementType": "Supplementary",
         "evidence": [
+          "SQL",
           "SQL listed in Technical Skills"
         ],
-        "reason": "SQL listed in Technical Skills"
-      },
-      {
-        "skill": "REST API",
-        "name": "REST API",
-        "category": "Programming",
-        "status": "LEARNING",
-        "currentLevel": 50,
-        "progress": 50,
-        "requiredLevel": 100,
-        "gapPercentage": 50,
-        "priority": "medium",
-        "requirementType": "Supplementary",
-        "evidence": [
-          "REST API listed in Technical Skills"
-        ],
-        "reason": "REST API listed in Technical Skills"
+        "reason": "SQL; SQL listed in Technical Skills"
       },
       {
         "skill": "Git",
@@ -10188,61 +10166,37 @@
         "progress": 50,
         "requiredLevel": 100,
         "gapPercentage": 50,
-        "priority": "medium",
+        "priority": "low",
         "requirementType": "Supplementary",
         "evidence": [
+          "Git",
           "Git listed in Technical Skills"
         ],
-        "reason": "Git listed in Technical Skills"
+        "reason": "Git; Git listed in Technical Skills"
+      },
+      {
+        "skill": "REST API",
+        "name": "REST API",
+        "category": "Frameworks",
+        "status": "LEARNING",
+        "currentLevel": 50,
+        "progress": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "low",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "REST API",
+          "REST API listed in Technical Skills"
+        ],
+        "reason": "REST API; REST API listed in Technical Skills"
       }
     ],
     "missingSkills": [
       {
-        "skill": "HTML5",
-        "name": "HTML5",
-        "category": "Programming",
-        "status": "MISSING",
-        "currentLevel": 0,
-        "progress": 0,
-        "requiredLevel": 100,
-        "gapPercentage": 100,
-        "priority": "medium",
-        "requirementType": "Supplementary",
-        "evidence": [],
-        "reason": "No evidence of HTML5 found in uploaded resume."
-      },
-      {
-        "skill": "CSS3",
-        "name": "CSS3",
-        "category": "Programming",
-        "status": "MISSING",
-        "currentLevel": 0,
-        "progress": 0,
-        "requiredLevel": 100,
-        "gapPercentage": 100,
-        "priority": "medium",
-        "requirementType": "Supplementary",
-        "evidence": [],
-        "reason": "No evidence of CSS3 found in uploaded resume."
-      },
-      {
-        "skill": "Go",
-        "name": "Go",
-        "category": "Programming",
-        "status": "MISSING",
-        "currentLevel": 0,
-        "progress": 0,
-        "requiredLevel": 100,
-        "gapPercentage": 100,
-        "priority": "high",
-        "requirementType": "Required",
-        "evidence": [],
-        "reason": "No evidence of required skill Go found in uploaded resume."
-      },
-      {
         "skill": "MongoDB",
         "name": "MongoDB",
-        "category": "Programming",
+        "category": "Databases",
         "status": "MISSING",
         "currentLevel": 0,
         "progress": 0,
@@ -10251,12 +10205,12 @@
         "priority": "high",
         "requirementType": "Required",
         "evidence": [],
-        "reason": "No evidence of required skill MongoDB found in uploaded resume."
+        "reason": "No evidence of MongoDB found in uploaded resume."
       },
       {
         "skill": "Docker",
         "name": "Docker",
-        "category": "Programming",
+        "category": "Cloud/DevOps",
         "status": "MISSING",
         "currentLevel": 0,
         "progress": 0,
@@ -10265,7 +10219,7 @@
         "priority": "high",
         "requirementType": "Required",
         "evidence": [],
-        "reason": "No evidence of required skill Docker found in uploaded resume."
+        "reason": "No evidence of Docker found in uploaded resume."
       },
       {
         "skill": "AWS",
@@ -10279,12 +10233,12 @@
         "priority": "high",
         "requirementType": "Required",
         "evidence": [],
-        "reason": "No evidence of required skill AWS found in uploaded resume."
+        "reason": "No evidence of AWS found in uploaded resume."
       }
     ],
-    "analyzedAt": "2026-08-30T03:30:19.554Z",
-    "savedAt": "2026-08-30T03:30:19.554Z",
-    "updatedAt": "2026-08-30T03:30:19.554Z"
+    "analyzedAt": "2026-08-30T03:37:51.093Z",
+    "savedAt": "2026-08-30T03:37:51.093Z",
+    "updatedAt": "2026-08-30T03:37:51.093Z"
   },
   {
     "createdAt": "2026-08-26T17:34:24.526Z",
@@ -10294,18 +10248,18 @@
     "targetRole": "Full Stack AI Engineer",
     "isCustomJD": false,
     "jobDescriptionAnalysis": null,
-    "overallMatchScore": 9,
-    "score": 9,
+    "overallMatchScore": 15,
+    "score": 15,
     "weightedSummary": {
-      "weightedMatchedRequirements": 5.5,
-      "weightedTotalRequirements": 62,
+      "weightedMatchedRequirements": 13,
+      "weightedTotalRequirements": 86,
       "formula": "(weightedMatchedRequirements / weightedTotalRequirements) * 100"
     },
     "priorityGaps": {
       "high": [
         {
-          "skill": "CSS3",
-          "name": "CSS3",
+          "skill": "Tailwind CSS",
+          "name": "Tailwind CSS",
           "category": "Programming",
           "status": "MISSING",
           "currentLevel": 0,
@@ -10315,7 +10269,7 @@
           "priority": "high",
           "requirementType": "Required",
           "evidence": [],
-          "reason": "No evidence of CSS3 found in uploaded resume."
+          "reason": "No evidence of Tailwind CSS found in uploaded resume."
         },
         {
           "skill": "JavaScript",
@@ -10329,7 +10283,7 @@
           "priority": "high",
           "requirementType": "Required",
           "evidence": [],
-          "reason": "No evidence of required skill JavaScript found in uploaded resume."
+          "reason": "No evidence of JavaScript found in uploaded resume."
         },
         {
           "skill": "TypeScript",
@@ -10360,6 +10314,20 @@
           "reason": "No evidence of required skill HTML5 found in uploaded resume."
         },
         {
+          "skill": "CSS3",
+          "name": "CSS3",
+          "category": "Programming",
+          "status": "MISSING",
+          "currentLevel": 0,
+          "progress": 0,
+          "requiredLevel": 100,
+          "gapPercentage": 100,
+          "priority": "high",
+          "requirementType": "Required",
+          "evidence": [],
+          "reason": "No evidence of required skill CSS3 found in uploaded resume."
+        },
+        {
           "skill": "Next.js",
           "name": "Next.js",
           "category": "Frameworks",
@@ -10386,20 +10354,6 @@
           "requirementType": "Required",
           "evidence": [],
           "reason": "No evidence of required skill Redux found in uploaded resume."
-        },
-        {
-          "skill": "Tailwind CSS",
-          "name": "Tailwind CSS",
-          "category": "Programming",
-          "status": "MISSING",
-          "currentLevel": 0,
-          "progress": 0,
-          "requiredLevel": 100,
-          "gapPercentage": 100,
-          "priority": "high",
-          "requirementType": "Required",
-          "evidence": [],
-          "reason": "No evidence of required skill Tailwind CSS found in uploaded resume."
         },
         {
           "skill": "REST API",
@@ -10556,10 +10510,53 @@
           "reason": "No evidence of required skill Team Collaboration found in uploaded resume."
         }
       ],
-      "medium": [],
+      "medium": [
+        {
+          "skill": "MongoDB",
+          "name": "MongoDB",
+          "category": "Programming",
+          "status": "MISSING",
+          "currentLevel": 0,
+          "progress": 0,
+          "requiredLevel": 100,
+          "gapPercentage": 100,
+          "priority": "medium",
+          "requirementType": "Supplementary",
+          "evidence": [],
+          "reason": "No evidence of MongoDB found in uploaded resume."
+        },
+        {
+          "skill": "JSON Web Tokens (JWT)",
+          "name": "JSON Web Tokens (JWT)",
+          "category": "Technical",
+          "status": "MISSING",
+          "currentLevel": 0,
+          "progress": 0,
+          "requiredLevel": 100,
+          "gapPercentage": 100,
+          "priority": "medium",
+          "requirementType": "Supplementary",
+          "evidence": [],
+          "reason": "No evidence of JSON Web Tokens (JWT) found in uploaded resume."
+        },
+        {
+          "skill": "Google GenAI API",
+          "name": "Google GenAI API",
+          "category": "Programming",
+          "status": "MISSING",
+          "currentLevel": 0,
+          "progress": 0,
+          "requiredLevel": 100,
+          "gapPercentage": 100,
+          "priority": "medium",
+          "requirementType": "Supplementary",
+          "evidence": [],
+          "reason": "No evidence of Google GenAI API found in uploaded resume."
+        }
+      ],
       "low": [],
       "highCount": 18,
-      "mediumCount": 0,
+      "mediumCount": 3,
       "lowCount": 0
     },
     "requirementsBreakdown": {
@@ -10588,13 +10585,13 @@
           "Team Collaboration"
         ],
         "missing": [
-          "CSS3",
+          "Tailwind CSS",
           "JavaScript",
           "TypeScript",
           "HTML5",
+          "CSS3",
           "Next.js",
           "Redux",
-          "Tailwind CSS",
           "REST API",
           "GraphQL",
           "Git",
@@ -10615,24 +10612,12 @@
       }
     },
     "categoryScores": {
-      "Programming": 6,
-      "Frameworks": 0,
-      "Tools": 20,
+      "Programming": 14,
+      "Frameworks": 20,
+      "Tools": 10,
       "Cloud/DevOps": 0
     },
     "skills": [
-      {
-        "name": "CSS3",
-        "category": "Programming",
-        "status": "missing",
-        "currentLevel": 0,
-        "requiredLevel": 100,
-        "gapPercentage": 100,
-        "priority": "high",
-        "requirementType": "Required",
-        "evidence": [],
-        "reason": "No evidence of CSS3 found in uploaded resume."
-      },
       {
         "name": "React.js",
         "category": "Programming",
@@ -10669,6 +10654,81 @@
         "reason": "Mentioned in resume: \"\"express\": \"^4.19.2\",\"; Mentioned in resume: \"\"express-rate-limit\": \"^8.6.2\",\""
       },
       {
+        "name": "Node.js",
+        "category": "Frameworks",
+        "status": "partial",
+        "currentLevel": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "Mentioned in resume: \"\"server\": \"node backend/server.js\",\"",
+          "Mentioned in resume: \"\"server:alt\": \"node server/index.js\",\"",
+          "Mentioned in resume: \"\"dev:server\": \"node backend/server.js\",\"",
+          "Mentioned in resume: \"\"seed:topics\": \"node scripts/seedTopics.js\",\"",
+          "Mentioned in resume: \"\"seed:aptitude\": \"node scripts/seedAptitude.js\",\"",
+          "Mentioned in resume: \"\"generate:questions\": \"node scripts/generateAptitudeBank.js all\",\"",
+          "Mentioned in resume: \"\"generate:topic\": \"node scripts/generateAptitudeBank.js\",\"",
+          "Mentioned in resume: \"\"generate:aptitude\": \"node scripts/generateAptitudeBank.js\",\"",
+          "Mentioned in resume: \"\"validate:questions\": \"node scripts/validateQuestions.js\",\"",
+          "Mentioned in resume: \"\"question:stats\": \"node scripts/validateQuestions.js\"\""
+        ],
+        "reason": "Mentioned in resume: \"\"server\": \"node backend/server.js\",\"; Mentioned in resume: \"\"server:alt\": \"node server/index.js\",\"; Mentioned in resume: \"\"dev:server\": \"node backend/server.js\",\"; Mentioned in resume: \"\"seed:topics\": \"node scripts/seedTopics.js\",\"; Mentioned in resume: \"\"seed:aptitude\": \"node scripts/seedAptitude.js\",\"; Mentioned in resume: \"\"generate:questions\": \"node scripts/generateAptitudeBank.js all\",\"; Mentioned in resume: \"\"generate:topic\": \"node scripts/generateAptitudeBank.js\",\"; Mentioned in resume: \"\"generate:aptitude\": \"node scripts/generateAptitudeBank.js\",\"; Mentioned in resume: \"\"validate:questions\": \"node scripts/validateQuestions.js\",\"; Mentioned in resume: \"\"question:stats\": \"node scripts/validateQuestions.js\"\""
+      },
+      {
+        "name": "MongoDB",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [],
+        "reason": "No evidence of MongoDB found in uploaded resume."
+      },
+      {
+        "name": "Mongoose",
+        "category": "Programming",
+        "status": "partial",
+        "currentLevel": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "Mentioned in resume: \"\"mongoose\": \"^8.5.1\",\""
+        ],
+        "reason": "Mentioned in resume: \"\"mongoose\": \"^8.5.1\",\""
+      },
+      {
+        "name": "Tailwind CSS",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [],
+        "reason": "No evidence of Tailwind CSS found in uploaded resume."
+      },
+      {
+        "name": "Supabase",
+        "category": "Technical",
+        "status": "partial",
+        "currentLevel": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "Mentioned in resume: \"\"@supabase/supabase-js\": \"^2.111.0\",\""
+        ],
+        "reason": "Mentioned in resume: \"\"@supabase/supabase-js\": \"^2.111.0\",\""
+      },
+      {
         "name": "JavaScript",
         "category": "Programming",
         "status": "missing",
@@ -10678,7 +10738,136 @@
         "priority": "high",
         "requirementType": "Required",
         "evidence": [],
-        "reason": "No evidence of required skill JavaScript found in uploaded resume."
+        "reason": "No evidence of JavaScript found in uploaded resume."
+      },
+      {
+        "name": "Vite",
+        "category": "Tools",
+        "status": "partial",
+        "currentLevel": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [
+          "Mentioned in resume: \"\"dev\": \"vite\",\"",
+          "Mentioned in resume: \"\"build\": \"vite build\",\"",
+          "Mentioned in resume: \"\"preview\": \"vite preview\",\"",
+          "Mentioned in resume: \"\"@tailwindcss/vite\": \"^4.0.0\",\"",
+          "Mentioned in resume: \"\"@vitejs/plugin-react\": \"^6.0.3\",\"",
+          "Mentioned in resume: \"\"vite\": \"^8.1.1\"\""
+        ],
+        "reason": "Mentioned in resume: \"\"dev\": \"vite\",\"; Mentioned in resume: \"\"build\": \"vite build\",\"; Mentioned in resume: \"\"preview\": \"vite preview\",\"; Mentioned in resume: \"\"@tailwindcss/vite\": \"^4.0.0\",\"; Mentioned in resume: \"\"@vitejs/plugin-react\": \"^6.0.3\",\"; Mentioned in resume: \"\"vite\": \"^8.1.1\"\""
+      },
+      {
+        "name": "JSON Web Tokens (JWT)",
+        "category": "Technical",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [],
+        "reason": "No evidence of JSON Web Tokens (JWT) found in uploaded resume."
+      },
+      {
+        "name": "Bcrypt",
+        "category": "Programming",
+        "status": "partial",
+        "currentLevel": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "Mentioned in resume: \"\"bcryptjs\": \"^2.4.3\",\""
+        ],
+        "reason": "Mentioned in resume: \"\"bcryptjs\": \"^2.4.3\",\""
+      },
+      {
+        "name": "Google GenAI API",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [],
+        "reason": "No evidence of Google GenAI API found in uploaded resume."
+      },
+      {
+        "name": "PostCSS",
+        "category": "Programming",
+        "status": "partial",
+        "currentLevel": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "Mentioned in resume: \"\"@tailwindcss/postcss\": \"^4.3.3\",\"",
+          "Mentioned in resume: \"\"postcss\": \"^8.5.26\",\""
+        ],
+        "reason": "Mentioned in resume: \"\"@tailwindcss/postcss\": \"^4.3.3\",\"; Mentioned in resume: \"\"postcss\": \"^8.5.26\",\""
+      },
+      {
+        "name": "Recharts",
+        "category": "Programming",
+        "status": "partial",
+        "currentLevel": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "Mentioned in resume: \"\"recharts\": \"^2.12.7\",\""
+        ],
+        "reason": "Mentioned in resume: \"\"recharts\": \"^2.12.7\",\""
+      },
+      {
+        "name": "Multer",
+        "category": "Programming",
+        "status": "partial",
+        "currentLevel": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "Mentioned in resume: \"\"multer\": \"^1.4.5-lts.1\",\""
+        ],
+        "reason": "Mentioned in resume: \"\"multer\": \"^1.4.5-lts.1\",\""
+      },
+      {
+        "name": "PDFKit",
+        "category": "Technical",
+        "status": "partial",
+        "currentLevel": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "Mentioned in resume: \"\"pdfkit\": \"^0.20.1\",\""
+        ],
+        "reason": "Mentioned in resume: \"\"pdfkit\": \"^0.20.1\",\""
+      },
+      {
+        "name": "Husky",
+        "category": "Technical",
+        "status": "partial",
+        "currentLevel": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "Mentioned in resume: \"\"prepare\": \"husky\",\"",
+          "Mentioned in resume: \"\"husky\": \"^9.1.7\",\""
+        ],
+        "reason": "Mentioned in resume: \"\"prepare\": \"husky\",\"; Mentioned in resume: \"\"husky\": \"^9.1.7\",\""
       },
       {
         "name": "TypeScript",
@@ -10705,6 +10894,18 @@
         "reason": "No evidence of required skill HTML5 found in uploaded resume."
       },
       {
+        "name": "CSS3",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [],
+        "reason": "No evidence of required skill CSS3 found in uploaded resume."
+      },
+      {
         "name": "Next.js",
         "category": "Frameworks",
         "status": "missing",
@@ -10727,18 +10928,6 @@
         "requirementType": "Required",
         "evidence": [],
         "reason": "No evidence of required skill Redux found in uploaded resume."
-      },
-      {
-        "name": "Tailwind CSS",
-        "category": "Programming",
-        "status": "missing",
-        "currentLevel": 0,
-        "requiredLevel": 100,
-        "gapPercentage": 100,
-        "priority": "high",
-        "requirementType": "Required",
-        "evidence": [],
-        "reason": "No evidence of required skill Tailwind CSS found in uploaded resume."
       },
       {
         "name": "REST API",
@@ -10787,25 +10976,6 @@
         "requirementType": "Required",
         "evidence": [],
         "reason": "No evidence of required skill GitHub found in uploaded resume."
-      },
-      {
-        "name": "Vite",
-        "category": "Tools",
-        "status": "strong",
-        "currentLevel": 100,
-        "requiredLevel": 100,
-        "gapPercentage": 0,
-        "priority": "high",
-        "requirementType": "Required",
-        "evidence": [
-          "Mentioned in resume: \"\"dev\": \"vite\",\"",
-          "Mentioned in resume: \"\"build\": \"vite build\",\"",
-          "Mentioned in resume: \"\"preview\": \"vite preview\",\"",
-          "Mentioned in resume: \"\"@tailwindcss/vite\": \"^4.0.0\",\"",
-          "Mentioned in resume: \"\"@vitejs/plugin-react\": \"^6.0.3\",\"",
-          "Mentioned in resume: \"\"vite\": \"^8.1.1\"\""
-        ],
-        "reason": "Mentioned in resume: \"\"dev\": \"vite\",\"; Mentioned in resume: \"\"build\": \"vite build\",\"; Mentioned in resume: \"\"preview\": \"vite preview\",\"; Mentioned in resume: \"\"@tailwindcss/vite\": \"^4.0.0\",\"; Mentioned in resume: \"\"@vitejs/plugin-react\": \"^6.0.3\",\"; Mentioned in resume: \"\"vite\": \"^8.1.1\"\""
       },
       {
         "name": "Webpack",
@@ -10892,29 +11062,7 @@
         "reason": "No evidence of required skill Team Collaboration found in uploaded resume."
       }
     ],
-    "strongSkills": [
-      {
-        "skill": "Vite",
-        "name": "Vite",
-        "category": "Tools",
-        "status": "GAINED",
-        "currentLevel": 100,
-        "progress": 100,
-        "requiredLevel": 100,
-        "gapPercentage": 0,
-        "priority": "high",
-        "requirementType": "Required",
-        "evidence": [
-          "Mentioned in resume: \"\"dev\": \"vite\",\"",
-          "Mentioned in resume: \"\"build\": \"vite build\",\"",
-          "Mentioned in resume: \"\"preview\": \"vite preview\",\"",
-          "Mentioned in resume: \"\"@tailwindcss/vite\": \"^4.0.0\",\"",
-          "Mentioned in resume: \"\"@vitejs/plugin-react\": \"^6.0.3\",\"",
-          "Mentioned in resume: \"\"vite\": \"^8.1.1\"\""
-        ],
-        "reason": "Mentioned in resume: \"\"dev\": \"vite\",\"; Mentioned in resume: \"\"build\": \"vite build\",\"; Mentioned in resume: \"\"preview\": \"vite preview\",\"; Mentioned in resume: \"\"@tailwindcss/vite\": \"^4.0.0\",\"; Mentioned in resume: \"\"@vitejs/plugin-react\": \"^6.0.3\",\"; Mentioned in resume: \"\"vite\": \"^8.1.1\"\""
-      }
-    ],
+    "strongSkills": [],
     "partialSkills": [
       {
         "skill": "React.js",
@@ -10954,12 +11102,202 @@
           "Mentioned in resume: \"\"express-rate-limit\": \"^8.6.2\",\""
         ],
         "reason": "Mentioned in resume: \"\"express\": \"^4.19.2\",\"; Mentioned in resume: \"\"express-rate-limit\": \"^8.6.2\",\""
+      },
+      {
+        "skill": "Node.js",
+        "name": "Node.js",
+        "category": "Frameworks",
+        "status": "LEARNING",
+        "currentLevel": 50,
+        "progress": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "Mentioned in resume: \"\"server\": \"node backend/server.js\",\"",
+          "Mentioned in resume: \"\"server:alt\": \"node server/index.js\",\"",
+          "Mentioned in resume: \"\"dev:server\": \"node backend/server.js\",\"",
+          "Mentioned in resume: \"\"seed:topics\": \"node scripts/seedTopics.js\",\"",
+          "Mentioned in resume: \"\"seed:aptitude\": \"node scripts/seedAptitude.js\",\"",
+          "Mentioned in resume: \"\"generate:questions\": \"node scripts/generateAptitudeBank.js all\",\"",
+          "Mentioned in resume: \"\"generate:topic\": \"node scripts/generateAptitudeBank.js\",\"",
+          "Mentioned in resume: \"\"generate:aptitude\": \"node scripts/generateAptitudeBank.js\",\"",
+          "Mentioned in resume: \"\"validate:questions\": \"node scripts/validateQuestions.js\",\"",
+          "Mentioned in resume: \"\"question:stats\": \"node scripts/validateQuestions.js\"\""
+        ],
+        "reason": "Mentioned in resume: \"\"server\": \"node backend/server.js\",\"; Mentioned in resume: \"\"server:alt\": \"node server/index.js\",\"; Mentioned in resume: \"\"dev:server\": \"node backend/server.js\",\"; Mentioned in resume: \"\"seed:topics\": \"node scripts/seedTopics.js\",\"; Mentioned in resume: \"\"seed:aptitude\": \"node scripts/seedAptitude.js\",\"; Mentioned in resume: \"\"generate:questions\": \"node scripts/generateAptitudeBank.js all\",\"; Mentioned in resume: \"\"generate:topic\": \"node scripts/generateAptitudeBank.js\",\"; Mentioned in resume: \"\"generate:aptitude\": \"node scripts/generateAptitudeBank.js\",\"; Mentioned in resume: \"\"validate:questions\": \"node scripts/validateQuestions.js\",\"; Mentioned in resume: \"\"question:stats\": \"node scripts/validateQuestions.js\"\""
+      },
+      {
+        "skill": "Mongoose",
+        "name": "Mongoose",
+        "category": "Programming",
+        "status": "LEARNING",
+        "currentLevel": 50,
+        "progress": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "Mentioned in resume: \"\"mongoose\": \"^8.5.1\",\""
+        ],
+        "reason": "Mentioned in resume: \"\"mongoose\": \"^8.5.1\",\""
+      },
+      {
+        "skill": "Supabase",
+        "name": "Supabase",
+        "category": "Technical",
+        "status": "LEARNING",
+        "currentLevel": 50,
+        "progress": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "Mentioned in resume: \"\"@supabase/supabase-js\": \"^2.111.0\",\""
+        ],
+        "reason": "Mentioned in resume: \"\"@supabase/supabase-js\": \"^2.111.0\",\""
+      },
+      {
+        "skill": "Vite",
+        "name": "Vite",
+        "category": "Tools",
+        "status": "LEARNING",
+        "currentLevel": 50,
+        "progress": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [
+          "Mentioned in resume: \"\"dev\": \"vite\",\"",
+          "Mentioned in resume: \"\"build\": \"vite build\",\"",
+          "Mentioned in resume: \"\"preview\": \"vite preview\",\"",
+          "Mentioned in resume: \"\"@tailwindcss/vite\": \"^4.0.0\",\"",
+          "Mentioned in resume: \"\"@vitejs/plugin-react\": \"^6.0.3\",\"",
+          "Mentioned in resume: \"\"vite\": \"^8.1.1\"\""
+        ],
+        "reason": "Mentioned in resume: \"\"dev\": \"vite\",\"; Mentioned in resume: \"\"build\": \"vite build\",\"; Mentioned in resume: \"\"preview\": \"vite preview\",\"; Mentioned in resume: \"\"@tailwindcss/vite\": \"^4.0.0\",\"; Mentioned in resume: \"\"@vitejs/plugin-react\": \"^6.0.3\",\"; Mentioned in resume: \"\"vite\": \"^8.1.1\"\""
+      },
+      {
+        "skill": "Bcrypt",
+        "name": "Bcrypt",
+        "category": "Programming",
+        "status": "LEARNING",
+        "currentLevel": 50,
+        "progress": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "Mentioned in resume: \"\"bcryptjs\": \"^2.4.3\",\""
+        ],
+        "reason": "Mentioned in resume: \"\"bcryptjs\": \"^2.4.3\",\""
+      },
+      {
+        "skill": "PostCSS",
+        "name": "PostCSS",
+        "category": "Programming",
+        "status": "LEARNING",
+        "currentLevel": 50,
+        "progress": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "Mentioned in resume: \"\"@tailwindcss/postcss\": \"^4.3.3\",\"",
+          "Mentioned in resume: \"\"postcss\": \"^8.5.26\",\""
+        ],
+        "reason": "Mentioned in resume: \"\"@tailwindcss/postcss\": \"^4.3.3\",\"; Mentioned in resume: \"\"postcss\": \"^8.5.26\",\""
+      },
+      {
+        "skill": "Recharts",
+        "name": "Recharts",
+        "category": "Programming",
+        "status": "LEARNING",
+        "currentLevel": 50,
+        "progress": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "Mentioned in resume: \"\"recharts\": \"^2.12.7\",\""
+        ],
+        "reason": "Mentioned in resume: \"\"recharts\": \"^2.12.7\",\""
+      },
+      {
+        "skill": "Multer",
+        "name": "Multer",
+        "category": "Programming",
+        "status": "LEARNING",
+        "currentLevel": 50,
+        "progress": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "Mentioned in resume: \"\"multer\": \"^1.4.5-lts.1\",\""
+        ],
+        "reason": "Mentioned in resume: \"\"multer\": \"^1.4.5-lts.1\",\""
+      },
+      {
+        "skill": "PDFKit",
+        "name": "PDFKit",
+        "category": "Technical",
+        "status": "LEARNING",
+        "currentLevel": 50,
+        "progress": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "Mentioned in resume: \"\"pdfkit\": \"^0.20.1\",\""
+        ],
+        "reason": "Mentioned in resume: \"\"pdfkit\": \"^0.20.1\",\""
+      },
+      {
+        "skill": "Husky",
+        "name": "Husky",
+        "category": "Technical",
+        "status": "LEARNING",
+        "currentLevel": 50,
+        "progress": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [
+          "Mentioned in resume: \"\"prepare\": \"husky\",\"",
+          "Mentioned in resume: \"\"husky\": \"^9.1.7\",\""
+        ],
+        "reason": "Mentioned in resume: \"\"prepare\": \"husky\",\"; Mentioned in resume: \"\"husky\": \"^9.1.7\",\""
       }
     ],
     "missingSkills": [
       {
-        "skill": "CSS3",
-        "name": "CSS3",
+        "skill": "MongoDB",
+        "name": "MongoDB",
+        "category": "Programming",
+        "status": "MISSING",
+        "currentLevel": 0,
+        "progress": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [],
+        "reason": "No evidence of MongoDB found in uploaded resume."
+      },
+      {
+        "skill": "Tailwind CSS",
+        "name": "Tailwind CSS",
         "category": "Programming",
         "status": "MISSING",
         "currentLevel": 0,
@@ -10969,7 +11307,7 @@
         "priority": "high",
         "requirementType": "Required",
         "evidence": [],
-        "reason": "No evidence of CSS3 found in uploaded resume."
+        "reason": "No evidence of Tailwind CSS found in uploaded resume."
       },
       {
         "skill": "JavaScript",
@@ -10983,7 +11321,35 @@
         "priority": "high",
         "requirementType": "Required",
         "evidence": [],
-        "reason": "No evidence of required skill JavaScript found in uploaded resume."
+        "reason": "No evidence of JavaScript found in uploaded resume."
+      },
+      {
+        "skill": "JSON Web Tokens (JWT)",
+        "name": "JSON Web Tokens (JWT)",
+        "category": "Technical",
+        "status": "MISSING",
+        "currentLevel": 0,
+        "progress": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [],
+        "reason": "No evidence of JSON Web Tokens (JWT) found in uploaded resume."
+      },
+      {
+        "skill": "Google GenAI API",
+        "name": "Google GenAI API",
+        "category": "Programming",
+        "status": "MISSING",
+        "currentLevel": 0,
+        "progress": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "medium",
+        "requirementType": "Supplementary",
+        "evidence": [],
+        "reason": "No evidence of Google GenAI API found in uploaded resume."
       },
       {
         "skill": "TypeScript",
@@ -11014,6 +11380,20 @@
         "reason": "No evidence of required skill HTML5 found in uploaded resume."
       },
       {
+        "skill": "CSS3",
+        "name": "CSS3",
+        "category": "Programming",
+        "status": "MISSING",
+        "currentLevel": 0,
+        "progress": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [],
+        "reason": "No evidence of required skill CSS3 found in uploaded resume."
+      },
+      {
         "skill": "Next.js",
         "name": "Next.js",
         "category": "Frameworks",
@@ -11040,20 +11420,6 @@
         "requirementType": "Required",
         "evidence": [],
         "reason": "No evidence of required skill Redux found in uploaded resume."
-      },
-      {
-        "skill": "Tailwind CSS",
-        "name": "Tailwind CSS",
-        "category": "Programming",
-        "status": "MISSING",
-        "currentLevel": 0,
-        "progress": 0,
-        "requiredLevel": 100,
-        "gapPercentage": 100,
-        "priority": "high",
-        "requirementType": "Required",
-        "evidence": [],
-        "reason": "No evidence of required skill Tailwind CSS found in uploaded resume."
       },
       {
         "skill": "REST API",
@@ -11210,9 +11576,9 @@
         "reason": "No evidence of required skill Team Collaboration found in uploaded resume."
       }
     ],
-    "analyzedAt": "2026-08-30T03:32:02.950Z",
-    "savedAt": "2026-08-30T03:32:02.950Z",
-    "updatedAt": "2026-08-30T03:32:02.950Z"
+    "analyzedAt": "2026-08-30T03:37:59.598Z",
+    "savedAt": "2026-08-30T03:37:59.598Z",
+    "updatedAt": "2026-08-30T03:37:59.598Z"
   },
   {
     "createdAt": "2026-08-29T16:21:07.572Z",
