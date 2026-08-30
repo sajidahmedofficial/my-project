@@ -172,6 +172,32 @@ export const ROLE_TAXONOMY = {
       "REST API": "medium"
     }
   },
+  "Full Stack AI Engineer": {
+    category: "AI & Full Stack Development",
+    coreSkills: {
+      Programming: ["JavaScript", "TypeScript", "Python", "HTML5", "CSS3"],
+      Frameworks: ["React.js", "Next.js", "Node.js", "FastAPI", "Tailwind CSS"],
+      Databases: ["MongoDB", "PostgreSQL", "Vector DBs", "REST API"],
+      Tools: ["Git", "GitHub", "Vite", "Docker"],
+      "Cloud/DevOps": ["AWS", "Vercel", "Hugging Face"],
+      "Soft Skills": ["Problem Solving", "AI Prompt Engineering"]
+    },
+    priorities: {
+      "Python": "high",
+      "React.js": "high",
+      "Node.js": "high",
+      "JavaScript": "high",
+      "TypeScript": "high",
+      "HTML5": "high",
+      "CSS3": "high",
+      "FastAPI": "medium",
+      "MongoDB": "medium",
+      "Git": "high",
+      "Docker": "medium",
+      "Next.js": "medium",
+      "REST API": "medium"
+    }
+  },
   "Data Scientist / AI Engineer": {
     category: "Data Science & AI",
     coreSkills: {
@@ -418,6 +444,7 @@ function validateAndSanitizeSkills({
   requiredSkills = [],
   preferredSkills = [],
   resumeText = "",
+  userSkills = [],
   verifiedSkills = [],
   isCustomJD = false
 }) {
@@ -426,6 +453,11 @@ function validateAndSanitizeSkills({
 
   const normalizedVerified = (verifiedSkills || []).map(v => {
     const raw = typeof v === 'string' ? v : v.skillName || v.skill || v.name || '';
+    return normalizeSkillName(raw).toLowerCase();
+  });
+
+  const normalizedUser = (userSkills || []).map(u => {
+    const raw = typeof u === 'string' ? u : u.skillName || u.skill || u.name || '';
     return normalizeSkillName(raw).toLowerCase();
   });
 
@@ -443,23 +475,19 @@ function validateAndSanitizeSkills({
     const category = item.category || categorizeSkill(normalizedName);
     const extractedEvidence = extractEvidenceForSkill(normalizedName, resumeText);
     const isVerified = normalizedVerified.includes(key);
+    const isUserSkill = normalizedUser.some(u => u === key || u.includes(key) || key.includes(u));
 
     const combinedEvidence = Array.from(new Set([
       ...(Array.isArray(item.evidence) ? item.evidence : []),
       ...extractedEvidence,
+      ...(isUserSkill ? [`Detected in resume skills: ${normalizedName}`] : []),
       ...(isVerified ? [`Certified & Verified via SkillBridge Assessment`] : [])
     ]));
 
     let status = (item.status || "").toLowerCase();
-    if (isVerified) {
+    if (isVerified || isUserSkill || combinedEvidence.length >= 1) {
       status = "strong";
     } else if (!["strong", "partial", "missing"].includes(status)) {
-      if (combinedEvidence.length >= 2) status = "strong";
-      else if (combinedEvidence.length === 1) status = "partial";
-      else status = "missing";
-    }
-
-    if (combinedEvidence.length === 0 && !isVerified && status !== "missing") {
       status = "missing";
     }
 
@@ -511,12 +539,16 @@ function validateAndSanitizeSkills({
     if (!seen.has(key)) {
       seen.add(key);
       const isVerified = normalizedVerified.includes(key);
+      const isUserSkill = normalizedUser.some(u => u === key || u.includes(key) || key.includes(u));
       const evidence = extractEvidenceForSkill(normReq, resumeText);
+      if (isUserSkill) {
+        evidence.push(`Detected in resume skills: ${normReq}`);
+      }
       if (isVerified) {
         evidence.push("Certified & Verified via SkillBridge Assessment");
       }
 
-      const status = isVerified ? "strong" : evidence.length >= 2 ? "strong" : evidence.length === 1 ? "partial" : "missing";
+      const status = (isVerified || isUserSkill || evidence.length >= 1) ? "strong" : "missing";
 
       sanitized.push({
         name: normReq,
@@ -540,12 +572,16 @@ function validateAndSanitizeSkills({
     if (!seen.has(key)) {
       seen.add(key);
       const isVerified = normalizedVerified.includes(key);
+      const isUserSkill = normalizedUser.some(u => u === key || u.includes(key) || key.includes(u));
       const evidence = extractEvidenceForSkill(normPref, resumeText);
+      if (isUserSkill) {
+        evidence.push(`Detected in resume skills: ${normPref}`);
+      }
       if (isVerified) {
         evidence.push("Certified & Verified via SkillBridge Assessment");
       }
 
-      const status = isVerified ? "strong" : evidence.length >= 2 ? "strong" : evidence.length === 1 ? "partial" : "missing";
+      const status = (isVerified || isUserSkill || evidence.length >= 1) ? "strong" : "missing";
 
       sanitized.push({
         name: normPref,
@@ -659,6 +695,7 @@ Return ONLY a JSON object with this EXACT structure:
       requiredSkills,
       preferredSkills,
       resumeText,
+      userSkills,
       verifiedSkills,
       isCustomJD: hasCustomJD
     });
@@ -667,13 +704,14 @@ Return ONLY a JSON object with this EXACT structure:
     const initialList = userSkills.map(s => ({
       name: s,
       category: categorizeSkill(s),
-      status: "partial"
+      status: "strong"
     }));
     finalSkills = validateAndSanitizeSkills({
       rawSkills: initialList,
       requiredSkills,
       preferredSkills,
       resumeText,
+      userSkills,
       verifiedSkills,
       isCustomJD: hasCustomJD
     });

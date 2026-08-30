@@ -409,6 +409,22 @@ export function generateClientFallbackReport({
   jobDescription = ""
 }) {
   const roleSkillsMap = {
+    "Full Stack AI Engineer": [
+      { name: "React.js", category: "Frameworks", priority: "high" },
+      { name: "Node.js", category: "Frameworks", priority: "high" },
+      { name: "Python", category: "Programming", priority: "high" },
+      { name: "JavaScript", category: "Programming", priority: "high" },
+      { name: "TypeScript", category: "Programming", priority: "high" },
+      { name: "HTML5", category: "Programming", priority: "high" },
+      { name: "CSS3", category: "Programming", priority: "high" },
+      { name: "FastAPI", category: "Frameworks", priority: "medium" },
+      { name: "MongoDB", category: "Databases", priority: "medium" },
+      { name: "PostgreSQL", category: "Databases", priority: "medium" },
+      { name: "REST API", category: "Databases", priority: "medium" },
+      { name: "Git", category: "Tools", priority: "high" },
+      { name: "Docker", category: "Cloud/DevOps", priority: "medium" },
+      { name: "Tailwind CSS", category: "Frameworks", priority: "medium" }
+    ],
     "Full Stack Developer": [
       { name: "React.js", category: "Frameworks", priority: "high" },
       { name: "Node.js", category: "Frameworks", priority: "high" },
@@ -449,30 +465,33 @@ export function generateClientFallbackReport({
     ]
   };
 
-  const selectedSkills = roleSkillsMap[targetRole] || roleSkillsMap["Full Stack Developer"];
+  const selectedSkills = roleSkillsMap[targetRole] || roleSkillsMap["Full Stack AI Engineer"] || roleSkillsMap["Full Stack Developer"];
   const userSkillNames = (Array.isArray(userSkills) ? userSkills : []).map(s => (typeof s === 'string' ? s : s.name || '').toLowerCase());
   const verifiedNames = (Array.isArray(verifiedSkills) ? verifiedSkills : []).map(s => (typeof s === 'string' ? s : s.skillName || '').toLowerCase());
 
   const processedSkills = selectedSkills.map(sk => {
-    const isVerified = verifiedNames.some(v => v.includes(sk.name.toLowerCase()) || sk.name.toLowerCase().includes(v));
-    const isPresent = isVerified || userSkillNames.some(u => u.includes(sk.name.toLowerCase()) || sk.name.toLowerCase().includes(u)) || (resumeText && resumeText.toLowerCase().includes(sk.name.toLowerCase()));
+    const sNameLower = sk.name.toLowerCase();
+    const isVerified = verifiedNames.some(v => v.includes(sNameLower) || sNameLower.includes(v));
+    const isPresent = isVerified || 
+      userSkillNames.some(u => u === sNameLower || u.includes(sNameLower.replace('.js', '')) || sNameLower.includes(u)) || 
+      (resumeText && resumeText.toLowerCase().includes(sNameLower.replace('.js', '')));
 
-    const status = isVerified ? "strong" : isPresent ? "strong" : (sk.priority === "high" ? "partial" : "missing");
-    const currentLevel = status === "strong" ? 100 : status === "partial" ? 50 : 0;
-    const gapPercentage = status === "strong" ? 0 : status === "partial" ? 50 : 100;
+    const status = isVerified ? "strong" : isPresent ? "strong" : "missing";
+    const currentLevel = status === "strong" ? 100 : 0;
+    const gapPercentage = status === "strong" ? 0 : 100;
 
     return {
       name: sk.name,
       skill: sk.name,
       category: sk.category,
-      status: status === "strong" ? "GAINED" : status === "partial" ? "LEARNING" : "MISSING",
+      status: status === "strong" ? "GAINED" : "MISSING",
       currentLevel,
       progress: currentLevel,
       requiredLevel: 100,
       gapPercentage,
       priority: sk.priority,
       requirementType: sk.priority === "high" ? "Required" : "Preferred",
-      evidence: status === "strong" ? [`Demonstrated competency in ${sk.name}`] : [],
+      evidence: status === "strong" ? [`Detected in resume skills (${sk.name})`] : [],
       reason: status === "strong" ? `Verified in skill set` : `Skill enhancement recommended for ${targetRole}`
     };
   });
