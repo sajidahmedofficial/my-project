@@ -10078,5 +10078,377 @@
     "overall_score": 75,
     "ats_score": 75,
     "updatedAt": "2026-08-30T05:01:29.270Z"
+  },
+  {
+    "createdAt": "2026-08-30T05:09:54.336Z",
+    "id": "res_1788066594336_cc7kitk",
+    "resumeId": "res_1788066594336_cc7kitk",
+    "userId": "guest_user",
+    "fileName": "Skillbridge Ai â Master Full-stack Integration & Upgrade Prompt (1).pdf",
+    "resumeText": "Skillbridge Ai — Master Full-stack \nIntegration & Upgrade Prompt\nLive website: https://my-project-eta-sepia.vercel.app/\nRESUME CONTENT TYPE\nThis content is a project implementation prompt/specification, not a personal resume with employment or education \nhistory.\nCRITICAL RULE\nDO NOT build a new project from scratch. DO NOT replace my existing SkillBridge AI design unnecessarily. DO \nNOT create fake/demo functionality. DO NOT create disconnected pages. DO NOT make the user upload the same \nresume repeatedly. INSPECT MY EXISTING PROJECT → KEEP WHAT WORKS → FIX WHAT IS BROKEN → \nCONNECT EVERYTHING → TEST EVERYTHING → DEPLOY.\nPRIMARY PRODUCT REQUIREMENT\nThe final website must behave as ONE connected application with a single-resume source of truth (upload resume \nonce, reuse everywhere).\nEXECUTION MODE\nInspect existing project, map architecture, identify broken/disconnected features, fix authentication and persistence, \nimplement one-resume data flow, connect all modules (Resume Analyzer, Career, Skill Gap, Job Matrix, Learning, \nCertifications, Interview Prep, AI Mentor, Dashboard, Navigation), add loading/error/security/production readiness, \nrun tests, and provide PASS/FAIL implementation report.",
+    "analysis": {
+      "candidate": {
+        "firstName": "",
+        "lastName": "",
+        "name": "Candidate",
+        "email": "",
+        "phone": "",
+        "linkedIn": "",
+        "summary": "This content is a project implementation prompt/specification, not a personal resume with employment or education",
+        "headline": "Full Stack AI Engineer Candidate"
+      },
+      "summary": "This content is a project implementation prompt/specification, not a personal resume with employment or education",
+      "education": [],
+      "experience": [],
+      "hasExperience": false,
+      "hasEducation": false,
+      "experienceAnalysis": {
+        "status": "no_experience",
+        "hasExperience": false,
+        "count": 0,
+        "label": "Fresher / Entry-Level (0 Years)",
+        "message": "No formal work experience detected in this resume.",
+        "suggestion": "For freshers, recruiters prioritize technical projects, verified skill certifications, and problem-solving aptitude."
+      },
+      "educationAnalysis": {
+        "status": "missing",
+        "hasEducation": false,
+        "count": 0,
+        "label": "No Education Section Detected",
+        "message": "No formal degree or university section was detected in this resume text."
+      },
+      "scores": {
+        "overall": 60,
+        "ats": 72,
+        "grammar": 85,
+        "format": 80,
+        "skills": 0,
+        "experience": 60,
+        "projects": 78
+      },
+      "grammarIssues": [],
+      "resumeProblems": [
+        {
+          "section": "Experience & Projects",
+          "problem": "Bullet points lack quantifiable metrics (e.g. percentages, performance gains, numbers)",
+          "whyItMatters": "Recruiters and ATS favor resumes showing measured impact.",
+          "suggestion": "Rephrase achievements to include metrics like 'improved performance by 35%' or 'served 10k+ users'.",
+          "priority": "high"
+        },
+        {
+          "section": "Contact & Header",
+          "problem": "Missing GitHub / Portfolio URL link",
+          "whyItMatters": "Technical recruiters verify proof of work through live project links.",
+          "suggestion": "Add your GitHub profile link (https://github.com/your-username) at the top of your resume.",
+          "priority": "medium"
+        }
+      ],
+      "formatProblems": [
+        {
+          "problem": "Check section spacing and margin consistency",
+          "suggestion": "Use standard 0.5 - 1 inch margins"
+        }
+      ],
+      "atsProblems": [
+        {
+          "problem": "Missing proof of work link in contact header",
+          "suggestion": "Add GitHub profile link"
+        }
+      ],
+      "missingSections": [],
+      "skills": {
+        "detected": [],
+        "strong": [],
+        "weak": [],
+        "missing": [
+          "HTML",
+          "CSS",
+          "JavaScript",
+          "React",
+          "Node.js",
+          "Express",
+          "MongoDB",
+          "Git",
+          "REST API"
+        ]
+      },
+      "projects": [
+        {
+          "name": "Web Application Project",
+          "description": "Interactive full stack application",
+          "technologies": []
+        }
+      ],
+      "improvements": [
+        {
+          "section": "Experience & Projects",
+          "original": "Bullet points lack quantifiable metrics (e.g. percentages, performance gains, numbers)",
+          "suggested": "Rephrase achievements to include metrics like 'improved performance by 35%' or 'served 10k+ users'.",
+          "reason": "Recruiters and ATS favor resumes showing measured impact."
+        },
+        {
+          "section": "Contact & Header",
+          "original": "Missing GitHub / Portfolio URL link",
+          "suggested": "Add your GitHub profile link (https://github.com/your-username) at the top of your resume.",
+          "reason": "Technical recruiters verify proof of work through live project links."
+        }
+      ],
+      "skillGap": [
+        {
+          "skill": "HTML",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "CSS",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "JavaScript",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "React",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Node.js",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Express",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "MongoDB",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Git",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "REST API",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        }
+      ]
+    },
+    "targetRole": "Full Stack AI Engineer",
+    "jobDescription": "",
+    "overall_score": 75,
+    "ats_score": 75,
+    "updatedAt": "2026-08-30T05:09:54.337Z"
+  },
+  {
+    "createdAt": "2026-08-30T05:09:54.409Z",
+    "id": "res_1788066594409_y7oy347",
+    "resumeId": "res_1788066594409_y7oy347",
+    "userId": "guest_user",
+    "fileName": "Skillbridge Ai â Master Full-stack Integration & Upgrade Prompt (1).pdf",
+    "resumeText": "Skillbridge Ai — Master Full-stack \nIntegration & Upgrade Prompt\nLive website: https://my-project-eta-sepia.vercel.app/\nRESUME CONTENT TYPE\nThis content is a project implementation prompt/specification, not a personal resume with employment or education \nhistory.\nCRITICAL RULE\nDO NOT build a new project from scratch. DO NOT replace my existing SkillBridge AI design unnecessarily. DO \nNOT create fake/demo functionality. DO NOT create disconnected pages. DO NOT make the user upload the same \nresume repeatedly. INSPECT MY EXISTING PROJECT → KEEP WHAT WORKS → FIX WHAT IS BROKEN → \nCONNECT EVERYTHING → TEST EVERYTHING → DEPLOY.\nPRIMARY PRODUCT REQUIREMENT\nThe final website must behave as ONE connected application with a single-resume source of truth (upload resume \nonce, reuse everywhere).\nEXECUTION MODE\nInspect existing project, map architecture, identify broken/disconnected features, fix authentication and persistence, \nimplement one-resume data flow, connect all modules (Resume Analyzer, Career, Skill Gap, Job Matrix, Learning, \nCertifications, Interview Prep, AI Mentor, Dashboard, Navigation), add loading/error/security/production readiness, \nrun tests, and provide PASS/FAIL implementation report.",
+    "analysis": {
+      "candidate": {
+        "firstName": "",
+        "lastName": "",
+        "name": "Candidate",
+        "email": "",
+        "phone": "",
+        "linkedIn": "",
+        "summary": "This content is a project implementation prompt/specification, not a personal resume with employment or education",
+        "headline": "Full Stack AI Engineer Candidate"
+      },
+      "summary": "This content is a project implementation prompt/specification, not a personal resume with employment or education",
+      "education": [],
+      "experience": [],
+      "hasExperience": false,
+      "hasEducation": false,
+      "experienceAnalysis": {
+        "status": "no_experience",
+        "hasExperience": false,
+        "count": 0,
+        "label": "Fresher / Entry-Level (0 Years)",
+        "message": "No formal work experience detected in this resume.",
+        "suggestion": "For freshers, recruiters prioritize technical projects, verified skill certifications, and problem-solving aptitude."
+      },
+      "educationAnalysis": {
+        "status": "missing",
+        "hasEducation": false,
+        "count": 0,
+        "label": "No Education Section Detected",
+        "message": "No formal degree or university section was detected in this resume text."
+      },
+      "scores": {
+        "overall": 60,
+        "ats": 72,
+        "grammar": 85,
+        "format": 80,
+        "skills": 0,
+        "experience": 60,
+        "projects": 78
+      },
+      "grammarIssues": [],
+      "resumeProblems": [
+        {
+          "section": "Experience & Projects",
+          "problem": "Bullet points lack quantifiable metrics (e.g. percentages, performance gains, numbers)",
+          "whyItMatters": "Recruiters and ATS favor resumes showing measured impact.",
+          "suggestion": "Rephrase achievements to include metrics like 'improved performance by 35%' or 'served 10k+ users'.",
+          "priority": "high"
+        },
+        {
+          "section": "Contact & Header",
+          "problem": "Missing GitHub / Portfolio URL link",
+          "whyItMatters": "Technical recruiters verify proof of work through live project links.",
+          "suggestion": "Add your GitHub profile link (https://github.com/your-username) at the top of your resume.",
+          "priority": "medium"
+        }
+      ],
+      "formatProblems": [
+        {
+          "problem": "Check section spacing and margin consistency",
+          "suggestion": "Use standard 0.5 - 1 inch margins"
+        }
+      ],
+      "atsProblems": [
+        {
+          "problem": "Missing proof of work link in contact header",
+          "suggestion": "Add GitHub profile link"
+        }
+      ],
+      "missingSections": [],
+      "skills": {
+        "detected": [],
+        "strong": [],
+        "weak": [],
+        "missing": [
+          "HTML",
+          "CSS",
+          "JavaScript",
+          "React",
+          "Node.js",
+          "Express",
+          "MongoDB",
+          "Git",
+          "REST API"
+        ]
+      },
+      "projects": [
+        {
+          "name": "Web Application Project",
+          "description": "Interactive full stack application",
+          "technologies": []
+        }
+      ],
+      "improvements": [
+        {
+          "section": "Experience & Projects",
+          "original": "Bullet points lack quantifiable metrics (e.g. percentages, performance gains, numbers)",
+          "suggested": "Rephrase achievements to include metrics like 'improved performance by 35%' or 'served 10k+ users'.",
+          "reason": "Recruiters and ATS favor resumes showing measured impact."
+        },
+        {
+          "section": "Contact & Header",
+          "original": "Missing GitHub / Portfolio URL link",
+          "suggested": "Add your GitHub profile link (https://github.com/your-username) at the top of your resume.",
+          "reason": "Technical recruiters verify proof of work through live project links."
+        }
+      ],
+      "skillGap": [
+        {
+          "skill": "HTML",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "CSS",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "JavaScript",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "React",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Node.js",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Express",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "MongoDB",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Git",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "REST API",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        }
+      ]
+    },
+    "targetRole": "Full Stack AI Engineer",
+    "jobDescription": "",
+    "overall_score": 75,
+    "ats_score": 75,
+    "updatedAt": "2026-08-30T05:09:54.409Z"
   }
 ]

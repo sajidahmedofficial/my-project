@@ -58,38 +58,6 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
   const normCandidate = candidateSkills.map(s => s.toLowerCase().trim());
   const verifiedSkillsList = requiredForRole.filter(s => normCandidate.some(c => c.includes(s.toLowerCase()) || s.toLowerCase().includes(c)));
   const gapSkillsList = requiredForRole.filter(s => !verifiedSkillsList.includes(s));
-
-  // Determine dynamic next step
-  const getNextStep = () => {
-    if (!hasUploadedResume) {
-      return {
-        title: "Upload Your Resume",
-        desc: "Upload your resume (PDF/DOCX) once to extract your technical stack and compute live ATS scores.",
-        action: () => onNavigate('resume'),
-        btnText: "Upload Resume",
-        badge: "Step 1 of 5"
-      };
-    }
-    if (gapSkillsList.length > 0) {
-      return {
-        title: `Bridge Skill Gap in ${gapSkillsList[0]}`,
-        desc: `Your profile is missing ${gapSkillsList.slice(0, 2).join(' & ')} for ${selectedRole}. Follow your customized learning roadmap.`,
-        action: () => onNavigate('roadmap'),
-        btnText: "Open Learning Roadmap",
-        badge: "Step 2 of 5"
-      };
-    }
-    return {
-      title: "Explore Matching Job Opportunities",
-      desc: "Your skills align with high-demand openings. Compare descriptions and apply directly in Job Matrix.",
-      action: () => onNavigate('job'),
-      btnText: "View Job Matrix",
-      badge: "Step 3 of 5"
-    };
-  };
-
-  const nextStep = getNextStep();
-
   // Software tools suite
   const softwareTools = [
     {
@@ -157,35 +125,6 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
   return (
     <div className="space-y-8 animate-fade-in text-slate-900 pb-12">
       
-      {/* ========================================================================= */}
-      {/* 0. DYNAMIC NEXT STEP BANNER */}
-      {/* ========================================================================= */}
-      <div className="rounded-2xl bg-slate-900 text-white p-5 sm:p-6 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border border-slate-800">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 text-[11px] font-semibold border border-indigo-500/30">
-              {nextStep.badge}
-            </span>
-            <span className="text-xs text-slate-400 font-medium">Recommended Next Career Milestone</span>
-          </div>
-          <h2 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-indigo-400" />
-            <span>{nextStep.title}</span>
-          </h2>
-          <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
-            {nextStep.desc}
-          </p>
-        </div>
-
-        <button
-          onClick={nextStep.action}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-sm transition-all shrink-0"
-        >
-          <span>{nextStep.btnText}</span>
-          <ArrowRight className="w-4 h-4" />
-        </button>
-      </div>
-
       {/* ========================================================================= */}
       {/* 1. EXACT HERO SECTION MATCHING DESIGN */}
       {/* ========================================================================= */}

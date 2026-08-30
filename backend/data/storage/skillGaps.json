@@ -9747,10 +9747,10 @@
       "softSkills": [],
       "experienceRequirements": "Demonstrated production experience matching requirements"
     },
-    "overallMatchScore": 12,
-    "score": 12,
+    "overallMatchScore": 17,
+    "score": 17,
     "weightedSummary": {
-      "weightedMatchedRequirements": 3.5,
+      "weightedMatchedRequirements": 5,
       "weightedTotalRequirements": 29,
       "formula": "(weightedMatchedRequirements / weightedTotalRequirements) * 100"
     },
@@ -9769,20 +9769,6 @@
           "requirementType": "Required",
           "evidence": [],
           "reason": "No evidence of required skill Go found in uploaded resume."
-        },
-        {
-          "skill": "Node.js",
-          "name": "Node.js",
-          "category": "Frameworks",
-          "status": "MISSING",
-          "currentLevel": 0,
-          "progress": 0,
-          "requiredLevel": 100,
-          "gapPercentage": 100,
-          "priority": "high",
-          "requirementType": "Required",
-          "evidence": [],
-          "reason": "No evidence of required skill Node.js found in uploaded resume."
         },
         {
           "skill": "Express.js",
@@ -9872,7 +9858,7 @@
         }
       ],
       "low": [],
-      "highCount": 6,
+      "highCount": 5,
       "mediumCount": 2,
       "lowCount": 0
     },
@@ -9890,7 +9876,6 @@
         ],
         "missing": [
           "Go",
-          "Node.js",
           "Express.js",
           "MongoDB",
           "Docker",
@@ -9904,9 +9889,8 @@
       }
     },
     "categoryScores": {
-      "Programming": 12,
-      "Frameworks": 0,
-      "Tools": 50,
+      "Programming": 15,
+      "Frameworks": 50,
       "Cloud/DevOps": 0
     },
     "skills": [
@@ -9944,9 +9928,9 @@
         "priority": "medium",
         "requirementType": "Supplementary",
         "evidence": [
-          "JavaScript listed in Technical Skills"
+          "Mentioned in resume: \"I know HTML, CSS, JavaScript and React.\""
         ],
-        "reason": "JavaScript listed in Technical Skills"
+        "reason": "Mentioned in resume: \"I know HTML, CSS, JavaScript and React.\""
       },
       {
         "name": "React.js",
@@ -9958,13 +9942,27 @@
         "priority": "high",
         "requirementType": "Required",
         "evidence": [
-          "React.js listed in Technical Skills"
+          "Mentioned in resume: \"I know HTML, CSS, JavaScript and React.\""
         ],
-        "reason": "React.js listed in Technical Skills"
+        "reason": "Mentioned in resume: \"I know HTML, CSS, JavaScript and React.\""
       },
       {
-        "name": "Git",
-        "category": "Tools",
+        "name": "Node.js",
+        "category": "Frameworks",
+        "status": "partial",
+        "currentLevel": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [
+          "Mentioned in resume: \"I have basic knowledge of Node.js and SQL.\""
+        ],
+        "reason": "Mentioned in resume: \"I have basic knowledge of Node.js and SQL.\""
+      },
+      {
+        "name": "SQL",
+        "category": "Programming",
         "status": "partial",
         "currentLevel": 50,
         "requiredLevel": 100,
@@ -9972,9 +9970,9 @@
         "priority": "medium",
         "requirementType": "Supplementary",
         "evidence": [
-          "Git listed in Technical Skills"
+          "Mentioned in resume: \"I have basic knowledge of Node.js and SQL.\""
         ],
-        "reason": "Git listed in Technical Skills"
+        "reason": "Mentioned in resume: \"I have basic knowledge of Node.js and SQL.\""
       },
       {
         "name": "Go",
@@ -9987,18 +9985,6 @@
         "requirementType": "Required",
         "evidence": [],
         "reason": "No evidence of required skill Go found in uploaded resume."
-      },
-      {
-        "name": "Node.js",
-        "category": "Frameworks",
-        "status": "missing",
-        "currentLevel": 0,
-        "requiredLevel": 100,
-        "gapPercentage": 100,
-        "priority": "high",
-        "requirementType": "Required",
-        "evidence": [],
-        "reason": "No evidence of required skill Node.js found in uploaded resume."
       },
       {
         "name": "Express.js",
@@ -10063,9 +10049,9 @@
         "priority": "medium",
         "requirementType": "Supplementary",
         "evidence": [
-          "JavaScript listed in Technical Skills"
+          "Mentioned in resume: \"I know HTML, CSS, JavaScript and React.\""
         ],
-        "reason": "JavaScript listed in Technical Skills"
+        "reason": "Mentioned in resume: \"I know HTML, CSS, JavaScript and React.\""
       },
       {
         "skill": "React.js",
@@ -10079,14 +10065,30 @@
         "priority": "high",
         "requirementType": "Required",
         "evidence": [
-          "React.js listed in Technical Skills"
+          "Mentioned in resume: \"I know HTML, CSS, JavaScript and React.\""
         ],
-        "reason": "React.js listed in Technical Skills"
+        "reason": "Mentioned in resume: \"I know HTML, CSS, JavaScript and React.\""
       },
       {
-        "skill": "Git",
-        "name": "Git",
-        "category": "Tools",
+        "skill": "Node.js",
+        "name": "Node.js",
+        "category": "Frameworks",
+        "status": "LEARNING",
+        "currentLevel": 50,
+        "progress": 50,
+        "requiredLevel": 100,
+        "gapPercentage": 50,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [
+          "Mentioned in resume: \"I have basic knowledge of Node.js and SQL.\""
+        ],
+        "reason": "Mentioned in resume: \"I have basic knowledge of Node.js and SQL.\""
+      },
+      {
+        "skill": "SQL",
+        "name": "SQL",
+        "category": "Programming",
         "status": "LEARNING",
         "currentLevel": 50,
         "progress": 50,
@@ -10095,9 +10097,9 @@
         "priority": "medium",
         "requirementType": "Supplementary",
         "evidence": [
-          "Git listed in Technical Skills"
+          "Mentioned in resume: \"I have basic knowledge of Node.js and SQL.\""
         ],
-        "reason": "Git listed in Technical Skills"
+        "reason": "Mentioned in resume: \"I have basic knowledge of Node.js and SQL.\""
       }
     ],
     "missingSkills": [
@@ -10142,20 +10144,6 @@
         "requirementType": "Required",
         "evidence": [],
         "reason": "No evidence of required skill Go found in uploaded resume."
-      },
-      {
-        "skill": "Node.js",
-        "name": "Node.js",
-        "category": "Frameworks",
-        "status": "MISSING",
-        "currentLevel": 0,
-        "progress": 0,
-        "requiredLevel": 100,
-        "gapPercentage": 100,
-        "priority": "high",
-        "requirementType": "Required",
-        "evidence": [],
-        "reason": "No evidence of required skill Node.js found in uploaded resume."
       },
       {
         "skill": "Express.js",
@@ -10214,27 +10202,41 @@
         "reason": "No evidence of required skill AWS found in uploaded resume."
       }
     ],
-    "analyzedAt": "2026-08-30T05:07:49.190Z",
-    "savedAt": "2026-08-30T05:07:49.190Z",
-    "updatedAt": "2026-08-30T05:07:49.190Z"
+    "analyzedAt": "2026-08-30T05:11:04.849Z",
+    "savedAt": "2026-08-30T05:11:04.849Z",
+    "updatedAt": "2026-08-30T05:11:04.850Z"
   },
   {
     "createdAt": "2026-08-26T17:34:24.526Z",
     "skillGapId": "sg_guest_user_full_stack_ai_engineer",
     "userId": "guest_user",
-    "resumeId": null,
+    "resumeId": "res_1788066594409_y7oy347",
     "targetRole": "Full Stack AI Engineer",
     "isCustomJD": false,
     "jobDescriptionAnalysis": null,
-    "overallMatchScore": 13,
-    "score": 13,
+    "overallMatchScore": 3,
+    "score": 3,
     "weightedSummary": {
-      "weightedMatchedRequirements": 8.5,
-      "weightedTotalRequirements": 68,
+      "weightedMatchedRequirements": 1.5,
+      "weightedTotalRequirements": 60,
       "formula": "(weightedMatchedRequirements / weightedTotalRequirements) * 100"
     },
     "priorityGaps": {
       "high": [
+        {
+          "skill": "JavaScript",
+          "name": "JavaScript",
+          "category": "Programming",
+          "status": "MISSING",
+          "currentLevel": 0,
+          "progress": 0,
+          "requiredLevel": 100,
+          "gapPercentage": 100,
+          "priority": "high",
+          "requirementType": "Required",
+          "evidence": [],
+          "reason": "No evidence of required skill JavaScript found in uploaded resume."
+        },
         {
           "skill": "TypeScript",
           "name": "TypeScript",
@@ -10276,6 +10278,20 @@
           "requirementType": "Required",
           "evidence": [],
           "reason": "No evidence of required skill CSS3 found in uploaded resume."
+        },
+        {
+          "skill": "React.js",
+          "name": "React.js",
+          "category": "Programming",
+          "status": "MISSING",
+          "currentLevel": 0,
+          "progress": 0,
+          "requiredLevel": 100,
+          "gapPercentage": 100,
+          "priority": "high",
+          "requirementType": "Required",
+          "evidence": [],
+          "reason": "No evidence of required skill React.js found in uploaded resume."
         },
         {
           "skill": "Next.js",
@@ -10348,6 +10364,20 @@
           "reason": "No evidence of required skill GraphQL found in uploaded resume."
         },
         {
+          "skill": "Git",
+          "name": "Git",
+          "category": "Tools",
+          "status": "MISSING",
+          "currentLevel": 0,
+          "progress": 0,
+          "requiredLevel": 100,
+          "gapPercentage": 100,
+          "priority": "high",
+          "requirementType": "Required",
+          "evidence": [],
+          "reason": "No evidence of required skill Git found in uploaded resume."
+        },
+        {
           "skill": "GitHub",
           "name": "GitHub",
           "category": "Tools",
@@ -10402,20 +10432,6 @@
           "requirementType": "Required",
           "evidence": [],
           "reason": "No evidence of required skill Jest found in uploaded resume."
-        },
-        {
-          "skill": "Vercel",
-          "name": "Vercel",
-          "category": "Programming",
-          "status": "MISSING",
-          "currentLevel": 0,
-          "progress": 0,
-          "requiredLevel": 100,
-          "gapPercentage": 100,
-          "priority": "high",
-          "requirementType": "Required",
-          "evidence": [],
-          "reason": "No evidence of required skill Vercel found in uploaded resume."
         },
         {
           "skill": "Netlify",
@@ -10476,7 +10492,7 @@
       ],
       "medium": [],
       "low": [],
-      "highCount": 17,
+      "highCount": 19,
       "mediumCount": 0,
       "lowCount": 0
     },
@@ -10506,19 +10522,21 @@
           "Team Collaboration"
         ],
         "missing": [
+          "JavaScript",
           "TypeScript",
           "HTML5",
           "CSS3",
+          "React.js",
           "Next.js",
           "Redux",
           "Tailwind CSS",
           "REST API",
           "GraphQL",
+          "Git",
           "GitHub",
           "Vite",
           "Webpack",
           "Jest",
-          "Vercel",
           "Netlify",
           "Docker",
           "Problem Solving",
@@ -10532,113 +10550,23 @@
       }
     },
     "categoryScores": {
-      "Programming": 13,
-      "Frameworks": 20,
-      "Tools": 10,
+      "Programming": 4,
+      "Frameworks": 0,
+      "Tools": 0,
       "Cloud/DevOps": 0
     },
     "skills": [
       {
         "name": "JavaScript",
         "category": "Programming",
-        "status": "partial",
-        "currentLevel": 50,
+        "status": "missing",
+        "currentLevel": 0,
         "requiredLevel": 100,
-        "gapPercentage": 50,
+        "gapPercentage": 100,
         "priority": "high",
         "requirementType": "Required",
-        "evidence": [
-          "JavaScript listed in Technical Skills"
-        ],
-        "reason": "JavaScript listed in Technical Skills"
-      },
-      {
-        "name": "React.js",
-        "category": "Programming",
-        "status": "partial",
-        "currentLevel": 50,
-        "requiredLevel": 100,
-        "gapPercentage": 50,
-        "priority": "high",
-        "requirementType": "Required",
-        "evidence": [
-          "Applied in Work/Internship: \"Full stack developer with extensive experience in React, Node.js, and AI API integrations.\"",
-          "Applied in Work/Internship: \"Engineered full stack components in React and Node.js.\"",
-          "React.js listed in Technical Skills"
-        ],
-        "reason": "Applied in Work/Internship: \"Full stack developer with extensive experience in React, Node.js, and AI API integrations.\"; Applied in Work/Internship: \"Engineered full stack components in React and Node.js.\"; React.js listed in Technical Skills"
-      },
-      {
-        "name": "Node.js",
-        "category": "Frameworks",
-        "status": "partial",
-        "currentLevel": 50,
-        "requiredLevel": 100,
-        "gapPercentage": 50,
-        "priority": "medium",
-        "requirementType": "Supplementary",
-        "evidence": [
-          "Applied in Work/Internship: \"Full stack developer with extensive experience in React, Node.js, and AI API integrations.\"",
-          "Applied in Work/Internship: \"Engineered full stack components in React and Node.js.\"",
-          "Node.js listed in Technical Skills"
-        ],
-        "reason": "Applied in Work/Internship: \"Full stack developer with extensive experience in React, Node.js, and AI API integrations.\"; Applied in Work/Internship: \"Engineered full stack components in React and Node.js.\"; Node.js listed in Technical Skills"
-      },
-      {
-        "name": "SQL",
-        "category": "Programming",
-        "status": "partial",
-        "currentLevel": 50,
-        "requiredLevel": 100,
-        "gapPercentage": 50,
-        "priority": "medium",
-        "requirementType": "Supplementary",
-        "evidence": [
-          "SQL listed in Technical Skills"
-        ],
-        "reason": "SQL listed in Technical Skills"
-      },
-      {
-        "name": "Python",
-        "category": "Programming",
-        "status": "partial",
-        "currentLevel": 50,
-        "requiredLevel": 100,
-        "gapPercentage": 50,
-        "priority": "medium",
-        "requirementType": "Supplementary",
-        "evidence": [
-          "Python listed in Technical Skills"
-        ],
-        "reason": "Python listed in Technical Skills"
-      },
-      {
-        "name": "Git",
-        "category": "Tools",
-        "status": "partial",
-        "currentLevel": 50,
-        "requiredLevel": 100,
-        "gapPercentage": 50,
-        "priority": "high",
-        "requirementType": "Required",
-        "evidence": [
-          "Git listed in Technical Skills"
-        ],
-        "reason": "Git listed in Technical Skills"
-      },
-      {
-        "name": "Java",
-        "category": "Programming",
-        "status": "partial",
-        "currentLevel": 50,
-        "requiredLevel": 100,
-        "gapPercentage": 50,
-        "priority": "medium",
-        "requirementType": "Supplementary",
-        "evidence": [
-          "Java listed in Technical Skills"
-        ],
-        "reason": "Java listed in Technical Skills"
+        "evidence": [],
+        "reason": "No evidence of required skill JavaScript found in uploaded resume."
       },
       {
         "name": "TypeScript",
@@ -10675,6 +10603,18 @@
         "requirementType": "Required",
         "evidence": [],
         "reason": "No evidence of required skill CSS3 found in uploaded resume."
+      },
+      {
+        "name": "React.js",
+        "category": "Programming",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [],
+        "reason": "No evidence of required skill React.js found in uploaded resume."
       },
       {
         "name": "Next.js",
@@ -10737,6 +10677,18 @@
         "reason": "No evidence of required skill GraphQL found in uploaded resume."
       },
       {
+        "name": "Git",
+        "category": "Tools",
+        "status": "missing",
+        "currentLevel": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [],
+        "reason": "No evidence of required skill Git found in uploaded resume."
+      },
+      {
         "name": "GitHub",
         "category": "Tools",
         "status": "missing",
@@ -10787,14 +10739,16 @@
       {
         "name": "Vercel",
         "category": "Programming",
-        "status": "missing",
-        "currentLevel": 0,
+        "status": "partial",
+        "currentLevel": 50,
         "requiredLevel": 100,
-        "gapPercentage": 100,
+        "gapPercentage": 50,
         "priority": "high",
         "requirementType": "Required",
-        "evidence": [],
-        "reason": "No evidence of required skill Vercel found in uploaded resume."
+        "evidence": [
+          "Mentioned in resume: \"Live website: https://my-project-eta-sepia.vercel.app/\""
+        ],
+        "reason": "Mentioned in resume: \"Live website: https://my-project-eta-sepia.vercel.app/\""
       },
       {
         "name": "Netlify",
@@ -10848,8 +10802,8 @@
     "strongSkills": [],
     "partialSkills": [
       {
-        "skill": "JavaScript",
-        "name": "JavaScript",
+        "skill": "Vercel",
+        "name": "Vercel",
         "category": "Programming",
         "status": "LEARNING",
         "currentLevel": 50,
@@ -10859,112 +10813,26 @@
         "priority": "high",
         "requirementType": "Required",
         "evidence": [
-          "JavaScript listed in Technical Skills"
+          "Mentioned in resume: \"Live website: https://my-project-eta-sepia.vercel.app/\""
         ],
-        "reason": "JavaScript listed in Technical Skills"
-      },
-      {
-        "skill": "React.js",
-        "name": "React.js",
-        "category": "Programming",
-        "status": "LEARNING",
-        "currentLevel": 50,
-        "progress": 50,
-        "requiredLevel": 100,
-        "gapPercentage": 50,
-        "priority": "high",
-        "requirementType": "Required",
-        "evidence": [
-          "Applied in Work/Internship: \"Full stack developer with extensive experience in React, Node.js, and AI API integrations.\"",
-          "Applied in Work/Internship: \"Engineered full stack components in React and Node.js.\"",
-          "React.js listed in Technical Skills"
-        ],
-        "reason": "Applied in Work/Internship: \"Full stack developer with extensive experience in React, Node.js, and AI API integrations.\"; Applied in Work/Internship: \"Engineered full stack components in React and Node.js.\"; React.js listed in Technical Skills"
-      },
-      {
-        "skill": "Node.js",
-        "name": "Node.js",
-        "category": "Frameworks",
-        "status": "LEARNING",
-        "currentLevel": 50,
-        "progress": 50,
-        "requiredLevel": 100,
-        "gapPercentage": 50,
-        "priority": "medium",
-        "requirementType": "Supplementary",
-        "evidence": [
-          "Applied in Work/Internship: \"Full stack developer with extensive experience in React, Node.js, and AI API integrations.\"",
-          "Applied in Work/Internship: \"Engineered full stack components in React and Node.js.\"",
-          "Node.js listed in Technical Skills"
-        ],
-        "reason": "Applied in Work/Internship: \"Full stack developer with extensive experience in React, Node.js, and AI API integrations.\"; Applied in Work/Internship: \"Engineered full stack components in React and Node.js.\"; Node.js listed in Technical Skills"
-      },
-      {
-        "skill": "SQL",
-        "name": "SQL",
-        "category": "Programming",
-        "status": "LEARNING",
-        "currentLevel": 50,
-        "progress": 50,
-        "requiredLevel": 100,
-        "gapPercentage": 50,
-        "priority": "medium",
-        "requirementType": "Supplementary",
-        "evidence": [
-          "SQL listed in Technical Skills"
-        ],
-        "reason": "SQL listed in Technical Skills"
-      },
-      {
-        "skill": "Python",
-        "name": "Python",
-        "category": "Programming",
-        "status": "LEARNING",
-        "currentLevel": 50,
-        "progress": 50,
-        "requiredLevel": 100,
-        "gapPercentage": 50,
-        "priority": "medium",
-        "requirementType": "Supplementary",
-        "evidence": [
-          "Python listed in Technical Skills"
-        ],
-        "reason": "Python listed in Technical Skills"
-      },
-      {
-        "skill": "Git",
-        "name": "Git",
-        "category": "Tools",
-        "status": "LEARNING",
-        "currentLevel": 50,
-        "progress": 50,
-        "requiredLevel": 100,
-        "gapPercentage": 50,
-        "priority": "high",
-        "requirementType": "Required",
-        "evidence": [
-          "Git listed in Technical Skills"
-        ],
-        "reason": "Git listed in Technical Skills"
-      },
-      {
-        "skill": "Java",
-        "name": "Java",
-        "category": "Programming",
-        "status": "LEARNING",
-        "currentLevel": 50,
-        "progress": 50,
-        "requiredLevel": 100,
-        "gapPercentage": 50,
-        "priority": "medium",
-        "requirementType": "Supplementary",
-        "evidence": [
-          "Java listed in Technical Skills"
-        ],
-        "reason": "Java listed in Technical Skills"
+        "reason": "Mentioned in resume: \"Live website: https://my-project-eta-sepia.vercel.app/\""
       }
     ],
     "missingSkills": [
+      {
+        "skill": "JavaScript",
+        "name": "JavaScript",
+        "category": "Programming",
+        "status": "MISSING",
+        "currentLevel": 0,
+        "progress": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [],
+        "reason": "No evidence of required skill JavaScript found in uploaded resume."
+      },
       {
         "skill": "TypeScript",
         "name": "TypeScript",
@@ -11006,6 +10874,20 @@
         "requirementType": "Required",
         "evidence": [],
         "reason": "No evidence of required skill CSS3 found in uploaded resume."
+      },
+      {
+        "skill": "React.js",
+        "name": "React.js",
+        "category": "Programming",
+        "status": "MISSING",
+        "currentLevel": 0,
+        "progress": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [],
+        "reason": "No evidence of required skill React.js found in uploaded resume."
       },
       {
         "skill": "Next.js",
@@ -11078,6 +10960,20 @@
         "reason": "No evidence of required skill GraphQL found in uploaded resume."
       },
       {
+        "skill": "Git",
+        "name": "Git",
+        "category": "Tools",
+        "status": "MISSING",
+        "currentLevel": 0,
+        "progress": 0,
+        "requiredLevel": 100,
+        "gapPercentage": 100,
+        "priority": "high",
+        "requirementType": "Required",
+        "evidence": [],
+        "reason": "No evidence of required skill Git found in uploaded resume."
+      },
+      {
         "skill": "GitHub",
         "name": "GitHub",
         "category": "Tools",
@@ -11132,20 +11028,6 @@
         "requirementType": "Required",
         "evidence": [],
         "reason": "No evidence of required skill Jest found in uploaded resume."
-      },
-      {
-        "skill": "Vercel",
-        "name": "Vercel",
-        "category": "Programming",
-        "status": "MISSING",
-        "currentLevel": 0,
-        "progress": 0,
-        "requiredLevel": 100,
-        "gapPercentage": 100,
-        "priority": "high",
-        "requirementType": "Required",
-        "evidence": [],
-        "reason": "No evidence of required skill Vercel found in uploaded resume."
       },
       {
         "skill": "Netlify",
@@ -11204,9 +11086,9 @@
         "reason": "No evidence of required skill Team Collaboration found in uploaded resume."
       }
     ],
-    "analyzedAt": "2026-08-30T05:07:55.603Z",
-    "savedAt": "2026-08-30T05:07:55.603Z",
-    "updatedAt": "2026-08-30T05:07:55.603Z"
+    "analyzedAt": "2026-08-30T05:11:14.492Z",
+    "savedAt": "2026-08-30T05:11:14.492Z",
+    "updatedAt": "2026-08-30T05:11:14.492Z"
   },
   {
     "createdAt": "2026-08-29T16:21:07.572Z",
