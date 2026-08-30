@@ -44,8 +44,10 @@ export default function SkillGapDashboard({
   const [report, setReport] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
-  // Active uploaded resume in current session
-  const [activeResumeFile, setActiveResumeFile] = useState(null);
+  // Active uploaded resume file name
+  const [activeResumeFile, setActiveResumeFile] = useState(() => {
+    return profile?.hasUploadedResume ? (profile?.resumeFileName || 'Uploaded_Resume.pdf') : null;
+  });
 
   // Upload dropzone state
   const fileInputRef = useRef(null);
@@ -53,22 +55,26 @@ export default function SkillGapDashboard({
   const [uploadError, setUploadError] = useState("");
   const [dragActive, setDragActive] = useState(false);
 
-  // Clear any stale cached mock filenames on initial mount
-  useEffect(() => {
-    localStorage.removeItem('sb_resume_filename');
-    localStorage.removeItem('sb_resume_text');
-    localStorage.removeItem('sb_active_resume_id');
-    setStatus('EMPTY');
-    setReport(null);
-  }, []);
+  // Check if a genuine resume is uploaded
+  const hasResume = Boolean(
+    activeResumeFile || 
+    (profile?.hasUploadedResume === true && (profile?.resumeFileName || profile?.resumeText || (profile?.skills && profile.skills.length > 0)))
+  );
 
-  const runAnalysisWithResume = async (resumeText, fileName, targetRole, jdText) => {
-    if (!resumeText) {
+  // Auto-run analysis when resume is uploaded
+  useEffect(() => {
+    if (hasResume) {
+      const fileName = activeResumeFile || profile?.resumeFileName || "Uploaded_Resume.pdf";
+      const resumeText = profile?.resumeText || (profile?.skills || []).join(', ');
+      setActiveResumeFile(fileName);
+      runAnalysisWithResume(resumeText, fileName, selectedRole, customJd);
+    } else {
       setStatus('EMPTY');
       setReport(null);
-      return;
     }
+  }, [profile?.hasUploadedResume, profile?.resumeFileName, profile?.resumeText, profile?.skills, selectedRole]);
 
+  const runAnalysisWithResume = async (resumeText, fileName, targetRole, jdText) => {
     setStatus('LOADING');
     setErrorMessage(null);
 
@@ -78,7 +84,7 @@ export default function SkillGapDashboard({
 
       const res = await skillGapApi.analyzeSkillGap({
         resumeId: `res_${Date.now()}`,
-        resumeText,
+        resumeText: resumeText || userSkills.join(', '),
         userSkills,
         targetRole,
         jobDescription: jdText,
@@ -91,12 +97,7 @@ export default function SkillGapDashboard({
           ...res.report,
           sourceResumeFile: fileName || "Uploaded_Resume.pdf"
         });
-        const hasSkills = (res.report.strongSkills?.length || 0) + (res.report.partialSkills?.length || 0) + (res.report.missingSkills?.length || 0) > 0;
-        if (hasSkills) {
-          setStatus('SUCCESS');
-        } else {
-          setStatus('EMPTY');
-        }
+        setStatus('SUCCESS');
       } else {
         setStatus('EMPTY');
       }
