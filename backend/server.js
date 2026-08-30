@@ -78,6 +78,7 @@ app.use(
 
 app.use(express.json());
 
+// Standard API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/ai", aiRateLimiter, aiRoutes);
 app.use("/api/skill-gap", aiRateLimiter, skillGapRoutes);
@@ -87,6 +88,16 @@ app.use("/api/certificates", certificateRoutes);
 app.use("/api/roadmap", roadmapRoutes);
 app.use("/api/aptitude", aptitudeRoutes);
 app.use("/api", aptitudeRoutes);
+
+// Serverless fallback mounts without /api prefix
+app.use("/auth", authRoutes);
+app.use("/ai", aiRateLimiter, aiRoutes);
+app.use("/skill-gap", aiRateLimiter, skillGapRoutes);
+app.use("/resume", resumeRoutes);
+app.use("/skills", skillRoutes);
+app.use("/certificates", certificateRoutes);
+app.use("/roadmap", roadmapRoutes);
+app.use("/aptitude", aptitudeRoutes);
 
 app.get("/api/health", async (req, res) => {
   try {
@@ -134,7 +145,12 @@ app.get("/api/health", async (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL && !process.env.NOW_REGION && !process.env.AWS_LAMBDA_FUNCTION_NAME) {
+const isDirectRun = process.argv[1] && (
+  process.argv[1].endsWith("backend/server.js") || 
+  process.argv[1].endsWith("server.js")
+);
+
+if (isDirectRun && !process.env.VERCEL && !process.env.NOW_REGION && !process.env.AWS_LAMBDA_FUNCTION_NAME) {
   app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
   });
