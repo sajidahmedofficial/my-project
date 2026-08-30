@@ -23,14 +23,32 @@ export default function CareerMentor({ profile }) {
   const [activeMode, setActiveMode] = useState('chat');
   const [avatarState, setAvatarState] = useState('idle');
 
-  // Messages State
-  const [messages, setMessages] = useState([
-    {
-      id: "m-welcome",
-      sender: "bot",
-      text: `Hi **${candidateName}**! I'm your **AI Career Mentor**.\n\nI can help you build custom learning roadmaps, evaluate skill gaps, prepare for technical interviews, and discuss career strategies.\n\nWhat would you like to explore today?`
-    }
-  ]);
+  const userStorageKey = `sb_mentor_chat_${profile?.id || profile?.email || 'default'}`;
+
+  // Messages State with LocalStorage Persistence
+  const [messages, setMessages] = useState(() => {
+    try {
+      const saved = localStorage.getItem(userStorageKey);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch {}
+    return [
+      {
+        id: "m-welcome",
+        sender: "bot",
+        text: `Hi **${candidateName}**! I'm your **AI Career Mentor** for **${profile?.careerGoal || 'Full Stack Engineering'}**.\n\nI can help you build custom learning roadmaps, evaluate skill gaps, prepare for technical interviews, and discuss career strategies based on your uploaded resume.\n\nWhat would you like to explore today?`
+      }
+    ];
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(userStorageKey, JSON.stringify(messages));
+    } catch {}
+  }, [messages, userStorageKey]);
+
   const [inputVal, setInputVal] = useState("");
   const [typing, setTyping] = useState(false);
   const [copiedId, setCopiedId] = useState(null);
@@ -46,10 +64,10 @@ export default function CareerMentor({ profile }) {
   const recognitionRef = useRef(null);
 
   const suggestionChips = [
-    "How to prepare for Frontend Placements?",
-    "Recommend High-Impact React Projects",
-    "What are top 5 System Design questions?",
-    "Generate a 30-day DSA study roadmap"
+    `How to prepare for ${profile?.careerGoal || 'Full Stack'} roles?`,
+    "What are my highest priority skill gaps?",
+    "Recommend production project ideas for my stack",
+    "Prepare me for a system design technical round"
   ];
 
   useEffect(() => {
@@ -180,7 +198,17 @@ export default function CareerMentor({ profile }) {
       const res = await fetch(`${import.meta.env.VITE_API_URL || '/api'}/ai/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query, messages: [...messages, userMsg] })
+        body: JSON.stringify({
+          query,
+          messages: [...messages, userMsg],
+          userContext: {
+            name: candidateName,
+            targetRole: profile?.careerGoal || "Full Stack Developer",
+            skills: profile?.skills || ["React", "JavaScript", "HTML/CSS"],
+            missingSkills: profile?.missingSkills || ["TypeScript", "Docker", "AWS"],
+            scores: profile?.scores || { resumeScore: 85, placementReadiness: 80 }
+          }
+        })
       });
 
       const data = await res.json();

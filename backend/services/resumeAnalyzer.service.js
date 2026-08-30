@@ -825,6 +825,36 @@ function extractEducationList(text, lines) {
       suggested: p.suggestion,
       reason: p.whyItMatters
     })),
+    overall_score: overallScore,
+    ats_compatibility: {
+      score: atsScore,
+      formatting_issues: hasGithub ? [] : ["Missing GitHub portfolio link"],
+      missing_standard_sections: lowerText.includes("education") ? [] : ["Education"],
+      parsing_risks: []
+    },
+    keyword_gaps: {
+      matched_keywords: detectedSkills,
+      missing_keywords: missingSkills,
+      match_percentage: Math.round((detectedSkills.length / (requiredForRole.length || 1)) * 100)
+    },
+    section_feedback: [
+      { section: "Experience", feedback: hasExperience ? "Relevant experience listed." : "Add internships or project experience." },
+      { section: "Skills", feedback: `Found ${detectedSkills.length} matching skills for ${targetRole}.` }
+    ],
+    rewrite_suggestions: problems.length > 0 ? problems.map(p => ({
+      section: p.section,
+      original: p.problem,
+      suggested: p.suggestion,
+      reason: p.whyItMatters
+    })) : [
+      {
+        section: "Summary",
+        original: "Responsible for web applications",
+        suggested: "Engineered scalable responsive web applications with 35% performance gain",
+        reason: "Active action verb and metric"
+      }
+    ],
+    strengths: strongSkills.length > 0 ? strongSkills : ["Web Development", "JavaScript", "Problem Solving"],
     skillGap
   };
 }

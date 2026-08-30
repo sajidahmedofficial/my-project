@@ -99,7 +99,13 @@ Return the response strictly as a JSON object of this structure:
   ]
 }`;
 
-    const jobExtracted = await analyzeJSON(prompt);
+    let jobExtracted = null;
+    try {
+      jobExtracted = await analyzeJSON(prompt, { timeoutMs: 6000 });
+    } catch (apiErr) {
+      console.warn("[JD Analysis Notice] Falling back to local JD analyzer:", apiErr.message);
+    }
+
     if (!jobExtracted || !jobExtracted.requiredSkills) {
       return res.json(runLocalJdAnalyzer(jdText, studentSkills));
     }
@@ -130,7 +136,8 @@ Return the response strictly as a JSON object of this structure:
     });
 
   } catch (error) {
-    res.status(500).json({ error: 'JD Analysis failed', message: error.message });
+    console.warn("[JD Analysis General Catch] Fallback executed:", error.message);
+    res.json(runLocalJdAnalyzer(jdText, studentSkills));
   }
 });
 
@@ -180,33 +187,65 @@ Return strictly valid JSON only. Do not include markdown code fences or conversa
   }
 });
 
-// @desc    Career Chatbot Mentor
+// @desc    Career Chatbot Mentor with Full User & Resume Context
 // @route   POST /api/ai/chat
 router.post('/chat', async (req, res) => {
-  const { messages, query } = req.body;
+  const { messages, query, message, userContext } = req.body;
+  const userQuery = query || message || (messages && messages[messages.length - 1]?.text) || "";
+
+  if (!userQuery) {
+    return res.status(400).json({ error: "Message query is required" });
+  }
+
+  const candidateName = userContext?.name || userContext?.candidateName || "Candidate";
+  const targetRole = userContext?.targetRole || userContext?.careerGoal || "Full Stack Developer";
+  const currentSkills = Array.isArray(userContext?.skills) ? userContext.skills.join(', ') : "React, JavaScript, Node.js";
+  const missingSkills = Array.isArray(userContext?.missingSkills) ? userContext.missingSkills.join(', ') : "TypeScript, Docker, AWS";
+  const resumeScore = userContext?.scores?.resumeScore || userContext?.resumeScore || 85;
+  const atsScore = userContext?.scores?.placementReadiness || userContext?.atsScore || 82;
 
   try {
     if (!getGenAIClient()) {
-      return res.json({ response: "Local Mentor response fallback trigger." });
+      return res.json({
+        response: `Hello ${candidateName}! As your AI Career Mentor for **${targetRole}**, I see you have solid foundations in **${currentSkills}** (ATS Score: ${atsScore}/100).\n\nTo bridge your remaining gaps in **${missingSkills}**, I recommend prioritizing containerization with Docker, practicing hands-on full-stack projects with automated test suites, and preparing for system design mock interviews.\n\nHow would you like to structure your preparation this week?`
+      });
     }
 
-    const chatHistoryContext = (messages || []).map(m => `${m.sender === 'bot' ? 'Mentor' : 'Student'}: ${m.text}`).join('\n');
+    const chatHistoryContext = (messages || [])
+      .slice(-6)
+      .map(m => `${m.sender === 'bot' ? 'Mentor' : 'Student'}: ${m.text}`)
+      .join('\n');
     
-    const prompt = `You are a Career Mentor chatbot at SkillBridge AI. Your goal is to guide CSE/IT students.
-Provide clear, action-oriented, encouraging career advice. Include structures like salaries (in INR/USD), courses, or project ideas. Use Markdown layout.
+    const prompt = `You are the AI Career & Technical Mentor at SkillBridge AI.
+You are mentoring ${candidateName}, whose target career goal is: ${targetRole}.
 
-Context of Chat History:
+Candidate Live Profile & Resume Context:
+- Detected Skills: ${currentSkills}
+- Key Skill Gaps: ${missingSkills}
+- Current Resume Score: ${resumeScore}/100
+- ATS Placement Readiness: ${atsScore}%
+
+Guidelines:
+1. Provide personalized, highly actionable technical career mentorship tailored to ${candidateName}'s target role (${targetRole}).
+2. Directly reference their current skills and explain practical ways to bridge their specific gaps.
+3. Suggest concrete software projects, system design concepts, or certification milestones where relevant.
+4. Format using clean Markdown with bullet points, code snippets, or numbered steps.
+
+Recent Conversation History:
 ${chatHistoryContext}
 
-Student's Query: "${query}"
+Student's Query: "${userQuery}"
 
 Mentor Response:`;
 
-    const text = await analyzeWithGemini(prompt);
+    const text = await analyzeWithGemini(prompt, { timeoutMs: 7000 });
     res.json({ response: text });
 
   } catch (error) {
-    res.status(500).json({ error: 'Chat session failed', message: error.message });
+    console.warn("[AI Chat Notice] Fallback mentor response generated:", error.message);
+    res.json({
+      response: `Hi ${candidateName}! Regarding "${userQuery}": For a **${targetRole}** path, focus on closing gaps in **${missingSkills}** while reinforcing your strengths in **${currentSkills}**.\n\n1. **Targeted Practice**: Build a full-stack CRUD service with Docker and TypeScript.\n2. **Interview Prep**: Review system architecture fundamentals and data structures.\n3. **Roadmap Step**: Complete your next milestone in the Learning Roadmap tab.`
+    });
   }
 });
 

@@ -9062,5 +9062,1021 @@
     "overall_score": 75,
     "ats_score": 75,
     "updatedAt": "2026-08-30T03:37:48.298Z"
+  },
+  {
+    "createdAt": "2026-08-30T04:59:57.561Z",
+    "id": "res_1788065997561_k6xv47s",
+    "resumeId": "res_1788065997561_k6xv47s",
+    "userId": "guest_user",
+    "fileName": "Resume.txt",
+    "resumeText": "John Doe\njohn@example.com\n\nExperience:\n- Built React and Node.js web applications.\n- Optimized MongoDB database queries.",
+    "analysis": {
+      "candidate": {
+        "firstName": "John",
+        "lastName": "Doe",
+        "name": "John Doe",
+        "email": "john@example.com",
+        "phone": "",
+        "linkedIn": "",
+        "summary": "",
+        "headline": "Full Stack Developer Candidate"
+      },
+      "summary": "",
+      "education": [],
+      "experience": [],
+      "hasExperience": false,
+      "hasEducation": false,
+      "experienceAnalysis": {
+        "status": "no_experience",
+        "hasExperience": false,
+        "count": 0,
+        "label": "Fresher / Entry-Level (0 Years)",
+        "message": "No formal work experience detected in this resume.",
+        "suggestion": "For freshers, recruiters prioritize technical projects, verified skill certifications, and problem-solving aptitude."
+      },
+      "educationAnalysis": {
+        "status": "missing",
+        "hasEducation": false,
+        "count": 0,
+        "label": "No Education Section Detected",
+        "message": "No formal degree or university section was detected in this resume text."
+      },
+      "scores": {
+        "overall": 72,
+        "ats": 72,
+        "grammar": 85,
+        "format": 80,
+        "skills": 33,
+        "experience": 60,
+        "projects": 78
+      },
+      "grammarIssues": [],
+      "resumeProblems": [
+        {
+          "section": "Experience & Projects",
+          "problem": "Bullet points lack quantifiable metrics (e.g. percentages, performance gains, numbers)",
+          "whyItMatters": "Recruiters and ATS favor resumes showing measured impact.",
+          "suggestion": "Rephrase achievements to include metrics like 'improved performance by 35%' or 'served 10k+ users'.",
+          "priority": "high"
+        },
+        {
+          "section": "Contact & Header",
+          "problem": "Missing GitHub / Portfolio URL link",
+          "whyItMatters": "Technical recruiters verify proof of work through live project links.",
+          "suggestion": "Add your GitHub profile link (https://github.com/your-username) at the top of your resume.",
+          "priority": "medium"
+        }
+      ],
+      "formatProblems": [
+        {
+          "problem": "Check section spacing and margin consistency",
+          "suggestion": "Use standard 0.5 - 1 inch margins"
+        }
+      ],
+      "atsProblems": [
+        {
+          "problem": "Missing proof of work link in contact header",
+          "suggestion": "Add GitHub profile link"
+        }
+      ],
+      "missingSections": [
+        "Education"
+      ],
+      "skills": {
+        "detected": [
+          "React",
+          "Node.js",
+          "MongoDB"
+        ],
+        "strong": [
+          "React",
+          "Node.js"
+        ],
+        "weak": [
+          "MongoDB"
+        ],
+        "missing": [
+          "HTML",
+          "CSS",
+          "JavaScript",
+          "Express",
+          "Git",
+          "REST API"
+        ]
+      },
+      "projects": [
+        {
+          "name": "Web Application Project",
+          "description": "Interactive full stack application",
+          "technologies": [
+            "React",
+            "Node.js",
+            "MongoDB"
+          ]
+        }
+      ],
+      "improvements": [
+        {
+          "section": "Experience & Projects",
+          "original": "Bullet points lack quantifiable metrics (e.g. percentages, performance gains, numbers)",
+          "suggested": "Rephrase achievements to include metrics like 'improved performance by 35%' or 'served 10k+ users'.",
+          "reason": "Recruiters and ATS favor resumes showing measured impact."
+        },
+        {
+          "section": "Contact & Header",
+          "original": "Missing GitHub / Portfolio URL link",
+          "suggested": "Add your GitHub profile link (https://github.com/your-username) at the top of your resume.",
+          "reason": "Technical recruiters verify proof of work through live project links."
+        }
+      ],
+      "skillGap": [
+        {
+          "skill": "HTML",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "CSS",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "JavaScript",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "React",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Node.js",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Express",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "MongoDB",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Git",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "REST API",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        }
+      ]
+    },
+    "targetRole": "Full Stack Developer",
+    "jobDescription": "",
+    "overall_score": 75,
+    "ats_score": 75,
+    "updatedAt": "2026-08-30T04:59:57.583Z"
+  },
+  {
+    "createdAt": "2026-08-30T05:00:00.524Z",
+    "id": "res_1788066000524_aoa46n4",
+    "resumeId": "res_1788066000524_aoa46n4",
+    "userId": "guest_user",
+    "fileName": "Sample_Resume.txt",
+    "resumeText": "Sample candidate text with HTML, CSS, JavaScript, React",
+    "analysis": {
+      "candidate": {
+        "firstName": "",
+        "lastName": "",
+        "name": "Candidate",
+        "email": "",
+        "phone": "",
+        "linkedIn": "",
+        "summary": "",
+        "headline": "Full Stack Developer Candidate"
+      },
+      "summary": "",
+      "education": [],
+      "experience": [],
+      "hasExperience": false,
+      "hasEducation": false,
+      "experienceAnalysis": {
+        "status": "no_experience",
+        "hasExperience": false,
+        "count": 0,
+        "label": "Fresher / Entry-Level (0 Years)",
+        "message": "No formal work experience detected in this resume.",
+        "suggestion": "For freshers, recruiters prioritize technical projects, verified skill certifications, and problem-solving aptitude."
+      },
+      "educationAnalysis": {
+        "status": "missing",
+        "hasEducation": false,
+        "count": 0,
+        "label": "No Education Section Detected",
+        "message": "No formal degree or university section was detected in this resume text."
+      },
+      "scores": {
+        "overall": 80,
+        "ats": 72,
+        "grammar": 85,
+        "format": 80,
+        "skills": 56,
+        "experience": 60,
+        "projects": 78
+      },
+      "grammarIssues": [],
+      "resumeProblems": [
+        {
+          "section": "Experience & Projects",
+          "problem": "Bullet points lack quantifiable metrics (e.g. percentages, performance gains, numbers)",
+          "whyItMatters": "Recruiters and ATS favor resumes showing measured impact.",
+          "suggestion": "Rephrase achievements to include metrics like 'improved performance by 35%' or 'served 10k+ users'.",
+          "priority": "high"
+        },
+        {
+          "section": "Contact & Header",
+          "problem": "Missing GitHub / Portfolio URL link",
+          "whyItMatters": "Technical recruiters verify proof of work through live project links.",
+          "suggestion": "Add your GitHub profile link (https://github.com/your-username) at the top of your resume.",
+          "priority": "medium"
+        }
+      ],
+      "formatProblems": [
+        {
+          "problem": "Check section spacing and margin consistency",
+          "suggestion": "Use standard 0.5 - 1 inch margins"
+        }
+      ],
+      "atsProblems": [
+        {
+          "problem": "Missing proof of work link in contact header",
+          "suggestion": "Add GitHub profile link"
+        }
+      ],
+      "missingSections": [
+        "Education"
+      ],
+      "skills": {
+        "detected": [
+          "HTML",
+          "CSS",
+          "JavaScript",
+          "React",
+          "Java"
+        ],
+        "strong": [
+          "HTML",
+          "CSS",
+          "JavaScript"
+        ],
+        "weak": [
+          "React",
+          "Java"
+        ],
+        "missing": [
+          "Node.js",
+          "Express",
+          "MongoDB",
+          "Git",
+          "REST API"
+        ]
+      },
+      "projects": [
+        {
+          "name": "Web Application Project",
+          "description": "Interactive full stack application",
+          "technologies": [
+            "HTML",
+            "CSS",
+            "JavaScript"
+          ]
+        }
+      ],
+      "improvements": [
+        {
+          "section": "Experience & Projects",
+          "original": "Bullet points lack quantifiable metrics (e.g. percentages, performance gains, numbers)",
+          "suggested": "Rephrase achievements to include metrics like 'improved performance by 35%' or 'served 10k+ users'.",
+          "reason": "Recruiters and ATS favor resumes showing measured impact."
+        },
+        {
+          "section": "Contact & Header",
+          "original": "Missing GitHub / Portfolio URL link",
+          "suggested": "Add your GitHub profile link (https://github.com/your-username) at the top of your resume.",
+          "reason": "Technical recruiters verify proof of work through live project links."
+        }
+      ],
+      "skillGap": [
+        {
+          "skill": "HTML",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "CSS",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "JavaScript",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "React",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Node.js",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Express",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "MongoDB",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Git",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "REST API",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        }
+      ]
+    },
+    "targetRole": "Full Stack Developer",
+    "jobDescription": "",
+    "overall_score": 75,
+    "ats_score": 75,
+    "updatedAt": "2026-08-30T05:00:00.524Z"
+  },
+  {
+    "createdAt": "2026-08-30T05:00:48.793Z",
+    "id": "res_1788066048793_j8zyg8l",
+    "resumeId": "res_1788066048793_j8zyg8l",
+    "userId": "guest_user",
+    "fileName": "Resume.txt",
+    "resumeText": "John Doe\njohn@example.com\n\nExperience:\n- Built React and Node.js web applications.\n- Optimized MongoDB database queries.",
+    "analysis": {
+      "candidate": {
+        "firstName": "John",
+        "lastName": "Doe",
+        "name": "John Doe",
+        "email": "john@example.com",
+        "phone": "",
+        "linkedIn": "",
+        "summary": "",
+        "headline": "Full Stack Developer Candidate"
+      },
+      "summary": "",
+      "education": [],
+      "experience": [],
+      "hasExperience": false,
+      "hasEducation": false,
+      "experienceAnalysis": {
+        "status": "no_experience",
+        "hasExperience": false,
+        "count": 0,
+        "label": "Fresher / Entry-Level (0 Years)",
+        "message": "No formal work experience detected in this resume.",
+        "suggestion": "For freshers, recruiters prioritize technical projects, verified skill certifications, and problem-solving aptitude."
+      },
+      "educationAnalysis": {
+        "status": "missing",
+        "hasEducation": false,
+        "count": 0,
+        "label": "No Education Section Detected",
+        "message": "No formal degree or university section was detected in this resume text."
+      },
+      "scores": {
+        "overall": 72,
+        "ats": 72,
+        "grammar": 85,
+        "format": 80,
+        "skills": 33,
+        "experience": 60,
+        "projects": 78
+      },
+      "grammarIssues": [],
+      "resumeProblems": [
+        {
+          "section": "Experience & Projects",
+          "problem": "Bullet points lack quantifiable metrics (e.g. percentages, performance gains, numbers)",
+          "whyItMatters": "Recruiters and ATS favor resumes showing measured impact.",
+          "suggestion": "Rephrase achievements to include metrics like 'improved performance by 35%' or 'served 10k+ users'.",
+          "priority": "high"
+        },
+        {
+          "section": "Contact & Header",
+          "problem": "Missing GitHub / Portfolio URL link",
+          "whyItMatters": "Technical recruiters verify proof of work through live project links.",
+          "suggestion": "Add your GitHub profile link (https://github.com/your-username) at the top of your resume.",
+          "priority": "medium"
+        }
+      ],
+      "formatProblems": [
+        {
+          "problem": "Check section spacing and margin consistency",
+          "suggestion": "Use standard 0.5 - 1 inch margins"
+        }
+      ],
+      "atsProblems": [
+        {
+          "problem": "Missing proof of work link in contact header",
+          "suggestion": "Add GitHub profile link"
+        }
+      ],
+      "missingSections": [
+        "Education"
+      ],
+      "skills": {
+        "detected": [
+          "React",
+          "Node.js",
+          "MongoDB"
+        ],
+        "strong": [
+          "React",
+          "Node.js"
+        ],
+        "weak": [
+          "MongoDB"
+        ],
+        "missing": [
+          "HTML",
+          "CSS",
+          "JavaScript",
+          "Express",
+          "Git",
+          "REST API"
+        ]
+      },
+      "projects": [
+        {
+          "name": "Web Application Project",
+          "description": "Interactive full stack application",
+          "technologies": [
+            "React",
+            "Node.js",
+            "MongoDB"
+          ]
+        }
+      ],
+      "improvements": [
+        {
+          "section": "Experience & Projects",
+          "original": "Bullet points lack quantifiable metrics (e.g. percentages, performance gains, numbers)",
+          "suggested": "Rephrase achievements to include metrics like 'improved performance by 35%' or 'served 10k+ users'.",
+          "reason": "Recruiters and ATS favor resumes showing measured impact."
+        },
+        {
+          "section": "Contact & Header",
+          "original": "Missing GitHub / Portfolio URL link",
+          "suggested": "Add your GitHub profile link (https://github.com/your-username) at the top of your resume.",
+          "reason": "Technical recruiters verify proof of work through live project links."
+        }
+      ],
+      "skillGap": [
+        {
+          "skill": "HTML",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "CSS",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "JavaScript",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "React",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Node.js",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Express",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "MongoDB",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Git",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "REST API",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        }
+      ]
+    },
+    "targetRole": "Full Stack Developer",
+    "jobDescription": "",
+    "overall_score": 75,
+    "ats_score": 75,
+    "updatedAt": "2026-08-30T05:00:48.806Z"
+  },
+  {
+    "createdAt": "2026-08-30T05:00:49.752Z",
+    "id": "res_1788066049752_l8u3mj2",
+    "resumeId": "res_1788066049752_l8u3mj2",
+    "userId": "guest_user",
+    "fileName": "Sample_Resume.txt",
+    "resumeText": "Sample candidate text with HTML, CSS, JavaScript, React",
+    "analysis": {
+      "candidate": {
+        "firstName": "",
+        "lastName": "",
+        "name": "Candidate",
+        "email": "",
+        "phone": "",
+        "linkedIn": "",
+        "summary": "",
+        "headline": "Full Stack Developer Candidate"
+      },
+      "summary": "",
+      "education": [],
+      "experience": [],
+      "hasExperience": false,
+      "hasEducation": false,
+      "experienceAnalysis": {
+        "status": "no_experience",
+        "hasExperience": false,
+        "count": 0,
+        "label": "Fresher / Entry-Level (0 Years)",
+        "message": "No formal work experience detected in this resume.",
+        "suggestion": "For freshers, recruiters prioritize technical projects, verified skill certifications, and problem-solving aptitude."
+      },
+      "educationAnalysis": {
+        "status": "missing",
+        "hasEducation": false,
+        "count": 0,
+        "label": "No Education Section Detected",
+        "message": "No formal degree or university section was detected in this resume text."
+      },
+      "scores": {
+        "overall": 80,
+        "ats": 72,
+        "grammar": 85,
+        "format": 80,
+        "skills": 56,
+        "experience": 60,
+        "projects": 78
+      },
+      "grammarIssues": [],
+      "resumeProblems": [
+        {
+          "section": "Experience & Projects",
+          "problem": "Bullet points lack quantifiable metrics (e.g. percentages, performance gains, numbers)",
+          "whyItMatters": "Recruiters and ATS favor resumes showing measured impact.",
+          "suggestion": "Rephrase achievements to include metrics like 'improved performance by 35%' or 'served 10k+ users'.",
+          "priority": "high"
+        },
+        {
+          "section": "Contact & Header",
+          "problem": "Missing GitHub / Portfolio URL link",
+          "whyItMatters": "Technical recruiters verify proof of work through live project links.",
+          "suggestion": "Add your GitHub profile link (https://github.com/your-username) at the top of your resume.",
+          "priority": "medium"
+        }
+      ],
+      "formatProblems": [
+        {
+          "problem": "Check section spacing and margin consistency",
+          "suggestion": "Use standard 0.5 - 1 inch margins"
+        }
+      ],
+      "atsProblems": [
+        {
+          "problem": "Missing proof of work link in contact header",
+          "suggestion": "Add GitHub profile link"
+        }
+      ],
+      "missingSections": [
+        "Education"
+      ],
+      "skills": {
+        "detected": [
+          "HTML",
+          "CSS",
+          "JavaScript",
+          "React",
+          "Java"
+        ],
+        "strong": [
+          "HTML",
+          "CSS",
+          "JavaScript"
+        ],
+        "weak": [
+          "React",
+          "Java"
+        ],
+        "missing": [
+          "Node.js",
+          "Express",
+          "MongoDB",
+          "Git",
+          "REST API"
+        ]
+      },
+      "projects": [
+        {
+          "name": "Web Application Project",
+          "description": "Interactive full stack application",
+          "technologies": [
+            "HTML",
+            "CSS",
+            "JavaScript"
+          ]
+        }
+      ],
+      "improvements": [
+        {
+          "section": "Experience & Projects",
+          "original": "Bullet points lack quantifiable metrics (e.g. percentages, performance gains, numbers)",
+          "suggested": "Rephrase achievements to include metrics like 'improved performance by 35%' or 'served 10k+ users'.",
+          "reason": "Recruiters and ATS favor resumes showing measured impact."
+        },
+        {
+          "section": "Contact & Header",
+          "original": "Missing GitHub / Portfolio URL link",
+          "suggested": "Add your GitHub profile link (https://github.com/your-username) at the top of your resume.",
+          "reason": "Technical recruiters verify proof of work through live project links."
+        }
+      ],
+      "skillGap": [
+        {
+          "skill": "HTML",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "CSS",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "JavaScript",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "React",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Node.js",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Express",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "MongoDB",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Git",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "REST API",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        }
+      ]
+    },
+    "targetRole": "Full Stack Developer",
+    "jobDescription": "",
+    "overall_score": 75,
+    "ats_score": 75,
+    "updatedAt": "2026-08-30T05:00:49.752Z"
+  },
+  {
+    "createdAt": "2026-08-30T05:01:29.269Z",
+    "id": "res_1788066089269_sj2m9n5",
+    "resumeId": "res_1788066089269_sj2m9n5",
+    "userId": "guest_user",
+    "fileName": "Sajid_Ahmed_Resume.pdf",
+    "resumeText": "Sajid Ahmed\nsajidahmedofficial110@gmail.com\n+91 98765 43210\nlinkedin.com/in/sajidahmed\n\nPROFESSIONAL SUMMARY\nFull stack developer with extensive experience in React, Node.js, and AI API integrations.\n\nWORK EXPERIENCE\nFull Stack Development Intern\nSoftware Solutions Company\nJan 2023 - Present\n Engineered full stack components in React and Node.js.\n\nEDUCATION\nAnna University\nB.Tech in Information Technology\n2025\n\nSKILLS\nJavaScript, React, Node.js, Python, SQL, Git",
+    "analysis": {
+      "candidate": {
+        "firstName": "Sajid",
+        "lastName": "Ahmed",
+        "name": "Sajid Ahmed",
+        "email": "sajidahmedofficial110@gmail.com",
+        "phone": "+91 98765 43210",
+        "linkedIn": "https://linkedin.com/in/sajidahmed",
+        "summary": "Full stack developer with extensive experience in React, Node.js, and AI API integrations.",
+        "headline": "Full Stack Developer Candidate"
+      },
+      "summary": "Full stack developer with extensive experience in React, Node.js, and AI API integrations.",
+      "education": [
+        {
+          "school": "Anna University",
+          "degree": "Bachelor of Technology (B.Tech)",
+          "field": "Information Technology",
+          "year": "2025"
+        }
+      ],
+      "experience": [
+        {
+          "role": "Full Stack Development Intern",
+          "company": "Software Solutions Company",
+          "startDate": "Jan 2023",
+          "endDate": "",
+          "duration": "Jan 2023 - Present",
+          "description": "• Engineered full stack components in React and Node.js."
+        }
+      ],
+      "hasExperience": true,
+      "hasEducation": true,
+      "experienceAnalysis": {
+        "status": "experienced",
+        "hasExperience": true,
+        "count": 1,
+        "label": "1 Roles Detected",
+        "message": "Work experience detected and evaluated against industry role expectations."
+      },
+      "educationAnalysis": {
+        "status": "verified",
+        "hasEducation": true,
+        "count": 1,
+        "label": "Bachelor of Technology (B.Tech) Detected",
+        "message": "Education background verified and aligned with engineering prerequisites."
+      },
+      "scores": {
+        "overall": 88,
+        "ats": 72,
+        "grammar": 85,
+        "format": 80,
+        "skills": 78,
+        "experience": 80,
+        "projects": 78
+      },
+      "grammarIssues": [],
+      "resumeProblems": [
+        {
+          "section": "Experience & Projects",
+          "problem": "Bullet points lack quantifiable metrics (e.g. percentages, performance gains, numbers)",
+          "whyItMatters": "Recruiters and ATS favor resumes showing measured impact.",
+          "suggestion": "Rephrase achievements to include metrics like 'improved performance by 35%' or 'served 10k+ users'.",
+          "priority": "high"
+        },
+        {
+          "section": "Contact & Header",
+          "problem": "Missing GitHub / Portfolio URL link",
+          "whyItMatters": "Technical recruiters verify proof of work through live project links.",
+          "suggestion": "Add your GitHub profile link (https://github.com/your-username) at the top of your resume.",
+          "priority": "medium"
+        }
+      ],
+      "formatProblems": [
+        {
+          "problem": "Check section spacing and margin consistency",
+          "suggestion": "Use standard 0.5 - 1 inch margins"
+        }
+      ],
+      "atsProblems": [
+        {
+          "problem": "Missing proof of work link in contact header",
+          "suggestion": "Add GitHub profile link"
+        }
+      ],
+      "missingSections": [],
+      "skills": {
+        "detected": [
+          "JavaScript",
+          "React",
+          "Node.js",
+          "SQL",
+          "Python",
+          "Git",
+          "Java"
+        ],
+        "strong": [
+          "JavaScript",
+          "React",
+          "Node.js",
+          "SQL",
+          "Python"
+        ],
+        "weak": [
+          "Git",
+          "Java"
+        ],
+        "missing": [
+          "HTML",
+          "CSS",
+          "Express",
+          "MongoDB",
+          "REST API"
+        ]
+      },
+      "projects": [
+        {
+          "name": "Web Application Project",
+          "description": "Interactive full stack application",
+          "technologies": [
+            "JavaScript",
+            "React",
+            "Node.js"
+          ]
+        }
+      ],
+      "improvements": [
+        {
+          "section": "Experience & Projects",
+          "original": "Bullet points lack quantifiable metrics (e.g. percentages, performance gains, numbers)",
+          "suggested": "Rephrase achievements to include metrics like 'improved performance by 35%' or 'served 10k+ users'.",
+          "reason": "Recruiters and ATS favor resumes showing measured impact."
+        },
+        {
+          "section": "Contact & Header",
+          "original": "Missing GitHub / Portfolio URL link",
+          "suggested": "Add your GitHub profile link (https://github.com/your-username) at the top of your resume.",
+          "reason": "Technical recruiters verify proof of work through live project links."
+        }
+      ],
+      "skillGap": [
+        {
+          "skill": "HTML",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "CSS",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "JavaScript",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "React",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Node.js",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Express",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "MongoDB",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Git",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "REST API",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        }
+      ]
+    },
+    "targetRole": "Full Stack Developer",
+    "jobDescription": "",
+    "overall_score": 75,
+    "ats_score": 75,
+    "updatedAt": "2026-08-30T05:01:29.270Z"
   }
 ]

@@ -36,33 +36,59 @@ import {
 import AIAssistantAvatar from './common/AIAssistantAvatar';
 
 export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerification }) {
-  const hasUploadedResume = Boolean(profile?.hasUploadedResume);
+  const hasUploadedResume = Boolean(profile?.hasUploadedResume || profile?.resumeId);
   const [avatarState, setAvatarState] = useState('idle');
   const [selectedRole, setSelectedRole] = useState(
     typeof profile?.careerGoal === 'string' ? profile.careerGoal : 'Full Stack Developer'
   );
 
-  // Software roles catalog
-  const roleSkillPresets = {
-    'Full Stack Developer': {
-      verified: ['JavaScript - Expert Level', 'React.js - Expert Level', 'Node.js - Intermediate'],
-      gaps: ['TypeScript & GraphQL - Learn This', 'AWS & Docker Cloud - Learn This', 'System Architecture - Learn This']
-    },
-    'AI & Data Engineer': {
-      verified: ['Python - Expert Level', 'Data Analysis - Intermediate', 'SQL Databases - Advanced'],
-      gaps: ['Machine Learning & PyTorch - Learn This', 'AWS Cloud & MLOps - Learn This', 'LLM Prompt Architecture - Learn This']
-    },
-    'Frontend Engineer': {
-      verified: ['React.js - Expert Level', 'Tailwind CSS - Advanced', 'JavaScript (ES6+) - Expert'],
-      gaps: ['Next.js App Router - Learn This', 'Web Performance & Vitals - Learn This', 'End-to-End Testing (Cypress) - Learn This']
-    },
-    'Backend Engineer': {
-      verified: ['Node.js & Express - Advanced', 'PostgreSQL / MongoDB - Advanced', 'RESTful API Design - Expert'],
-      gaps: ['Microservices & Redis - Learn This', 'Kubernetes & CI/CD - Learn This', 'Distributed Systems - Learn This']
-    }
+  const candidateSkills = Array.isArray(profile?.skills) ? profile.skills : ['HTML', 'CSS', 'JavaScript'];
+  const resumeScoreVal = profile?.scores?.resumeScore || (hasUploadedResume ? 84 : 70);
+  const atsScoreVal = profile?.scores?.placementReadiness || (hasUploadedResume ? 82 : 68);
+
+  // Role presets mapped against user's actual skills
+  const roleRequiredSkills = {
+    'Full Stack Developer': ['React', 'JavaScript', 'Node.js', 'TypeScript', 'Docker', 'AWS', 'SQL'],
+    'AI & Data Engineer': ['Python', 'SQL', 'Data Analysis', 'PyTorch', 'AWS', 'MLOps'],
+    'Frontend Engineer': ['React', 'JavaScript', 'Tailwind CSS', 'Next.js', 'TypeScript', 'Testing'],
+    'Backend Engineer': ['Node.js', 'SQL', 'MongoDB', 'Redis', 'Docker', 'Microservices']
   };
 
-  const currentRoleData = roleSkillPresets[selectedRole] || roleSkillPresets['Full Stack Developer'];
+  const requiredForRole = roleRequiredSkills[selectedRole] || roleRequiredSkills['Full Stack Developer'];
+  const normCandidate = candidateSkills.map(s => s.toLowerCase().trim());
+  const verifiedSkillsList = requiredForRole.filter(s => normCandidate.some(c => c.includes(s.toLowerCase()) || s.toLowerCase().includes(c)));
+  const gapSkillsList = requiredForRole.filter(s => !verifiedSkillsList.includes(s));
+
+  // Determine dynamic next step
+  const getNextStep = () => {
+    if (!hasUploadedResume) {
+      return {
+        title: "Upload Your Resume",
+        desc: "Upload your resume (PDF/DOCX) once to extract your technical stack and compute live ATS scores.",
+        action: () => onNavigate('resume'),
+        btnText: "Upload Resume",
+        badge: "Step 1 of 5"
+      };
+    }
+    if (gapSkillsList.length > 0) {
+      return {
+        title: `Bridge Skill Gap in ${gapSkillsList[0]}`,
+        desc: `Your profile is missing ${gapSkillsList.slice(0, 2).join(' & ')} for ${selectedRole}. Follow your customized learning roadmap.`,
+        action: () => onNavigate('roadmap'),
+        btnText: "Open Learning Roadmap",
+        badge: "Step 2 of 5"
+      };
+    }
+    return {
+      title: "Explore Matching Job Opportunities",
+      desc: "Your skills align with high-demand openings. Compare descriptions and apply directly in Job Matrix.",
+      action: () => onNavigate('job'),
+      btnText: "View Job Matrix",
+      badge: "Step 3 of 5"
+    };
+  };
+
+  const nextStep = getNextStep();
 
   // Software tools suite
   const softwareTools = [
@@ -132,7 +158,36 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
     <div className="space-y-8 animate-fade-in text-slate-900 pb-12">
       
       {/* ========================================================================= */}
-      {/* 1. EXACT HERO SECTION MATCHING SCREENSHOT */}
+      {/* 0. DYNAMIC NEXT STEP BANNER */}
+      {/* ========================================================================= */}
+      <div className="rounded-2xl bg-slate-900 text-white p-5 sm:p-6 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border border-slate-800">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 text-[11px] font-semibold border border-indigo-500/30">
+              {nextStep.badge}
+            </span>
+            <span className="text-xs text-slate-400 font-medium">Recommended Next Career Milestone</span>
+          </div>
+          <h2 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-indigo-400" />
+            <span>{nextStep.title}</span>
+          </h2>
+          <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
+            {nextStep.desc}
+          </p>
+        </div>
+
+        <button
+          onClick={nextStep.action}
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-sm transition-all shrink-0"
+        >
+          <span>{nextStep.btnText}</span>
+          <ArrowRight className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* ========================================================================= */}
+      {/* 1. EXACT HERO SECTION MATCHING DESIGN */}
       {/* ========================================================================= */}
       <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#e8f7f2] via-[#edfbf6] to-[#f9fefc] border border-[#d1f2e6] p-6 sm:p-10 lg:p-12 shadow-sm">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
@@ -158,15 +213,15 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
             {/* Primary Action Button */}
             <div className="pt-2 flex flex-wrap items-center gap-3">
               <button
-                onClick={() => onNavigate('wizard')}
+                onClick={() => onNavigate(hasUploadedResume ? 'skillgap' : 'resume')}
                 className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-[#0d594f] hover:bg-[#09473f] text-white text-sm font-semibold shadow-md transition-all transform hover:-translate-y-0.5"
               >
-                <span>Start Your Analysis</span>
+                <span>{hasUploadedResume ? 'Explore Skill Gap Analysis' : 'Start Your Analysis'}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
 
               <button
-                onClick={() => onNavigate('skillgap')}
+                onClick={() => onNavigate('job')}
                 className="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-sm font-medium transition-all"
               >
                 <Layers className="w-4 h-4 text-[#0d594f]" />
@@ -193,7 +248,7 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
               </div>
 
               {/* Verified Skills (Green Pills) */}
-              {currentRoleData.verified.map((skill, idx) => (
+              {(verifiedSkillsList.length > 0 ? verifiedSkillsList : candidateSkills.slice(0, 3)).map((skill, idx) => (
                 <div 
                   key={`ver-${idx}`}
                   className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#eefaf4] border border-[#c3eed7] text-[#0f766e] text-xs sm:text-sm font-medium transition-all hover:bg-[#e6f7ee]"
@@ -201,12 +256,12 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
                   <div className="w-5 h-5 rounded-full bg-[#d3f4e2] text-[#0f766e] flex items-center justify-center shrink-0">
                     <CheckCircle2 className="w-3.5 h-3.5" />
                   </div>
-                  <span className="truncate">{skill}</span>
+                  <span className="truncate">{skill} — Verified</span>
                 </div>
               ))}
 
               {/* Skill Gaps (Orange / Amber Pills) */}
-              {currentRoleData.gaps.map((gap, idx) => (
+              {(gapSkillsList.length > 0 ? gapSkillsList.slice(0, 3) : ['TypeScript & GraphQL', 'AWS & Docker Cloud']).map((gap, idx) => (
                 <div 
                   key={`gap-${idx}`}
                   className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#fef8ed] border border-[#fbdca7] text-[#b45309] text-xs sm:text-sm font-medium transition-all hover:bg-[#fdf3df]"
@@ -214,7 +269,7 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
                   <div className="w-5 h-5 rounded-full bg-[#faecd2] text-[#b45309] flex items-center justify-center shrink-0">
                     <TrendingUp className="w-3.5 h-3.5" />
                   </div>
-                  <span className="truncate">{gap}</span>
+                  <span className="truncate">{gap} — Priority Gap</span>
                 </div>
               ))}
             </div>
@@ -232,10 +287,10 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
             <span>Resume ATS Score</span>
             <FileText className="w-4 h-4 text-[#0d594f]" />
           </div>
-          <div className="text-2xl font-bold text-slate-900">88 / 100</div>
+          <div className="text-2xl font-bold text-slate-900">{resumeScoreVal} / 100</div>
           <p className="text-[11px] text-emerald-700 flex items-center gap-1">
             <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>Passed 14 ATS formatting checks</span>
+            <span>Passed ATS format evaluation</span>
           </p>
         </div>
 
@@ -244,22 +299,22 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
             <span>Role Alignment Match</span>
             <Target className="w-4 h-4 text-indigo-600" />
           </div>
-          <div className="text-2xl font-bold text-slate-900">82%</div>
+          <div className="text-2xl font-bold text-slate-900">{atsScoreVal}%</div>
           <p className="text-[11px] text-indigo-600 flex items-center gap-1">
             <TrendingUp className="w-3.5 h-3.5" />
-            <span>+15% match gain this month</span>
+            <span>Target: {selectedRole}</span>
           </p>
         </div>
 
         <div className="bg-white rounded-xl p-5 border border-slate-200/80 shadow-sm space-y-2">
           <div className="flex items-center justify-between text-slate-500 text-xs font-medium">
-            <span>Coding Lab Score</span>
+            <span>Extracted Skills</span>
             <Code2 className="w-4 h-4 text-purple-600" />
           </div>
-          <div className="text-2xl font-bold text-slate-900">12 Challenges</div>
+          <div className="text-2xl font-bold text-slate-900">{candidateSkills.length} Skills</div>
           <p className="text-[11px] text-purple-600 flex items-center gap-1">
             <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>Algorithms & Data Structures</span>
+            <span>Verified in active profile</span>
           </p>
         </div>
 

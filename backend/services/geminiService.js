@@ -33,7 +33,10 @@ export function getGenAIClient() {
 }
 
 // Default model fallback chain
-export const DEFAULT_MODEL_NAMES = ['gemini-2.5-flash', 'gemini-3.6-flash', 'gemini-2.0-flash-exp', 'gemini-1.5-flash-latest', 'gemini-1.5-flash', 'gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-pro'];
+export const DEFAULT_MODEL_NAMES = [
+  'gemini-3.6-flash',
+  'gemini-2.5-flash'
+];
 
 /**
  * Executes a Gemini prompt with automatic model fallback chain and exponential backoff retry.
@@ -43,15 +46,15 @@ export const DEFAULT_MODEL_NAMES = ['gemini-2.5-flash', 'gemini-3.6-flash', 'gem
  * @param {boolean} [options.jsonMode=false] - Whether to request JSON output
  * @param {number} [options.temperature=0.7] - Model temperature
  * @param {string[]} [options.modelChain=DEFAULT_MODEL_NAMES] - Model names to attempt in sequence
- * @param {number} [options.maxAttempts=3] - Max attempts per model
+ * @param {number} [options.maxAttempts=1] - Max attempts per model
  * @returns {Promise<string>} Raw text output from Gemini
  */
 export async function analyzeWithGemini(prompt, {
   jsonMode = false,
   temperature = 0.7,
   modelChain = DEFAULT_MODEL_NAMES,
-  maxAttempts = 2,
-  timeoutMs = 18000
+  maxAttempts = 1,
+  timeoutMs = 3000
 } = {}) {
   const ai = getGenAIClient();
   if (!ai) {

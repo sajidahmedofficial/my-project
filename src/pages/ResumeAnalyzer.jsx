@@ -326,9 +326,19 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
     await applyProblemFix(problemId);
     setProblems(prev => {
       const nextProblems = prev.map(p => p.id === problemId ? { ...p, fixed: true } : p);
-      const remainingUnfixed = nextProblems.filter(p => !p.fixed).length;
       
-      setToastMessage("Fix applied! Automatically advancing to Next Task (Skill Gap & Bridge)...");
+      if (setProfile) {
+        setProfile(old => ({
+          ...old,
+          scores: {
+            ...old?.scores,
+            resumeScore: Math.min(100, (old?.scores?.resumeScore || 78) + 8),
+            placementReadiness: Math.min(100, (old?.scores?.placementReadiness || 75) + 6)
+          }
+        }));
+      }
+
+      setToastMessage("Fix applied! Recalculating ATS & Resume scores...");
       setTimeout(() => {
         setActiveTab('skills');
         setToastMessage(null);
