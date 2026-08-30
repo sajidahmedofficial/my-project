@@ -31,6 +31,7 @@ import { useAuth } from '../context/AuthContext';
 import { analyzeResume } from '../services/resumeApi';
 import { saveUserDataToSupabase } from '../services/supabaseData';
 import { sanitizeUserProfile } from '../utils/sanitizeProfile';
+import SkillGapDashboard from './SkillGapDashboard';
 
 const CAREER_OPTIONS = [
   'Full Stack AI Engineer',
@@ -46,7 +47,7 @@ export default function OnboardingWizard({ onComplete }) {
   const { currentUser, updateProfile, completeOnboarding } = useAuth();
   const fileInputRef = useRef(null);
 
-  // Wizard Step: 1 = Resume Upload, 2 = Profile Review, 3 = Career Vision, 4 = Career Path
+  // Wizard Step: 1 = Resume Upload, 2 = Profile Review, 3 = Career Vision, 4 = Career Path, 5 = Skill Gap Analysis
   const [currentStep, setCurrentStep] = useState(1);
 
   // -------------------------------------------------------------
@@ -487,7 +488,8 @@ export default function OnboardingWizard({ onComplete }) {
     { num: 1, label: 'Resume Upload' },
     { num: 2, label: 'Profile Review' },
     { num: 3, label: 'Career Vision' },
-    { num: 4, label: 'Career Path' }
+    { num: 4, label: 'Career Path' },
+    { num: 5, label: 'Skill Gap Analysis' }
   ];
 
   return (
@@ -1318,10 +1320,65 @@ export default function OnboardingWizard({ onComplete }) {
 
               <button
                 type="button"
-                onClick={handleFinishOnboarding}
+                onClick={() => setCurrentStep(5)}
                 className="px-8 py-3.5 rounded-xl bg-[#0f766e] hover:bg-[#0d594f] text-white text-xs sm:text-sm font-semibold shadow-md transition-all flex items-center gap-2 transform hover:-translate-y-0.5"
               >
                 <span>Continue to Skill Gap Analysis</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ===================================================================== */}
+        {/* STEP 5: SKILL GAP ANALYSIS */}
+        {/* ===================================================================== */}
+        {currentStep === 5 && (
+          <div className="space-y-6 animate-fade-in">
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#d5f5e9] border border-[#aeead4] text-[#0f766e] text-xs font-semibold">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>AI Skill Gap Evaluation</span>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+                Skill Gap Analysis for {targetRole}
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-500">
+                Detailed benchmark of your uploaded resume against real-world industry requirements.
+              </p>
+            </div>
+
+            <SkillGapDashboard 
+              profile={{
+                ...currentUser,
+                name: `${firstName.trim()} ${lastName.trim()}`.trim() || 'Candidate',
+                careerGoal: targetRole,
+                skills: skillsList,
+                education: educationList,
+                experience: experienceList,
+                hasUploadedResume: Boolean(uploadFile || uploadProgress === 3),
+                resumeFileName: uploadFile?.name || (uploadProgress === 3 ? (analysisResult?.fileName || 'Uploaded_Resume.pdf') : 'Uploaded_Resume.pdf'),
+                resumeText: (skillsList || []).join(', ')
+              }}
+            />
+
+            {/* Launch Workspace CTA */}
+            <div className="pt-4 flex items-center justify-between border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => setCurrentStep(4)}
+                className="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-semibold transition-all flex items-center gap-1.5"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>Back to Career Path</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleFinishOnboarding}
+                className="px-8 py-3.5 rounded-xl bg-[#0f766e] hover:bg-[#0d594f] text-white text-xs sm:text-sm font-semibold shadow-md transition-all flex items-center gap-2 transform hover:-translate-y-0.5"
+              >
+                <span>Finish Profile Setup & Launch</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
