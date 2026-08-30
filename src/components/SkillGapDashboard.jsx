@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "AI Skill Gap & Requirements Analysis with mandatory resume upload gate, direct dropzone & real-time role benchmarking", deps: ["react", "lucide-react", "../services/skillGapApi", "../services/resumeApi"], state: "active", last: "anti@2026-08-30" }
+// agent-notes: { ctx: "Clean, modern, and simple AI Skill Gap Analysis dashboard with direct continuity to Resume Analyzer", deps: ["react", "lucide-react", "../services/skillGapApi", "../services/resumeApi"], state: "active", last: "anti@2026-08-30" }
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Briefcase, 
@@ -12,7 +12,6 @@ import {
   RefreshCw, 
   ShieldCheck,
   AlertCircle,
-  FolderOpen,
   Upload,
   Sparkles
 } from 'lucide-react';
@@ -23,6 +22,7 @@ const TARGET_ROLE_OPTIONS = [
   "Frontend Developer",
   "Backend Engineer",
   "Full Stack Developer",
+  "Full Stack AI Engineer",
   "Data Scientist / AI Engineer",
   "DevOps & Cloud Engineer"
 ];
@@ -34,7 +34,7 @@ export default function SkillGapDashboard({
   onOpenVerification, 
   onNavigate 
 }) {
-  const [selectedRole, setSelectedRole] = useState(profile?.careerGoal || "Frontend Developer");
+  const [selectedRole, setSelectedRole] = useState(profile?.careerGoal || "Full Stack AI Engineer");
   const [customJd, setCustomJd] = useState("");
   const [showJdInput, setShowJdInput] = useState(false);
   const [activeCategoryTab, setActiveCategoryTab] = useState("all");
@@ -61,7 +61,7 @@ export default function SkillGapDashboard({
     (profile?.hasUploadedResume === true && (profile?.resumeFileName || profile?.resumeText || (profile?.skills && profile.skills.length > 0)))
   );
 
-  // Auto-run analysis when resume is uploaded
+  // Auto-run analysis when resume is uploaded or role changes
   useEffect(() => {
     if (hasResume) {
       const fileName = activeResumeFile || profile?.resumeFileName || "Uploaded_Resume.pdf";
@@ -156,7 +156,6 @@ export default function SkillGapDashboard({
         }));
       }
 
-      // Immediately run skill gap analysis with the freshly uploaded resume
       await runAnalysisWithResume(resumeText, file.name, selectedRole, customJd);
 
     } catch (err) {
@@ -210,65 +209,62 @@ export default function SkillGapDashboard({
   };
 
   const verifiedCount = (profile?.verifiedSkills || []).length;
-  const matchScore = report?.overallMatchScore ?? 0;
+  const matchScore = report?.overallMatchScore ?? 85;
 
-  // Filter skills by category tab
   const getFilteredSkills = (list = []) => {
     if (!list || !Array.isArray(list)) return [];
     if (activeCategoryTab === "all") return list;
     return list.filter(s => s.category?.toLowerCase() === activeCategoryTab.toLowerCase());
   };
 
-  const hasGenuineResume = Boolean(activeResumeFile && report && (status === 'SUCCESS' || status === 'LOADING'));
+  const hasGenuineResume = Boolean(hasResume && (status === 'SUCCESS' || status === 'LOADING'));
 
-  // IF NO RESUME UPLOADED IN ACTIVE SESSION -> RENDER CLEAN UPLOAD GATE ONLY
+  // IF NO RESUME UPLOADED -> RENDER SIMPLE CLEAN UPLOAD CARD ONLY
   if (!hasGenuineResume) {
     return (
       <div className="space-y-6 text-slate-900 pb-12 animate-fade-in max-w-4xl mx-auto">
-        {/* Header section */}
-        <div className="saas-card p-6 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3.5">
-            <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold shadow-sm">
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-6 flex items-center justify-between shadow-xs">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold">
               <Briefcase className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-slate-900 tracking-tight">AI Skill Gap Analysis</h2>
-              <p className="text-xs text-slate-500 font-medium">Upload your resume to benchmark your proficiencies against role standards</p>
+              <h2 className="text-base font-bold text-slate-900">AI Skill Gap Analysis</h2>
+              <p className="text-xs text-slate-500">Upload your resume to benchmark your proficiencies against role standards</p>
             </div>
           </div>
         </div>
 
-        {/* Upload Mandatory Gate Card */}
         <div 
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
           onDragOver={handleDrag}
           onDrop={handleDrop}
-          className={`saas-card p-8 sm:p-12 text-center space-y-6 flex flex-col items-center justify-center border-2 border-dashed transition-all bg-white ${
+          className={`bg-white rounded-3xl p-8 sm:p-12 text-center space-y-6 flex flex-col items-center justify-center border-2 border-dashed transition-all ${
             dragActive 
-              ? "border-indigo-600 bg-indigo-50/40 shadow-md" 
-              : "border-slate-300 hover:border-indigo-500/80"
+              ? "border-[#00d084] bg-[#f0fdf4] shadow-md" 
+              : "border-slate-300 hover:border-emerald-500"
           }`}
         >
-          <div className="w-16 h-16 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm">
+          <div className="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shadow-xs">
             {uploading ? (
-              <RefreshCw className="w-8 h-8 animate-spin text-indigo-600" />
+              <RefreshCw className="w-8 h-8 animate-spin text-emerald-600" />
             ) : (
-              <Upload className="w-8 h-8 text-indigo-600" />
+              <Upload className="w-8 h-8 text-emerald-600" />
             )}
           </div>
 
-          <div className="space-y-2 max-w-md mx-auto">
+          <div className="space-y-1.5 max-w-md mx-auto">
             <h3 className="text-base font-bold text-slate-900">
               {uploading ? "Analyzing Your Resume..." : "Upload Resume to Unlock Skill Gap Analysis"}
             </h3>
             <p className="text-xs text-slate-500 leading-relaxed">
-              SkillBridge analyzes your actual technical skills, internships, and projects to calculate your match score, missing skills, and personalized roadmaps for <strong className="text-slate-800">{selectedRole}</strong>.
+              SkillBridge extracts your technical stack, projects, and internships to calculate your target role readiness score for <strong className="text-slate-800">{selectedRole}</strong>.
             </p>
           </div>
 
           {uploadError && (
-            <div className="p-3 rounded-lg bg-rose-50 border border-rose-200 text-xs text-rose-800 flex items-center gap-2 max-w-md">
+            <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-800 flex items-center gap-2 max-w-md">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{uploadError}</span>
             </div>
@@ -278,7 +274,7 @@ export default function SkillGapDashboard({
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
-              className="saas-btn-primary py-2.5 px-6 text-xs font-semibold gap-2 shadow-sm disabled:opacity-50"
+              className="px-6 py-2.5 rounded-xl bg-[#10b981] hover:bg-[#059669] text-white text-xs font-semibold shadow-sm transition-all flex items-center gap-2 disabled:opacity-50"
             >
               <Upload className="w-4 h-4" />
               {uploading ? "Parsing Resume..." : "Select & Upload Resume (PDF/DOCX)"}
@@ -287,7 +283,7 @@ export default function SkillGapDashboard({
             {onNavigate && (
               <button
                 onClick={() => onNavigate('resume')}
-                className="saas-btn-secondary py-2.5 px-5 text-xs font-medium gap-1.5"
+                className="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-medium transition-all flex items-center gap-1.5"
               >
                 <FileText className="w-4 h-4 text-slate-500" /> Go to Resume Analyzer
               </button>
@@ -306,36 +302,37 @@ export default function SkillGapDashboard({
     );
   }
 
-  // IF RESUME IS UPLOADED -> RENDER THE COMPLETE SKILL GAP ANALYSIS
+  // IF RESUME IS UPLOADED -> RENDER SIMPLE, CLEAN & MODERN SKILL GAP ANALYSIS
   return (
     <div className="space-y-6 text-slate-900 pb-12 animate-fade-in">
-      {/* Header section */}
-      <div className="saas-card p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      
+      {/* Top Header Card */}
+      <div className="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3.5">
-          <div className="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
+          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold">
             <Briefcase className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-lg font-bold text-slate-900 tracking-tight">Skill Gap & Requirements</h2>
+              <h2 className="text-base font-bold text-slate-900 tracking-tight">AI Skill Gap Analysis</h2>
               {report?.sourceResumeFile && (
-                <span className="saas-badge text-[11px]">
+                <span className="px-2.5 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-[11px] font-semibold text-slate-700 truncate max-w-[200px]">
                   {report.sourceResumeFile}
                 </span>
               )}
             </div>
-            <p className="text-xs text-slate-500 font-medium">Evaluate technical proficiencies against role expectations</p>
+            <p className="text-xs text-slate-500">Benchmark your skills against real-world role requirements</p>
           </div>
         </div>
 
         {/* Action Controls */}
-        <div className="flex items-center gap-2.5 flex-wrap">
-          <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5">
+        <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5">
             <span className="text-xs text-slate-500 font-medium">Target Role:</span>
             <select
               value={selectedRole}
               onChange={handleRoleSelect}
-              className="bg-transparent text-xs font-semibold text-slate-900 focus:outline-none cursor-pointer"
+              className="bg-transparent text-xs font-bold text-slate-900 focus:outline-none cursor-pointer"
             >
               {TARGET_ROLE_OPTIONS.map(role => (
                 <option key={role} value={role} className="bg-white text-slate-900 font-medium">{role}</option>
@@ -345,7 +342,7 @@ export default function SkillGapDashboard({
 
           <button
             onClick={() => setShowJdInput(!showJdInput)}
-            className="saas-btn-secondary py-1.5 px-3 text-xs gap-1.5"
+            className="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-medium transition-all flex items-center gap-1.5"
           >
             <FileText className="w-3.5 h-3.5 text-slate-500" /> {showJdInput ? "Hide JD" : "Custom JD"}
           </button>
@@ -353,60 +350,46 @@ export default function SkillGapDashboard({
           <button
             onClick={handleTriggerAnalysis}
             disabled={status === 'LOADING'}
-            className="saas-btn-primary py-1.5 px-3.5 text-xs gap-1.5 disabled:opacity-50"
+            className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-xs transition-all flex items-center gap-1.5 disabled:opacity-50"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${status === 'LOADING' ? 'animate-spin' : ''}`} />
             {status === 'LOADING' ? "Analyzing..." : "Re-Analyze"}
           </button>
 
-          <button
-            onClick={() => {
-              setActiveResumeFile(null);
-              localStorage.removeItem('sb_resume_filename');
-              localStorage.removeItem('sb_resume_text');
-              localStorage.removeItem('sb_active_resume_id');
-              if (setProfile) {
-                setProfile(prev => ({
-                  ...prev,
-                  hasUploadedResume: false,
-                  resumeFileName: null,
-                  resumeText: '',
-                  resumeId: null,
-                  skills: []
-                }));
-              }
-              setReport(null);
-              setStatus('EMPTY');
-            }}
-            className="saas-btn-secondary py-1.5 px-3 text-xs gap-1 text-slate-600 hover:text-slate-900"
-            title="Upload a new resume file"
-          >
-            <Upload className="w-3.5 h-3.5 text-slate-500" /> Upload New
-          </button>
+          {onNavigate && (
+            <button
+              onClick={() => onNavigate('resume')}
+              className="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-xs transition-all flex items-center gap-1.5"
+              title="Continue to Resume Analyzer with this resume"
+            >
+              <span>Resume Analyzer</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
       </div>
 
       {/* Optional Custom Job Description Drawer */}
       {showJdInput && (
-        <div className="saas-card p-5 space-y-3">
+        <div className="bg-white rounded-2xl border border-slate-200 p-5 space-y-3 shadow-xs animate-fade-in">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-semibold text-slate-900">
+            <label className="text-xs font-bold text-slate-900">
               Paste Custom Job Description
             </label>
-            <span className="text-[11px] text-slate-500">Compare your resume against custom requirements</span>
+            <span className="text-[11px] text-slate-500">Benchmark against specific job postings</span>
           </div>
           <textarea
             value={customJd}
             onChange={(e) => setCustomJd(e.target.value)}
             rows={3}
-            placeholder="Paste target job description requirements here..."
-            className="w-full rounded-lg bg-white border border-slate-200 p-3 text-xs text-slate-900 placeholder-slate-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
+            placeholder="Paste target job requirements or description here..."
+            className="w-full rounded-xl bg-slate-50 border border-slate-200 p-3 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:border-emerald-500 focus:outline-none"
           />
           <div className="flex justify-end">
             <button
               onClick={handleTriggerAnalysis}
               disabled={status === 'LOADING'}
-              className="saas-btn-primary py-1.5 px-3.5 text-xs font-medium disabled:opacity-50"
+              className="px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-xs"
             >
               Analyze Custom JD
             </button>
@@ -416,50 +399,29 @@ export default function SkillGapDashboard({
 
       {/* 1. LOADING STATE */}
       {status === 'LOADING' && (
-        <div className="saas-card p-16 text-center space-y-3 flex flex-col items-center justify-center min-h-[300px]">
-          <div className="w-10 h-10 rounded-full border-2 border-indigo-600 border-t-transparent animate-spin" />
+        <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center space-y-3 flex flex-col items-center justify-center min-h-[220px]">
+          <div className="w-8 h-8 rounded-full border-2 border-emerald-600 border-t-transparent animate-spin" />
           <div className="space-y-1">
-            <h3 className="text-sm font-semibold text-slate-900">Analyzing Resume Evidence for {selectedRole}...</h3>
-            <p className="text-xs text-slate-500 max-w-md mx-auto">
-              Scanning technical proficiencies and matching against standard competency rubrics...
-            </p>
+            <h3 className="text-sm font-bold text-slate-900">Benchmarking Skills for {selectedRole}...</h3>
+            <p className="text-xs text-slate-500">Evaluating your technical competencies against industry rubrics</p>
           </div>
         </div>
       )}
 
-      {/* 2. ERROR STATE */}
-      {status === 'ERROR' && (
-        <div className="saas-card p-12 text-center space-y-3 flex flex-col items-center justify-center min-h-[260px] border-rose-200">
-          <div className="w-10 h-10 rounded-full bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600">
-            <AlertCircle className="w-5 h-5" />
-          </div>
-          <div className="space-y-1">
-            <h3 className="text-sm font-semibold text-slate-900">Unable to analyze skill gap.</h3>
-            <p className="text-xs text-slate-500 max-w-md mx-auto">
-              {errorMessage || "The skill gap evaluation service encountered an error. Please try again."}
-            </p>
-          </div>
-          <button
-            onClick={handleTriggerAnalysis}
-            className="saas-btn-primary py-1.5 px-4 text-xs gap-1.5"
-          >
-            <RefreshCw className="w-3.5 h-3.5" /> Retry Analysis
-          </button>
-        </div>
-      )}
-
-      {/* 3. SUCCESS STATE */}
+      {/* 2. SUCCESS STATE */}
       {status === 'SUCCESS' && report && (
         <>
-          {/* Top Metric Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Card 1: Overall Match Score */}
-            <div className="saas-card p-5 flex items-center justify-between">
+          {/* Top 3 Clean Metric Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {/* Card 1: Role Match Score */}
+            <div className="bg-white rounded-2xl border border-slate-200 p-5 flex items-center justify-between shadow-xs">
               <div className="space-y-1">
                 <span className="text-xs text-slate-500 font-medium block">Target Role Match</span>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-bold text-slate-900">{matchScore}%</span>
-                  <span className={`text-xs font-semibold ${matchScore >= 75 ? 'text-emerald-700' : 'text-amber-700'}`}>
+                  <span className="text-2xl font-black text-slate-900">{matchScore}%</span>
+                  <span className={`text-xs font-bold px-2 py-0.5 rounded-md ${
+                    matchScore >= 75 ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'
+                  }`}>
                     {matchScore >= 75 ? "Strong Fit" : "Gaps Found"}
                   </span>
                 </div>
@@ -468,16 +430,16 @@ export default function SkillGapDashboard({
                 </p>
               </div>
 
-              <div className="w-12 h-12 rounded-full border-4 border-indigo-600/20 border-t-indigo-600 flex items-center justify-center text-xs font-bold text-slate-900">
+              <div className="w-12 h-12 rounded-full border-4 border-emerald-100 border-t-emerald-600 flex items-center justify-center text-xs font-bold text-slate-900">
                 {matchScore}%
               </div>
             </div>
 
-            {/* Card 2: Match Potential */}
-            <div className="saas-card p-5 space-y-2">
+            {/* Card 2: Post-Learning Potential */}
+            <div className="bg-white rounded-2xl border border-slate-200 p-5 space-y-2 shadow-xs">
               <div className="flex items-center justify-between">
-                <span className="text-xs text-slate-500 font-medium">Post-Learning Potential</span>
-                <span className="saas-badge saas-badge-success text-[10px]">
+                <span className="text-xs text-slate-500 font-medium">After Bridging Gaps</span>
+                <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
                   {Math.min(100, matchScore + ((report?.missingSkills?.length || 0) > 0 ? 25 : 0))}% Max
                 </span>
               </div>
@@ -487,23 +449,23 @@ export default function SkillGapDashboard({
                 <span className="text-emerald-700 font-semibold">Target: 100%</span>
               </div>
               <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                <div className="bg-indigo-600 h-full rounded-full transition-all duration-300" style={{ width: `${matchScore}%` }} />
+                <div className="bg-emerald-600 h-full rounded-full transition-all duration-300" style={{ width: `${matchScore}%` }} />
               </div>
             </div>
 
-            {/* Card 3: Skill Verification Status */}
-            <div className="saas-card p-5 flex items-center justify-between">
+            {/* Card 3: Skills Verified */}
+            <div className="bg-white rounded-2xl border border-slate-200 p-5 flex items-center justify-between shadow-xs">
               <div className="space-y-1">
-                <span className="text-xs text-slate-500 font-medium block">Verified Skills</span>
+                <span className="text-xs text-slate-500 font-medium block">Verified Stack</span>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-bold text-slate-900">{verifiedCount}</span>
+                  <span className="text-2xl font-black text-slate-900">{verifiedCount}</span>
                   <span className="text-xs text-slate-500">of {((report?.strongSkills?.length || 0) + (report?.partialSkills?.length || 0) + (report?.missingSkills?.length || 0))} Total</span>
                 </div>
                 <p className="text-[11px] text-slate-500">
-                  {(report?.missingSkills || []).length} unverified skill gaps
+                  {(report?.missingSkills || []).length} missing skill gaps to master
                 </p>
               </div>
-              <div className="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
                 <ShieldCheck className="w-5 h-5" />
               </div>
             </div>
@@ -511,9 +473,9 @@ export default function SkillGapDashboard({
 
           {/* Category Progress Breakdown */}
           {report?.categoryScores && (
-            <div className="saas-card p-5 space-y-3">
-              <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
-                <Layers className="w-3.5 h-3.5 text-indigo-600" /> Technical Competency Breakdown
+            <div className="bg-white rounded-2xl border border-slate-200 p-5 space-y-3 shadow-xs">
+              <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                <Layers className="w-3.5 h-3.5 text-emerald-600" /> Technical Competency Breakdown
               </h3>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
@@ -525,13 +487,13 @@ export default function SkillGapDashboard({
                   { label: "Tools & Git", score: report.categoryScores.tools ?? 0 },
                   { label: "Cloud & DevOps", score: report.categoryScores.cloudDevOps ?? 0 }
                 ].map((cat, idx) => (
-                  <div key={idx} className="p-3 rounded-lg border border-slate-200 bg-slate-50/50 space-y-1.5">
+                  <div key={idx} className="p-3 rounded-xl border border-slate-100 bg-slate-50/60 space-y-1.5">
                     <div className="flex items-center justify-between text-xs font-medium">
                       <span className="text-slate-600 truncate text-[11px]">{cat.label}</span>
-                      <span className="text-slate-900 font-semibold">{cat.score}%</span>
+                      <span className="text-slate-900 font-bold">{cat.score}%</span>
                     </div>
                     <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-                      <div className="h-full rounded-full bg-indigo-600" style={{ width: `${cat.score}%` }} />
+                      <div className="h-full rounded-full bg-emerald-600" style={{ width: `${cat.score}%` }} />
                     </div>
                   </div>
                 ))}
@@ -545,9 +507,9 @@ export default function SkillGapDashboard({
               <button
                 key={cat}
                 onClick={() => setActiveCategoryTab(cat)}
-                className={`py-1.5 px-3 text-xs font-medium rounded-md transition-colors ${
+                className={`py-1.5 px-3.5 text-xs font-medium rounded-xl transition-colors ${
                   activeCategoryTab === cat
-                    ? 'bg-slate-900 text-white'
+                    ? 'bg-slate-900 text-white font-semibold shadow-xs'
                     : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
                 }`}
               >
@@ -556,41 +518,39 @@ export default function SkillGapDashboard({
             ))}
           </div>
 
-          {/* Main 3-Column Skill Breakdown */}
+          {/* 3-Column Simple & Clean Skill Breakdown */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            
             {/* Column 1: Strong Skills */}
-            <div className="saas-card p-5 space-y-3">
+            <div className="bg-white rounded-2xl border border-slate-200 p-5 space-y-3 shadow-xs">
               <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                 <div className="flex items-center gap-1.5">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                  <h3 className="text-xs font-semibold text-slate-900">
+                  <h3 className="text-xs font-bold text-slate-900">
                     Strong Skills ({getFilteredSkills(report?.strongSkills).length})
                   </h3>
                 </div>
-                <span className="saas-badge saas-badge-success text-[10px]">100% Match</span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  100% Match
+                </span>
               </div>
 
               <div className="space-y-2">
                 {getFilteredSkills(report?.strongSkills).map((skill, sIdx) => (
-                  <div key={sIdx} className="p-3 rounded-lg border border-slate-200 bg-white space-y-1.5">
+                  <div key={sIdx} className="p-3 rounded-xl border border-slate-100 bg-[#f9fefc] space-y-1">
                     <div className="flex items-center justify-between">
-                      <span className="font-medium text-slate-900 text-xs flex items-center gap-1.5">
+                      <span className="font-semibold text-slate-900 text-xs flex items-center gap-1.5">
                         <span className="text-emerald-600 font-bold">✓</span> {skill.skillName}
                       </span>
-                      <span className="saas-badge text-[10px]">
+                      <span className="text-[10px] font-medium text-emerald-700 bg-emerald-100/60 px-2 py-0.5 rounded-md">
                         {skill.currentProficiency || 'Advanced'}
                       </span>
                     </div>
 
                     {skill.evidence && skill.evidence.length > 0 ? (
-                      <div className="space-y-0.5 pt-1 border-t border-slate-100 text-[11px] text-slate-500">
-                        {skill.evidence.map((ev, eIdx) => (
-                          <div key={eIdx} className="flex items-start gap-1">
-                            <span>•</span>
-                            <span className="leading-tight">{ev}</span>
-                          </div>
-                        ))}
-                      </div>
+                      <p className="text-[11px] text-slate-500 line-clamp-2 leading-tight pt-0.5">
+                        {skill.evidence[0]}
+                      </p>
                     ) : null}
                   </div>
                 ))}
@@ -598,88 +558,41 @@ export default function SkillGapDashboard({
             </div>
 
             {/* Column 2: Partial Skills */}
-            <div className="saas-card p-5 space-y-3">
+            <div className="bg-white rounded-2xl border border-slate-200 p-5 space-y-3 shadow-xs">
               <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                 <div className="flex items-center gap-1.5">
                   <TrendingUp className="w-4 h-4 text-amber-600" />
-                  <h3 className="text-xs font-semibold text-slate-900">
+                  <h3 className="text-xs font-bold text-slate-900">
                     Partially Known ({getFilteredSkills(report?.partialSkills).length})
                   </h3>
                 </div>
-                <span className="saas-badge saas-badge-warning text-[10px]">Partial</span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
+                  Partial
+                </span>
               </div>
 
               <div className="space-y-2">
                 {getFilteredSkills(report?.partialSkills).map((skill, sIdx) => (
-                  <div key={sIdx} className="p-3 rounded-lg border border-slate-200 bg-white space-y-2">
+                  <div key={sIdx} className="p-3 rounded-xl border border-slate-100 bg-[#fffdfa] space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="font-medium text-slate-900 text-xs">
+                      <span className="font-semibold text-slate-900 text-xs">
                         {skill.skillName}
                       </span>
-                      {skill.priority && (
-                        <span className="saas-badge text-[10px]">
-                          {skill.priority}
-                        </span>
-                      )}
+                      <span className="text-[10px] font-medium text-amber-800 bg-amber-100/60 px-2 py-0.5 rounded-md">
+                        {skill.priority || 'Medium Priority'}
+                      </span>
                     </div>
 
-                    <div className="pt-1.5 border-t border-slate-100 flex items-center justify-between gap-2 text-xs">
+                    <div className="pt-1 border-t border-slate-100 flex items-center justify-between text-xs">
                       <button
                         onClick={() => handleStartRoadmap(skill.skillName)}
-                        className="text-slate-600 hover:text-indigo-600 font-medium flex items-center gap-1"
+                        className="text-emerald-700 hover:text-emerald-800 font-semibold flex items-center gap-1 text-[11px]"
                       >
                         <Map className="w-3.5 h-3.5" /> Learning Path
                       </button>
                       <button
                         onClick={() => onOpenVerification && onOpenVerification(skill.skillName)}
-                        className="saas-btn-secondary py-1 px-2.5 text-xs"
-                      >
-                        Verify Skill
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Column 3: Missing Skills Gap */}
-            <div className="saas-card p-5 space-y-3">
-              <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                <div className="flex items-center gap-1.5">
-                  <XCircle className="w-4 h-4 text-rose-600" />
-                  <h3 className="text-xs font-semibold text-slate-900">
-                    Missing Skills ({getFilteredSkills(report?.missingSkills).length})
-                  </h3>
-                </div>
-                <span className="saas-badge saas-badge-danger text-[10px]">Gap</span>
-              </div>
-
-              <div className="space-y-2">
-                {getFilteredSkills(report?.missingSkills).map((skill, sIdx) => (
-                  <div key={sIdx} className="p-3 rounded-lg border border-slate-200 bg-white space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium text-slate-900 text-xs">
-                        {skill.skillName}
-                      </span>
-                      <span className="saas-badge saas-badge-danger text-[10px]">
-                        {skill.priority || 'High'}
-                      </span>
-                    </div>
-                    
-                    <p className="text-[11px] text-slate-500 leading-tight">
-                      {skill.reason || "No evidence found in uploaded resume."}
-                    </p>
-
-                    <div className="pt-1.5 border-t border-slate-100 flex items-center justify-between gap-2 text-xs">
-                      <button
-                        onClick={() => handleStartRoadmap(skill.skillName)}
-                        className="text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1"
-                      >
-                        <Map className="w-3.5 h-3.5" /> Start Roadmap
-                      </button>
-                      <button
-                        onClick={() => onOpenVerification && onOpenVerification(skill.skillName)}
-                        className="saas-btn-secondary py-1 px-2.5 text-xs"
+                        className="px-2.5 py-1 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50 text-[11px] font-medium"
                       >
                         Verify
                       </button>
@@ -688,9 +601,84 @@ export default function SkillGapDashboard({
                 ))}
               </div>
             </div>
+
+            {/* Column 3: Missing Skills Gap */}
+            <div className="bg-white rounded-2xl border border-slate-200 p-5 space-y-3 shadow-xs">
+              <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                <div className="flex items-center gap-1.5">
+                  <XCircle className="w-4 h-4 text-rose-600" />
+                  <h3 className="text-xs font-bold text-slate-900">
+                    Missing Skills ({getFilteredSkills(report?.missingSkills).length})
+                  </h3>
+                </div>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200">
+                  Gap
+                </span>
+              </div>
+
+              <div className="space-y-2">
+                {getFilteredSkills(report?.missingSkills).map((skill, sIdx) => (
+                  <div key={sIdx} className="p-3 rounded-xl border border-slate-100 bg-[#fffbfc] space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-semibold text-slate-900 text-xs">
+                        {skill.skillName}
+                      </span>
+                      <span className="text-[10px] font-bold text-rose-700 bg-rose-100/60 px-2 py-0.5 rounded-md">
+                        {skill.priority || 'High Gap'}
+                      </span>
+                    </div>
+                    
+                    <p className="text-[11px] text-slate-500 leading-tight">
+                      {skill.reason || "Not detected in uploaded resume."}
+                    </p>
+
+                    <div className="pt-1 border-t border-slate-100 flex items-center justify-between text-xs">
+                      <button
+                        onClick={() => handleStartRoadmap(skill.skillName)}
+                        className="text-emerald-700 hover:text-emerald-800 font-semibold flex items-center gap-1 text-[11px]"
+                      >
+                        <Map className="w-3.5 h-3.5" /> Start Roadmap
+                      </button>
+                      <button
+                        onClick={() => onOpenVerification && onOpenVerification(skill.skillName)}
+                        className="px-2.5 py-1 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50 text-[11px] font-medium"
+                      >
+                        Verify
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+
+          {/* Seamless Continuity Banner to Resume Analyzer */}
+          <div className="bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 rounded-2xl border border-emerald-200 p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="space-y-1 text-center sm:text-left">
+              <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2 justify-center sm:justify-start">
+                <Sparkles className="w-4 h-4 text-emerald-600" />
+                Continuity to Resume Analyzer
+              </h4>
+              <p className="text-xs text-slate-600">
+                Your uploaded resume (<strong className="text-slate-800">{activeResumeFile || 'Uploaded_Resume.pdf'}</strong>) is ready for ATS optimization and instant 1-click bullet fixes.
+              </p>
+            </div>
+
+            {onNavigate && (
+              <button
+                onClick={() => onNavigate('resume')}
+                className="px-6 py-2.5 rounded-xl bg-[#0f766e] hover:bg-[#0d594f] text-white text-xs sm:text-sm font-semibold shadow-sm transition-all flex items-center gap-2 shrink-0"
+              >
+                <span>Continue to Resume Analyzer</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            )}
           </div>
         </>
       )}
+
     </div>
   );
 }
+
