@@ -73,6 +73,14 @@ function MainLayout() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
+  // Automatically navigate to dashboard when user logs in / becomes authenticated
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      setActiveTab('dashboard');
+      setShowOnboarding(false);
+    }
+  }, [isAuthenticated]);
+
   const activeProfile = currentUser || {
     id: 'guest_user',
     name: 'Student Profile',
@@ -138,12 +146,12 @@ function MainLayout() {
   ];
 
   const renderActiveView = () => {
-    if (showOnboarding || (!isOnboarded && isAuthenticated)) {
+    if (showOnboarding) {
       return (
         <OnboardingWizard 
           onComplete={() => {
             setShowOnboarding(false);
-            setActiveTab('skillgap');
+            setActiveTab('dashboard');
           }} 
         />
       );
@@ -350,9 +358,9 @@ function MainLayout() {
           isOpen={isTaskFlowAuthOpen} 
           onClose={() => setIsTaskFlowAuthOpen(false)} 
           initialMode={taskFlowMode}
-          onComplete={(_completedMode) => {
+          onComplete={() => {
             setShowOnboarding(false);
-            setActiveTab('resume');
+            setActiveTab('dashboard');
           }}
         />
 
@@ -361,9 +369,13 @@ function MainLayout() {
           isOpen={isAuthModalOpen} 
           onClose={() => setIsAuthModalOpen(false)} 
           initialTab={authModalTab}
+          onLoginSuccess={() => {
+            setShowOnboarding(false);
+            setActiveTab('dashboard');
+          }}
           onStartOnboarding={() => {
             setShowOnboarding(false);
-            setActiveTab('resume');
+            setActiveTab('dashboard');
           }}
         />
       </div>
@@ -520,12 +532,9 @@ function MainLayout() {
         isOpen={isTaskFlowAuthOpen} 
         onClose={() => setIsTaskFlowAuthOpen(false)} 
         initialMode={taskFlowMode}
-        onComplete={(completedMode) => {
-          if (completedMode === 'signup') {
-            setShowOnboarding(true);
-          } else {
-            setShowOnboarding(false);
-          }
+        onComplete={() => {
+          setShowOnboarding(false);
+          setActiveTab('dashboard');
         }}
       />
 
@@ -534,6 +543,10 @@ function MainLayout() {
         isOpen={isAuthModalOpen} 
         onClose={() => setIsAuthModalOpen(false)} 
         initialTab={authModalTab}
+        onLoginSuccess={() => {
+          setShowOnboarding(false);
+          setActiveTab('dashboard');
+        }}
         onStartOnboarding={() => setShowOnboarding(true)}
       />
 

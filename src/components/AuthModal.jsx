@@ -17,7 +17,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
 
-export default function AuthModal({ isOpen, onClose, initialTab = 'login', onStartOnboarding }) {
+export default function AuthModal({ isOpen, onClose, initialTab = 'login', onStartOnboarding, onLoginSuccess }) {
   const { login, register, socialLogin } = useAuth();
   const [activeTab, setActiveTab] = useState(initialTab); // 'login' | 'register' | 'forgot' | '2fa'
   
@@ -72,7 +72,8 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
         setActiveTab('2fa');
         setSuccessMsg('2FA code requested. Please enter your 6-digit verification code.');
       } else {
-        setSuccessMsg('Logged in successfully!');
+        setSuccessMsg('Logged in successfully! Redirecting to Dashboard...');
+        if (onLoginSuccess) onLoginSuccess();
         setTimeout(() => {
           onClose();
         }, 500);
@@ -126,7 +127,8 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
       if (res?.url) {
         return;
       }
-      setSuccessMsg(`Authenticated via ${provider === 'google' ? 'Google' : provider === 'github' ? 'GitHub' : provider.toUpperCase()}!`);
+      setSuccessMsg(`Authenticated via ${provider === 'google' ? 'Google' : provider === 'github' ? 'GitHub' : provider.toUpperCase()}! Redirecting to Dashboard...`);
+      if (onLoginSuccess) onLoginSuccess();
       setTimeout(() => {
         onClose();
       }, 500);
@@ -149,7 +151,8 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
     setLoading(true);
     try {
       await api.verify2FA({ email: loginEmail, code: twoFactorCode });
-      setSuccessMsg('2FA verified successfully!');
+      setSuccessMsg('2FA verified successfully! Redirecting to Dashboard...');
+      if (onLoginSuccess) onLoginSuccess();
       setTimeout(() => {
         onClose();
       }, 500);
