@@ -1,5 +1,5 @@
-// agent-notes: { ctx: "Clean minimal SaaS AI Skill Gap & Verification Hub with clear match metrics, domain breakdown, and priority gap cards", deps: ["lucide-react", "../services/skillGapApi"], state: "active", last: "anti@2026-08-27" }
-import React, { useState, useEffect } from 'react';
+// agent-notes: { ctx: "AI Skill Gap & Requirements Analysis with mandatory resume upload gate, direct dropzone & real-time role benchmarking", deps: ["react", "lucide-react", "../services/skillGapApi", "../services/resumeApi"], state: "active", last: "anti@2026-08-30" }
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Briefcase, 
   CheckCircle2, 
@@ -12,9 +12,12 @@ import {
   RefreshCw, 
   ShieldCheck,
   AlertCircle,
-  FolderOpen
+  FolderOpen,
+  Upload,
+  Sparkles
 } from 'lucide-react';
 import { skillGapApi } from '../services/skillGapApi';
+import { analyzeResume } from '../services/resumeApi';
 
 const TARGET_ROLE_OPTIONS = [
   "Frontend Developer",
@@ -26,6 +29,7 @@ const TARGET_ROLE_OPTIONS = [
 
 export default function SkillGapDashboard({ 
   profile, 
+  setProfile,
   onGenerateRoadmap, 
   onOpenVerification, 
   onNavigate 
@@ -40,29 +44,30 @@ export default function SkillGapDashboard({
   const [report, setReport] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
+  // Upload dropzone state
+  const fileInputRef = useRef(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+  const [dragActive, setDragActive] = useState(false);
+
+  const hasGenuineResume = Boolean(
+    profile?.hasUploadedResume === true && 
+    (profile?.resumeText || profile?.resumeId || localStorage.getItem('sb_resume_text'))
+  );
+
   // Auto-run analysis whenever target role, resume, or profile verified skills change
   useEffect(() => {
-    const hasGenuineUploadedResume = Boolean(
-      profile?.hasUploadedResume && 
-      (profile?.resumeText || profile?.resumeId || localStorage.getItem('sb_resume_text'))
-    );
-
-    if (!hasGenuineUploadedResume) {
+    if (!hasGenuineResume) {
       setStatus('EMPTY');
       setReport(null);
       return;
     }
 
-    runAnalysis(selectedRole, customJd, false);
+    runAnalysis(selectedRole, customJd);
   }, [profile?.skills, profile?.verifiedSkills, profile?.resumeId, profile?.resumeText, profile?.hasUploadedResume, selectedRole]);
 
-  const runAnalysis = async (targetRole, jdText, isManualBenchmark = false) => {
-    const hasGenuineUploadedResume = Boolean(
-      profile?.hasUploadedResume && 
-      (profile?.resumeText || profile?.resumeId || localStorage.getItem('sb_resume_text'))
-    );
-
-    if (!hasGenuineUploadedResume && !isManualBenchmark && !jdText) {
+  const runAnalysis = async (targetRole, jdText) => {
+    if (!hasGenuineResume && !jdText) {
       setStatus('EMPTY');
       setReport(null);
       return;
@@ -74,9 +79,9 @@ export default function SkillGapDashboard({
     try {
       const userSkills = profile?.skills || [];
       const verifiedSkills = profile?.verifiedSkills || [];
-      const resumeId = hasGenuineUploadedResume ? (profile?.resumeId || localStorage.getItem('sb_active_resume_id') || "") : "";
-      const resumeText = hasGenuineUploadedResume ? (profile?.resumeText || localStorage.getItem('sb_resume_text') || "") : "";
-      const activeFileName = hasGenuineUploadedResume ? (profile?.resumeFileName || localStorage.getItem('sb_resume_filename') || "") : "";
+      const resumeId = profile?.resumeId || localStorage.getItem('sb_active_resume_id') || "";
+      const resumeText = profile?.resumeText || localStorage.getItem('sb_resume_text') || "";
+      const activeFileName = profile?.resumeFileName || localStorage.getItem('sb_resume_filename') || "My_Resume.pdf";
 
       const res = await skillGapApi.analyzeSkillGap({
         resumeId,
@@ -109,13 +114,90 @@ export default function SkillGapDashboard({
     }
   };
 
+  const handleFileUpload = async (file) => {
+    if (!file) return;
+    setUploadError("");
+
+    const validTypes = [
+      "application/pdf",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "text/plain"
+    ];
+
+    const isSupported = validTypes.includes(file.type) || 
+      file.name.endsWith('.pdf') || 
+      file.name.endsWith('.docx') || 
+      file.name.endsWith('.txt');
+
+    if (!isSupported) {
+      setUploadError("Please upload a PDF, DOCX, or TXT resume.");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError("Maximum file size is 5MB.");
+      return;
+    }
+
+    try {
+      setUploading(true);
+      const res = await analyzeResume(file, selectedRole);
+
+      const parsedAnalysis = res?.analysis || res || {};
+      const resumeId = res?.resumeId || parsedAnalysis.resumeId || `res_${Date.now()}`;
+      const resumeText = res?.resumeText || "";
+      const extractedSkills = parsedAnalysis.skills?.detected || parsedAnalysis.extractedSkills || ["HTML", "CSS", "JavaScript"];
+
+      localStorage.setItem('sb_active_resume_id', resumeId);
+      localStorage.setItem('sb_resume_text', resumeText);
+      localStorage.setItem('sb_resume_filename', file.name);
+
+      if (setProfile) {
+        setProfile(prev => ({
+          ...prev,
+          hasUploadedResume: true,
+          resumeId,
+          resumeText,
+          resumeFileName: file.name,
+          skills: extractedSkills,
+          name: parsedAnalysis.candidate?.name || prev?.name || file.name.replace(/\.[^/.]+$/, "")
+        }));
+      }
+
+    } catch (err) {
+      console.error("Direct resume upload failed:", err);
+      setUploadError(err.message || "Failed to analyze resume. Please try again.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDrag = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileUpload(e.dataTransfer.files[0]);
+    }
+  };
+
   const handleRoleSelect = (e) => {
     const role = e.target.value;
     setSelectedRole(role);
   };
 
   const handleTriggerAnalysis = () => {
-    runAnalysis(selectedRole, customJd, true);
+    runAnalysis(selectedRole, customJd);
   };
 
   const handleStartRoadmap = (skillName) => {
@@ -137,8 +219,94 @@ export default function SkillGapDashboard({
     return list.filter(s => s.category?.toLowerCase() === activeCategoryTab.toLowerCase());
   };
 
+  // IF NO RESUME UPLOADED YET -> RENDER CLEAN UPLOAD GATE ONLY
+  if (!hasGenuineResume) {
+    return (
+      <div className="space-y-6 text-slate-900 pb-12 animate-fade-in max-w-4xl mx-auto">
+        {/* Header section */}
+        <div className="saas-card p-6 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold shadow-sm">
+              <Briefcase className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 tracking-tight">AI Skill Gap Analysis</h2>
+              <p className="text-xs text-slate-500 font-medium">Upload your resume to benchmark your proficiencies against role standards</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Upload Mandatory Gate Card */}
+        <div 
+          onDragEnter={handleDrag}
+          onDragLeave={handleDrag}
+          onDragOver={handleDrag}
+          onDrop={handleDrop}
+          className={`saas-card p-8 sm:p-12 text-center space-y-6 flex flex-col items-center justify-center border-2 border-dashed transition-all bg-white ${
+            dragActive 
+              ? "border-indigo-600 bg-indigo-50/40 shadow-md" 
+              : "border-slate-300 hover:border-indigo-500/80"
+          }`}
+        >
+          <div className="w-16 h-16 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm">
+            {uploading ? (
+              <RefreshCw className="w-8 h-8 animate-spin text-indigo-600" />
+            ) : (
+              <Upload className="w-8 h-8 text-indigo-600" />
+            )}
+          </div>
+
+          <div className="space-y-2 max-w-md mx-auto">
+            <h3 className="text-base font-bold text-slate-900">
+              {uploading ? "Analyzing Your Resume..." : "Upload Resume to Unlock Skill Gap Analysis"}
+            </h3>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              SkillBridge analyzes your actual technical skills, internships, and projects to calculate your match score, missing skills, and personalized roadmaps for <strong className="text-slate-800">{selectedRole}</strong>.
+            </p>
+          </div>
+
+          {uploadError && (
+            <div className="p-3 rounded-lg bg-rose-50 border border-rose-200 text-xs text-rose-800 flex items-center gap-2 max-w-md">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{uploadError}</span>
+            </div>
+          )}
+
+          <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+              className="saas-btn-primary py-2.5 px-6 text-xs font-semibold gap-2 shadow-sm disabled:opacity-50"
+            >
+              <Upload className="w-4 h-4" />
+              {uploading ? "Parsing Resume..." : "Select & Upload Resume (PDF/DOCX)"}
+            </button>
+
+            {onNavigate && (
+              <button
+                onClick={() => onNavigate('resume')}
+                className="saas-btn-secondary py-2.5 px-5 text-xs font-medium gap-1.5"
+              >
+                <FileText className="w-4 h-4 text-slate-500" /> Go to Resume Analyzer
+              </button>
+            )}
+          </div>
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".pdf,.docx,.txt"
+            className="hidden"
+            onChange={(e) => e.target.files && handleFileUpload(e.target.files[0])}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // IF RESUME IS UPLOADED -> RENDER THE COMPLETE SKILL GAP ANALYSIS
   return (
-    <div className="space-y-6 text-slate-900 pb-12">
+    <div className="space-y-6 text-slate-900 pb-12 animate-fade-in">
       {/* Header section */}
       <div className="saas-card p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3.5">
@@ -253,46 +421,7 @@ export default function SkillGapDashboard({
         </div>
       )}
 
-      {/* 3. EMPTY STATE (NO RESUME UPLOADED YET) */}
-      {status === 'EMPTY' && (
-        <div className="saas-card p-10 sm:p-14 text-center space-y-4 flex flex-col items-center justify-center min-h-[320px] bg-white border border-slate-200">
-          <div className="w-14 h-14 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm">
-            <FileText className="w-7 h-7" />
-          </div>
-          <div className="space-y-1.5 max-w-md mx-auto">
-            <h3 className="text-base font-bold text-slate-900">No Resume Uploaded Yet</h3>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Upload your resume on the <strong>Resume Analyzer</strong> tab or configure your skills in <strong>Profile Setup</strong> to generate your tailored AI Skill Gap analysis for <strong className="text-slate-700">{selectedRole}</strong>.
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-            {onNavigate && (
-              <>
-                <button
-                  onClick={() => onNavigate('resume')}
-                  className="saas-btn-primary py-2 px-5 text-xs font-semibold gap-2 shadow-sm"
-                >
-                  <FileText className="w-4 h-4" /> Upload Resume
-                </button>
-                <button
-                  onClick={() => onNavigate('wizard')}
-                  className="saas-btn-secondary py-2 px-4 text-xs font-medium gap-1.5"
-                >
-                  <FolderOpen className="w-4 h-4 text-slate-500" /> Setup Profile & Skills
-                </button>
-              </>
-            )}
-            <button
-              onClick={handleTriggerAnalysis}
-              className="px-3.5 py-2 text-xs font-medium text-slate-500 hover:text-slate-800 transition-colors"
-            >
-              Explore Default Role Benchmarks ›
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* 4. SUCCESS STATE */}
+      {/* 3. SUCCESS STATE */}
       {status === 'SUCCESS' && report && (
         <>
           {/* Top Metric Cards */}

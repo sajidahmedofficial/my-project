@@ -163,6 +163,7 @@ function MainLayout() {
           <div className={activeTab === 'skillgap' ? 'block' : 'hidden'}>
             <SkillGapDashboard 
               profile={activeProfile} 
+              setProfile={handleProfileChange}
               onGenerateRoadmap={handleGenerateRoadmap} 
               onNavigate={setActiveTab} 
               onOpenVerification={handleOpenGlobalVerification}
