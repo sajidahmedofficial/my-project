@@ -3043,31 +3043,31 @@
     "createdAt": "2026-08-25T17:00:13.057Z",
     "id": "usk_guest_user_react_js",
     "userId": "guest_user",
-    "resumeId": "res_1788066594409_y7oy347",
-    "skillGapId": "sg_guest_user_full_stack_ai_engineer",
+    "resumeId": null,
+    "skillGapId": "sg_guest_user_full_stack_developer",
     "skillName": "React.js",
     "category": "Programming",
-    "status": "missing",
-    "currentLevel": 0,
+    "status": "partial",
+    "currentLevel": 50,
     "requiredLevel": 100,
-    "gapPercentage": 100,
+    "gapPercentage": 50,
     "priority": "high",
-    "updatedAt": "2026-08-30T05:11:14.545Z"
+    "updatedAt": "2026-08-30T05:11:52.873Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.060Z",
     "id": "usk_guest_user_javascript",
     "userId": "guest_user",
-    "resumeId": "res_1788066594409_y7oy347",
-    "skillGapId": "sg_guest_user_full_stack_ai_engineer",
+    "resumeId": null,
+    "skillGapId": "sg_guest_user_full_stack_developer",
     "skillName": "JavaScript",
     "category": "Programming",
-    "status": "missing",
-    "currentLevel": 0,
+    "status": "partial",
+    "currentLevel": 50,
     "requiredLevel": 100,
-    "gapPercentage": 100,
-    "priority": "high",
-    "updatedAt": "2026-08-30T05:11:14.499Z"
+    "gapPercentage": 50,
+    "priority": "medium",
+    "updatedAt": "2026-08-30T05:11:52.868Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.063Z",
@@ -3118,31 +3118,31 @@
     "createdAt": "2026-08-25T17:00:13.077Z",
     "id": "usk_guest_user_html5",
     "userId": "guest_user",
-    "resumeId": "res_1788066594409_y7oy347",
-    "skillGapId": "sg_guest_user_full_stack_ai_engineer",
+    "resumeId": null,
+    "skillGapId": "sg_guest_user_full_stack_developer",
     "skillName": "HTML5",
     "category": "Programming",
     "status": "missing",
     "currentLevel": 0,
     "requiredLevel": 100,
     "gapPercentage": 100,
-    "priority": "high",
-    "updatedAt": "2026-08-30T05:11:14.540Z"
+    "priority": "medium",
+    "updatedAt": "2026-08-30T05:11:52.837Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.079Z",
     "id": "usk_guest_user_css3",
     "userId": "guest_user",
-    "resumeId": "res_1788066594409_y7oy347",
-    "skillGapId": "sg_guest_user_full_stack_ai_engineer",
+    "resumeId": null,
+    "skillGapId": "sg_guest_user_full_stack_developer",
     "skillName": "CSS3",
     "category": "Programming",
     "status": "missing",
     "currentLevel": 0,
     "requiredLevel": 100,
     "gapPercentage": 100,
-    "priority": "high",
-    "updatedAt": "2026-08-30T05:11:14.543Z"
+    "priority": "medium",
+    "updatedAt": "2026-08-30T05:11:52.843Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.082Z",
@@ -3313,8 +3313,8 @@
     "createdAt": "2026-08-25T17:00:13.123Z",
     "id": "usk_guest_user_docker",
     "userId": "guest_user",
-    "resumeId": "res_1788066594409_y7oy347",
-    "skillGapId": "sg_guest_user_full_stack_ai_engineer",
+    "resumeId": null,
+    "skillGapId": "sg_guest_user_full_stack_developer",
     "skillName": "Docker",
     "category": "Programming",
     "status": "missing",
@@ -3322,7 +3322,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T05:11:14.649Z"
+    "updatedAt": "2026-08-30T05:11:53.072Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.126Z",
@@ -3367,7 +3367,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T05:11:04.903Z"
+    "updatedAt": "2026-08-30T05:11:53.001Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.177Z",
@@ -3382,7 +3382,7 @@
     "requiredLevel": 100,
     "gapPercentage": 50,
     "priority": "high",
-    "updatedAt": "2026-08-30T05:11:04.898Z"
+    "updatedAt": "2026-08-30T05:11:52.932Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.179Z",
@@ -3397,7 +3397,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T05:11:04.905Z"
+    "updatedAt": "2026-08-30T05:11:53.006Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.182Z",
@@ -3412,7 +3412,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T05:11:04.907Z"
+    "updatedAt": "2026-08-30T05:11:53.016Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.188Z",
@@ -3427,7 +3427,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T05:11:04.913Z"
+    "updatedAt": "2026-08-30T05:11:53.080Z"
   },
   {
     "createdAt": "2026-08-29T17:05:11.063Z",
@@ -3457,7 +3457,7 @@
     "requiredLevel": 100,
     "gapPercentage": 50,
     "priority": "medium",
-    "updatedAt": "2026-08-30T05:11:04.900Z"
+    "updatedAt": "2026-08-30T05:11:52.938Z"
   },
   {
     "createdAt": "2026-08-29T18:50:03.105Z",

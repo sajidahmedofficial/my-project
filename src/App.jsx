@@ -108,6 +108,7 @@ function MainLayout() {
 
   const navigationItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'wizard', label: 'Profile Setup', icon: User },
     { id: 'skillgap', label: 'Skill Gap Analysis', icon: Briefcase },
     { id: 'resume', label: 'Resume Analyzer', icon: FileText },
     { id: 'job', label: 'Job Matrix', icon: Layers },
