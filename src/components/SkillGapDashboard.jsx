@@ -42,31 +42,31 @@ export default function SkillGapDashboard({
 
   // Auto-run analysis whenever target role, resume, or profile verified skills change
   useEffect(() => {
-    const hasResume = Boolean(
-      profile?.hasUploadedResume || 
-      profile?.resumeText || 
-      profile?.resumeId || 
-      localStorage.getItem('sb_resume_text') || 
-      localStorage.getItem('sb_active_resume_id')
+    const hasGenuineUploadedResume = Boolean(
+      profile?.hasUploadedResume && 
+      (profile?.resumeText || profile?.resumeId || localStorage.getItem('sb_resume_text'))
     );
 
-    if (!hasResume && (!profile?.skills || profile.skills.length === 0)) {
+    if (!hasGenuineUploadedResume) {
       setStatus('EMPTY');
       setReport(null);
       return;
     }
 
-    runAnalysis(selectedRole, customJd);
+    runAnalysis(selectedRole, customJd, false);
   }, [profile?.skills, profile?.verifiedSkills, profile?.resumeId, profile?.resumeText, profile?.hasUploadedResume, selectedRole]);
 
-  const runAnalysis = async (targetRole, jdText) => {
-    const hasResume = Boolean(
-      profile?.hasUploadedResume || 
-      profile?.resumeText || 
-      profile?.resumeId || 
-      localStorage.getItem('sb_resume_text') || 
-      localStorage.getItem('sb_active_resume_id')
+  const runAnalysis = async (targetRole, jdText, isManualBenchmark = false) => {
+    const hasGenuineUploadedResume = Boolean(
+      profile?.hasUploadedResume && 
+      (profile?.resumeText || profile?.resumeId || localStorage.getItem('sb_resume_text'))
     );
+
+    if (!hasGenuineUploadedResume && !isManualBenchmark && !jdText) {
+      setStatus('EMPTY');
+      setReport(null);
+      return;
+    }
 
     setStatus('LOADING');
     setErrorMessage(null);
@@ -74,9 +74,9 @@ export default function SkillGapDashboard({
     try {
       const userSkills = profile?.skills || [];
       const verifiedSkills = profile?.verifiedSkills || [];
-      const resumeId = profile?.resumeId || localStorage.getItem('sb_active_resume_id') || "";
-      const resumeText = profile?.resumeText || localStorage.getItem('sb_resume_text') || "";
-      const activeFileName = hasResume ? (profile?.resumeFileName || localStorage.getItem('sb_resume_filename') || "") : "";
+      const resumeId = hasGenuineUploadedResume ? (profile?.resumeId || localStorage.getItem('sb_active_resume_id') || "") : "";
+      const resumeText = hasGenuineUploadedResume ? (profile?.resumeText || localStorage.getItem('sb_resume_text') || "") : "";
+      const activeFileName = hasGenuineUploadedResume ? (profile?.resumeFileName || localStorage.getItem('sb_resume_filename') || "") : "";
 
       const res = await skillGapApi.analyzeSkillGap({
         resumeId,
@@ -115,7 +115,7 @@ export default function SkillGapDashboard({
   };
 
   const handleTriggerAnalysis = () => {
-    runAnalysis(selectedRole, customJd);
+    runAnalysis(selectedRole, customJd, true);
   };
 
   const handleStartRoadmap = (skillName) => {

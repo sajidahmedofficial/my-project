@@ -73,7 +73,24 @@ function MainLayout() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
-  const activeProfile = currentUser || RESUME_PRESETS[0];
+  const activeProfile = currentUser || {
+    id: 'guest_user',
+    name: 'Student Profile',
+    college: 'SkillBridge Academy',
+    careerGoal: 'Frontend Developer',
+    skills: [],
+    verifiedSkills: [],
+    hasUploadedResume: false,
+    resumeId: null,
+    resumeText: '',
+    resumeFileName: null,
+    scores: {
+      resumeScore: 0,
+      skillScore: 0,
+      placementReadiness: 0,
+      weeklyGoalsProgress: 0
+    }
+  };
 
   const handleProfileChange = (newProfile) => {
     updateProfile(newProfile);
