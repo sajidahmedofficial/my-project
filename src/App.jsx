@@ -143,7 +143,7 @@ function MainLayout() {
         <OnboardingWizard 
           onComplete={() => {
             setShowOnboarding(false);
-            setActiveTab('dashboard');
+            setActiveTab('skillgap');
           }} 
         />
       );
@@ -218,7 +218,7 @@ function MainLayout() {
             <OnboardingWizard 
               onComplete={() => {
                 setShowOnboarding(false);
-                setActiveTab('dashboard');
+                setActiveTab('skillgap');
               }} 
             />
           </div>

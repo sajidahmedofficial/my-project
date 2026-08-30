@@ -3052,7 +3052,7 @@
     "requiredLevel": 100,
     "gapPercentage": 50,
     "priority": "high",
-    "updatedAt": "2026-08-30T05:25:04.338Z"
+    "updatedAt": "2026-08-30T05:44:56.124Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.060Z",
@@ -3067,7 +3067,7 @@
     "requiredLevel": 100,
     "gapPercentage": 50,
     "priority": "medium",
-    "updatedAt": "2026-08-30T05:25:04.336Z"
+    "updatedAt": "2026-08-30T05:44:56.121Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.063Z",
@@ -3097,7 +3097,7 @@
     "requiredLevel": 100,
     "gapPercentage": 50,
     "priority": "medium",
-    "updatedAt": "2026-08-30T05:25:04.346Z"
+    "updatedAt": "2026-08-30T05:44:56.134Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.073Z",
@@ -3112,7 +3112,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T05:25:03.423Z"
+    "updatedAt": "2026-08-30T05:32:08.916Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.077Z",
@@ -3127,7 +3127,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "medium",
-    "updatedAt": "2026-08-30T05:25:04.326Z"
+    "updatedAt": "2026-08-30T05:44:56.116Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.079Z",
@@ -3142,7 +3142,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "medium",
-    "updatedAt": "2026-08-30T05:25:04.327Z"
+    "updatedAt": "2026-08-30T05:44:56.118Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.082Z",
@@ -3157,7 +3157,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T05:25:03.424Z"
+    "updatedAt": "2026-08-30T05:32:08.918Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.092Z",
@@ -3172,7 +3172,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T05:25:03.425Z"
+    "updatedAt": "2026-08-30T05:32:08.919Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.095Z",
@@ -3187,7 +3187,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T05:25:03.426Z"
+    "updatedAt": "2026-08-30T05:32:08.920Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.100Z",
@@ -3202,7 +3202,7 @@
     "requiredLevel": 100,
     "gapPercentage": 0,
     "priority": "high",
-    "updatedAt": "2026-08-30T05:25:03.427Z"
+    "updatedAt": "2026-08-30T05:32:08.921Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.102Z",
@@ -3217,7 +3217,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T05:25:03.428Z"
+    "updatedAt": "2026-08-30T05:32:08.922Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.105Z",
@@ -3232,7 +3232,7 @@
     "requiredLevel": 100,
     "gapPercentage": 50,
     "priority": "high",
-    "updatedAt": "2026-08-30T05:25:03.429Z"
+    "updatedAt": "2026-08-30T05:32:08.922Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.107Z",
@@ -3247,7 +3247,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T05:25:03.429Z"
+    "updatedAt": "2026-08-30T05:32:08.923Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.110Z",
@@ -3262,7 +3262,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T05:25:03.430Z"
+    "updatedAt": "2026-08-30T05:32:08.924Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.115Z",
@@ -3277,7 +3277,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T05:25:03.432Z"
+    "updatedAt": "2026-08-30T05:32:08.925Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.118Z",
@@ -3292,7 +3292,7 @@
     "requiredLevel": 100,
     "gapPercentage": 0,
     "priority": "high",
-    "updatedAt": "2026-08-30T05:25:03.433Z"
+    "updatedAt": "2026-08-30T05:32:08.926Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.121Z",
@@ -3307,7 +3307,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T05:25:03.434Z"
+    "updatedAt": "2026-08-30T05:32:08.927Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.123Z",
@@ -3322,7 +3322,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T05:25:04.350Z"
+    "updatedAt": "2026-08-30T05:44:56.140Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.126Z",
@@ -3337,7 +3337,7 @@
     "requiredLevel": 100,
     "gapPercentage": 50,
     "priority": "high",
-    "updatedAt": "2026-08-30T05:25:03.437Z"
+    "updatedAt": "2026-08-30T05:32:08.928Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.130Z",
@@ -3352,7 +3352,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T05:25:03.438Z"
+    "updatedAt": "2026-08-30T05:32:08.929Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.173Z",
@@ -3367,7 +3367,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T05:25:04.348Z"
+    "updatedAt": "2026-08-30T05:44:56.136Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.177Z",
@@ -3382,7 +3382,7 @@
     "requiredLevel": 100,
     "gapPercentage": 50,
     "priority": "high",
-    "updatedAt": "2026-08-30T05:25:04.340Z"
+    "updatedAt": "2026-08-30T05:44:56.125Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.179Z",
@@ -3397,7 +3397,7 @@
     "requiredLevel": 100,
     "gapPercentage": 50,
     "priority": "high",
-    "updatedAt": "2026-08-30T05:25:04.341Z"
+    "updatedAt": "2026-08-30T05:44:56.127Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.182Z",
@@ -3412,7 +3412,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T05:25:04.349Z"
+    "updatedAt": "2026-08-30T05:44:56.138Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.188Z",
@@ -3427,7 +3427,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T05:25:04.352Z"
+    "updatedAt": "2026-08-30T05:44:56.141Z"
   },
   {
     "createdAt": "2026-08-29T17:05:11.063Z",
@@ -3442,7 +3442,7 @@
     "requiredLevel": 100,
     "gapPercentage": 50,
     "priority": "medium",
-    "updatedAt": "2026-08-30T05:25:04.343Z"
+    "updatedAt": "2026-08-30T05:44:56.129Z"
   },
   {
     "createdAt": "2026-08-29T17:05:11.066Z",
@@ -3457,7 +3457,7 @@
     "requiredLevel": 100,
     "gapPercentage": 50,
     "priority": "medium",
-    "updatedAt": "2026-08-30T05:25:04.345Z"
+    "updatedAt": "2026-08-30T05:44:56.132Z"
   },
   {
     "createdAt": "2026-08-29T18:50:03.105Z",
@@ -3472,7 +3472,7 @@
     "requiredLevel": 100,
     "gapPercentage": 50,
     "priority": "medium",
-    "updatedAt": "2026-08-30T05:25:04.344Z"
+    "updatedAt": "2026-08-30T05:44:56.131Z"
   },
   {
     "createdAt": "2026-08-30T03:37:43.405Z",
@@ -3637,7 +3637,7 @@
     "requiredLevel": 100,
     "gapPercentage": 50,
     "priority": "medium",
-    "updatedAt": "2026-08-30T05:25:03.420Z"
+    "updatedAt": "2026-08-30T05:32:08.914Z"
   },
   {
     "createdAt": "2026-08-30T05:16:04.226Z",
@@ -3652,6 +3652,6 @@
     "requiredLevel": 100,
     "gapPercentage": 50,
     "priority": "medium",
-    "updatedAt": "2026-08-30T05:25:03.422Z"
+    "updatedAt": "2026-08-30T05:32:08.916Z"
   }
 ]

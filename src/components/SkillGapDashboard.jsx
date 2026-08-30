@@ -40,9 +40,12 @@ export default function SkillGapDashboard({
   const [activeCategoryTab, setActiveCategoryTab] = useState("all");
 
   // State: 'IDLE' | 'LOADING' | 'SUCCESS' | 'EMPTY' | 'ERROR'
-  const [status, setStatus] = useState('IDLE');
+  const [status, setStatus] = useState('EMPTY');
   const [report, setReport] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+
+  // Active uploaded resume in current session
+  const [activeResumeFile, setActiveResumeFile] = useState(null);
 
   // Upload dropzone state
   const fileInputRef = useRef(null);
@@ -50,24 +53,17 @@ export default function SkillGapDashboard({
   const [uploadError, setUploadError] = useState("");
   const [dragActive, setDragActive] = useState(false);
 
-  const hasGenuineResume = Boolean(
-    profile?.hasUploadedResume === true && 
-    (profile?.resumeText || profile?.resumeId || localStorage.getItem('sb_resume_text'))
-  );
-
-  // Auto-run analysis whenever target role, resume, or profile verified skills change
+  // Clear any stale cached mock filenames on initial mount
   useEffect(() => {
-    if (!hasGenuineResume) {
-      setStatus('EMPTY');
-      setReport(null);
-      return;
-    }
+    localStorage.removeItem('sb_resume_filename');
+    localStorage.removeItem('sb_resume_text');
+    localStorage.removeItem('sb_active_resume_id');
+    setStatus('EMPTY');
+    setReport(null);
+  }, []);
 
-    runAnalysis(selectedRole, customJd);
-  }, [profile?.skills, profile?.verifiedSkills, profile?.resumeId, profile?.resumeText, profile?.hasUploadedResume, selectedRole]);
-
-  const runAnalysis = async (targetRole, jdText) => {
-    if (!hasGenuineResume && !jdText) {
+  const runAnalysisWithResume = async (resumeText, fileName, targetRole, jdText) => {
+    if (!resumeText) {
       setStatus('EMPTY');
       setReport(null);
       return;
@@ -79,12 +75,9 @@ export default function SkillGapDashboard({
     try {
       const userSkills = profile?.skills || [];
       const verifiedSkills = profile?.verifiedSkills || [];
-      const resumeId = profile?.resumeId || localStorage.getItem('sb_active_resume_id') || "";
-      const resumeText = profile?.resumeText || localStorage.getItem('sb_resume_text') || "";
-      const activeFileName = profile?.resumeFileName || localStorage.getItem('sb_resume_filename') || "My_Resume.pdf";
 
       const res = await skillGapApi.analyzeSkillGap({
-        resumeId,
+        resumeId: `res_${Date.now()}`,
         resumeText,
         userSkills,
         targetRole,
@@ -96,7 +89,7 @@ export default function SkillGapDashboard({
       if (res && res.report) {
         setReport({
           ...res.report,
-          sourceResumeFile: activeFileName
+          sourceResumeFile: fileName || "Uploaded_Resume.pdf"
         });
         const hasSkills = (res.report.strongSkills?.length || 0) + (res.report.partialSkills?.length || 0) + (res.report.missingSkills?.length || 0) > 0;
         if (hasSkills) {
@@ -148,9 +141,7 @@ export default function SkillGapDashboard({
       const resumeText = res?.resumeText || "";
       const extractedSkills = parsedAnalysis.skills?.detected || parsedAnalysis.extractedSkills || ["HTML", "CSS", "JavaScript"];
 
-      localStorage.setItem('sb_active_resume_id', resumeId);
-      localStorage.setItem('sb_resume_text', resumeText);
-      localStorage.setItem('sb_resume_filename', file.name);
+      setActiveResumeFile(file.name);
 
       if (setProfile) {
         setProfile(prev => ({
@@ -163,6 +154,9 @@ export default function SkillGapDashboard({
           name: parsedAnalysis.candidate?.name || prev?.name || file.name.replace(/\.[^/.]+$/, "")
         }));
       }
+
+      // Immediately run skill gap analysis with the freshly uploaded resume
+      await runAnalysisWithResume(resumeText, file.name, selectedRole, customJd);
 
     } catch (err) {
       console.error("Direct resume upload failed:", err);
@@ -194,10 +188,15 @@ export default function SkillGapDashboard({
   const handleRoleSelect = (e) => {
     const role = e.target.value;
     setSelectedRole(role);
+    if (activeResumeFile && (profile?.resumeText || report)) {
+      runAnalysisWithResume(profile?.resumeText || "", activeResumeFile, role, customJd);
+    }
   };
 
   const handleTriggerAnalysis = () => {
-    runAnalysis(selectedRole, customJd);
+    if (activeResumeFile) {
+      runAnalysisWithResume(profile?.resumeText || "", activeResumeFile, selectedRole, customJd);
+    }
   };
 
   const handleStartRoadmap = (skillName) => {
@@ -219,7 +218,9 @@ export default function SkillGapDashboard({
     return list.filter(s => s.category?.toLowerCase() === activeCategoryTab.toLowerCase());
   };
 
-  // IF NO RESUME UPLOADED YET -> RENDER CLEAN UPLOAD GATE ONLY
+  const hasGenuineResume = Boolean(activeResumeFile && report && (status === 'SUCCESS' || status === 'LOADING'));
+
+  // IF NO RESUME UPLOADED IN ACTIVE SESSION -> RENDER CLEAN UPLOAD GATE ONLY
   if (!hasGenuineResume) {
     return (
       <div className="space-y-6 text-slate-900 pb-12 animate-fade-in max-w-4xl mx-auto">
@@ -355,6 +356,31 @@ export default function SkillGapDashboard({
           >
             <RefreshCw className={`w-3.5 h-3.5 ${status === 'LOADING' ? 'animate-spin' : ''}`} />
             {status === 'LOADING' ? "Analyzing..." : "Re-Analyze"}
+          </button>
+
+          <button
+            onClick={() => {
+              setActiveResumeFile(null);
+              localStorage.removeItem('sb_resume_filename');
+              localStorage.removeItem('sb_resume_text');
+              localStorage.removeItem('sb_active_resume_id');
+              if (setProfile) {
+                setProfile(prev => ({
+                  ...prev,
+                  hasUploadedResume: false,
+                  resumeFileName: null,
+                  resumeText: '',
+                  resumeId: null,
+                  skills: []
+                }));
+              }
+              setReport(null);
+              setStatus('EMPTY');
+            }}
+            className="saas-btn-secondary py-1.5 px-3 text-xs gap-1 text-slate-600 hover:text-slate-900"
+            title="Upload a new resume file"
+          >
+            <Upload className="w-3.5 h-3.5 text-slate-500" /> Upload New
           </button>
         </div>
       </div>

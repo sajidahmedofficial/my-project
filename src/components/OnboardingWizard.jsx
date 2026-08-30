@@ -454,6 +454,7 @@ export default function OnboardingWizard({ onComplete }) {
       education: educationList,
       experience: experienceList,
       hasUploadedResume: Boolean(uploadFile || uploadProgress === 3),
+      resumeFileName: uploadFile?.name || (uploadProgress === 3 ? (analysisResult?.fileName || 'Uploaded_Resume.pdf') : null),
       scores: {
         resumeScore: 88,
         skillScore: 82,
@@ -461,6 +462,10 @@ export default function OnboardingWizard({ onComplete }) {
         interviewReadiness: 78
       }
     });
+
+    if (uploadFile?.name) {
+      localStorage.setItem('sb_resume_filename', uploadFile.name);
+    }
 
     if (updateProfile) {
       updateProfile(finalProfile);
@@ -1316,7 +1321,7 @@ export default function OnboardingWizard({ onComplete }) {
                 onClick={handleFinishOnboarding}
                 className="px-8 py-3.5 rounded-xl bg-[#0f766e] hover:bg-[#0d594f] text-white text-xs sm:text-sm font-semibold shadow-md transition-all flex items-center gap-2 transform hover:-translate-y-0.5"
               >
-                <span>Launch SkillBridge Workspace</span>
+                <span>Continue to Skill Gap Analysis</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
