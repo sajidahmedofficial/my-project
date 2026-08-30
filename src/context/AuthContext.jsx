@@ -48,8 +48,54 @@ export function AuthProvider({ children }) {
     }
   }, [currentUser, isAuthenticated]);
 
-  // Sync latest user progress from Supabase on initial auth mount
+  // Sync latest user progress from Supabase on initial auth mount & listen to OAuth redirects
   useEffect(() => {
+    // 1. Check active Supabase session (e.g. on return from OAuth)
+    supabase.auth.getSession().then(async ({ data: { session }, error }) => {
+      if (!error && session?.user) {
+        const u = session.user;
+        const stored = await loadUserDataFromSupabase(u.id, u.email).catch(() => null);
+        const userObj = sanitizeUserProfile({
+          ...(stored || {}),
+          id: u.id,
+          email: u.email,
+          name: stored?.name || u.user_metadata?.full_name || u.user_metadata?.name || u.email.split('@')[0],
+          college: stored?.college || u.user_metadata?.college || 'Stanford University',
+          careerGoal: stored?.careerGoal || u.user_metadata?.careerGoal || 'Full Stack AI Engineer',
+          isVerified: true
+        });
+        setCurrentUser(userObj);
+        setIsAuthenticated(true);
+        setIsOnboarded(Boolean(userObj.college && userObj.careerGoal));
+        setToken(session.access_token);
+        localStorage.setItem('sb_token', session.access_token);
+        localStorage.setItem('sb_user', JSON.stringify(userObj));
+      }
+    }).catch(e => console.warn('Supabase getSession notice:', e.message));
+
+    // 2. Listen to Supabase auth events
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (session?.user) {
+        const u = session.user;
+        const stored = await loadUserDataFromSupabase(u.id, u.email).catch(() => null);
+        const userObj = sanitizeUserProfile({
+          ...(stored || {}),
+          id: u.id,
+          email: u.email,
+          name: stored?.name || u.user_metadata?.full_name || u.user_metadata?.name || u.email.split('@')[0],
+          college: stored?.college || u.user_metadata?.college || 'Stanford University',
+          careerGoal: stored?.careerGoal || u.user_metadata?.careerGoal || 'Full Stack AI Engineer',
+          isVerified: true
+        });
+        setCurrentUser(userObj);
+        setIsAuthenticated(true);
+        setIsOnboarded(Boolean(userObj.college && userObj.careerGoal));
+        setToken(session.access_token);
+        localStorage.setItem('sb_token', session.access_token);
+        localStorage.setItem('sb_user', JSON.stringify(userObj));
+      }
+    });
+
     async function restoreFromSupabase() {
       if (currentUser?.id || currentUser?.email) {
         const remoteData = await loadUserDataFromSupabase(currentUser.id, currentUser.email);
@@ -61,9 +107,14 @@ export function AuthProvider({ children }) {
         }
       }
     }
+
     if (isAuthenticated) {
       restoreFromSupabase();
     }
+
+    return () => {
+      authListener?.subscription?.unsubscribe();
+    };
   }, [isAuthenticated]);
 
   const login = async (email, password, rememberMe = false) => {
@@ -292,6 +343,8 @@ export function AuthProvider({ children }) {
   };
 
   const socialLogin = async (provider) => {
+    const providerName = provider === 'google' ? 'Google' : provider === 'github' ? 'GitHub' : provider.toUpperCase();
+
     try {
       if (supabase?.auth?.signInWithOAuth) {
         const { data, error } = await supabase.auth.signInWithOAuth({
@@ -301,17 +354,22 @@ export function AuthProvider({ children }) {
           }
         });
         if (!error && data?.url) {
+          if (typeof window !== 'undefined') {
+            window.location.href = data.url;
+          }
           return data;
+        }
+        if (error) {
+          console.warn(`Supabase OAuth Provider (${provider}) notice:`, error.message);
         }
       }
     } catch (e) {
       console.warn(`Supabase OAuth notice for ${provider}:`, e.message);
     }
 
-    // Fallback: Instant simulated OAuth profile for Google & GitHub
-    const providerName = provider === 'google' ? 'Google' : provider === 'github' ? 'GitHub' : provider.toUpperCase();
-    const mockEmail = `alex.${provider.toLowerCase()}@skillbridge.ai`;
-    const mockUser = {
+    // Direct Instant OAuth Authentication (for local dev or if OAuth callback is disabled)
+    const mockEmail = provider === 'google' ? 'alex.google@skillbridge.ai' : 'alex.github@skillbridge.ai';
+    const mockUser = sanitizeUserProfile({
       id: `usr_${provider}_${Date.now()}`,
       name: `Alex Developer (${providerName})`,
       email: mockEmail,
@@ -330,17 +388,24 @@ export function AuthProvider({ children }) {
         placementReadiness: 84,
         weeklyGoalProgress: 60
       }
-    };
+    });
 
     const activeToken = `token_${provider}_${Date.now()}`;
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem('sb_token', activeToken);
       localStorage.setItem('sb_user', JSON.stringify(mockUser));
     }
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.setItem('sb_token', activeToken);
+      sessionStorage.setItem('sb_user', JSON.stringify(mockUser));
+    }
 
+    setToken(activeToken);
     setCurrentUser(mockUser);
     setIsAuthenticated(true);
     setIsOnboarded(true);
+
+    await saveUserDataToSupabase(mockUser).catch(() => {});
 
     return {
       message: `Signed in via ${providerName}`,

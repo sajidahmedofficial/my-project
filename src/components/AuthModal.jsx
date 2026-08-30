@@ -122,11 +122,14 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
     clearMessages();
     setLoading(true);
     try {
-      await socialLogin(provider);
-      setSuccessMsg(`Authenticated via ${provider.toUpperCase()}!`);
+      const res = await socialLogin(provider);
+      if (res?.url) {
+        return;
+      }
+      setSuccessMsg(`Authenticated via ${provider === 'google' ? 'Google' : provider === 'github' ? 'GitHub' : provider.toUpperCase()}!`);
       setTimeout(() => {
         onClose();
-      }, 600);
+      }, 500);
     } catch (err) {
       setErrorMsg(err.message || `Failed to authenticate with ${provider}.`);
     } finally {

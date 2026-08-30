@@ -201,13 +201,17 @@ export default function TaskFlowAuth({ isOpen, onClose, initialMode = 'signup', 
     setErrorMsg('');
     setLoading(true);
     try {
-      await socialLogin(provider);
-      setSuccessMsg(`Authenticated via ${provider.toUpperCase()}!`);
+      const res = await socialLogin(provider);
+      if (res?.url) {
+        return;
+      }
+      setSuccessMsg(`Authenticated via ${provider === 'google' ? 'Google' : provider === 'github' ? 'GitHub' : provider.toUpperCase()}!`);
       setTimeout(() => {
         onClose();
         if (onComplete) onComplete('login');
-      }, 600);
-    } catch {
+      }, 500);
+    } catch (err) {
+      console.error('Social auth error:', err);
       setErrorMsg(`Failed to connect with ${provider}.`);
     } finally {
       setLoading(false);
