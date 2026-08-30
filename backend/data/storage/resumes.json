@@ -8256,5 +8256,609 @@
     "overall_score": 75,
     "ats_score": 75,
     "updatedAt": "2026-08-30T02:50:02.372Z"
+  },
+  {
+    "createdAt": "2026-08-30T02:52:57.395Z",
+    "id": "res_1788058377395_eb1hv0w",
+    "resumeId": "res_1788058377395_eb1hv0w",
+    "userId": "usr_1788021323799",
+    "fileName": "Sajid_Ahmed_Modern_Interactive_Resume.pdf",
+    "resumeText": "CONTACT\nsajidahmedofficialio@gmail.com\n8778513050\nMadurai, India 625002\ntask-diary.vercel.app\nlinkedin.com/in/sajid-ahmed-official\nEDUCATION\nB.E. Computer Science and Engineering\nVaigai College of Engineering, Madurai\nExpected January 2027 • CGPA: 82%\nHonours: Semesters 5–7\nHigher Secondary Education\nMilton Matric Higher Secondary School, Madurai\nGrades 11–12 • 11th: 61% • 12th: 78%\nLEADERSHIP\nVice President — ELITE Forum\nVaigai College of Engineering\nCERTIFICATIONS\n• IBM Enterprise AI Certificate\n• Web Development / Full Stack Development\nInternship Certifications\n• SEO Analysis and WordPress Certifications\n• Spring 5 Basics with Spring Boot / Spring Data\nJPA course certificate\nLANGUAGES\nEnglish • Tamil • Malayalam\nSAJID AHMED M\nFULL STACK DEVELOPER\nAI • Web Applications • APIs\nPROFESSIONAL SUMMARY\nFull Stack Developer building AI-based web applications with JavaScript, React, Node.js and API integrations. Experienced in\nresponsive UI development, WordPress, SEO, REST APIs and database-backed applications. Built an AI voice assistant, skill-gap\nanalyzer, resume maker and task diary with a strong focus on usability and problem solving.\nCORE SKILLS\nLanguages & Web: HTML, CSS, JavaScript, Python, C, C++, SQL\nFrameworks & Backend: React.js, Node.js, Express.js, REST APIs\nAI & APIs: AI application development, Gemini/API integration, prompt engineering, chatbots, image-to-text\nWeb Delivery: WordPress, SEO, responsive design, UI testing, performance optimization, Git\nEXPERIENCE\nFull Stack Web Developer\n• Built modern web applications and AI solutions using React, Node.js, Express.js, Python, SQL and REST APIs; developed responsive\ninterfaces, backend services and API connections.\nPrompt Engineer / Full Stack Web Developer / AI Intern\n• Developed an Alexa-inspired AI voice assistant with conversational interaction and automation; created an AI skill-gap analyzer that\nevaluates resumes and recommends improvements.\nFrontend Developer / AI Application Development / APIs / WordPress / SEO\n• Built AI applications including chatbots and image-to-text extractors using API integration and frontend technologies; developed a\nWordPress e-commerce application with focus on UI, SEO and performance.\nSELECTED PROJECTS\nAI Voice Assistant — Alexa-inspired assistant with conversational AI, voice/speech processing, memory and intelligent task automation.\nAI Skill Gap Analyzer — Analyzes resumes, identifies missing skills and resume issues, and recommends targeted improvements.\nAI Resume Maker — Creates structured professional resumes with guided content, formatting and improvement suggestions.\nTask Diary — Responsive task-management application for creating, organizing, updating and tracking daily tasks.\nACHIEVEMENTS & PRESENTATION\n• Presented “E-Vehicle, Artificial General Intelligence, Certificate Validator” at Vaigai College of Engineering.\n• Completed IBM Enterprise AI, web/full-stack, SEO/WordPress and Spring Boot/JPA certifications.\nPROJECTS & PROFILES\ntask-diary.vercel.app | GitHub | LinkedIn",
+    "analysis": {
+      "candidate": {
+        "firstName": "task-diary.vercel.app",
+        "lastName": "",
+        "name": "task-diary.vercel.app",
+        "email": "sajidahmedofficialio@gmail.com",
+        "phone": "8778513050",
+        "linkedIn": "https://linkedin.com/in/sajid-ahmed-official",
+        "summary": "Full Stack Developer building AI-based web applications with JavaScript, React, Node.js and API integrations. Experienced in responsive UI development, WordPress, SEO, REST APIs and database-backed applications. Built an AI voice assistant, skill-gap analyzer, resume maker and task diary with a strong focus on usability and problem solving. CORE SKILLS Languages & Web: HTML, CSS, JavaScript, Python, C, C++, SQL",
+        "headline": "Full Stack AI Engineer Candidate"
+      },
+      "summary": "Full Stack Developer building AI-based web applications with JavaScript, React, Node.js and API integrations. Experienced in responsive UI development, WordPress, SEO, REST APIs and database-backed applications. Built an AI voice assistant, skill-gap analyzer, resume maker and task diary with a strong focus on usability and problem solving. CORE SKILLS Languages & Web: HTML, CSS, JavaScript, Python, C, C++, SQL",
+      "education": [
+        {
+          "school": "B.E. Computer Science and Engineering",
+          "degree": "Bachelor of Engineering (B.E.)",
+          "field": "Computer Science & Engineering",
+          "year": "2025"
+        }
+      ],
+      "experience": [
+        {
+          "role": "Full Stack Web Developer",
+          "company": "interfaces, backend services and API connections.",
+          "startDate": "",
+          "endDate": "",
+          "duration": "2023 - Present",
+          "description": "• Built modern web applications and AI solutions using React, Node.js, Express.js, Python, SQL and REST APIs; developed responsive"
+        },
+        {
+          "role": "Prompt Engineer / Full Stack Web Developer / AI Intern",
+          "company": "evaluates resumes and recommends improvements.",
+          "startDate": "",
+          "endDate": "",
+          "duration": "2023 - Present",
+          "description": "• Developed an Alexa-inspired AI voice assistant with conversational interaction and automation; created an AI skill-gap analyzer that\n• Frontend Developer / AI Application Development / APIs / WordPress / SEO\n• Built AI applications including chatbots and image-to-text extractors using API integration and frontend technologies; developed a\n• WordPress e-commerce application with focus on UI, SEO and performance.\n• SELECTED PROJECTS\n• AI Voice Assistant — Alexa-inspired assistant with conversational AI, voice/speech processing, memory and intelligent task automation.\n• AI Skill Gap Analyzer — Analyzes resumes, identifies missing skills and resume issues, and recommends targeted improvements.\n• AI Resume Maker — Creates structured professional resumes with guided content, formatting and improvement suggestions.\n• Task Diary — Responsive task-management application for creating, organizing, updating and tracking daily tasks.\n• ACHIEVEMENTS & PRESENTATION\n• Presented “E-Vehicle, Artificial General Intelligence, Certificate Validator” at Vaigai College of Engineering.\n• Completed IBM Enterprise AI, web/full-stack, SEO/WordPress and Spring Boot/JPA certifications.\n• PROJECTS & PROFILES\n• task-diary.vercel.app | GitHub | LinkedIn"
+        }
+      ],
+      "hasExperience": true,
+      "hasEducation": true,
+      "experienceAnalysis": {
+        "status": "experienced",
+        "hasExperience": true,
+        "count": 2,
+        "label": "2 Roles Detected",
+        "message": "Work experience detected and evaluated against industry role expectations."
+      },
+      "educationAnalysis": {
+        "status": "verified",
+        "hasEducation": true,
+        "count": 1,
+        "label": "Bachelor of Engineering (B.E.) Detected",
+        "message": "Education background verified and aligned with engineering prerequisites."
+      },
+      "scores": {
+        "overall": 95,
+        "ats": 85,
+        "grammar": 85,
+        "format": 80,
+        "skills": 133,
+        "experience": 80,
+        "projects": 78
+      },
+      "grammarIssues": [],
+      "resumeProblems": [],
+      "formatProblems": [
+        {
+          "problem": "Check section spacing and margin consistency",
+          "suggestion": "Use standard 0.5 - 1 inch margins"
+        }
+      ],
+      "atsProblems": [],
+      "missingSections": [],
+      "skills": {
+        "detected": [
+          "HTML",
+          "CSS",
+          "JavaScript",
+          "React",
+          "Node.js",
+          "Express",
+          "SQL",
+          "Python",
+          "Git",
+          "WordPress",
+          "Java",
+          "C++"
+        ],
+        "strong": [
+          "HTML",
+          "CSS",
+          "JavaScript",
+          "React",
+          "Node.js",
+          "Express",
+          "SQL",
+          "Python"
+        ],
+        "weak": [
+          "Git",
+          "WordPress",
+          "Java",
+          "C++"
+        ],
+        "missing": [
+          "MongoDB",
+          "REST API"
+        ]
+      },
+      "projects": [
+        {
+          "name": "Web Application Project",
+          "description": "Interactive full stack application",
+          "technologies": [
+            "HTML",
+            "CSS",
+            "JavaScript"
+          ]
+        }
+      ],
+      "improvements": [],
+      "skillGap": [
+        {
+          "skill": "HTML",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "CSS",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "JavaScript",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "React",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Node.js",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Express",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "MongoDB",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Git",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "REST API",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        }
+      ]
+    },
+    "targetRole": "Full Stack AI Engineer",
+    "jobDescription": "",
+    "overall_score": 75,
+    "ats_score": 75,
+    "updatedAt": "2026-08-30T02:52:57.395Z"
+  },
+  {
+    "createdAt": "2026-08-30T03:28:33.710Z",
+    "id": "res_1788060513710_jjihdr5",
+    "resumeId": "res_1788060513710_jjihdr5",
+    "userId": "guest_user",
+    "fileName": "resume.txt",
+    "resumeText": "{\n \"name\": \"frontend\",\n \"private\": true,\n \"version\": \"0.0.0\",\n \"type\": \"module\",\n \"scripts\": {\n \"dev\": \"vite\",\n \"server\": \"node backend/server.js\",\n \"server:alt\": \"node server/index.js\",\n \"dev:server\": \"node backend/server.js\",\n \"build\": \"vite build\",\n \"lint\": \"oxlint\",\n \"preview\": \"vite preview\",\n \"prepare\": \"husky\",\n \"seed:topics\": \"node scripts/seedTopics.js\",\n \"seed:aptitude\": \"node scripts/seedAptitude.js\",\n \"generate:questions\": \"node scripts/generateAptitudeBank.js all\",\n \"generate:topic\": \"node scripts/generateAptitudeBank.js\",\n \"generate:aptitude\": \"node scripts/generateAptitudeBank.js\",\n \"validate:questions\": \"node scripts/validateQuestions.js\",\n \"question:stats\": \"node scripts/validateQuestions.js\"\n },\n \"dependencies\": {\n \"@google/genai\": \"^2.15.0\",\n \"@google/generative-ai\": \"^0.21.0\",\n \"@supabase/supabase-js\": \"^2.111.0\",\n \"@tailwindcss/postcss\": \"^4.3.3\",\n \"autoprefixer\": \"^10.5.4\",\n \"bcryptjs\": \"^2.4.3\",\n \"cors\": \"^2.8.5\",\n \"dotenv\": \"^16.4.5\",\n \"express\": \"^4.19.2\",\n \"express-rate-limit\": \"^8.6.2\",\n \"jsonwebtoken\": \"^9.0.2\",\n \"lucide-react\": \"^0.435.0\",\n \"mammoth\": \"^1.12.2\",\n \"mongoose\": \"^8.5.1\",\n \"multer\": \"^1.4.5-lts.1\",\n \"pdf-parse\": \"^1.1.1\",\n \"pdfkit\": \"^0.20.1\",\n \"postcss\": \"^8.5.26\",\n \"react\": \"^19.2.7\",\n \"react-dom\": \"^19.2.7\",\n \"react-router-dom\": \"^7.18.3\",\n \"recharts\": \"^2.12.7\",\n \"tailwindcss\": \"^3.4.19\"\n },\n \"devDependencies\": {\n \"@tailwindcss/vite\": \"^4.0.0\",\n \"@types/react\": \"^19.2.17\",\n \"@types/react-dom\": \"^19.2.3\",\n \"@vitejs/plugin-react\": \"^6.0.3\",\n \"husky\": \"^9.1.7\",\n \"oxlint\": \"^1.71.0\",\n \"terser\": \"^5.50.0\",\n \"vite\": \"^8.1.1\"\n }\n}",
+    "analysis": {
+      "candidate": {
+        "firstName": "",
+        "lastName": "",
+        "name": "Candidate",
+        "email": "",
+        "phone": "",
+        "linkedIn": "",
+        "summary": "",
+        "headline": "Full Stack Developer Candidate"
+      },
+      "summary": "",
+      "education": [],
+      "experience": [],
+      "hasExperience": false,
+      "hasEducation": false,
+      "experienceAnalysis": {
+        "status": "no_experience",
+        "hasExperience": false,
+        "count": 0,
+        "label": "Fresher / Entry-Level (0 Years)",
+        "message": "No formal work experience detected in this resume.",
+        "suggestion": "For freshers, recruiters prioritize technical projects, verified skill certifications, and problem-solving aptitude."
+      },
+      "educationAnalysis": {
+        "status": "missing",
+        "hasEducation": false,
+        "count": 0,
+        "label": "No Education Section Detected",
+        "message": "No formal degree or university section was detected in this resume text."
+      },
+      "scores": {
+        "overall": 72,
+        "ats": 72,
+        "grammar": 85,
+        "format": 80,
+        "skills": 33,
+        "experience": 60,
+        "projects": 78
+      },
+      "grammarIssues": [],
+      "resumeProblems": [
+        {
+          "section": "Experience & Projects",
+          "problem": "Bullet points lack quantifiable metrics (e.g. percentages, performance gains, numbers)",
+          "whyItMatters": "Recruiters and ATS favor resumes showing measured impact.",
+          "suggestion": "Rephrase achievements to include metrics like 'improved performance by 35%' or 'served 10k+ users'.",
+          "priority": "high"
+        },
+        {
+          "section": "Contact & Header",
+          "problem": "Missing GitHub / Portfolio URL link",
+          "whyItMatters": "Technical recruiters verify proof of work through live project links.",
+          "suggestion": "Add your GitHub profile link (https://github.com/your-username) at the top of your resume.",
+          "priority": "medium"
+        }
+      ],
+      "formatProblems": [
+        {
+          "problem": "Check section spacing and margin consistency",
+          "suggestion": "Use standard 0.5 - 1 inch margins"
+        }
+      ],
+      "atsProblems": [
+        {
+          "problem": "Missing proof of work link in contact header",
+          "suggestion": "Add GitHub profile link"
+        }
+      ],
+      "missingSections": [
+        "Education"
+      ],
+      "skills": {
+        "detected": [
+          "CSS",
+          "React",
+          "Express"
+        ],
+        "strong": [
+          "CSS",
+          "React"
+        ],
+        "weak": [
+          "Express"
+        ],
+        "missing": [
+          "HTML",
+          "JavaScript",
+          "Node.js",
+          "MongoDB",
+          "Git",
+          "REST API"
+        ]
+      },
+      "projects": [
+        {
+          "name": "Web Application Project",
+          "description": "Interactive full stack application",
+          "technologies": [
+            "CSS",
+            "React",
+            "Express"
+          ]
+        }
+      ],
+      "improvements": [
+        {
+          "section": "Experience & Projects",
+          "original": "Bullet points lack quantifiable metrics (e.g. percentages, performance gains, numbers)",
+          "suggested": "Rephrase achievements to include metrics like 'improved performance by 35%' or 'served 10k+ users'.",
+          "reason": "Recruiters and ATS favor resumes showing measured impact."
+        },
+        {
+          "section": "Contact & Header",
+          "original": "Missing GitHub / Portfolio URL link",
+          "suggested": "Add your GitHub profile link (https://github.com/your-username) at the top of your resume.",
+          "reason": "Technical recruiters verify proof of work through live project links."
+        }
+      ],
+      "skillGap": [
+        {
+          "skill": "HTML",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "CSS",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "JavaScript",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "React",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Node.js",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Express",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 80,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "MongoDB",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "Git",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        },
+        {
+          "skill": "REST API",
+          "category": "Technical",
+          "importance": "high",
+          "currentLevel": 20,
+          "requiredLevel": 100
+        }
+      ]
+    },
+    "targetRole": "Full Stack Developer",
+    "jobDescription": "",
+    "overall_score": 75,
+    "ats_score": 75,
+    "updatedAt": "2026-08-30T03:28:33.711Z"
+  },
+  {
+    "createdAt": "2026-08-30T03:36:46.624Z",
+    "id": "res_1788061006624_fut3uab",
+    "resumeId": "res_1788061006624_fut3uab",
+    "userId": "guest_user",
+    "fileName": "resume.txt",
+    "resumeText": "{\n \"name\": \"frontend\",\n \"private\": true,\n \"version\": \"0.0.0\",\n \"type\": \"module\",\n \"scripts\": {\n \"dev\": \"vite\",\n \"server\": \"node backend/server.js\",\n \"server:alt\": \"node server/index.js\",\n \"dev:server\": \"node backend/server.js\",\n \"build\": \"vite build\",\n \"lint\": \"oxlint\",\n \"preview\": \"vite preview\",\n \"prepare\": \"husky\",\n \"seed:topics\": \"node scripts/seedTopics.js\",\n \"seed:aptitude\": \"node scripts/seedAptitude.js\",\n \"generate:questions\": \"node scripts/generateAptitudeBank.js all\",\n \"generate:topic\": \"node scripts/generateAptitudeBank.js\",\n \"generate:aptitude\": \"node scripts/generateAptitudeBank.js\",\n \"validate:questions\": \"node scripts/validateQuestions.js\",\n \"question:stats\": \"node scripts/validateQuestions.js\"\n },\n \"dependencies\": {\n \"@google/genai\": \"^2.15.0\",\n \"@google/generative-ai\": \"^0.21.0\",\n \"@supabase/supabase-js\": \"^2.111.0\",\n \"@tailwindcss/postcss\": \"^4.3.3\",\n \"autoprefixer\": \"^10.5.4\",\n \"bcryptjs\": \"^2.4.3\",\n \"cors\": \"^2.8.5\",\n \"dotenv\": \"^16.4.5\",\n \"express\": \"^4.19.2\",\n \"express-rate-limit\": \"^8.6.2\",\n \"jsonwebtoken\": \"^9.0.2\",\n \"lucide-react\": \"^0.435.0\",\n \"mammoth\": \"^1.12.2\",\n \"mongoose\": \"^8.5.1\",\n \"multer\": \"^1.4.5-lts.1\",\n \"pdf-parse\": \"^1.1.1\",\n \"pdfkit\": \"^0.20.1\",\n \"postcss\": \"^8.5.26\",\n \"react\": \"^19.2.7\",\n \"react-dom\": \"^19.2.7\",\n \"react-router-dom\": \"^7.18.3\",\n \"recharts\": \"^2.12.7\",\n \"tailwindcss\": \"^3.4.19\"\n },\n \"devDependencies\": {\n \"@tailwindcss/vite\": \"^4.0.0\",\n \"@types/react\": \"^19.2.17\",\n \"@types/react-dom\": \"^19.2.3\",\n \"@vitejs/plugin-react\": \"^6.0.3\",\n \"husky\": \"^9.1.7\",\n \"oxlint\": \"^1.71.0\",\n \"terser\": \"^5.50.0\",\n \"vite\": \"^8.1.1\"\n }\n}",
+    "analysis": {
+      "candidate": {
+        "firstName": "",
+        "lastName": "",
+        "name": "",
+        "email": "",
+        "phone": "",
+        "linkedIn": "",
+        "summary": "",
+        "headline": "Full Stack Developer"
+      },
+      "summary": "",
+      "education": [],
+      "experience": [],
+      "skills": {
+        "detected": [
+          "React",
+          "Express.js",
+          "Node.js",
+          "MongoDB",
+          "Mongoose",
+          "Tailwind CSS",
+          "Supabase",
+          "JavaScript",
+          "Vite",
+          "JSON Web Tokens (JWT)",
+          "Bcrypt",
+          "Google GenAI API",
+          "PostCSS",
+          "Recharts",
+          "Multer",
+          "PDFKit",
+          "Husky"
+        ],
+        "strong": [
+          "React",
+          "Express.js",
+          "Node.js",
+          "MongoDB",
+          "JavaScript",
+          "Tailwind CSS"
+        ],
+        "weak": [
+          "Vite",
+          "Husky"
+        ],
+        "missing": [
+          "TypeScript",
+          "Docker",
+          "AWS",
+          "SQL / PostgreSQL",
+          "Git / GitHub",
+          "CI/CD Pipelines",
+          "Automated Testing (Jest/Cypress)"
+        ]
+      },
+      "scores": {
+        "overall": 25,
+        "ats": 15,
+        "grammar": 100,
+        "format": 10,
+        "skills": 75,
+        "experience": 0,
+        "projects": 30
+      },
+      "grammarIssues": [],
+      "resumeProblems": [
+        {
+          "section": "Overall Document",
+          "problem": "The document provided is a JSON package manifest file (package.json) rather than a professional human-readable resume.",
+          "whyItMatters": "ATS parsers and hiring managers cannot evaluate professional background, contact information, work history, or education from a raw package configuration file.",
+          "suggestion": "Convert this project configuration into a properly formatted professional resume PDF/Word document.",
+          "priority": "high"
+        },
+        {
+          "section": "Contact Information",
+          "problem": "Missing essential candidate details such as full name, email address, phone number, and LinkedIn profile.",
+          "whyItMatters": "Recruiters cannot contact or identify the candidate without basic contact details.",
+          "suggestion": "Include a prominent header with full name, professional email, phone number, location, and LinkedIn/GitHub links.",
+          "priority": "high"
+        },
+        {
+          "section": "Experience & Education",
+          "problem": "No work history, internships, or academic qualifications are provided.",
+          "whyItMatters": "Full Stack Developer positions require proof of relevant work experience or formal computer science education.",
+          "suggestion": "Add detailed education and work experience sections highlighting technical achievements and responsibilities.",
+          "priority": "high"
+        }
+      ],
+      "formatProblems": [
+        {
+          "problem": "Submitted file is formatted as raw JSON code.",
+          "suggestion": "Format the resume using standard reverse-chronological sections: Summary, Skills, Work Experience, Projects, and Education."
+        }
+      ],
+      "atsProblems": [
+        {
+          "problem": "Lacks standard resume headings like Work Experience, Education, and Contact Information.",
+          "suggestion": "Use standard header titles so ATS parsers can categorize candidate data correctly."
+        }
+      ],
+      "missingSections": [
+        "Contact Information",
+        "Professional Summary",
+        "Work Experience",
+        "Education",
+        "Certifications",
+        "Social Links (GitHub / LinkedIn)"
+      ],
+      "projects": [
+        {
+          "name": "Full Stack AI & Aptitude Platform",
+          "description": "Full stack web application built using Node.js, Express, MongoDB (Mongoose), React, Supabase, and Google Generative AI for question bank generation, topic seeding, and validation.",
+          "technologies": [
+            "React",
+            "Node.js",
+            "Express",
+            "MongoDB",
+            "Supabase",
+            "Google GenAI",
+            "Tailwind CSS",
+            "JWT"
+          ]
+        }
+      ],
+      "improvements": [
+        {
+          "section": "Overall Structure",
+          "original": "package.json raw configuration",
+          "suggested": "A standard PDF/Word document containing a header, summary, technical skills matrix, project case studies, work history, and education.",
+          "reason": "Package manifests only show technical dependencies, not actual candidate accomplishments, role impact, or career narrative."
+        }
+      ],
+      "skillGap": [
+        {
+          "skill": "TypeScript",
+          "category": "Programming Languages",
+          "importance": "high",
+          "currentLevel": 0,
+          "requiredLevel": 80
+        },
+        {
+          "skill": "Docker",
+          "category": "DevOps",
+          "importance": "medium",
+          "currentLevel": 0,
+          "requiredLevel": 70
+        },
+        {
+          "skill": "AWS / Cloud Hosting",
+          "category": "Cloud Infrastructure",
+          "importance": "high",
+          "currentLevel": 0,
+          "requiredLevel": 75
+        },
+        {
+          "skill": "SQL / Relational Databases",
+          "category": "Databases",
+          "importance": "medium",
+          "currentLevel": 20,
+          "requiredLevel": 75
+        }
+      ],
+      "hasExperience": false,
+      "hasEducation": false,
+      "analysis": {
+        "overallScore": 25,
+        "atsCompatibility": "15%",
+        "keywordGaps": [
+          "TypeScript",
+          "Docker",
+          "AWS",
+          "SQL / PostgreSQL",
+          "Git / GitHub",
+          "CI/CD Pipelines",
+          "Automated Testing (Jest/Cypress)"
+        ],
+        "strengths": [
+          "React",
+          "Express.js",
+          "Node.js",
+          "MongoDB",
+          "JavaScript",
+          "Tailwind CSS"
+        ],
+        "improvements": [
+          {
+            "section": "Overall Structure",
+            "suggestion": "A standard PDF/Word document containing a header, summary, technical skills matrix, project case studies, work history, and education."
+          }
+        ]
+      }
+    },
+    "targetRole": "Full Stack Developer",
+    "jobDescription": "",
+    "overall_score": 75,
+    "ats_score": 75,
+    "updatedAt": "2026-08-30T03:36:46.631Z"
   }
 ]

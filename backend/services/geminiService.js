@@ -33,7 +33,7 @@ export function getGenAIClient() {
 }
 
 // Default model fallback chain
-export const DEFAULT_MODEL_NAMES = ['gemini-1.5-flash', 'gemini-2.0-flash', 'gemini-1.5-pro'];
+export const DEFAULT_MODEL_NAMES = ['gemini-2.5-flash', 'gemini-3.6-flash', 'gemini-2.0-flash-exp', 'gemini-1.5-flash-latest', 'gemini-1.5-flash', 'gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-pro'];
 
 /**
  * Executes a Gemini prompt with automatic model fallback chain and exponential backoff retry.
