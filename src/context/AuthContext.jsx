@@ -468,6 +468,9 @@ export function AuthProvider({ children }) {
     const rawUpdated = typeof newProfile === 'function' ? newProfile(currentUser) : newProfile;
     const sanitized = sanitizeUserProfile(rawUpdated);
     setCurrentUser(sanitized);
+    try {
+      localStorage.setItem('sb_user', JSON.stringify(sanitized));
+    } catch {}
     saveUserDataToSupabase(sanitized);
   };
 

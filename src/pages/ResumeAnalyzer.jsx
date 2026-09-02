@@ -217,7 +217,7 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
         resumeId: resumeId || prev?.resumeId,
         resumeText: resumeText || prev?.resumeText,
         resumeFileName: data.fileName || prev?.resumeFileName,
-        name: analysis.candidate?.name || prev?.name || 'Aarav Sharma',
+        name: (analysis.candidate?.name && analysis.candidate.name !== 'Candidate') ? analysis.candidate.name : (prev?.name || data?.fileName?.replace(/\.[^/.]+$/, '') || 'Candidate'),
         skills: analysis.skills?.detected || prev?.skills || ["HTML", "CSS", "JavaScript"],
         scores: {
           ...prev?.scores,
@@ -316,28 +316,31 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
       ]);
     }
 
-    setCertificates([
-      { skillName: "HTML", certificateCode: "CERT-HTML-839201" },
-      { skillName: "CSS", certificateCode: "CERT-CSS-482910" },
-      { skillName: "JavaScript", certificateCode: "CERT-JS-918234" }
-    ]);
+    const userCerts = Array.isArray(profile?.certificates) && profile.certificates.length > 0
+      ? profile.certificates
+      : [];
+    setCertificates(userCerts);
 
     setAnalyzed(true);
   };
 
+  const [uploadError, setUploadError] = useState("");
+
   const handleFileSelect = async (file) => {
+    if (!file) return;
     setSelectedFile(file);
     setParsing(true);
+    setUploadError("");
     try {
       const res = await uploadResume(file, profile?.careerGoal || "Full Stack Developer");
-      if (res) {
-        processAnalysisResult(res);
+      if (res && res.success !== false) {
+        processAnalysisResult({ ...res, fileName: file.name });
       } else {
-        processAnalysisResult({ analysis: {} });
+        throw new Error(res?.error || res?.message || "Resume analysis failed");
       }
     } catch (err) {
       console.error("Resume analysis API error:", err);
-      processAnalysisResult({ analysis: {} });
+      setUploadError(err.message || "Failed to analyze resume. Please try again.");
     } finally {
       setParsing(false);
     }
@@ -715,7 +718,7 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
                     <UploadResume 
                       onFileSelect={handleFileSelect} 
                       onAnalysis={processAnalysisResult}
-                      parsing={parsing} 
+                      parsing={parsing} uploadError={uploadError} 
                       selectedFile={selectedFile} 
                       onSelectPreset={handleSelectPreset} 
                       analyzed={analyzed}
@@ -750,7 +753,7 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
                       <UploadResume 
                         onFileSelect={handleFileSelect} 
                         onAnalysis={processAnalysisResult}
-                        parsing={parsing} 
+                        parsing={parsing} uploadError={uploadError} 
                         selectedFile={selectedFile} 
                         onSelectPreset={handleSelectPreset} 
                         analyzed={analyzed}
@@ -979,7 +982,7 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
               <UploadResume 
                 onFileSelect={handleFileSelect} 
                 onAnalysis={processAnalysisResult}
-                parsing={parsing} 
+                parsing={parsing} uploadError={uploadError} 
                 selectedFile={selectedFile} 
                 onSelectPreset={handleSelectPreset} 
                 analyzed={analyzed}
@@ -1000,7 +1003,7 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
                   <UploadResume 
                     onFileSelect={handleFileSelect} 
                     onAnalysis={processAnalysisResult}
-                    parsing={parsing} 
+                    parsing={parsing} uploadError={uploadError} 
                     selectedFile={selectedFile} 
                     onSelectPreset={handleSelectPreset} 
                     analyzed={analyzed}

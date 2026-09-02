@@ -34,7 +34,7 @@ export function getGenAIClient() {
 
 // Default model fallback chain
 export const DEFAULT_MODEL_NAMES = [
-  'gemini-3.6-flash',
+  'gemini-2.5-flash',
   'gemini-2.5-flash'
 ];
 
@@ -54,7 +54,7 @@ export async function analyzeWithGemini(prompt, {
   temperature = 0.7,
   modelChain = DEFAULT_MODEL_NAMES,
   maxAttempts = 1,
-  timeoutMs = 3000
+  timeoutMs = 15000
 } = {}) {
   const ai = getGenAIClient();
   if (!ai) {

@@ -79,24 +79,32 @@ export default function SkillGapDashboard({
     }
   }, [profile?.hasUploadedResume, profile?.resumeFileName, profile?.resumeText, profile?.skills, selectedRole]);
 
-  const runAnalysisWithResume = async (resumeText, fileName, targetRole, jdText) => {
+  const runAnalysisWithResume = async (resumeText, fileName, targetRole, jdText, explicitSkills = null) => {
     setStatus('LOADING');
     setErrorMessage(null);
 
     try {
-      // Intelligently derive user's active detected skills from profile or local storage
-      let userSkills = Array.isArray(profile?.skills) && profile.skills.length > 0 ? profile.skills : [];
+      // Prioritize explicitly passed skills, then profile skills, then saved analysis, then text extraction
+      let userSkills = Array.isArray(explicitSkills) && explicitSkills.length > 0 
+        ? explicitSkills 
+        : (Array.isArray(profile?.skills) && profile.skills.length > 0 ? profile.skills : []);
+
       if (!userSkills.length) {
         try {
           const saved = JSON.parse(localStorage.getItem('sb_resume_analysis') || '{}');
           if (saved?.skillsStatus?.length) {
-            userSkills = saved.skillsStatus.map(s => s.name);
+            userSkills = saved.skillsStatus.filter(s => s.status === 'GAINED' || s.certified).map(s => s.name);
           }
         } catch {}
       }
 
+      if (!userSkills.length && resumeText) {
+        const commonTech = ["React", "React.js", "Node.js", "JavaScript", "TypeScript", "Python", "HTML", "CSS", "Tailwind CSS", "MongoDB", "SQL", "PostgreSQL", "Git", "Docker", "AWS", "REST API", "Express"];
+        userSkills = commonTech.filter(t => new RegExp(`\\b${t}\\b`, 'i').test(resumeText));
+      }
+
       if (!userSkills.length) {
-        userSkills = ["JavaScript", "HTML5", "CSS3", "React.js", "Git", "Node.js", "Python"];
+        userSkills = ["JavaScript", "HTML5", "CSS3", "React.js", "Git", "Node.js", "REST API"];
       }
 
       const verifiedSkills = profile?.verifiedSkills || [];
@@ -165,6 +173,22 @@ export default function SkillGapDashboard({
       localStorage.setItem('sb_resume_filename', file.name);
       localStorage.setItem('sb_resume_text', resumeText);
 
+      // Persist analysis state for seamless cross-dashboard continuity
+      try {
+        const fullAnalysisState = {
+          analyzed: true,
+          selectedFile: { name: file.name },
+          resumeId,
+          resumeText,
+          analysis: parsedAnalysis,
+          skillsStatus: (extractedSkills || []).map(s => ({ name: s, status: 'GAINED', progress: 100, certified: true }))
+        };
+        localStorage.setItem('sb_resume_analysis', JSON.stringify(fullAnalysisState));
+        localStorage.setItem('sb_active_resume_id', resumeId);
+      } catch (e) {
+        console.warn('Storage sync notice:', e);
+      }
+
       if (setProfile) {
         setProfile(prev => ({
           ...prev,
@@ -173,11 +197,17 @@ export default function SkillGapDashboard({
           resumeText,
           resumeFileName: file.name,
           skills: extractedSkills,
-          name: parsedAnalysis.candidate?.name || prev?.name || file.name.replace(/\.[^/.]+$/, "")
+          name: parsedAnalysis.candidate?.name && parsedAnalysis.candidate.name !== 'Candidate' ? parsedAnalysis.candidate.name : (prev?.name || file.name.replace(/\.[^/.]+$/, "")),
+          scores: {
+            ...prev?.scores,
+            resumeScore: parsedAnalysis.scores?.overall || prev?.scores?.resumeScore || 85,
+            placementReadiness: parsedAnalysis.scores?.ats || prev?.scores?.placementReadiness || 82,
+            skillScore: parsedAnalysis.scores?.skills || prev?.scores?.skillScore || 80
+          }
         }));
       }
 
-      await runAnalysisWithResume(resumeText, file.name, selectedRole, customJd);
+      await runAnalysisWithResume(resumeText, file.name, selectedRole, customJd, extractedSkills);
 
     } catch (err) {
       console.error("Direct resume upload failed:", err);

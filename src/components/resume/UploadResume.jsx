@@ -1,9 +1,9 @@
-// agent-notes: { ctx: "Clean minimal SaaS resume upload dropzone with active file badge & error feedback", deps: ["react", "lucide-react", "../../services/resumeApi"], state: "active", last: "anti@2026-08-27" }
+// agent-notes: { ctx: "Clean SaaS resume upload dropzone with unified single-dispatch file handler and error feedback", deps: ["react", "lucide-react", "../../services/resumeApi"], state: "active", last: "anti@2026-09-02" }
 import React, { useRef, useState } from "react";
-import { FileText, CheckCircle2, RefreshCw, Upload, Sparkles, AlertCircle } from "lucide-react";
+import { FileText, CheckCircle2, Upload, AlertCircle } from "lucide-react";
 import { analyzeResume } from "../../services/resumeApi";
 
-function UploadResume({ onAnalysis, onFileSelect, parsing, selectedFile, onSelectPreset, analyzed, profile }) {
+function UploadResume({ onAnalysis, onFileSelect, parsing, selectedFile, analyzed, profile, uploadError }) {
   const inputRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -16,15 +16,17 @@ function UploadResume({ onAnalysis, onFileSelect, parsing, selectedFile, onSelec
 
     const validTypes = [
       "application/pdf",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "text/plain"
     ];
 
     const isPdfOrDocx = validTypes.includes(file.type) || 
       file.name.endsWith('.pdf') || 
-      file.name.endsWith('.docx');
+      file.name.endsWith('.docx') ||
+      file.name.endsWith('.txt');
 
     if (!isPdfOrDocx) {
-      setError("Only PDF and DOCX files are supported.");
+      setError("Only PDF, DOCX, and TXT files are supported.");
       return;
     }
 
@@ -35,12 +37,13 @@ function UploadResume({ onAnalysis, onFileSelect, parsing, selectedFile, onSelec
 
     try {
       setLoading(true);
-      if (onFileSelect) onFileSelect(file);
-
-      const targetRole = profile?.careerGoal || "Full Stack Developer";
-      const result = await analyzeResume(file, targetRole);
-      if (onAnalysis) onAnalysis(result);
-
+      if (onFileSelect) {
+        await onFileSelect(file);
+      } else {
+        const targetRole = profile?.careerGoal || "Full Stack Developer";
+        const result = await analyzeResume(file, targetRole);
+        if (onAnalysis) onAnalysis(result);
+      }
     } catch (err) {
       setError(err.message || "Resume analysis failed");
     } finally {
@@ -70,7 +73,8 @@ function UploadResume({ onAnalysis, onFileSelect, parsing, selectedFile, onSelec
   const isLoading = loading || parsing;
   const isUploadedAndAnalyzed = Boolean(analyzed && selectedFile);
   
-  const activeFileName = selectedFile?.name || "Uploaded_Resume.pdf";
+  const activeFileName = selectedFile?.name || profile?.resumeFileName || "Uploaded_Resume.pdf";
+  const displayError = error || uploadError;
 
   return (
     <div 
@@ -158,22 +162,22 @@ function UploadResume({ onAnalysis, onFileSelect, parsing, selectedFile, onSelec
             type="button"
             className="saas-btn-primary py-1.5 px-4 text-xs font-medium"
           >
-            Browse Files
+            {isLoading ? "Analyzing via AI..." : "Browse Files"}
           </button>
         </div>
       )}
 
-      {error && (
+      {displayError && (
         <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-xs text-rose-800 flex items-center gap-2">
           <AlertCircle className="w-4 h-4 shrink-0" />
-          <span>{error}</span>
+          <span>{displayError}</span>
         </div>
       )}
 
       <input 
         ref={inputRef}
         type="file" 
-        accept=".pdf,.docx" 
+        accept=".pdf,.docx,.txt" 
         className="hidden" 
         onChange={(e) => e.target.files && handleFile(e.target.files[0])}
       />
