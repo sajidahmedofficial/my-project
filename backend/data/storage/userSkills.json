@@ -3052,7 +3052,7 @@
     "requiredLevel": 100,
     "gapPercentage": 0,
     "priority": "high",
-    "updatedAt": "2026-08-30T11:32:33.658Z"
+    "updatedAt": "2026-09-08T04:41:41.007Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.060Z",
@@ -3067,7 +3067,7 @@
     "requiredLevel": 100,
     "gapPercentage": 0,
     "priority": "medium",
-    "updatedAt": "2026-08-30T11:32:33.656Z"
+    "updatedAt": "2026-09-08T04:41:41.003Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.063Z",
@@ -3088,46 +3088,46 @@
     "createdAt": "2026-08-25T17:00:13.070Z",
     "id": "usk_guest_user_git",
     "userId": "guest_user",
-    "resumeId": null,
-    "skillGapId": "sg_guest_user_full_stack_developer",
+    "resumeId": "res_1788842498263",
+    "skillGapId": "sg_guest_user_full_stack_ai_engineer",
     "skillName": "Git",
     "category": "Tools",
-    "status": "strong",
-    "currentLevel": 100,
+    "status": "missing",
+    "currentLevel": 0,
     "requiredLevel": 100,
-    "gapPercentage": 0,
-    "priority": "medium",
-    "updatedAt": "2026-08-30T11:32:33.674Z"
+    "gapPercentage": 100,
+    "priority": "high",
+    "updatedAt": "2026-09-08T04:41:39.710Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.073Z",
     "id": "usk_guest_user_typescript",
     "userId": "guest_user",
-    "resumeId": "res_1788066962528_rgcovce",
-    "skillGapId": "sg_guest_user_full_stack_ai_engineer",
+    "resumeId": null,
+    "skillGapId": "sg_guest_user_full_stack_developer",
     "skillName": "TypeScript",
+    "category": "Programming",
+    "status": "strong",
+    "currentLevel": 100,
+    "requiredLevel": 100,
+    "gapPercentage": 0,
+    "priority": "medium",
+    "updatedAt": "2026-09-08T04:41:41.005Z"
+  },
+  {
+    "createdAt": "2026-08-25T17:00:13.077Z",
+    "id": "usk_guest_user_html5",
+    "userId": "guest_user",
+    "resumeId": "res_1788842498263",
+    "skillGapId": "sg_guest_user_full_stack_ai_engineer",
+    "skillName": "HTML5",
     "category": "Programming",
     "status": "missing",
     "currentLevel": 0,
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T11:32:30.656Z"
-  },
-  {
-    "createdAt": "2026-08-25T17:00:13.077Z",
-    "id": "usk_guest_user_html5",
-    "userId": "guest_user",
-    "resumeId": null,
-    "skillGapId": "sg_guest_user_full_stack_developer",
-    "skillName": "HTML5",
-    "category": "Programming",
-    "status": "strong",
-    "currentLevel": 100,
-    "requiredLevel": 100,
-    "gapPercentage": 0,
-    "priority": "medium",
-    "updatedAt": "2026-08-30T11:32:33.651Z"
+    "updatedAt": "2026-09-08T04:41:39.694Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.079Z",
@@ -3142,13 +3142,13 @@
     "requiredLevel": 100,
     "gapPercentage": 0,
     "priority": "medium",
-    "updatedAt": "2026-08-30T11:32:33.654Z"
+    "updatedAt": "2026-09-08T04:41:40.999Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.082Z",
     "id": "usk_guest_user_next_js",
     "userId": "guest_user",
-    "resumeId": "res_1788066962528_rgcovce",
+    "resumeId": "res_1788842498263",
     "skillGapId": "sg_guest_user_full_stack_ai_engineer",
     "skillName": "Next.js",
     "category": "Frameworks",
@@ -3157,7 +3157,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T11:32:30.661Z"
+    "updatedAt": "2026-09-08T04:41:39.698Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.092Z",
@@ -3178,31 +3178,31 @@
     "createdAt": "2026-08-25T17:00:13.095Z",
     "id": "usk_guest_user_tailwind_css",
     "userId": "guest_user",
-    "resumeId": "res_1788066962528_rgcovce",
-    "skillGapId": "sg_guest_user_full_stack_ai_engineer",
+    "resumeId": null,
+    "skillGapId": "sg_guest_user_full_stack_developer",
     "skillName": "Tailwind CSS",
+    "category": "Programming",
+    "status": "strong",
+    "currentLevel": 100,
+    "requiredLevel": 100,
+    "gapPercentage": 0,
+    "priority": "medium",
+    "updatedAt": "2026-09-08T04:41:41.015Z"
+  },
+  {
+    "createdAt": "2026-08-25T17:00:13.100Z",
+    "id": "usk_guest_user_rest_api",
+    "userId": "guest_user",
+    "resumeId": "res_1788842498263",
+    "skillGapId": "sg_guest_user_full_stack_ai_engineer",
+    "skillName": "REST API",
     "category": "Programming",
     "status": "missing",
     "currentLevel": 0,
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T11:32:30.672Z"
-  },
-  {
-    "createdAt": "2026-08-25T17:00:13.100Z",
-    "id": "usk_guest_user_rest_api",
-    "userId": "guest_user",
-    "resumeId": "res_1788066962528_rgcovce",
-    "skillGapId": "sg_guest_user_full_stack_ai_engineer",
-    "skillName": "REST API",
-    "category": "Programming",
-    "status": "strong",
-    "currentLevel": 100,
-    "requiredLevel": 100,
-    "gapPercentage": 0,
-    "priority": "high",
-    "updatedAt": "2026-08-30T11:32:30.688Z"
+    "updatedAt": "2026-09-08T04:41:39.709Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.102Z",
@@ -3223,22 +3223,22 @@
     "createdAt": "2026-08-25T17:00:13.105Z",
     "id": "usk_guest_user_github",
     "userId": "guest_user",
-    "resumeId": "res_1788066962528_rgcovce",
+    "resumeId": "res_1788842498263",
     "skillGapId": "sg_guest_user_full_stack_ai_engineer",
     "skillName": "GitHub",
     "category": "Tools",
-    "status": "strong",
-    "currentLevel": 100,
+    "status": "missing",
+    "currentLevel": 0,
     "requiredLevel": 100,
-    "gapPercentage": 0,
+    "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T11:32:30.694Z"
+    "updatedAt": "2026-09-08T04:41:39.711Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.107Z",
     "id": "usk_guest_user_vite",
     "userId": "guest_user",
-    "resumeId": "res_1788066962528_rgcovce",
+    "resumeId": "res_1788842498263",
     "skillGapId": "sg_guest_user_full_stack_ai_engineer",
     "skillName": "Vite",
     "category": "Tools",
@@ -3247,7 +3247,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T11:32:30.698Z"
+    "updatedAt": "2026-09-08T04:41:39.713Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.110Z",
@@ -3283,16 +3283,16 @@
     "createdAt": "2026-08-25T17:00:13.118Z",
     "id": "usk_guest_user_vercel",
     "userId": "guest_user",
-    "resumeId": "res_1788066962528_rgcovce",
+    "resumeId": "res_1788842498263",
     "skillGapId": "sg_guest_user_full_stack_ai_engineer",
     "skillName": "Vercel",
     "category": "Programming",
-    "status": "strong",
-    "currentLevel": 100,
+    "status": "missing",
+    "currentLevel": 0,
     "requiredLevel": 100,
-    "gapPercentage": 0,
+    "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T11:32:30.708Z"
+    "updatedAt": "2026-09-08T04:41:39.719Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.121Z",
@@ -3322,22 +3322,22 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T11:32:33.679Z"
+    "updatedAt": "2026-09-08T04:41:41.021Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.126Z",
     "id": "usk_guest_user_problem_solving",
     "userId": "guest_user",
-    "resumeId": "res_1788066962528_rgcovce",
+    "resumeId": "res_1788842498263",
     "skillGapId": "sg_guest_user_full_stack_ai_engineer",
     "skillName": "Problem Solving",
     "category": "Programming",
-    "status": "strong",
-    "currentLevel": 100,
+    "status": "missing",
+    "currentLevel": 0,
     "requiredLevel": 100,
-    "gapPercentage": 0,
+    "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T11:32:30.715Z"
+    "updatedAt": "2026-09-08T04:41:39.722Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.130Z",
@@ -3367,7 +3367,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T11:32:33.676Z"
+    "updatedAt": "2026-09-08T04:41:41.016Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.177Z",
@@ -3382,7 +3382,7 @@
     "requiredLevel": 100,
     "gapPercentage": 0,
     "priority": "high",
-    "updatedAt": "2026-08-30T11:32:33.660Z"
+    "updatedAt": "2026-09-08T04:41:41.009Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.179Z",
@@ -3392,12 +3392,12 @@
     "skillGapId": "sg_guest_user_full_stack_developer",
     "skillName": "Express.js",
     "category": "Programming",
-    "status": "strong",
-    "currentLevel": 100,
+    "status": "missing",
+    "currentLevel": 0,
     "requiredLevel": 100,
-    "gapPercentage": 0,
+    "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T11:32:33.664Z"
+    "updatedAt": "2026-09-08T04:41:41.018Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.182Z",
@@ -3412,7 +3412,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T11:32:33.678Z"
+    "updatedAt": "2026-09-08T04:41:41.019Z"
   },
   {
     "createdAt": "2026-08-25T17:00:13.188Z",
@@ -3427,7 +3427,7 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T11:32:33.681Z"
+    "updatedAt": "2026-09-08T04:41:41.022Z"
   },
   {
     "createdAt": "2026-08-29T17:05:11.063Z",
@@ -3442,7 +3442,7 @@
     "requiredLevel": 100,
     "gapPercentage": 0,
     "priority": "medium",
-    "updatedAt": "2026-08-30T11:32:33.666Z"
+    "updatedAt": "2026-09-08T04:41:41.011Z"
   },
   {
     "createdAt": "2026-08-29T17:05:11.066Z",
@@ -3658,7 +3658,7 @@
     "createdAt": "2026-08-30T11:32:29.116Z",
     "id": "usk_guest_user_fastapi",
     "userId": "guest_user",
-    "resumeId": "res_1788066962528_rgcovce",
+    "resumeId": "res_1788842498263",
     "skillGapId": "sg_guest_user_full_stack_ai_engineer",
     "skillName": "FastAPI",
     "category": "Frameworks",
@@ -3667,28 +3667,28 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T11:32:30.666Z"
+    "updatedAt": "2026-09-08T04:41:39.700Z"
   },
   {
     "createdAt": "2026-08-30T11:32:29.128Z",
     "id": "usk_guest_user_postgresql",
     "userId": "guest_user",
-    "resumeId": "res_1788066962528_rgcovce",
+    "resumeId": "res_1788842498263",
     "skillGapId": "sg_guest_user_full_stack_ai_engineer",
     "skillName": "PostgreSQL",
     "category": "Programming",
-    "status": "strong",
-    "currentLevel": 100,
+    "status": "missing",
+    "currentLevel": 0,
     "requiredLevel": 100,
-    "gapPercentage": 0,
+    "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T11:32:30.681Z"
+    "updatedAt": "2026-09-08T04:41:39.704Z"
   },
   {
     "createdAt": "2026-08-30T11:32:29.133Z",
     "id": "usk_guest_user_vector_dbs",
     "userId": "guest_user",
-    "resumeId": "res_1788066962528_rgcovce",
+    "resumeId": "res_1788842498263",
     "skillGapId": "sg_guest_user_full_stack_ai_engineer",
     "skillName": "Vector DBs",
     "category": "Programming",
@@ -3697,13 +3697,13 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T11:32:30.684Z"
+    "updatedAt": "2026-09-08T04:41:39.707Z"
   },
   {
     "createdAt": "2026-08-30T11:32:29.172Z",
     "id": "usk_guest_user_hugging_face",
     "userId": "guest_user",
-    "resumeId": "res_1788066962528_rgcovce",
+    "resumeId": "res_1788842498263",
     "skillGapId": "sg_guest_user_full_stack_ai_engineer",
     "skillName": "Hugging Face",
     "category": "Cloud/DevOps",
@@ -3712,13 +3712,13 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T11:32:30.712Z"
+    "updatedAt": "2026-09-08T04:41:39.721Z"
   },
   {
     "createdAt": "2026-08-30T11:32:29.178Z",
     "id": "usk_guest_user_ai_prompt_engineering",
     "userId": "guest_user",
-    "resumeId": "res_1788066962528_rgcovce",
+    "resumeId": "res_1788842498263",
     "skillGapId": "sg_guest_user_full_stack_ai_engineer",
     "skillName": "AI Prompt Engineering",
     "category": "Programming",
@@ -3727,6 +3727,6 @@
     "requiredLevel": 100,
     "gapPercentage": 100,
     "priority": "high",
-    "updatedAt": "2026-08-30T11:32:30.719Z"
+    "updatedAt": "2026-09-08T04:41:39.723Z"
   }
 ]
