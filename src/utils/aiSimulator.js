@@ -679,7 +679,132 @@ export function generateMentorResponse(history, query) {
   
   let response = "";
   
-  if (q.includes("full stack") || q.includes("full-stack")) {
+  if (q.includes("python")) {
+    response = `### Python Core Concepts & Best Practices 🐍
+
+Python is renowned for its readability, expressive syntax, and rich ecosystem across backend development, data engineering, and machine learning.
+
+#### 1. Fundamental Mastery
+- **Data Structures**: Lists, Tuples, Dictionaries, Sets, and Collections (\`defaultdict\`, \`Counter\`, \`deque\`).
+- **Idiomatic Python**: List/Dict comprehensions, Generators (\`yield\`), Decorators, and Context Managers (\`with\`).
+- **Object-Oriented & Functional**: Dunder methods (\`__init__\`, \`__str__\`, \`__repr__\`), Lambda expressions, \`map\`/\`filter\`.
+
+#### 2. Key Frameworks & Ecosystem
+- **FastAPI**: Modern, high-performance async REST APIs with automatic OpenAPI/Swagger documentation.
+- **Django**: Full-featured framework with built-in ORM, admin dashboard, and user authentication.
+- **Data & AI**: Pandas, NumPy, Scikit-Learn, PyTorch.
+
+#### 3. Recommended Project
+Build a **RESTful microservice with FastAPI and Docker** that handles async tasks (e.g., background PDF generation or data scraping).`;
+  }
+  else if (q.includes("javascript") || q.includes("js ") || q.endsWith("js") || q.includes("event loop") || q.includes("closure") || q.includes("promise")) {
+    response = `### Modern JavaScript Deep-Dive ⚡
+
+JavaScript drives both client-side rendering and asynchronous server-side execution.
+
+#### 1. Core Mechanics
+- **Event Loop**: Synchronous code runs on the Call Stack. Microtasks (Promises, \`queueMicrotask\`) resolve before macrotasks (\`setTimeout\`, \`setInterval\`, I/O).
+- **Closures**: Functions retain lexical environment references even after their outer functions have returned.
+- **Prototypes & Inheritance**: JavaScript uses prototypical inheritance under the syntactic sugar of ES6 \`class\`.
+
+#### 2. Modern ES6+ Standards
+- Async/Await with robust \`try...catch\` blocks.
+- Destructuring, Rest/Spread operators (\`...\`).
+- Optional Chaining (\`?.\`) & Nullish Coalescing (\`??\`).
+- Array methods: \`.map()\`, \`.filter()\`, \`.reduce()\`, \`.flatMap()\`.
+
+#### 3. Top Interview Focus
+Be ready to explain hoisting, the difference between \`var\` / \`let\` / \`const\`, and implement a custom \`debounce\` or \`throttle\` utility from scratch!`;
+  }
+  else if (q.includes("react") || q.includes("hook") || q.includes("state") || q.includes("redux") || q.includes("virtual dom")) {
+    response = `### React.js Architecture & Patterns ⚛️
+
+React enables declarative, component-based UI engineering with optimal DOM re-renders.
+
+#### 1. Core Principles
+- **Virtual DOM & Reconciliation**: React uses an in-memory Virtual DOM tree and the Fiber algorithm to compute minimal diffs and patch the real DOM.
+- **Unidirectional Data Flow**: Data flows down via props; state changes trigger deterministic re-renders.
+
+#### 2. Essential React Hooks
+- \`useState\` & \`useReducer\`: Component state management.
+- \`useEffect\`: Side-effects, lifecycle synchronization, and event listener cleanups.
+- \`useMemo\` & \`useCallback\`: Memoizing expensive computations and stable function references.
+- \`useRef\`: Direct DOM manipulation or mutable values that don't trigger re-renders.
+
+#### 3. State Management
+- Local: Built-in hooks.
+- Global / Complex: Zustand, Redux Toolkit, or React Context for lighter trees.`;
+  }
+  else if (q.includes("docker") || q.includes("container") || q.includes("kubernetes") || q.includes("devops") || q.includes("ci/cd")) {
+    response = `### Docker & Containerization Essentials 🐳
+
+Docker packages software into standardized units for consistent development, testing, and production deployments.
+
+#### 1. Core Concepts
+- **Dockerfile**: Declarative recipe instructions to build an image.
+- **Image**: An immutable, layered snapshot of application code and OS binaries.
+- **Container**: An isolated, runnable instance of a container image.
+- **Volumes**: Persistent storage decoupled from container lifecycles.
+
+#### 2. Best Practices
+- **Multi-Stage Builds**: Drastically reduce image size by separating the build environment from the minimal runtime image (e.g. \`alpine\` or distroless).
+- **Docker Compose**: Orchestrate multi-container environments (Frontend + Backend + Redis + Postgres) with a single \`docker-compose.yml\`.
+- **Environment Variables**: Never hardcode secrets in images—inject them at runtime.`;
+  }
+  else if (q.includes("database") || q.includes("sql") || q.includes("nosql") || q.includes("mongo") || q.includes("postgres")) {
+    response = `### Database Systems: SQL vs. NoSQL 🗄️
+
+Choosing the right database architecture is critical for data integrity, latency, and system scaling.
+
+#### 1. Relational / SQL (PostgreSQL, MySQL)
+- **Strengths**: Strict schemas, ACID transactions, complex relational JOIN queries, strong consistency.
+- **Best For**: Financial ledgers, e-commerce orders, relational business entities.
+
+#### 2. Document / NoSQL (MongoDB, DynamoDB)
+- **Strengths**: Flexible JSON-like document models, rapid prototyping, horizontal sharding.
+- **Best For**: User catalogs, content management, real-time logging/events.
+
+#### 3. Performance Optimization Tips
+- Add B-Tree indexes to columns used in \`WHERE\` and \`JOIN\` clauses.
+- Analyze query execution plans using \`EXPLAIN ANALYZE\`.
+- Use connection pooling and read replicas to scale read-heavy traffic.`;
+  }
+  else if (q.includes("dsa") || q.includes("data structure") || q.includes("algorithm") || q.includes("leetcode") || q.includes("binary tree")) {
+    response = `### Data Structures & Algorithms (DSA) Strategy 🧠
+
+Mastering DSA requires focusing on recurring algorithmic patterns rather than memorizing individual problems.
+
+#### 1. Core High-Yield Patterns
+- **Arrays & Strings**: Two Pointers, Sliding Window, Prefix Sums, HashMaps.
+- **Linked Lists & Stacks**: Fast & Slow pointers (cycle detection), Monotonic Stack.
+- **Trees & Graphs**: BFS (Level-order / Shortest path in unweighted graphs), DFS, Topological Sort.
+- **Dynamic Programming**: Subproblem identification, Top-Down Memoization, Bottom-Up Tabulation.
+
+#### 2. Suggested Practice Routine
+1. Complete 150 curated LeetCode/NeetCode problems (Easy: 40%, Medium: 50%, Hard: 10%).
+2. Always analyze Time & Space complexity in Big-O notation.
+3. Practice writing clean, edge-case-handled code on a whiteboard or blank editor.`;
+  }
+  else if (q.includes("system design") || q.includes("scalability") || q.includes("microservice") || q.includes("load balancer")) {
+    response = `### System Design Fundamentals 🏗️
+
+Designing scalable distributed architectures:
+
+1. **Load Balancing**: Distribute ingress requests using NGINX, HAProxy, or AWS ALB.
+2. **Caching Strategy**: Redis/Memcached at application and database layers (Cache-Aside, Write-Through).
+3. **Database Scaling**: Read Replicas, Database Sharding, Connection Pooling.
+4. **Asynchronous Messaging**: Kafka or RabbitMQ to decouple services and buffer traffic spikes.
+5. **Resilience**: Rate Limiting, Circuit Breakers, CDN caching (Cloudflare/CloudFront).`;
+  }
+  else if (q.includes("resume") || q.includes("ats") || q.includes("cv")) {
+    response = `### Resume & ATS Optimization Guide 📄
+
+1. **Use the Google X-Y-Z Formula**: "Accomplished [X] as measured by [Y], by doing [Z]". (e.g. *Optimized API latency by 35% by implementing Redis caching and indexing database queries*).
+2. **Keywords & Skills**: Ensure high-priority technologies from the job description appear naturally in your Skills and Experience sections.
+3. **Clean Layout**: Single column, standard fonts, no complex multi-column tables or icons that confuse ATS parsers.
+4. **Links**: Include clickable links to your GitHub profile, LinkedIn, and live deployed project demos!`;
+  }
+  else if (q.includes("full stack") || q.includes("full-stack")) {
     response = `### How to Become a Full-Stack Developer 🚀
 
 Becoming a Full-Stack Developer requires understanding both client-facing frontend technologies and server-side backend logic.
@@ -695,7 +820,7 @@ Becoming a Full-Stack Developer requires understanding both client-facing fronte
 - **Level 2 (Medium)**: Build a **Real-Time Task Manager** using WebSockets (Socket.io) and Express.
 - **Level 3 (Hard)**: Build a **Multi-vendor E-Commerce website** with user auth, cart management, and payment sandbox.
 
-#### 3. Average Salary Insights (India)
+#### 3. Average Salary Insights
 - **Entry Level (Fresher)**: ₹4.5L - ₹7.5L per annum.
 - **Mid-Level (2-5 years)**: ₹8.0L - ₹15.0L per annum.
 - **Senior-Level (5+ years)**: ₹16.0L - ₹30.0L+ per annum.
@@ -714,14 +839,9 @@ Frontend development revolves around building rich user experiences and responsi
 3. **Tailwind CSS**: Utility-first styling, grid layouts, fluid typography.
 4. **Performance**: Asset optimization, code splitting, lazy loading, and Core Web Vitals.
 
-#### 2. Salary Insights
-- **Fresher**: ₹3.5L - ₹6.0L per annum.
-- **Mid-level**: ₹7.0L - ₹12.0L per annum.
-
-#### 3. Essential Courses
-- **Scrimba's Free React Course** (Highly interactive)
-- **Javascript.info** (Deep reference manual)
-- **Frontend Masters** (Advanced concepts)`;
+#### 2. Essential Courses & Practice
+- Build clean, accessible UI components with Tailwind CSS.
+- Master responsive design, CSS Grid/Flexbox, and Core Web Vitals optimization.`;
   } 
   else if (q.includes("backend") || q.includes("back end")) {
     response = `### Exploring Backend Development ⚙️
@@ -737,11 +857,7 @@ Backend development is about logic execution, server management, data schemas, a
 #### 2. Projects to Build
 - **User Authentication Server**: Signup/Login with password encrypting and auth middleware.
 - **Blogging API**: Complete CRUD routes with relational author tags.
-- **Chat Server**: Socket.io message broadcasting.
-
-#### 3. Salary Insights
-- **Fresher**: ₹4.0L - ₹7.0L per annum.
-- **Mid-level**: ₹8.0L - ₹14.0L per annum.`;
+- **Chat Server**: Socket.io message broadcasting.`;
   }
   else if (q.includes("interview") || q.includes("placement") || q.includes("prepare")) {
     response = `### Placement & Interview Preparation Guide 💼
@@ -777,17 +893,15 @@ Project work is the best way to prove you have practical skills to recruiters. H
 *Tip: Check the **Project recommendations** page in the dashboard sidebar for step-by-step instructions on building these!*`;
   }
   else {
-    response = `Hi there! I am your **AI Career Mentor** at SkillBridge. 💡
+    response = `### AI Mentor Guidance for "${query}" 💡
 
-I can help you navigate your career path, prepare for placements, recommend tech stacks, or structure learning roadmaps.
+Here is targeted guidance to help you master **${query}**:
 
-Try asking me questions like:
-- *"How can I become a Full Stack Developer?"*
-- *"What should I study for a Frontend interview?"*
-- *"Can you recommend backend projects?"*
-- *"How do I prepare for placement interviews?"*
+1. **Core Understanding**: Study the fundamental concepts, lifecycle, and syntax associated with this topic.
+2. **Practical Application**: Implement a working prototype or code snippet to reinforce your understanding.
+3. **Interview & Project Integration**: Add this topic to your technical vocabulary and be ready to explain trade-offs and real-world use cases.
 
-Feel free to write your query and I'll outline the required steps, salary insight, and tips!`;
+*Feel free to ask for specific code examples, architecture breakdowns, or interview questions on this topic!*`;
   }
 
   return response;

@@ -129,10 +129,51 @@ export const analyzeJD = async (req, res) => {
 // Career Chatbot Mentor
 export const chat = async (req, res) => {
   try {
-    const { query = '' } = req.body;
-    return res.status(200).json({
-      response: `SkillBridge AI Mentor guidance for "${query}": Keep building project portfolios, mastering data structures, and practicing mock interviews!`
-    });
+    const { query = '', message = '', messages = [], userContext = {} } = req.body;
+    const userQuery = query || message || (messages && messages[messages.length - 1]?.text) || "";
+
+    if (!userQuery) {
+      return res.status(400).json({ error: "Query is required" });
+    }
+
+    const candidateName = userContext?.name || userContext?.candidateName || "Candidate";
+    const targetRole = userContext?.targetRole || userContext?.careerGoal || "Full Stack Developer";
+
+    try {
+      const { analyzeWithGemini, getGenAIClient } = await import('../../backend/services/geminiService.js');
+      if (getGenAIClient()) {
+        const prompt = `You are the expert AI Career & Technical Mentor at SkillBridge AI.
+Mentoring ${candidateName} for the target role: ${targetRole}.
+
+INSTRUCTIONS:
+1. Directly, accurately, and thoroughly answer the student's exact query first (whether it is a coding question, syntax query, technical concept, system architecture, interview question, or career strategy).
+2. Provide clear code snippets, bullet points, or step-by-step instructions where appropriate.
+3. Keep the tone encouraging, professional, and highly actionable. Format with clean Markdown.
+
+Student's Query: "${userQuery}"
+
+Mentor Response:`;
+        const text = await analyzeWithGemini(prompt, { timeoutMs: 20000 });
+        if (text) {
+          return res.status(200).json({ response: text });
+        }
+      }
+    } catch (apiErr) {
+      console.warn("[Server AI Controller] Gemini fallback trigger:", apiErr.message);
+    }
+
+    const q = userQuery.toLowerCase();
+    let response = `### SkillBridge AI Mentor Guidance for "${userQuery}" 💡\n\nHello ${candidateName}!\n\nHere are targeted steps for your **${targetRole}** journey:\n\n1. **Core Concept Mastery**: Understand the foundational mechanisms of ${userQuery}.\n2. **Practical Coding**: Build a standalone project or module applying this.\n3. **Interview Readiness**: Be prepared to explain trade-offs and complexity.`;
+
+    if (q.includes("python")) {
+      response = `### Python Core Concepts & Best Practices 🐍\n\n- **Key Features**: Dynamic typing, clean syntax, extensive standard libraries.\n- **Essential Topics**: List comprehensions, Decorators, Generators, Context Managers (\`with\`), AsyncIO.\n- **Popular Frameworks**: FastAPI (modern async APIs), Django (full-stack batteries included), Flask.\n\n*Tip for ${targetRole}:* Practice building modular REST services with FastAPI and Docker!`;
+    } else if (q.includes("javascript") || q.includes("js ") || q.endsWith("js") || q.includes("event loop")) {
+      response = `### Modern JavaScript Architecture ⚡\n\n- **Event Loop**: Call stack executes synchronous code, microtasks (Promises/async) run before macrotasks (\`setTimeout\`).\n- **Closures & Scope**: Functions retain access to their lexical parent scope.\n- **Modern Features**: ES6+ modules, Destructuring, Optional chaining (\`?.\`), Nullish coalescing (\`??\`).\n\n*Tip:* Practice implementing higher-order functions (map, filter, reduce) and asynchronous workflows.`;
+    } else if (q.includes("react")) {
+      response = `### React.js Development Guide ⚛️\n\n- **Core Highlights**: Component-driven architecture, Virtual DOM diffing (Fiber), unidirectional data flow.\n- **Essential Hooks**: \`useState\`, \`useEffect\`, \`useMemo\`, \`useCallback\`, \`useRef\`.\n- **State Management**: React Context, Zustand, or Redux Toolkit.\n\n*Tip:* Structure components cleanly and isolate side-effects in custom hooks!`;
+    }
+
+    return res.status(200).json({ response });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }

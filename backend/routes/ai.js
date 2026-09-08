@@ -187,6 +187,35 @@ Return strictly valid JSON only. Do not include markdown code fences or conversa
   }
 });
 
+// Helper for rich contextual fallback response when AI is offline
+function generateSmartFallbackAnswer(query, candidateName, targetRole, currentSkills, missingSkills) {
+  const q = (query || "").toLowerCase();
+
+  if (q.includes("python")) {
+    return `### Python Essentials & Best Practices 🐍\n\nPython is a versatile language widely used for backend engineering, data science, automation, and AI.\n\n- **Core Highlights**: Clean syntax, dynamic typing, rich standard library, and massive ecosystem (FastAPI, Django, Flask, Pandas, NumPy).\n- **Key Areas to Master**: List/Dict comprehensions, Generators, Decorators, \`*args\`/\`**kwargs\`, Context Managers (\`with\` statements), and AsyncIO.\n- **Practical Application**: Build a REST API using **FastAPI** or an automated web scraper with **BeautifulSoup**.\n\n*Tip for ${targetRole}:* Pair your Python backend skills with containerization (${missingSkills}) to build deployable microservices!`;
+  }
+  if (q.includes("javascript") || q.includes("js ") || q.endsWith("js") || q.includes("event loop") || q.includes("closure") || q.includes("promise")) {
+    return `### Modern JavaScript Deep-Dive ⚡\n\nJavaScript is the foundation of full-stack web development.\n\n- **Event Loop & Asynchrony**: Understand the Call Stack, Microtask Queue (Promises), and Macrotask Queue (\`setTimeout\`).\n- **Key ES6+ Features**: Destructuring, Spread/Rest operators, Optional Chaining (\`?.\`), Nullish Coalescing (\`??\`), Async/Await.\n- **Scope & Closures**: Lexical scoping allows inner functions to access outer variables even after the outer function finishes executing.\n- **Memory Management**: Avoid memory leaks by cleaning up event listeners and intervals.\n\n*Next Step:* Try implementing your own custom \`Promise.all()\` or debounce function to master closures!`;
+  }
+  if (q.includes("react") || q.includes("hook") || q.includes("state") || q.includes("redux") || q.includes("virtual dom")) {
+    return `### React Architecture & State Patterns ⚛️\n\n- **Virtual DOM & Reconciliation**: React uses a lightweight in-memory representation of the DOM and the Fiber reconciliation algorithm to calculate minimal DOM diffs.\n- **Essential Hooks**: \`useState\`, \`useEffect\` (synchronization), \`useCallback\` / \`useMemo\` (performance optimization), \`useRef\` (DOM & persistent values).\n- **State Management**: For component-level state use React Hooks; for global state consider Context API, Zustand, or Redux Toolkit.\n- **Performance Tips**: Keep component trees shallow, use lazy loading (\`React.lazy\`), and memoize expensive calculations.\n\n*Project Idea:* Build a real-time collaborative tool utilizing React and WebSocket hooks!`;
+  }
+  if (q.includes("docker") || q.includes("container") || q.includes("kubernetes") || q.includes("devops") || q.includes("ci/cd")) {
+    return `### Docker & Containerization Essentials 🐳\n\nDocker packages code and its dependencies into a standalone, reproducible container.\n\n1. **Core Concepts**:\n   - **Dockerfile**: Blueprint instructions for building an image.\n   - **Image**: Immutable snapshot of the application.\n   - **Container**: Running instance of an image.\n   - **Volumes**: Persistent storage across container lifecycles.\n2. **Multi-Stage Builds**: Drastically reduce image size by building assets in one stage and copying only production binaries to the final lightweight image (e.g. \`node:alpine\`).\n3. **Docker Compose**: Define multi-service stacks (API + Redis + PostgreSQL) using a single YAML configuration.\n\n*Action item for your ${targetRole} roadmap:* Containerize your backend and set up a GitHub Actions workflow to build and test on every PR!`;
+  }
+  if (q.includes("database") || q.includes("sql") || q.includes("nosql") || q.includes("mongo") || q.includes("postgres")) {
+    return `### Database Architecture: SQL vs NoSQL 🗄️\n\n- **Relational (PostgreSQL, MySQL)**: ACID compliance, structured schemas, relational integrity, powerful JOIN queries. Best for financial, transaction-heavy, or complex relational models.\n- **Document/NoSQL (MongoDB, DynamoDB)**: Flexible JSON-like schemas, horizontal scaling, rapid prototyping. Best for real-time analytics, user catalogs, or semi-structured data.\n- **Optimization Highlights**: Always index frequently queried columns, analyze query plans with \`EXPLAIN ANALYZE\`, and prevent N+1 query problems using batching/eager loading.`;
+  }
+  if (q.includes("dsa") || q.includes("data structure") || q.includes("algorithm") || q.includes("leetcode") || q.includes("binary tree")) {
+    return `### Data Structures & Algorithms (DSA) Roadmap 🧠\n\nTo excel in technical interviews, master these high-frequency patterns:\n\n1. **Arrays & Strings**: Two Pointers, Sliding Window, Prefix Sums, HashMaps.\n2. **Linked Lists & Stacks**: Fast/Slow pointer cycle detection, Monotonic Stack.\n3. **Trees & Graphs**: BFS (Queue), DFS (Recursion/Stack), Topological Sort, Dijkstra's.\n4. **Dynamic Programming**: Memoization (Top-down) vs Tabulation (Bottom-up).\n\n*Target:* Aim to solve 100-150 curated medium problems focusing on pattern recognition rather than memorization.`;
+  }
+  if (q.includes("system design") || q.includes("scalability") || q.includes("microservice") || q.includes("load balancer")) {
+    return `### System Design Core Principles 🏗️\n\nWhen designing large-scale distributed systems:\n\n1. **Load Balancing**: Distribute traffic using Round Robin or Least Connections.\n2. **Caching**: Utilize Redis/Memcached at application and database layers (Cache-Aside, Write-Through).\n3. **Database Scaling**: Read replicas, Sharding, and Connection Pooling.\n4. **Asynchronous Processing**: Message queues (RabbitMQ, Kafka, SQS) to decouple heavy tasks and smooth traffic spikes.\n5. **Reliability**: Implement Circuit Breakers, Rate Limiters, and Health Checks.`;
+  }
+
+  return `### AI Mentor Guidance for "${query}" 💡\n\nHello ${candidateName}!\n\nHere are actionable recommendations for your question regarding **${query}** in the context of your **${targetRole}** journey:\n\n1. **Technical Foundation**: Focus on mastering the core principles behind ${query}. Reinforce your strengths in **${currentSkills}**.\n2. **Hands-On Application**: Build a concrete mini-project or code module demonstrating this concept.\n3. **Skill Gap Alignment**: Integrating this with **${missingSkills}** will directly boost your placement readiness.\n\nFeel free to ask for specific code examples, debugging help, or architectural design breakdowns!`;
+}
+
 // @desc    Career Chatbot Mentor with Full User & Resume Context
 // @route   POST /api/ai/chat
 router.post('/chat', async (req, res) => {
@@ -207,7 +236,7 @@ router.post('/chat', async (req, res) => {
   try {
     if (!getGenAIClient()) {
       return res.json({
-        response: `Hello ${candidateName}! As your AI Career Mentor for **${targetRole}**, I see you have solid foundations in **${currentSkills}** (ATS Score: ${atsScore}/100).\n\nTo bridge your remaining gaps in **${missingSkills}**, I recommend prioritizing containerization with Docker, practicing hands-on full-stack projects with automated test suites, and preparing for system design mock interviews.\n\nHow would you like to structure your preparation this week?`
+        response: generateSmartFallbackAnswer(userQuery, candidateName, targetRole, currentSkills, missingSkills)
       });
     }
 
@@ -216,20 +245,19 @@ router.post('/chat', async (req, res) => {
       .map(m => `${m.sender === 'bot' ? 'Mentor' : 'Student'}: ${m.text}`)
       .join('\n');
     
-    const prompt = `You are the AI Career & Technical Mentor at SkillBridge AI.
-You are mentoring ${candidateName}, whose target career goal is: ${targetRole}.
+    const prompt = `You are the expert AI Career & Technical Mentor at SkillBridge AI.
+You are interacting with ${candidateName}, whose target career role is: ${targetRole}.
 
-Candidate Live Profile & Resume Context:
-- Detected Skills: ${currentSkills}
+Candidate Live Profile & Context:
+- Current Detected Skills: ${currentSkills}
 - Key Skill Gaps: ${missingSkills}
-- Current Resume Score: ${resumeScore}/100
-- ATS Placement Readiness: ${atsScore}%
+- Resume Score: ${resumeScore}/100 | ATS Readiness: ${atsScore}%
 
-Guidelines:
-1. Provide personalized, highly actionable technical career mentorship tailored to ${candidateName}'s target role (${targetRole}).
-2. Directly reference their current skills and explain practical ways to bridge their specific gaps.
-3. Suggest concrete software projects, system design concepts, or certification milestones where relevant.
-4. Format using clean Markdown with bullet points, code snippets, or numbered steps.
+INSTRUCTIONS:
+1. Directly, accurately, and thoroughly answer the student's exact query first (whether it is a coding question, syntax query, technical concept, system architecture, interview question, or career strategy).
+2. Provide clear code snippets, bullet points, or step-by-step instructions where appropriate.
+3. If relevant to their question, seamlessly relate insights to their target role (${targetRole}) and bridging skill gaps, but do not replace answering their question with generic advice.
+4. Keep the tone encouraging, professional, and highly actionable. Format with clean Markdown.
 
 Recent Conversation History:
 ${chatHistoryContext}
@@ -238,13 +266,13 @@ Student's Query: "${userQuery}"
 
 Mentor Response:`;
 
-    const text = await analyzeWithGemini(prompt, { timeoutMs: 7000 });
+    const text = await analyzeWithGemini(prompt, { timeoutMs: 20000 });
     res.json({ response: text });
 
   } catch (error) {
     console.warn("[AI Chat Notice] Fallback mentor response generated:", error.message);
     res.json({
-      response: `Hi ${candidateName}! Regarding "${userQuery}": For a **${targetRole}** path, focus on closing gaps in **${missingSkills}** while reinforcing your strengths in **${currentSkills}**.\n\n1. **Targeted Practice**: Build a full-stack CRUD service with Docker and TypeScript.\n2. **Interview Prep**: Review system architecture fundamentals and data structures.\n3. **Roadmap Step**: Complete your next milestone in the Learning Roadmap tab.`
+      response: generateSmartFallbackAnswer(userQuery, candidateName, targetRole, currentSkills, missingSkills)
     });
   }
 });
