@@ -113,17 +113,27 @@ export default function CareerMentor({ profile }) {
     }
   }, []);
 
+  // Sync voice transcript to input value in chat mode
+  useEffect(() => {
+    if (activeMode === 'chat' && isListening && voiceTranscript) {
+      setInputVal(voiceTranscript);
+    }
+  }, [voiceTranscript, activeMode, isListening]);
+
   // Toggle Voice Recording
   const handleToggleVoice = () => {
     if (isListening) {
       recognitionRef.current?.stop();
       setIsListening(false);
       setAvatarState('idle');
-      if (voiceTranscript.trim()) {
+      if (activeMode === 'voice' && voiceTranscript.trim()) {
         handleSend(voiceTranscript);
       }
     } else {
       setVoiceTranscript("");
+      if (activeMode === 'chat') {
+        setInputVal(""); // Clear old input when starting new dictation
+      }
       try {
         recognitionRef.current?.start();
       } catch (err) {
@@ -132,7 +142,12 @@ export default function CareerMentor({ profile }) {
         setVoiceStatus("Listening (simulating input)...");
         setTimeout(() => {
           setIsListening(false);
-          handleSend("How to prepare for campus technical placement interviews?");
+          const simulatedText = "How to prepare for campus technical placement interviews?";
+          if (activeMode === 'voice') {
+            handleSend(simulatedText);
+          } else {
+            setInputVal(simulatedText);
+          }
         }, 2500);
       }
     }
@@ -143,9 +158,6 @@ export default function CareerMentor({ profile }) {
     if ('speechSynthesis' in window) {
       if (window.speechSynthesis.speaking) {
         window.speechSynthesis.cancel();
-        setIsSpeakingMsgId(null);
-        setAvatarState('idle');
-        return;
       }
 
       const cleanText = text.replace(/[*#`_]/g, '');
@@ -487,11 +499,15 @@ export default function CareerMentor({ profile }) {
 
               <button
                 type="button"
-                onClick={() => setActiveMode('voice')}
-                className="p-2 rounded-lg border border-slate-200 text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-colors"
-                title="Switch to Voice Mode"
+                onClick={recognitionSupported ? handleToggleVoice : () => setActiveMode('voice')}
+                className={`p-2 rounded-lg border transition-colors ${
+                  isListening 
+                    ? 'border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100' 
+                    : 'border-slate-200 text-slate-500 hover:text-slate-900 hover:bg-slate-50'
+                }`}
+                title={isListening ? "Stop listening" : "Start Voice Input"}
               >
-                <Mic className="w-4 h-4" />
+                {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
               </button>
 
               <button
