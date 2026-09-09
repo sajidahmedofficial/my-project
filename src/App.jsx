@@ -14,7 +14,6 @@ import {
   LogIn,
   Sparkles,
   Zap,
-  Brain,
   Layers,
   ArrowRight,
   ShieldCheck,
@@ -41,7 +40,6 @@ const LearningRoadmap = React.lazy(() => import('./components/LearningRoadmap'))
 const CareerMentor = React.lazy(() => import('./components/CareerMentor'));
 const MockInterview = React.lazy(() => import('./components/MockInterview'));
 const CodingPractice = React.lazy(() => import('./components/CodingPractice'));
-const AptitudeDashboard = React.lazy(() => import('./components/aptitude/AptitudeDashboard'));
 const SkillVerificationModal = React.lazy(() => import('./components/resume/SkillVerificationModal'));
 
 const TabLoadingFallback = () => (
@@ -138,8 +136,7 @@ function MainLayout() {
     { id: 'roadmap', label: 'Learning Roadmap', icon: Map },
     { id: 'chat', label: 'Career Mentor', icon: MessageSquare },
     { id: 'interview', label: 'Mock Interview', icon: Award },
-    { id: 'coding', label: 'Coding Practice', icon: Zap },
-    { id: 'aptitude', label: 'Aptitude Practice', icon: Brain }
+    { id: 'coding', label: 'Coding Practice', icon: Zap }
   ];
 
   const renderActiveView = () => {
@@ -221,9 +218,6 @@ function MainLayout() {
                 setActiveTab('skillgap');
               }} 
             />
-          </div>
-          <div className={activeTab === 'aptitude' ? 'block' : 'hidden'}>
-            <AptitudeDashboard />
           </div>
         </div>
       </React.Suspense>

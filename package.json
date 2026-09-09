@@ -13,14 +13,7 @@
     "build": "vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "prepare": "husky",
-    "seed:topics": "node scripts/seedTopics.js",
-    "seed:aptitude": "node scripts/seedAptitude.js",
-    "generate:questions": "node scripts/generateAptitudeBank.js all",
-    "generate:topic": "node scripts/generateAptitudeBank.js",
-    "generate:aptitude": "node scripts/generateAptitudeBank.js",
-    "validate:questions": "node scripts/validateQuestions.js",
-    "question:stats": "node scripts/validateQuestions.js"
+    "prepare": "husky"
   },
   "dependencies": {
     "@google/genai": "^2.15.0",

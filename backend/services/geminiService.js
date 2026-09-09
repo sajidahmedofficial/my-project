@@ -1,9 +1,6 @@
-// agent-notes: { ctx: "Unified Gemini AI client module with exponential backoff, model fallback chains, and structured JSON parsing", deps: ["@google/generative-ai", "./promptBuilder.service", "./questionHashService", "./questionValidationService"], state: "active", last: "anti@2026-08-25" }
+// agent-notes: { ctx: "Unified Gemini AI client module with exponential backoff, model fallback chains, and structured JSON parsing", deps: ["@google/generative-ai"], state: "active", last: "anti@2026-08-25" }
 
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { buildQuestionGenerationPrompt } from './promptBuilder.service.js';
-import { createQuestionHash } from './questionHashService.js';
-import { validateGeneratedQuestion } from './questionValidationService.js';
 
 let cachedGenAI = null;
 
@@ -188,104 +185,9 @@ ${prompt}
   }
 }
 
-/**
- * Generates MCQs using Gemini API with validation and deduplication hashing.
- * 
- * @param {Object} params
- * @param {string} params.topicId - e.g., 'percentage'
- * @param {string} params.topic - e.g., 'Percentage'
- * @param {string} params.category - e.g., 'Quantitative Aptitude'
- * @param {string} params.difficulty - 'easy' | 'medium' | 'hard' | 'expert'
- * @param {number} params.count - Number of questions to generate (default: 20)
- * @returns {Promise<Array<Object>>} Array of validated question objects
- */
-export async function generateGeminiQuestions({
-  topicId = 'percentage',
-  topic = 'Percentage',
-  category = 'Quantitative Aptitude',
-  difficulty = 'medium',
-  count = 20
-} = {}) {
-  const prompt = buildQuestionGenerationPrompt({
-    topic,
-    topicId,
-    category,
-    difficulty,
-    count
-  });
-
-  const parsedData = await analyzeJSON(prompt, {
-    temperature: 0.7,
-    jsonMode: true
-  });
-
-  const rawQuestions = Array.isArray(parsedData)
-    ? parsedData
-    : (parsedData.questions || parsedData.data || []);
-
-  const validQuestions = [];
-
-  for (let i = 0; i < rawQuestions.length; i++) {
-    const item = rawQuestions[i];
-
-    let optionsList = [];
-    if (Array.isArray(item.options)) {
-      optionsList = item.options.map(opt => (typeof opt === 'string' ? opt.trim() : opt?.text || ''));
-    } else if (item.optionA && item.optionB && item.optionC && item.optionD) {
-      optionsList = [item.optionA, item.optionB, item.optionC, item.optionD].map(o => String(o).trim());
-    }
-
-    let correctIdx = 0;
-    if (typeof item.correctAnswer === 'number' && item.correctAnswer >= 0 && item.correctAnswer <= 3) {
-      correctIdx = Math.floor(item.correctAnswer);
-    } else if (typeof item.correctAnswer === 'string') {
-      const matchIdx = optionsList.findIndex(opt => opt.toLowerCase() === item.correctAnswer.toLowerCase());
-      if (matchIdx !== -1) {
-        correctIdx = matchIdx;
-      } else {
-        const parsedInt = parseInt(item.correctAnswer, 10);
-        if (!isNaN(parsedInt) && parsedInt >= 0 && parsedInt <= 3) {
-          correctIdx = parsedInt;
-        }
-      }
-    }
-
-    const questionHash = createQuestionHash(item.question || '', optionsList);
-
-    const formattedQ = {
-      id: `gemini-${topicId}-${Date.now()}-${i + 1}-${Math.random().toString(36).substr(2, 4)}`,
-      topicId: topicId,
-      topic: topic,
-      category: category,
-      difficulty: (item.difficulty || difficulty).toLowerCase(),
-      question: (item.question || '').trim(),
-      options: optionsList,
-      correctAnswer: correctIdx,
-      explanation: item.explanation || item.solution || 'Clear step-by-step logic provided.',
-      solution: item.solution || item.explanation || 'Step-by-step calculation provided.',
-      tags: item.tags || [topicId, difficulty],
-      source: 'Gemini AI Generator',
-      isActive: true,
-      questionHash
-    };
-
-    const validation = validateGeneratedQuestion(formattedQ);
-
-    if (validation.valid) {
-      validQuestions.push(formattedQ);
-    } else {
-      console.warn(`[GEMINI SERVICE] Skipping invalid question [${item.question?.substring(0, 30)}...]: ${validation.errors.join(', ')}`);
-    }
-  }
-
-  console.log(`[GEMINI SERVICE] Successfully generated ${validQuestions.length}/${rawQuestions.length} valid questions for "${topic}".`);
-  return validQuestions;
-}
-
 export default {
   getGenAIClient,
   analyzeWithGemini,
   analyzeJSON,
-  generateGeminiQuestions,
   DEFAULT_MODEL_NAMES
 };

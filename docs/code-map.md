@@ -117,7 +117,6 @@ The frontend leverages `React.lazy()` and `<React.Suspense>` for route-level cod
 - **Entry Bundle**: `dist/assets/index-*.js` (Core React layout, Dashboard, Navigation)
 - **Dynamic Feature Chunks**:
   - `dist/assets/ResumeAnalyzer-*.js` (~144 kB)
-  - `dist/assets/AptitudeDashboard-*.js` (~108 kB)
   - `dist/assets/SkillVerificationModal-*.js` (~61 kB)
   - `dist/assets/SkillGapDashboard-*.js` (~34 kB)
   - `dist/assets/JobAnalyzer-*.js` (~31 kB)

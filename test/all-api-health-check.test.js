@@ -110,17 +110,7 @@ async function runAllApiTests() {
     }
   });
 
-  // 7. Aptitude Engine
-  await testEndpoint("GET /api/aptitude/topics", async () => {
-    const res = await fetch(`${BASE_URL}/aptitude/topics`);
-    if (!res.ok) throw new Error(`Status ${res.status}`);
-    const data = await res.json();
-    if (!Array.isArray(data)) {
-      throw new Error("Topics must be an array");
-    }
-  });
-
-  // 8. Learning Roadmap Generator
+  // 7. Learning Roadmap Generator
   await testEndpoint("POST /api/roadmap/generate", async () => {
     const res = await fetch(`${BASE_URL}/roadmap/generate`, {
       method: "POST",
