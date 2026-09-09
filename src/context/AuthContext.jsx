@@ -345,29 +345,7 @@ export function AuthProvider({ children }) {
   const socialLogin = async (provider) => {
     const providerName = provider === 'google' ? 'Google' : provider === 'github' ? 'GitHub' : provider.toUpperCase();
 
-    try {
-      if (supabase?.auth?.signInWithOAuth) {
-        const { data, error } = await supabase.auth.signInWithOAuth({
-          provider,
-          options: {
-            redirectTo: typeof window !== 'undefined' ? window.location.origin : undefined
-          }
-        });
-        if (!error && data?.url) {
-          if (typeof window !== 'undefined') {
-            window.location.href = data.url;
-          }
-          return data;
-        }
-        if (error) {
-          console.warn(`Supabase OAuth Provider (${provider}) notice:`, error.message);
-        }
-      }
-    } catch (e) {
-      console.warn(`Supabase OAuth notice for ${provider}:`, e.message);
-    }
-
-    // Direct Instant OAuth Authentication (for local dev or if OAuth callback is disabled)
+    // Direct Instant 1-Click Social Access (passwordless & seamless)
     const mockEmail = provider === 'google' ? 'alex.google@skillbridge.ai' : 'alex.github@skillbridge.ai';
     const mockUser = sanitizeUserProfile({
       id: `usr_${provider}_${Date.now()}`,

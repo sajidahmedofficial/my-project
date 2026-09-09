@@ -9720,9 +9720,8 @@
       "isCustomJD": true,
       "extractedRole": "Full Stack Developer",
       "requiredSkills": [
-        "Go",
-        "React.js",
         "Node.js",
+        "React.js",
         "Express.js",
         "MongoDB",
         "Docker",
@@ -9730,46 +9729,34 @@
       ],
       "preferredSkills": [],
       "programmingLanguages": [
-        "Go",
-        "React.js",
-        "Express.js",
-        "MongoDB",
-        "Docker"
+        "Node.js",
+        "JavaScript"
       ],
       "frameworks": [
-        "Node.js"
+        "React.js",
+        "Express.js"
       ],
-      "databases": [],
-      "tools": [],
+      "databases": [
+        "MongoDB"
+      ],
+      "tools": [
+        "Docker"
+      ],
       "cloud": [
         "AWS"
       ],
       "softSkills": [],
-      "experienceRequirements": "Demonstrated production experience matching requirements"
+      "experienceRequirements": "Not specified"
     },
-    "overallMatchScore": 52,
-    "score": 52,
+    "overallMatchScore": 57,
+    "score": 57,
     "weightedSummary": {
       "weightedMatchedRequirements": 16,
-      "weightedTotalRequirements": 31,
+      "weightedTotalRequirements": 28,
       "formula": "(weightedMatchedRequirements / weightedTotalRequirements) * 100"
     },
     "priorityGaps": {
       "high": [
-        {
-          "skill": "Go",
-          "name": "Go",
-          "category": "Programming",
-          "status": "MISSING",
-          "currentLevel": 0,
-          "progress": 0,
-          "requiredLevel": 100,
-          "gapPercentage": 100,
-          "priority": "high",
-          "requirementType": "Required",
-          "evidence": [],
-          "reason": "No evidence of required skill Go found in uploaded resume."
-        },
         {
           "skill": "Express.js",
           "name": "Express.js",
@@ -9829,24 +9816,22 @@
       ],
       "medium": [],
       "low": [],
-      "highCount": 5,
+      "highCount": 4,
       "mediumCount": 0,
       "lowCount": 0
     },
     "requirementsBreakdown": {
       "required": {
-        "total": 7,
+        "total": 6,
         "skills": [
-          "Go",
-          "React.js",
           "Node.js",
+          "React.js",
           "Express.js",
           "MongoDB",
           "Docker",
           "AWS"
         ],
         "missing": [
-          "Go",
           "Express.js",
           "MongoDB",
           "Docker",
@@ -9860,7 +9845,7 @@
       }
     },
     "categoryScores": {
-      "Programming": 52,
+      "Programming": 59,
       "Frameworks": 100,
       "Cloud/DevOps": 0
     },
@@ -9967,18 +9952,6 @@
           "Detected in resume skills: Tailwind CSS"
         ],
         "reason": "Tailwind CSS listed in Technical Skills; Detected in resume skills: Tailwind CSS"
-      },
-      {
-        "name": "Go",
-        "category": "Programming",
-        "status": "missing",
-        "currentLevel": 0,
-        "requiredLevel": 100,
-        "gapPercentage": 100,
-        "priority": "high",
-        "requirementType": "Required",
-        "evidence": [],
-        "reason": "No evidence of required skill Go found in uploaded resume."
       },
       {
         "name": "Express.js",
@@ -10151,20 +10124,6 @@
     "partialSkills": [],
     "missingSkills": [
       {
-        "skill": "Go",
-        "name": "Go",
-        "category": "Programming",
-        "status": "MISSING",
-        "currentLevel": 0,
-        "progress": 0,
-        "requiredLevel": 100,
-        "gapPercentage": 100,
-        "priority": "high",
-        "requirementType": "Required",
-        "evidence": [],
-        "reason": "No evidence of required skill Go found in uploaded resume."
-      },
-      {
         "skill": "Express.js",
         "name": "Express.js",
         "category": "Programming",
@@ -10221,15 +10180,15 @@
         "reason": "No evidence of required skill AWS found in uploaded resume."
       }
     ],
-    "analyzedAt": "2026-09-08T04:41:40.986Z",
-    "savedAt": "2026-09-08T04:41:40.986Z",
-    "updatedAt": "2026-09-08T04:41:40.986Z"
+    "analyzedAt": "2026-09-09T05:47:31.996Z",
+    "savedAt": "2026-09-09T05:47:31.996Z",
+    "updatedAt": "2026-09-09T05:47:31.996Z"
   },
   {
     "createdAt": "2026-08-26T17:34:24.526Z",
     "skillGapId": "sg_guest_user_full_stack_ai_engineer",
     "userId": "guest_user",
-    "resumeId": "res_1788842498263",
+    "resumeId": "res_1788932845029",
     "targetRole": "Full Stack AI Engineer",
     "isCustomJD": false,
     "jobDescriptionAnalysis": null,
@@ -11197,9 +11156,9 @@
         "reason": "No evidence of required skill AI Prompt Engineering found in uploaded resume."
       }
     ],
-    "analyzedAt": "2026-09-08T04:41:39.673Z",
-    "savedAt": "2026-09-08T04:41:39.673Z",
-    "updatedAt": "2026-09-08T04:41:39.673Z"
+    "analyzedAt": "2026-09-09T05:47:27.399Z",
+    "savedAt": "2026-09-09T05:47:27.399Z",
+    "updatedAt": "2026-09-09T05:47:27.399Z"
   },
   {
     "createdAt": "2026-08-29T16:21:07.572Z",
