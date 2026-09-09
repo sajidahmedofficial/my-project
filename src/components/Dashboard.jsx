@@ -85,22 +85,6 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
       accent: 'bg-blue-50 text-blue-700 border-blue-200'
     },
     {
-      id: 'coding',
-      title: 'Coding Practice Lab',
-      desc: 'Interactive software engineering challenges with real-time test execution.',
-      icon: Code2,
-      tag: 'Code Runner',
-      accent: 'bg-indigo-50 text-indigo-700 border-indigo-200'
-    },
-    {
-      id: 'interview',
-      title: 'AI Mock Interview',
-      desc: 'Simulate live technical & behavioral rounds with speech evaluation.',
-      icon: Award,
-      tag: 'Live Prep',
-      accent: 'bg-purple-50 text-purple-700 border-purple-200'
-    },
-    {
       id: 'chat',
       title: 'AI Career Mentor',
       desc: '24/7 technical advisor for architecture questions, salary negotiation & career strategy.',
@@ -113,9 +97,9 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
   // Goals checklist
   const [goals, setGoals] = useState([
     { id: 1, text: 'Analyze resume against target software role', done: hasUploadedResume },
-    { id: 2, text: 'Solve 2 Medium Coding challenges in Coding Lab', done: false },
-    { id: 3, text: 'Complete Full Stack System Design roadmap stage', done: false },
-    { id: 4, text: 'Rehearse 1 Mock Technical Interview round', done: false }
+    { id: 2, text: 'Complete Full Stack System Design roadmap stage', done: false },
+    { id: 3, text: 'Verify core technical skills for certificate credentials', done: false },
+    { id: 4, text: 'Consult AI Career Mentor on portfolio & career strategy', done: false }
   ]);
 
   const toggleGoal = (id) => {

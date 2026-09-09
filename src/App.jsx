@@ -6,14 +6,12 @@ import {
   Briefcase, 
   Map, 
   MessageSquare, 
-  Award, 
   Menu,
   X,
   Bell,
   LogOut,
   LogIn,
   Sparkles,
-  Zap,
   Layers,
   ArrowRight,
   ShieldCheck,
@@ -38,8 +36,6 @@ const JobAnalyzer = React.lazy(() => import('./components/JobAnalyzer'));
 const SkillGapDashboard = React.lazy(() => import('./components/SkillGapDashboard'));
 const LearningRoadmap = React.lazy(() => import('./components/LearningRoadmap'));
 const CareerMentor = React.lazy(() => import('./components/CareerMentor'));
-const MockInterview = React.lazy(() => import('./components/MockInterview'));
-const CodingPractice = React.lazy(() => import('./components/CodingPractice'));
 const SkillVerificationModal = React.lazy(() => import('./components/resume/SkillVerificationModal'));
 
 const TabLoadingFallback = () => (
@@ -134,9 +130,7 @@ function MainLayout() {
     { id: 'resume', label: 'Resume Analyzer', icon: FileText },
     { id: 'job', label: 'Job Matrix', icon: Layers },
     { id: 'roadmap', label: 'Learning Roadmap', icon: Map },
-    { id: 'chat', label: 'Career Mentor', icon: MessageSquare },
-    { id: 'interview', label: 'Mock Interview', icon: Award },
-    { id: 'coding', label: 'Coding Practice', icon: Zap }
+    { id: 'chat', label: 'Career Mentor', icon: MessageSquare }
   ];
 
   const renderActiveView = () => {
@@ -196,18 +190,6 @@ function MainLayout() {
           </div>
           <div className={activeTab === 'chat' ? 'block' : 'hidden'}>
             <CareerMentor 
-              profile={activeProfile} 
-            />
-          </div>
-          <div className={activeTab === 'interview' ? 'block' : 'hidden'}>
-            <MockInterview 
-              profile={activeProfile} 
-              setProfile={handleProfileChange} 
-              onNavigate={setActiveTab}
-            />
-          </div>
-          <div className={activeTab === 'coding' ? 'block' : 'hidden'}>
-            <CodingPractice 
               profile={activeProfile} 
             />
           </div>
