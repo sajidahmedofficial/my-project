@@ -7,7 +7,6 @@ import {
   Map, 
   MessageSquare, 
   Award, 
-  Code,
   Menu,
   X,
   Bell,
@@ -40,7 +39,6 @@ const JobAnalyzer = React.lazy(() => import('./components/JobAnalyzer'));
 const SkillGapDashboard = React.lazy(() => import('./components/SkillGapDashboard'));
 const LearningRoadmap = React.lazy(() => import('./components/LearningRoadmap'));
 const CareerMentor = React.lazy(() => import('./components/CareerMentor'));
-const ProjectRecommender = React.lazy(() => import('./components/ProjectRecommender'));
 const MockInterview = React.lazy(() => import('./components/MockInterview'));
 const CodingPractice = React.lazy(() => import('./components/CodingPractice'));
 const AptitudeDashboard = React.lazy(() => import('./components/aptitude/AptitudeDashboard'));
@@ -139,7 +137,6 @@ function MainLayout() {
     { id: 'job', label: 'Job Matrix', icon: Layers },
     { id: 'roadmap', label: 'Learning Roadmap', icon: Map },
     { id: 'chat', label: 'Career Mentor', icon: MessageSquare },
-    { id: 'projects', label: 'Project Lab', icon: Code },
     { id: 'interview', label: 'Mock Interview', icon: Award },
     { id: 'coding', label: 'Coding Practice', icon: Zap },
     { id: 'aptitude', label: 'Aptitude Practice', icon: Brain }
@@ -202,11 +199,6 @@ function MainLayout() {
           </div>
           <div className={activeTab === 'chat' ? 'block' : 'hidden'}>
             <CareerMentor 
-              profile={activeProfile} 
-            />
-          </div>
-          <div className={activeTab === 'projects' ? 'block' : 'hidden'}>
-            <ProjectRecommender 
               profile={activeProfile} 
             />
           </div>

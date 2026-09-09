@@ -125,4 +125,3 @@ The frontend leverages `React.lazy()` and `<React.Suspense>` for route-level cod
   - `dist/assets/MockInterview-*.js` (~28 kB)
   - `dist/assets/CareerMentor-*.js` (~24 kB)
   - `dist/assets/LearningRoadmap-*.js` (~20 kB)
-  - `dist/assets/ProjectRecommender-*.js` (~9 kB)
