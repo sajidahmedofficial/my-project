@@ -1,0 +1,86 @@
+[
+  {
+    "createdAt": "2026-09-19T06:11:12.580Z",
+    "versionId": "ver_1789798272579_kqbt3",
+    "resumeId": "res_usr_1789798257224_1789798272579",
+    "userId": "usr_1789798257224",
+    "skills": [],
+    "verifiedSkills": [],
+    "analysis": null,
+    "jobMatchScore": 65,
+    "snapshotDate": "2026-09-19T06:11:12.579Z",
+    "reason": "Pre-update snapshot before verifying \"React.js\"",
+    "updatedAt": "2026-09-19T06:11:12.580Z"
+  },
+  {
+    "createdAt": "2026-09-19T06:11:46.140Z",
+    "versionId": "ver_1789798306140_vnx1z",
+    "resumeId": "res_usr_1789798257224_1789798272579",
+    "userId": "usr_1789798257224",
+    "skills": [
+      "React.js"
+    ],
+    "verifiedSkills": [
+      {
+        "skillName": "React.js",
+        "status": "Verified",
+        "verifiedDate": "2026-09-19",
+        "score": 86,
+        "certificateCode": "SBA-REACTJS-39F9FF",
+        "formattedDisplay": "React.js — Verified (86%)"
+      }
+    ],
+    "analysis": {
+      "overallMatchScore": 30,
+      "jobMatchScore": 30,
+      "verifiedSkillsCount": 1,
+      "lastRecalculatedAt": "2026-09-19T06:11:12.620Z"
+    },
+    "jobMatchScore": 30,
+    "snapshotDate": "2026-09-19T06:11:46.140Z",
+    "reason": "Pre-update snapshot before verifying \"React.js\"",
+    "updatedAt": "2026-09-19T06:11:46.140Z"
+  },
+  {
+    "createdAt": "2026-09-19T06:13:42.048Z",
+    "versionId": "ver_1789798422048_tsfi2",
+    "resumeId": "res_usr_1789798416665_1789798422048",
+    "userId": "usr_1789798416665",
+    "skills": [],
+    "verifiedSkills": [],
+    "analysis": null,
+    "jobMatchScore": 65,
+    "snapshotDate": "2026-09-19T06:13:42.048Z",
+    "reason": "Pre-update snapshot before verifying \"React.js\"",
+    "updatedAt": "2026-09-19T06:13:42.048Z"
+  },
+  {
+    "createdAt": "2026-09-19T06:13:47.785Z",
+    "versionId": "ver_1789798427785_x609e",
+    "resumeId": "res_usr_1789798416665_1789798422048",
+    "userId": "usr_1789798416665",
+    "skills": [
+      "React.js"
+    ],
+    "verifiedSkills": [
+      {
+        "skillName": "React.js",
+        "status": "Verified",
+        "verifiedDate": "2026-09-19",
+        "score": 86,
+        "certificateCode": "SBA-REACTJS-333CD8",
+        "formattedDisplay": "React.js — Verified (86%)"
+      }
+    ],
+    "analysis": {
+      "overallMatchScore": 30,
+      "jobMatchScore": 30,
+      "verifiedSkillsCount": 1,
+      "lastRecalculatedAt": "2026-09-19T06:13:42.051Z"
+    },
+    "jobMatchScore": 30,
+    "snapshotDate": "2026-09-19T06:13:47.785Z",
+    "reason": "Pre-update snapshot before verifying \"React.js\"",
+    "updatedAt": "2026-09-19T06:13:47.785Z"
+  }
+]

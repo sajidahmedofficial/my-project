@@ -1,0 +1,38 @@
+[
+  {
+    "createdAt": "2026-09-19T06:11:12.573Z",
+    "certificateId": "SBA-REACTJS-39F9FF",
+    "userId": "usr_1789798257224",
+    "userName": "SkillBridge Student",
+    "skillName": "React.js",
+    "score": 86,
+    "passingThreshold": 75,
+    "status": "verified",
+    "verificationStatus": "VERIFIED",
+    "verificationId": null,
+    "verificationHash": "d0f84c867ebcc1d76e6b07f8644ac94eec4d2d28741f5cbe62cf77e44f33dee5",
+    "filePath": "C:\\Users\\Administrator\\.gemini\\antigravity\\scratch\\skillbridge-ai\\generated\\certificates\\SBA-REACTJS-39F9FF.pdf",
+    "pdfUrl": "/api/certificates/SBA-REACTJS-39F9FF/download",
+    "issueDate": "2026-09-19T06:11:12.500Z",
+    "issuedAt": "2026-09-19T06:11:46.139Z",
+    "updatedAt": "2026-09-19T06:11:46.139Z"
+  },
+  {
+    "createdAt": "2026-09-19T06:13:40.993Z",
+    "certificateId": "SBA-REACTJS-333CD8",
+    "userId": "usr_1789798416665",
+    "userName": "SkillBridge Student",
+    "skillName": "React.js",
+    "score": 86,
+    "passingThreshold": 75,
+    "status": "verified",
+    "verificationStatus": "VERIFIED",
+    "verificationId": null,
+    "verificationHash": "2b13b5dde23d83b637bff38b29129d5a8009aef003b371e1db35249605cd5dc5",
+    "filePath": "C:\\Users\\Administrator\\.gemini\\antigravity\\scratch\\skillbridge-ai\\generated\\certificates\\SBA-REACTJS-333CD8.pdf",
+    "pdfUrl": "/api/certificates/SBA-REACTJS-333CD8/download",
+    "issueDate": "2026-09-19T06:13:40.972Z",
+    "issuedAt": "2026-09-19T06:13:47.781Z",
+    "updatedAt": "2026-09-19T06:13:47.782Z"
+  }
+]

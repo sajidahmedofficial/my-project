@@ -1,0 +1,219 @@
+// agent-notes: { ctx: "Unified Gemini AI client module with exponential backoff, model fallback chains, and structured JSON parsing", deps: ["@google/generative-ai", "dotenv"], state: "active", last: "anti@2026-09-19" }
+
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load environment variables from all possible locations
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+dotenv.config({ path: path.resolve(process.cwd(), 'frontend/.env') });
+dotenv.config();
+
+import { GoogleGenerativeAI } from '@google/generative-ai';
+
+let cachedGenAI = null;
+
+/**
+ * Gets or initializes the GoogleGenerativeAI client instance.
+ * @returns {GoogleGenerativeAI | null}
+ */
+export function getGenAIClient() {
+  const apiKey = (
+    process.env.GEMINI_API_KEY || 
+    process.env.VITE_GEMINI_API_KEY || 
+    process.env.GOOGLE_API_KEY || 
+    process.env.GOOGLE_GENERATIVE_AI_API_KEY ||
+    process.env.GEMINI_KEY ||
+    process.env.VITE_API_KEY ||
+    ''
+  ).trim();
+
+  if (!apiKey) {
+    console.warn('[GEMINI CLIENT] WARNING: GEMINI_API_KEY is not configured in backend environment.');
+    return null;
+  }
+  if (!cachedGenAI) {
+    cachedGenAI = new GoogleGenerativeAI(apiKey);
+  }
+  return cachedGenAI;
+}
+
+// Default model fallback chain with distinct models
+export const DEFAULT_MODEL_NAMES = [
+  'gemini-3.6-flash',
+  'gemini-2.5-flash',
+  'gemini-3.1-pro-preview'
+];
+
+/**
+ * Executes a Gemini prompt with automatic model fallback chain and exponential backoff retry.
+ * 
+ * @param {string} prompt - Prompt to send to Gemini
+ * @param {Object} options
+ * @param {boolean} [options.jsonMode=false] - Whether to request JSON output
+ * @param {number} [options.temperature=0.7] - Model temperature
+ * @param {string[]} [options.modelChain=DEFAULT_MODEL_NAMES] - Model names to attempt in sequence
+ * @param {number} [options.maxAttempts=1] - Max attempts per model
+ * @returns {Promise<string>} Raw text output from Gemini
+ */
+export async function analyzeWithGemini(prompt, {
+  jsonMode = false,
+  temperature = 0.7,
+  modelChain = DEFAULT_MODEL_NAMES,
+  maxAttempts = 1,
+  timeoutMs = 15000
+} = {}) {
+  const ai = getGenAIClient();
+  if (!ai) {
+    throw new Error('GEMINI_API_KEY is not configured in backend environment variables.');
+  }
+
+  for (const modelName of modelChain) {
+    let attempts = 0;
+    let backoffMs = 1000;
+
+    while (attempts < maxAttempts) {
+      try {
+        attempts++;
+        const model = ai.getGenerativeModel({ model: modelName });
+        const config = {
+          temperature
+        };
+        if (jsonMode) {
+          config.responseMimeType = 'application/json';
+        }
+
+        const callPromise = (async () => {
+          const result = await model.generateContent({
+            contents: [{ role: 'user', parts: [{ text: prompt }] }],
+            generationConfig: config
+          });
+          const response = await result.response;
+          return response.text();
+        })();
+
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error(`Gemini API request timed out after ${timeoutMs}ms`)), timeoutMs);
+        });
+
+        const text = await Promise.race([callPromise, timeoutPromise]);
+        if (text) {
+          return text;
+        }
+      } catch (err) {
+        console.warn(`[GEMINI CLIENT] Model ${modelName} attempt ${attempts}/${maxAttempts} failed: ${err.message}`);
+
+        if (
+          err.message.includes('404') || 
+          err.message.includes('not found') || 
+          err.message.includes('timed out') || 
+          err.message.includes('429') || 
+          err.message.includes('Quota') || 
+          err.message.includes('quota') || 
+          err.message.includes('Too Many Requests') ||
+          err.message.includes('503') ||
+          err.message.includes('Service Unavailable') ||
+          err.message.includes('high demand')
+        ) {
+          break;
+        }
+
+        if (attempts >= maxAttempts) {
+          break;
+        }
+
+        await new Promise(resolve => setTimeout(resolve, backoffMs));
+        backoffMs *= 2;
+      }
+    }
+  }
+
+  throw new Error('Gemini API call failed across all fallback models.');
+}
+
+/**
+ * Executes a Gemini prompt and parses the result strictly as JSON.
+ * 
+ * @param {string} prompt - Prompt to send to Gemini
+ * @param {Object} options - Options passed to analyzeWithGemini
+ * @returns {Promise<any>} Parsed JSON object
+ */
+export async function analyzeJSON(prompt, options = {}) {
+  const enhancedPrompt = `
+Return ONLY valid JSON.
+Do not use markdown formatting.
+Do not use code fences.
+
+${prompt}
+`;
+
+  try {
+    const text = await analyzeWithGemini(enhancedPrompt, {
+      ...options,
+      jsonMode: true
+    });
+
+    if (!text) return null;
+
+    try {
+      return JSON.parse(text);
+    } catch (err) {
+      const cleaned = text
+        .replace(/```json/gi, '')
+        .replace(/```/g, '')
+        .trim();
+      try {
+        return JSON.parse(cleaned);
+      } catch (err2) {
+        // Extract substring between first { and last }
+        const firstBrace = cleaned.indexOf('{');
+        const lastBrace = cleaned.lastIndexOf('}');
+        if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+          return JSON.parse(cleaned.substring(firstBrace, lastBrace + 1));
+        }
+        throw err2;
+      }
+    }
+  } catch (initialErr) {
+    // Retry once with a stricter instruction if not an auth error
+    if (initialErr.message && (initialErr.message.includes('API_KEY') || initialErr.message.includes('timed out'))) {
+      throw initialErr;
+    }
+
+    console.warn('[GEMINI CLIENT] Retrying JSON generation with stricter prompt...');
+    const retryPrompt = `
+CRITICAL: Return ONLY a raw RFC8259 valid JSON object. No explanation, no intro, no markdown.
+
+${prompt}
+`;
+    const retryText = await analyzeWithGemini(retryPrompt, {
+      ...options,
+      jsonMode: true,
+      maxAttempts: 1
+    });
+
+    if (!retryText) return null;
+    const cleaned = retryText
+      .replace(/```json/gi, '')
+      .replace(/```/g, '')
+      .trim();
+    const firstBrace = cleaned.indexOf('{');
+    const lastBrace = cleaned.lastIndexOf('}');
+    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+      return JSON.parse(cleaned.substring(firstBrace, lastBrace + 1));
+    }
+    return JSON.parse(cleaned);
+  }
+}
+
+export default {
+  getGenAIClient,
+  analyzeWithGemini,
+  analyzeJSON,
+  DEFAULT_MODEL_NAMES
+};
