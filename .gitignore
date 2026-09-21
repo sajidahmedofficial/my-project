@@ -5,3 +5,6 @@ build/
 dist/
 coverage/
 *.log
+
+# Ignore auto-generated local database files
+**/backend/data/storage/*.json
