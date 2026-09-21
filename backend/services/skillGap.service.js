@@ -763,9 +763,18 @@ Return ONLY a JSON object with this EXACT structure:
 
   // Calculate Category Breakdowns
   const categories = ["Programming", "Frameworks", "Databases", "Tools", "Cloud/DevOps", "Soft Skills"];
+  const categoryKeyMap = {
+    "Programming": "programming",
+    "Frameworks": "frameworks",
+    "Databases": "databases",
+    "Tools": "tools",
+    "Cloud/DevOps": "cloudDevOps",
+    "Soft Skills": "softSkills"
+  };
   const categoryScores = {};
 
   categories.forEach(cat => {
+    const key = categoryKeyMap[cat];
     const catSkills = finalSkills.filter(s => s.category === cat);
     if (catSkills.length > 0) {
       let catEarned = 0;
@@ -776,7 +785,12 @@ Return ONLY a JSON object with this EXACT structure:
         if (cs.status === "strong") catEarned += w * 1.0;
         else if (cs.status === "partial") catEarned += w * 0.5;
       });
-      categoryScores[cat] = catTotal > 0 ? Math.round((catEarned / catTotal) * 100) : 0;
+      categoryScores[key] = catTotal > 0 ? Math.round((catEarned / catTotal) * 100) : 0;
+    } else {
+      // No skills detected in this category — report 0, don't leave it
+      // undefined (which currently causes the frontend to silently
+      // substitute a fake hardcoded default instead of a real 0%).
+      categoryScores[key] = 0;
     }
   });
 
