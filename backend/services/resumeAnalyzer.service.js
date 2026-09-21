@@ -175,6 +175,9 @@ Extraction Rules:
 4. If the candidate is a fresher with 0 work experience or internships, return an empty experience array [].
 5. Do not invent fake companies, fake schools, or fake certifications.
 6. Return ONLY valid JSON. No markdown formatting, no explanation text, no code fences.
+7. NEVER derive firstName or lastName from the email address, username, or LinkedIn slug. Use ONLY an actual name line from the resume header. If no clear name line exists, return empty strings.
+8. Stop extracting the professional summary at the first sign of a new section — including headers like "Education", "Educational Qualification", "Academic Qualification", or table/column labels like "Institution", "% of Marks", "CGPA", "Year".
+9. Never merge two adjacent pieces of contact info (e.g. a phone number and an email) into a single field value — split them at the '@' symbol and standard phone-number boundaries.
 `;
 
   try {
@@ -320,7 +323,7 @@ function extractCandidateName(lines, text, email, linkedIn) {
   // Step B: If line scan failed, try extracting name from email address
   if (!candidateName && email) {
     let emailUser = email.split('@')[0]
-      .replace(/official|personal|mail|work|dev|pro|110|\d+/gi, '')
+      .replace(/offici?a?l|personal|mail|work|dev|pro|\d+/gi, '')
       .replace(/[._-]+/g, ' ')
       .trim();
 
@@ -421,7 +424,7 @@ function extractProfessionalSummary(text, lines) {
     const summaryLines = [];
     for (let i = summaryHeaderIndex + 1; i < Math.min(summaryHeaderIndex + 6, lines.length); i++) {
       const line = lines[i].trim();
-      if (/^(?:skills|technical\s+skills|experience|work\s+experience|education|projects)$/i.test(line)) {
+      if (/education|academic|qualification|institution|marks|grade|cgpa|gpa|skills|experience|projects|certification/i.test(line)) {
         break;
       }
       if (line) summaryLines.push(line);

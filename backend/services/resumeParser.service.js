@@ -46,7 +46,7 @@ function extractTextFromPdfStreams(buffer) {
       }
     }
 
-    return textChunks.join(" ").trim();
+    return textChunks.join("\n").trim();
   } catch (err) {
     console.warn("[Resume Parser] Stream decompression notice:", err.message);
     return "";

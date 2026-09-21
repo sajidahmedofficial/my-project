@@ -192,32 +192,13 @@ export default function OnboardingWizard({ onComplete }) {
       console.log('[OnboardingWizard] Parsed Resume Payload:', parsedAnalysis);
 
       const cand = parsedAnalysis.candidate || parsedAnalysis.data?.candidate || {};
-      
+
       let extractedFirst = cand.firstName || '';
       let extractedLast = cand.lastName || '';
       if (!extractedFirst && cand.name) {
         const parts = cand.name.split(/\s+/).filter(Boolean);
         extractedFirst = parts[0] || '';
         extractedLast = parts.slice(1).join(' ') || '';
-      }
-
-      // Apply fallback only if name is completely empty or contains exact job keywords
-      const isTitleOnly = (str) => {
-        if (!str) return false;
-        const s = str.toLowerCase().trim();
-        return ['full', 'stack', 'developer', 'engineer', 'architect', 'resume', 'candidate'].includes(s);
-      };
-
-      if (isTitleOnly(extractedFirst) || isTitleOnly(extractedLast)) {
-        if (cand.email) {
-          const emailUser = cand.email.split('@')[0]
-            .replace(/official|personal|mail|work|dev|pro|110|\d+/gi, '')
-            .replace(/[._-]+/g, ' ')
-            .trim();
-          const parts = emailUser.split(/\s+/).filter(Boolean);
-          extractedFirst = parts[0] ? parts[0].charAt(0).toUpperCase() + parts[0].slice(1).toLowerCase() : '';
-          extractedLast = parts.slice(1).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ') || '';
-        }
       }
 
       // Populate Candidate Contact Details
