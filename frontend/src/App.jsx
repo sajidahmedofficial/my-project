@@ -65,11 +65,13 @@ function MainLayout() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
-  // Automatically navigate to dashboard when user logs in / becomes authenticated
+  // Automatically navigate to dashboard and close auth modals when user logs in
   React.useEffect(() => {
     if (isAuthenticated) {
       setActiveTab('dashboard');
       setShowOnboarding(false);
+      setIsAuthModalOpen(false);
+      setIsTaskFlowAuthOpen(false);
     }
   }, [isAuthenticated]);
 
