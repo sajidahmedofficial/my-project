@@ -480,11 +480,21 @@ function MainLayout() {
               <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-indigo-600"></span>
             </button>
 
-            {/* User status */}
+            {/* User status & Logout */}
             <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
               <span className="text-xs font-medium text-slate-700 truncate max-w-[120px] sm:max-w-none">
                 {activeProfile.name?.split(' - ')[0]}
               </span>
+              {isAuthenticated && (
+                <button 
+                  onClick={logout}
+                  className="p-1.5 rounded-lg border border-slate-200 hover:border-rose-200 hover:bg-rose-50 text-slate-500 hover:text-rose-600 transition-colors flex items-center gap-1 text-[11px] font-medium"
+                  title="Sign Out"
+                >
+                  <LogOut className="w-3.5 h-3.5 text-rose-500" />
+                  <span className="hidden sm:inline">Sign Out</span>
+                </button>
+              )}
             </div>
           </div>
         </header>

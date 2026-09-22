@@ -51,30 +51,46 @@ export function AuthProvider({ children }) {
   // Sync latest user progress from Supabase on initial auth mount & listen to OAuth redirects
   useEffect(() => {
     // 1. Check active Supabase session (e.g. on return from OAuth)
-    supabase.auth.getSession().then(async ({ data: { session }, error }) => {
-      if (!error && session?.user) {
-        const u = session.user;
-        const stored = await loadUserDataFromSupabase(u.id, u.email).catch(() => null);
-        const userObj = sanitizeUserProfile({
-          ...(stored || {}),
-          id: u.id,
-          email: u.email,
-          name: stored?.name || u.user_metadata?.full_name || u.user_metadata?.name || u.email.split('@')[0],
-          college: stored?.college || u.user_metadata?.college || 'Stanford University',
-          careerGoal: stored?.careerGoal || u.user_metadata?.careerGoal || 'Full Stack AI Engineer',
-          isVerified: true
-        });
-        setCurrentUser(userObj);
-        setIsAuthenticated(true);
-        setIsOnboarded(Boolean(userObj.college && userObj.careerGoal));
-        setToken(session.access_token);
-        localStorage.setItem('sb_token', session.access_token);
-        localStorage.setItem('sb_user', JSON.stringify(userObj));
-      }
-    }).catch(e => console.warn('Supabase getSession notice:', e.message));
+    const tokenPresent = localStorage.getItem('sb_token') || sessionStorage.getItem('sb_token');
+    if (tokenPresent) {
+      supabase.auth.getSession().then(async ({ data: { session }, error }) => {
+        if (!error && session?.user) {
+          const u = session.user;
+          const stored = await loadUserDataFromSupabase(u.id, u.email).catch(() => null);
+          const userObj = sanitizeUserProfile({
+            ...(stored || {}),
+            id: u.id,
+            email: u.email,
+            name: stored?.name || u.user_metadata?.full_name || u.user_metadata?.name || u.email.split('@')[0],
+            college: stored?.college || u.user_metadata?.college || 'Stanford University',
+            careerGoal: stored?.careerGoal || u.user_metadata?.careerGoal || 'Full Stack AI Engineer',
+            isVerified: true
+          });
+          setCurrentUser(userObj);
+          setIsAuthenticated(true);
+          setIsOnboarded(Boolean(userObj.college && userObj.careerGoal));
+          setToken(session.access_token);
+          localStorage.setItem('sb_token', session.access_token);
+          localStorage.setItem('sb_user', JSON.stringify(userObj));
+        }
+      }).catch(e => console.warn('Supabase getSession notice:', e.message));
+    }
 
     // 2. Listen to Supabase auth events
-    const { data: authListener } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_OUT' || !session) {
+        // Explicitly handle sign out
+        setCurrentUser(null);
+        setIsAuthenticated(false);
+        setIsOnboarded(false);
+        setToken(null);
+        localStorage.removeItem('sb_token');
+        localStorage.removeItem('sb_user');
+        sessionStorage.removeItem('sb_token');
+        sessionStorage.removeItem('sb_user');
+        return;
+      }
+
       if (session?.user) {
         const u = session.user;
         const stored = await loadUserDataFromSupabase(u.id, u.email).catch(() => null);
@@ -97,25 +113,29 @@ export function AuthProvider({ children }) {
     });
 
     async function restoreFromSupabase() {
-      if (currentUser?.id || currentUser?.email) {
-        const remoteData = await loadUserDataFromSupabase(currentUser.id, currentUser.email);
-        if (remoteData) {
-          setCurrentUser(prev => sanitizeUserProfile({
-            ...prev,
-            ...remoteData
-          }));
-        }
+      const savedUser = localStorage.getItem('sb_user') || sessionStorage.getItem('sb_user');
+      if (savedUser) {
+        try {
+          const parsed = JSON.parse(savedUser);
+          if (parsed?.id || parsed?.email) {
+            const remoteData = await loadUserDataFromSupabase(parsed.id, parsed.email);
+            if (remoteData) {
+              setCurrentUser(prev => sanitizeUserProfile({
+                ...prev,
+                ...remoteData
+              }));
+            }
+          }
+        } catch {}
       }
     }
 
-    if (isAuthenticated) {
-      restoreFromSupabase();
-    }
+    restoreFromSupabase();
 
     return () => {
       authListener?.subscription?.unsubscribe();
     };
-  }, [isAuthenticated]);
+  }, []);
 
   const login = async (email, password, rememberMe = false) => {
     let supabaseSession = null;
@@ -426,20 +446,39 @@ export function AuthProvider({ children }) {
   };
 
   const logout = async () => {
-    try {
-      await supabase.auth.signOut();
-    } catch (e) {
-      console.warn('Supabase signout notice:', e.message);
-    }
+    // 1. Immediately purge application session & tokens
     localStorage.removeItem('sb_token');
     localStorage.removeItem('sb_user');
     localStorage.removeItem('sb_remember');
     sessionStorage.removeItem('sb_token');
     sessionStorage.removeItem('sb_user');
+
+    // 2. Purge Supabase cached internal tokens from localStorage & sessionStorage
+    try {
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('sb-') || key.startsWith('supabase.')) {
+          localStorage.removeItem(key);
+        }
+      });
+      Object.keys(sessionStorage).forEach(key => {
+        if (key.startsWith('sb-') || key.startsWith('supabase.')) {
+          sessionStorage.removeItem(key);
+        }
+      });
+    } catch {}
+
+    // 3. Update React auth states synchronously
     setToken(null);
     setCurrentUser(null);
     setIsAuthenticated(false);
     setIsOnboarded(false);
+
+    // 4. Trigger Supabase sign out
+    try {
+      await supabase.auth.signOut();
+    } catch (e) {
+      console.warn('Supabase signout notice:', e.message);
+    }
   };
 
   const updateProfile = (newProfile) => {
