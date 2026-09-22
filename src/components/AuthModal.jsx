@@ -355,23 +355,14 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
             </div>
 
             {/* Social Logins */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div className="space-y-2">
               <button
                 type="button"
                 onClick={() => handleSocialAuth('google')}
-                className="py-2 px-3 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center gap-2 transition-colors text-xs font-medium text-slate-700"
+                className="w-full py-2 px-3 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center gap-2 transition-colors text-xs font-medium text-slate-700"
               >
                 <Chrome className="w-4 h-4 text-red-500" />
-                <span>Google</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleSocialAuth('github')}
-                className="py-2 px-3 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center gap-2 transition-colors text-xs font-medium text-slate-700"
-              >
-                <Github className="w-4 h-4 text-slate-800" />
-                <span>GitHub</span>
+                <span>Continue with Google</span>
               </button>
             </div>
           </form>
@@ -457,23 +448,14 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
             </div>
 
             {/* Social Logins */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div className="space-y-2">
               <button
                 type="button"
                 onClick={() => handleSocialAuth('google')}
-                className="py-2 px-3 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center gap-2 transition-colors text-xs font-medium text-slate-700"
+                className="w-full py-2 px-3 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center gap-2 transition-colors text-xs font-medium text-slate-700"
               >
                 <Chrome className="w-4 h-4 text-red-500" />
-                <span>Google</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleSocialAuth('github')}
-                className="py-2 px-3 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center gap-2 transition-colors text-xs font-medium text-slate-700"
-              >
-                <Github className="w-4 h-4 text-slate-800" />
-                <span>GitHub</span>
+                <span>Continue with Google</span>
               </button>
             </div>
           </form>

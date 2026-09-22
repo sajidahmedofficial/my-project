@@ -363,7 +363,7 @@ export default function TaskFlowAuth({ isOpen, onClose, initialMode = 'signup', 
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div className="space-y-2.5">
               <button
                 type="button"
                 onClick={() => handleSocialAuth('google')}
@@ -371,15 +371,6 @@ export default function TaskFlowAuth({ isOpen, onClose, initialMode = 'signup', 
               >
                 <Chrome className="w-4 h-4 text-red-500" />
                 <span>Continue with Google</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleSocialAuth('github')}
-                className="w-full py-2.5 px-3 rounded-xl border border-slate-200 hover:bg-slate-50 flex items-center justify-center gap-2 transition-all font-medium text-xs text-slate-700 hover:border-slate-300 shadow-sm"
-              >
-                <Github className="w-4 h-4 text-slate-900" />
-                <span>Continue with GitHub</span>
               </button>
             </div>
           </div>

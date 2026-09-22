@@ -367,59 +367,19 @@ export function AuthProvider({ children }) {
   };
 
   const socialLogin = async (provider) => {
-    const providerName = provider === 'google' ? 'Google' : provider === 'github' ? 'GitHub' : provider.toUpperCase();
-
-    // 1. Direct Instant 1-Click Social Access (seamless, fast & zero dead-redirects)
-    const email = provider === 'google' ? 'alex.google@skillbridge.ai' : 'alex.github@skillbridge.ai';
-    const fallbackId = `usr_${provider}_${Date.now()}`;
-    const token = `token_${provider}_${Date.now()}`;
-
-    // Attempt to load existing user data if any
-    const savedData = await loadUserDataFromSupabase(fallbackId, email).catch(() => null);
-
-    const socialUser = sanitizeUserProfile({
-      ...(savedData || {}),
-      id: fallbackId,
-      email: email,
-      name: savedData?.name || `Alex Developer (${providerName})`,
-      avatar: provider === 'google'
-        ? 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'
-        : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
-      college: savedData?.college || 'SkillBridge Tech Academy',
-      degree: savedData?.degree || 'B.Tech / B.S. in Computer Science & AI',
-      department: savedData?.department || 'Computer Science & Engineering',
-      graduationYear: savedData?.graduationYear || 2027,
-      careerGoal: savedData?.careerGoal || 'Full Stack AI Engineer',
-      experienceLevel: savedData?.experienceLevel || 'Intermediate',
-      skills: savedData?.skills || ['React', 'JavaScript', 'Node.js', 'Python', 'Tailwind CSS', 'SQL', 'Git'],
-      interests: savedData?.interests || ['Artificial Intelligence', 'Full Stack Development', 'Cloud Computing'],
-      scores: savedData?.scores || {
-        skillScore: 82,
-        resumeScore: 85,
-        interviewReadiness: 78,
-        placementReadiness: 84,
-        weeklyGoalProgress: 60
-      },
-      isVerified: true
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: provider,
+      options: {
+        redirectTo: window.location.origin
+      }
     });
 
-    const storage = localStorage.getItem('sb_remember') === 'true' ? localStorage : sessionStorage;
-    storage.setItem('sb_token', token);
-    storage.setItem('sb_user', JSON.stringify(socialUser));
-    setToken(token);
-    setCurrentUser(socialUser);
-    setIsAuthenticated(true);
-    setIsOnboarded(Boolean(socialUser.college && socialUser.careerGoal));
+    if (error) {
+      console.error('Supabase OAuth error:', error.message);
+      throw new Error(`Unable to connect to ${provider === 'google' ? 'Google' : provider} at this time.`);
+    }
 
-    // Save synced user payload to Supabase & cache
-    saveUserDataToSupabase(socialUser).catch(() => {});
-
-    return {
-      success: true,
-      message: `Authenticated via ${providerName}`,
-      user: socialUser,
-      token
-    };
+    return { url: data?.url || true };
   };
 
   const completeOnboarding = async (onboardingData) => {
