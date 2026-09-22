@@ -448,6 +448,34 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
               {loading ? 'Creating account...' : 'Create Account'}
               {!loading && <ArrowRight className="w-3.5 h-3.5" />}
             </button>
+
+            <div className="relative my-3">
+              <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-100"></div></div>
+              <div className="relative flex justify-center text-[10px] uppercase text-slate-400 font-medium">
+                <span className="bg-white px-2">Or continue with</span>
+              </div>
+            </div>
+
+            {/* Social Logins */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => handleSocialAuth('google')}
+                className="py-2 px-3 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center gap-2 transition-colors text-xs font-medium text-slate-700"
+              >
+                <Chrome className="w-4 h-4 text-red-500" />
+                <span>Google</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleSocialAuth('github')}
+                className="py-2 px-3 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center gap-2 transition-colors text-xs font-medium text-slate-700"
+              >
+                <Github className="w-4 h-4 text-slate-800" />
+                <span>GitHub</span>
+              </button>
+            </div>
           </form>
         )}
 
