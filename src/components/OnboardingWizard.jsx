@@ -46,6 +46,10 @@ const CAREER_OPTIONS = [
   'Cybersecurity Specialist'
 ];
 
+import { TARGET_INDUSTRY_OPTIONS } from '../constants/industryOptions';
+
+export { TARGET_INDUSTRY_OPTIONS };
+
 export default function OnboardingWizard({ onComplete }) {
   const { currentUser, updateProfile, completeOnboarding } = useAuth();
   const fileInputRef = useRef(null);
@@ -434,6 +438,7 @@ export default function OnboardingWizard({ onComplete }) {
       department: primaryEducation.field || 'Computer Science',
       graduationYear: primaryEducation.year || 2025,
       careerGoal: targetRole,
+      targetIndustry,
       experienceLevel,
       skills: skillsList,
       education: educationList,
@@ -1109,13 +1114,13 @@ export default function OnboardingWizard({ onComplete }) {
                 <select
                   value={targetIndustry}
                   onChange={(e) => setTargetIndustry(e.target.value)}
-                  className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-[#0f766e]"
+                  className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-[#0f766e] cursor-pointer"
                 >
-                  <option value="SaaS & Cloud Computing">SaaS & Cloud Computing</option>
-                  <option value="Artificial Intelligence & ML">Artificial Intelligence & ML</option>
-                  <option value="Fintech & Banking">Fintech & Banking</option>
-                  <option value="Healthcare & BioTech">Healthcare & BioTech</option>
-                  <option value="E-Commerce & Retail">E-Commerce & Retail</option>
+                  {TARGET_INDUSTRY_OPTIONS.map(industry => (
+                    <option key={industry} value={industry}>
+                      {industry}
+                    </option>
+                  ))}
                 </select>
               </div>
 
