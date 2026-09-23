@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Clean & modern tabbed ResumeAnalyzer page with complete feature set preserved", deps: ["react", "lucide-react", "../components/resume/*", "../services/resumeApi"], state: "active", last: "anti@2026-08-08" }
+// agent-notes: { ctx: "Clean & modern tabbed ResumeAnalyzer page with complete feature set preserved", deps: ["react", "lucide-react", "../components/resume/*", "../services/resumeApi"], state: "active", last: "anti@2026-09-23" }
 import React, { useState, useEffect } from 'react';
 import { Sparkles, Eye, Download, Trophy, AlertCircle, Target, Award, LayoutGrid, Layers, RefreshCw, CheckCircle2, GraduationCap, Briefcase } from 'lucide-react';
 
@@ -142,6 +142,11 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
 
   const is100PercentComplete = skillsStatus.length > 0 && skillsStatus.every(s => s.status === 'GAINED' || s.progress === 100);
 
+  const [candidateData, setCandidateData] = useState(() => savedState?.candidateData || null);
+  const [coreCompetencies, setCoreCompetencies] = useState(() => savedState?.coreCompetencies || null);
+  const [summaryText, setSummaryText] = useState(() => savedState?.summaryText || "");
+  const [certificationsList, setCertificationsList] = useState(() => savedState?.certificationsList || []);
+
   const [apiResumeScore, setApiResumeScore] = useState(() => savedState?.apiResumeScore || null);
   const [apiAtsScore, setApiAtsScore] = useState(() => savedState?.apiAtsScore || null);
   const [apiGrammarScore, setApiGrammarScore] = useState(() => savedState?.apiGrammarScore || null);
@@ -199,6 +204,10 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
     setHasEducation(isEduFound);
     setExperienceAnalysis(analysis.experienceAnalysis || null);
     setEducationAnalysis(analysis.educationAnalysis || null);
+    setCandidateData(analysis.candidate || null);
+    setCoreCompetencies(analysis.coreCompetencies || null);
+    setSummaryText(analysis.summary || analysis.candidate?.summary || "");
+    setCertificationsList(analysis.certifications || []);
 
     if (resumeId) {
       localStorage.setItem('sb_active_resume_id', resumeId);
@@ -497,9 +506,22 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
   const handleDownload = () => {
     downloadResumeAsPdf({
       profile,
+      candidate: candidateData || { 
+        name: profile?.name, 
+        location: profile?.location, 
+        email: profile?.email, 
+        phone: profile?.phone, 
+        linkedIn: profile?.linkedin || profile?.linkedIn,
+        portfolio: profile?.portfolio || profile?.github
+      },
       skillsStatus,
       problems,
-      certificates
+      certificates,
+      education,
+      experience,
+      coreCompetencies,
+      summary: summaryText || profile?.summary,
+      certifications: certificationsList.length > 0 ? certificationsList : certificates
     });
   };
 
@@ -1052,8 +1074,15 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
       {showPreview && (
         <ResumePreview 
           profile={profile} 
+          candidate={candidateData}
           skillsStatus={skillsStatus} 
           problems={problems} 
+          certificates={certificates}
+          education={education}
+          experience={experience}
+          coreCompetencies={coreCompetencies}
+          certifications={certificationsList.length > 0 ? certificationsList : certificates}
+          summary={summaryText || profile?.summary}
           onClose={() => setShowPreview(false)} 
           onDownload={() => { setShowPreview(false); handleDownload(); }} 
         />
