@@ -19,14 +19,14 @@ import { analyzeJobDescription, detectSkillGap, extractSkillsFromText } from '..
 import { skillGapApi } from '../services/skillGapApi';
 
 const ROLE_PRESETS = {
-  fullstack: {
-    title: "Full Stack Developer",
+  fullstackAI: {
+    title: "Full Stack AI Engineer",
     skills: {
-      frontend: ["HTML", "CSS", "JavaScript", "React"],
-      backend: ["Node.js", "Express.js", "REST API", "Authentication"],
-      database: ["SQL", "MongoDB"],
-      tools: ["Git", "GitHub", "Testing"],
-      deployment: ["Docker", "AWS"],
+      frontend: ["HTML", "CSS", "JavaScript", "React", "Next.js"],
+      backend: ["Node.js", "Python", "FastAPI", "REST API"],
+      database: ["MongoDB", "PostgreSQL", "Vector DBs"],
+      tools: ["Git", "GitHub", "Docker", "Postman"],
+      deployment: ["AWS", "Vercel", "Hugging Face"],
     }
   },
   frontend: {
@@ -46,21 +46,48 @@ const ROLE_PRESETS = {
       deployment: ["AWS", "Docker", "CI/CD"],
     }
   },
-  data: {
-    title: "Data Scientist / AI Engineer",
+  fullstack: {
+    title: "Full Stack Developer",
     skills: {
-      backend: ["Python", "NumPy", "Pandas", "Scikit-Learn", "PyTorch"],
-      database: ["SQL", "PostgreSQL"],
-      tools: ["Git", "Jupyter", "Docker", "MLflow"],
-      deployment: ["AWS", "FastAPI"],
+      frontend: ["HTML", "CSS", "JavaScript", "React"],
+      backend: ["Node.js", "Express.js", "REST API", "Authentication"],
+      database: ["SQL", "MongoDB"],
+      tools: ["Git", "GitHub", "Testing"],
+      deployment: ["Docker", "AWS"],
+    }
+  },
+  datascientist: {
+    title: "Data Scientist",
+    skills: {
+      backend: ["Python", "NumPy", "Pandas", "Scikit-Learn", "R", "Statistics"],
+      database: ["SQL", "PostgreSQL", "BigQuery"],
+      tools: ["Git", "Jupyter", "Tableau", "Power BI"],
+      deployment: ["AWS", "Docker"],
+    }
+  },
+  aiengineer: {
+    title: "AI Engineer",
+    skills: {
+      backend: ["Python", "PyTorch", "TensorFlow", "Hugging Face", "LangChain", "FastAPI"],
+      database: ["Vector DBs", "Pinecone", "ChromaDB", "PostgreSQL"],
+      tools: ["Git", "Docker", "MLflow", "CUDA"],
+      deployment: ["AWS", "GCP", "Kubernetes"],
     }
   },
   devops: {
-    title: "DevOps & Cloud Engineer",
+    title: "DevOps Engineer",
     skills: {
-      backend: ["Linux", "Bash", "Python"],
-      tools: ["Git", "GitHub Actions", "Terraform", "Ansible"],
-      deployment: ["Docker", "Kubernetes", "AWS", "GCP", "CI/CD"],
+      backend: ["Linux", "Bash", "Python", "Go"],
+      tools: ["Git", "GitHub Actions", "Terraform", "Ansible", "Prometheus", "Grafana"],
+      deployment: ["Docker", "Kubernetes", "AWS", "CI/CD"],
+    }
+  },
+  cloud: {
+    title: "Cloud Engineer",
+    skills: {
+      backend: ["Linux", "Bash", "Python", "Networking / VPC"],
+      tools: ["Git", "Terraform", "CloudFormation", "CloudWatch"],
+      deployment: ["AWS", "Azure", "GCP", "Docker", "IAM"],
     }
   }
 };

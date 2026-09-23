@@ -36,9 +36,12 @@ import SkillGapDashboard from './SkillGapDashboard';
 const CAREER_OPTIONS = [
   'Full Stack AI Engineer',
   'Frontend Developer',
-  'Backend Cloud Engineer',
-  'Data Scientist & ML Engineer',
-  'DevOps & Cloud Architect',
+  'Backend Engineer',
+  'Full Stack Developer',
+  'Data Scientist',
+  'AI Engineer',
+  'DevOps Engineer',
+  'Cloud Engineer',
   'Mobile App Developer',
   'Cybersecurity Specialist'
 ];

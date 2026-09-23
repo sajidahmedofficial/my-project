@@ -198,6 +198,97 @@ export const ROLE_TAXONOMY = {
       "REST API": "medium"
     }
   },
+  "Data Scientist": {
+    category: "Data Science & Analytics",
+    coreSkills: {
+      Programming: ["Python", "SQL", "R"],
+      Frameworks: ["Pandas", "NumPy", "Scikit-Learn", "Matplotlib", "Seaborn"],
+      Databases: ["PostgreSQL", "MongoDB", "BigQuery", "Snowflake"],
+      Tools: ["Git", "Jupyter", "Tableau", "Power BI"],
+      "Cloud/DevOps": ["AWS", "Docker"],
+      "Soft Skills": ["Analytical Thinking", "Statistical Modeling", "Data Storytelling"]
+    },
+    priorities: {
+      "Python": "high",
+      "SQL": "high",
+      "Pandas": "high",
+      "NumPy": "high",
+      "Scikit-Learn": "high",
+      "Jupyter": "high",
+      "Tableau": "medium",
+      "R": "medium",
+      "Docker": "medium",
+      "Git": "medium"
+    }
+  },
+  "AI Engineer": {
+    category: "Artificial Intelligence & Deep Learning",
+    coreSkills: {
+      Programming: ["Python", "SQL", "C++"],
+      Frameworks: ["PyTorch", "TensorFlow", "Hugging Face", "LangChain", "FastAPI"],
+      Databases: ["Vector DBs", "Pinecone", "ChromaDB", "PostgreSQL"],
+      Tools: ["Git", "Docker", "MLflow", "Postman", "CUDA"],
+      "Cloud/DevOps": ["AWS", "GCP", "Kubernetes"],
+      "Soft Skills": ["Prompt Engineering", "Problem Solving", "Model Evaluation"]
+    },
+    priorities: {
+      "Python": "high",
+      "PyTorch": "high",
+      "TensorFlow": "high",
+      "Vector DBs": "high",
+      "Hugging Face": "high",
+      "LangChain": "high",
+      "FastAPI": "medium",
+      "Docker": "medium",
+      "MLflow": "medium",
+      "Git": "high"
+    }
+  },
+  "DevOps Engineer": {
+    category: "DevOps & CI/CD",
+    coreSkills: {
+      Programming: ["Bash / Shell", "Python", "Go"],
+      Frameworks: ["Terraform", "Ansible", "Helm"],
+      Databases: ["PostgreSQL", "Redis"],
+      Tools: ["Git", "Linux", "Prometheus", "Grafana", "Jenkins"],
+      "Cloud/DevOps": ["Docker", "Kubernetes", "GitHub Actions", "CI/CD", "AWS"],
+      "Soft Skills": ["Incident Response", "Site Reliability", "Automation"]
+    },
+    priorities: {
+      "Docker": "high",
+      "Kubernetes": "high",
+      "CI/CD": "high",
+      "GitHub Actions": "high",
+      "Linux": "high",
+      "Terraform": "high",
+      "Git": "high",
+      "Bash / Shell": "high",
+      "AWS": "medium"
+    }
+  },
+  "Cloud Engineer": {
+    category: "Cloud Infrastructure & Systems",
+    coreSkills: {
+      Programming: ["Python", "Bash / Shell", "YAML"],
+      Frameworks: ["Terraform", "CloudFormation"],
+      Databases: ["DynamoDB", "Aurora", "PostgreSQL", "Redis"],
+      Tools: ["Git", "Linux", "CloudWatch", "Datadog"],
+      "Cloud/DevOps": ["AWS", "Azure", "GCP", "Docker", "Networking / VPC", "IAM"],
+      "Soft Skills": ["Cloud Security", "Cost Optimization", "High Availability"]
+    },
+    priorities: {
+      "AWS": "high",
+      "Docker": "high",
+      "Linux": "high",
+      "Terraform": "high",
+      "Networking / VPC": "high",
+      "IAM": "high",
+      "Azure": "medium",
+      "GCP": "medium",
+      "Git": "medium",
+      "CI/CD": "medium"
+    }
+  },
   "Data Scientist / AI Engineer": {
     category: "Data Science & AI",
     coreSkills: {

@@ -24,8 +24,10 @@ const TARGET_ROLE_OPTIONS = [
   "Frontend Developer",
   "Backend Engineer",
   "Full Stack Developer",
-  "Data Scientist / AI Engineer",
-  "DevOps & Cloud Engineer"
+  "Data Scientist",
+  "AI Engineer",
+  "DevOps Engineer",
+  "Cloud Engineer"
 ];
 
 export default function SkillGapDashboard({ 
