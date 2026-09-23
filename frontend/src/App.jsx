@@ -48,7 +48,7 @@ const TabLoadingFallback = () => (
 import { RESUME_PRESETS } from './utils/mockData';
 
 function MainLayout() {
-  const { currentUser, isAuthenticated, isOnboarded, logout, updateProfile } = useAuth();
+  const { currentUser, isAuthenticated, isOnboarded, logout, updateProfile, isLoading } = useAuth();
   
   const [activeTab, setActiveTab] = useState('dashboard');
   const [missingSkillsList, setMissingSkillsList] = useState([]);
@@ -207,6 +207,22 @@ function MainLayout() {
       </React.Suspense>
     );
   };
+
+  // Loading state while verifying authentication session
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#fafafa] flex flex-col items-center justify-center p-6 text-slate-900">
+        <div className="flex items-center gap-2.5 mb-6">
+          <div className="w-10 h-10 rounded-xl bg-[#0f766e] flex items-center justify-center text-white font-black text-base shadow-sm">
+            <span>SB</span>
+          </div>
+          <span className="font-extrabold text-slate-900 text-xl tracking-tight">Skill<span className="text-[#0f766e]">Bridge</span></span>
+        </div>
+        <div className="w-8 h-8 rounded-full border-2 border-[#0f766e] border-t-transparent animate-spin mb-4" />
+        <p className="text-sm font-medium text-slate-600">Verifying authentication & loading dashboard...</p>
+      </div>
+    );
+  }
 
   // Unauthenticated Hero & Landing Section
   if (!isAuthenticated) {

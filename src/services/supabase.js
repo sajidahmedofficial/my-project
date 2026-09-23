@@ -1,5 +1,5 @@
-// agent-notes: { ctx: "Supabase client initialization for authentication & data storage with DNS resilience and connection health check", deps: ["@supabase/supabase-js"], state: "active", last: "anti@2026-09-22" }
-
+// agent-notes: { ctx: "Supabase client initialization for authentication & data storage with session detection enabled", deps: ["@supabase/supabase-js"], state: "active", last: "sato@2026-09-23" }
+ 
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://smkumtajiuxmaogfbtnq.supabase.co';
@@ -9,7 +9,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
-    detectSessionInUrl: false
+    detectSessionInUrl: true
   }
 });
 

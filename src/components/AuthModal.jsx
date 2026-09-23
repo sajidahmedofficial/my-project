@@ -125,6 +125,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
     try {
       const res = await socialLogin(provider);
       if (res?.url) {
+        setSuccessMsg(`Connecting to ${provider === 'google' ? 'Google' : provider}...`);
         return;
       }
       setSuccessMsg(`Authenticated via ${provider === 'google' ? 'Google' : provider === 'github' ? 'GitHub' : provider.toUpperCase()}! Redirecting to Dashboard...`);
@@ -134,7 +135,6 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
       }, 500);
     } catch (err) {
       setErrorMsg(err.message || `Failed to authenticate with ${provider}.`);
-    } finally {
       setLoading(false);
     }
   };

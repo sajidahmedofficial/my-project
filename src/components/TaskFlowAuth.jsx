@@ -203,6 +203,7 @@ export default function TaskFlowAuth({ isOpen, onClose, initialMode = 'signup', 
     try {
       const res = await socialLogin(provider);
       if (res?.url) {
+        setSuccessMsg(`Connecting to ${provider === 'google' ? 'Google' : provider}...`);
         return;
       }
       setSuccessMsg(`Authenticated via ${provider === 'google' ? 'Google' : provider === 'github' ? 'GitHub' : provider.toUpperCase()}!`);
@@ -213,7 +214,6 @@ export default function TaskFlowAuth({ isOpen, onClose, initialMode = 'signup', 
     } catch (err) {
       console.error('Social auth error:', err);
       setErrorMsg(`Failed to connect with ${provider}.`);
-    } finally {
       setLoading(false);
     }
   };
