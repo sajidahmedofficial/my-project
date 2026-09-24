@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Main App Component with clean, minimal SaaS visual design (Linear/Stripe/Vercel style) and unified navigation", deps: ["lucide-react", "./context/AuthContext", "./components/common/AIAssistantAvatar", "./components/common/CartoonDecorations"], state: "active", last: "anti@2026-08-27" }
+// agent-notes: { ctx: "Main App Component with clean, minimal SaaS visual design (Linear/Stripe/Vercel style), unified navigation and preserved active tab on login", deps: ["lucide-react", "./context/AuthContext", "./components/common/AIAssistantAvatar", "./components/common/CartoonDecorations"], state: "active", last: "sato@2026-09-24" }
 import React, { useState } from 'react';
 import { 
   LayoutDashboard, 
@@ -65,10 +65,10 @@ function MainLayout() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
-  // Automatically navigate to dashboard and close auth modals when user logs in
+  // Automatically close auth modals and ensure active tab is set when user logs in
   React.useEffect(() => {
     if (isAuthenticated) {
-      setActiveTab('dashboard');
+      setActiveTab((prev) => (prev ? prev : 'dashboard'));
       setShowOnboarding(false);
       setIsAuthModalOpen(false);
       setIsTaskFlowAuthOpen(false);
