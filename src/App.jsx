@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Main App Component with clean, minimal SaaS visual design (Linear/Stripe/Vercel style), unified navigation and preserved active tab on login", deps: ["lucide-react", "./context/AuthContext", "./components/common/AIAssistantAvatar", "./components/common/CartoonDecorations"], state: "active", last: "sato@2026-09-24" }
+// agent-notes: { ctx: "Main App Component with clean, minimal SaaS visual design (Linear/Stripe/Vercel style), unified navigation and preserved active tab on login", deps: ["lucide-react", "./context/AuthContext", "./components/common/AIAssistantAvatar", "./components/common/CartoonDecorations"], state: "active", last: "sato@2026-09-25" }
 import React, { useState } from 'react';
 import { 
   LayoutDashboard, 
@@ -17,7 +17,8 @@ import {
   ShieldCheck,
   ChevronRight,
   User,
-  CheckCircle2
+  CheckCircle2,
+  ChevronDown
 } from 'lucide-react';
 
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -56,6 +57,7 @@ function MainLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [globalVerifyingSkill, setGlobalVerifyingSkill] = useState(null);
   const [avatarState, setAvatarState] = useState('idle');
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   // Modals & Overlays
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -156,6 +158,7 @@ function MainLayout() {
               setProfile={handleProfileChange} 
               onNavigate={setActiveTab} 
               onOpenVerification={handleOpenGlobalVerification}
+              onLogout={logout}
             />
           </div>
           <div className={activeTab === 'skillgap' ? 'block' : 'hidden'}>
@@ -439,24 +442,24 @@ function MainLayout() {
                 {activeProfile.careerGoal || 'Frontend Developer'}
               </span>
             </div>
-            
-            {isAuthenticated && (
-              <button 
-                onClick={logout}
-                className="p-1.5 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
-                title="Log Out"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-              </button>
-            )}
           </div>
 
-          <button
-            onClick={() => setShowOnboarding(true)}
-            className="w-full py-1.5 px-2.5 rounded-md bg-white hover:bg-slate-50 border border-slate-200 text-xs font-medium text-slate-700 flex items-center justify-center gap-1.5 transition-colors"
-          >
-            <Sparkles className="w-3 h-3 text-indigo-600" /> Edit Profile Setup
-          </button>
+          <div className="grid grid-cols-2 gap-1.5">
+            <button
+              onClick={() => setShowOnboarding(true)}
+              className="py-1.5 px-2 rounded-md bg-white hover:bg-slate-50 border border-slate-200 text-[11px] font-medium text-slate-700 flex items-center justify-center gap-1 transition-colors"
+              title="Edit Profile Setup"
+            >
+              <Sparkles className="w-3 h-3 text-indigo-600" /> Edit Profile
+            </button>
+            <button
+              onClick={logout}
+              className="py-1.5 px-2 rounded-md bg-rose-50 hover:bg-rose-100 border border-rose-200 text-[11px] font-semibold text-rose-700 flex items-center justify-center gap-1 transition-colors"
+              title="Log Out of SkillBridge"
+            >
+              <LogOut className="w-3 h-3 text-rose-600" /> Log Out
+            </button>
+          </div>
         </div>
       </aside>
 
@@ -499,19 +502,85 @@ function MainLayout() {
             </button>
 
             {/* User status & Logout */}
-            <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
-              <span className="text-xs font-medium text-slate-700 truncate max-w-[120px] sm:max-w-none">
-                {activeProfile.name?.split(' - ')[0]}
-              </span>
-              {isAuthenticated && (
-                <button 
-                  onClick={logout}
-                  className="p-1.5 rounded-lg border border-slate-200 hover:border-rose-200 hover:bg-rose-50 text-slate-500 hover:text-rose-600 transition-colors flex items-center gap-1 text-[11px] font-medium"
-                  title="Sign Out"
-                >
-                  <LogOut className="w-3.5 h-3.5 text-rose-500" />
-                  <span className="hidden sm:inline">Sign Out</span>
-                </button>
+            <div className="relative flex items-center gap-2 pl-2 border-l border-slate-200">
+              {/* Account Dropdown Trigger */}
+              <button 
+                onClick={() => setIsUserMenuOpen(prev => !prev)}
+                className="flex items-center gap-2 p-1 rounded-lg hover:bg-slate-50 transition-colors text-left"
+                title="Account Menu"
+              >
+                <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-[#0f766e] to-indigo-600 text-white flex items-center justify-center text-xs font-bold shadow-xs">
+                  {activeProfile.name ? activeProfile.name.charAt(0).toUpperCase() : 'U'}
+                </div>
+                <div className="hidden lg:block text-left">
+                  <span className="text-xs font-semibold text-slate-800 block truncate max-w-[110px]">
+                    {activeProfile.name?.split(' - ')[0] || 'User'}
+                  </span>
+                  <span className="text-[10px] text-slate-400 block truncate max-w-[110px]">
+                    {activeProfile.careerGoal || 'Student'}
+                  </span>
+                </div>
+                <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+              </button>
+
+              {/* Direct Visible Logout Button */}
+              <button 
+                onClick={logout}
+                className="px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 hover:text-rose-800 transition-colors flex items-center gap-1.5 text-xs font-semibold shadow-xs"
+                title="Log Out of your account"
+              >
+                <LogOut className="w-3.5 h-3.5 text-rose-600" />
+                <span>Log Out</span>
+              </button>
+
+              {/* User Dropdown Popover */}
+              {isUserMenuOpen && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-40" 
+                    onClick={() => setIsUserMenuOpen(false)} 
+                  />
+                  <div className="absolute right-0 top-full mt-2 w-64 rounded-xl bg-white border border-slate-200 shadow-xl py-2 z-50 animate-in fade-in zoom-in-95 duration-100">
+                    <div className="px-4 py-3 border-b border-slate-100">
+                      <p className="text-xs font-bold text-slate-900 truncate">
+                        {activeProfile.name}
+                      </p>
+                      <p className="text-[11px] text-slate-500 truncate">
+                        {activeProfile.email || 'student@skillbridge.ai'}
+                      </p>
+                      <div className="mt-1.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-medium border border-emerald-200/60">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                        <span>{activeProfile.careerGoal || 'Frontend Developer'}</span>
+                      </div>
+                    </div>
+
+                    <div className="p-1 space-y-0.5">
+                      <button
+                        onClick={() => {
+                          setShowOnboarding(true);
+                          setIsUserMenuOpen(false);
+                        }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-slate-700 hover:bg-slate-50 transition-colors"
+                      >
+                        <User className="w-4 h-4 text-slate-400" />
+                        <span>Profile & Career Setup</span>
+                      </button>
+                    </div>
+
+                    <div className="pt-1 mt-1 border-t border-slate-100 p-1">
+                      <button
+                        onClick={() => {
+                          setIsUserMenuOpen(false);
+                          logout();
+                        }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-rose-700 hover:bg-rose-50 transition-colors"
+                      >
+                        <LogOut className="w-4 h-4 text-rose-600" />
+                        <span>Log Out</span>
+                      </button>
+                    </div>
+                  </div>
+                </>
               )}
             </div>
           </div>

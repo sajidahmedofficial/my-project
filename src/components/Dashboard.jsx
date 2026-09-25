@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "SkillBridge career dashboard with hero skill gap card, career benchmarks & software engineering tools", deps: ["lucide-react", "recharts", "./common/AIAssistantAvatar"], state: "active", last: "anti@2026-08-29" }
+// agent-notes: { ctx: "SkillBridge career dashboard with hero skill gap card, career benchmarks & software engineering tools", deps: ["lucide-react", "recharts", "./common/AIAssistantAvatar"], state: "active", last: "sato@2026-09-25" }
 
 import React, { useState } from 'react';
 import { 
@@ -22,7 +22,8 @@ import {
   Terminal,
   Cpu,
   Database,
-  Cloud
+  Cloud,
+  LogOut
 } from 'lucide-react';
 import { 
   AreaChart, 
@@ -35,7 +36,7 @@ import {
 } from 'recharts';
 import AIAssistantAvatar from './common/AIAssistantAvatar';
 
-export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerification }) {
+export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerification, onLogout }) {
   const hasUploadedResume = Boolean(profile?.hasUploadedResume || profile?.resumeId);
   const [avatarState, setAvatarState] = useState('idle');
   const [selectedRole, setSelectedRole] = useState(
@@ -117,10 +118,23 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
           
           {/* Left Column Text & CTAs */}
           <div className="lg:col-span-7 space-y-5">
-            {/* Pill Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#d5f5e9] border border-[#aeead4] text-[#0f766e] text-xs font-semibold tracking-wide">
-              <Sparkles className="w-3.5 h-3.5 text-[#0f766e]" />
-              <span>AI-Powered Career Growth</span>
+            {/* Top Badge & Page Logout Option */}
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#d5f5e9] border border-[#aeead4] text-[#0f766e] text-xs font-semibold tracking-wide">
+                <Sparkles className="w-3.5 h-3.5 text-[#0f766e]" />
+                <span>AI-Powered Career Growth</span>
+              </div>
+
+              {onLogout && (
+                <button
+                  onClick={onLogout}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-rose-50 border border-slate-200 hover:border-rose-200 text-slate-600 hover:text-rose-600 text-xs font-semibold shadow-xs transition-all"
+                  title="Log out of SkillBridge"
+                >
+                  <LogOut className="w-3.5 h-3.5 text-rose-500" />
+                  <span>Log Out</span>
+                </button>
+              )}
             </div>
 
             {/* Main Headline */}
