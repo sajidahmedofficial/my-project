@@ -32,7 +32,6 @@ import Dashboard from './components/Dashboard';
 
 // Dynamic lazy route imports for optimal bundle splitting
 const ResumeAnalyzer = React.lazy(() => import('./pages/ResumeAnalyzer'));
-const JobAnalyzer = React.lazy(() => import('./components/JobAnalyzer'));
 const SkillGapDashboard = React.lazy(() => import('./components/SkillGapDashboard'));
 const LearningRoadmap = React.lazy(() => import('./components/LearningRoadmap'));
 const CareerMentor = React.lazy(() => import('./components/CareerMentor'));
@@ -130,7 +129,6 @@ function MainLayout() {
     { id: 'wizard', label: 'Profile Setup', icon: User },
     { id: 'skillgap', label: 'Skill Gap Analysis', icon: Briefcase },
     { id: 'resume', label: 'Resume Analyzer', icon: FileText },
-    { id: 'job', label: 'Job Matrix', icon: Layers },
     { id: 'roadmap', label: 'Learning Roadmap', icon: Map },
     { id: 'chat', label: 'Career Mentor', icon: MessageSquare }
   ];
@@ -172,14 +170,6 @@ function MainLayout() {
               profile={activeProfile} 
               setProfile={handleProfileChange} 
               onNavigate={setActiveTab}
-            />
-          </div>
-          <div className={activeTab === 'job' ? 'block' : 'hidden'}>
-            <JobAnalyzer 
-              profile={activeProfile}
-              onGenerateRoadmap={handleGenerateRoadmap}
-              onNavigate={setActiveTab}
-              onOpenVerification={handleOpenGlobalVerification}
             />
           </div>
           <div className={activeTab === 'roadmap' ? 'block' : 'hidden'}>

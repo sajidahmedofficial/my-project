@@ -158,11 +158,11 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
               </button>
 
               <button
-                onClick={() => onNavigate('job')}
+                onClick={() => onNavigate('skillgap')}
                 className="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-sm font-medium transition-all"
               >
-                <Layers className="w-4 h-4 text-[#0d594f]" />
-                <span>Explore Role Matrix</span>
+                <Briefcase className="w-4 h-4 text-[#0d594f]" />
+                <span>Explore Skill Gap</span>
               </button>
             </div>
           </div>

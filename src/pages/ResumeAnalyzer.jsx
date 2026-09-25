@@ -970,7 +970,7 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
                 <>
                   <SkillGap 
                     skillsStatus={skillsStatus} 
-                    onOpenSkillBridge={() => onNavigate && onNavigate('job')} 
+                    onOpenSkillBridge={() => onNavigate && onNavigate('skillgap')} 
                     onOpenVerification={handleOpenVerification}
                   />
                   <SkillBridgeProgress 
@@ -1043,7 +1043,7 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
 
               <ResumeProblems problems={problems} onApplyFix={handleApplyFix} />
               
-              <SkillGap skillsStatus={skillsStatus} onOpenSkillBridge={() => onNavigate && onNavigate('job')} />
+              <SkillGap skillsStatus={skillsStatus} onOpenSkillBridge={() => onNavigate && onNavigate('skillgap')} />
               
               <SkillBridgeProgress 
                 skillsStatus={skillsStatus} 
