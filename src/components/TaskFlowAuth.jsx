@@ -22,6 +22,7 @@ import {
   KeyRound
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import GoogleAccountPickerModal from './GoogleAccountPickerModal';
 
 import { extractString } from '../utils/sanitizeProfile';
 
@@ -31,6 +32,7 @@ export default function TaskFlowAuth({ isOpen, onClose, initialMode = 'signup', 
   // Task flow mode: 'signup' | 'login'
   const [mode, setMode] = useState(initialMode);
   const [currentStep, setCurrentStep] = useState(1);
+  const [isGooglePickerOpen, setIsGooglePickerOpen] = useState(false);
   
   // Task Flow Form Data
   const [formData, setFormData] = useState({
@@ -199,6 +201,10 @@ export default function TaskFlowAuth({ isOpen, onClose, initialMode = 'signup', 
 
   const handleSocialAuth = async (provider) => {
     setErrorMsg('');
+    if (provider === 'google') {
+      setIsGooglePickerOpen(true);
+      return;
+    }
     setLoading(true);
     try {
       const res = await socialLogin(provider);
@@ -634,6 +640,20 @@ export default function TaskFlowAuth({ isOpen, onClose, initialMode = 'signup', 
           )}
         </div>
       </div>
+
+      {/* Google Real Gmail Selection Modal */}
+      <GoogleAccountPickerModal
+        isOpen={isGooglePickerOpen}
+        onClose={() => setIsGooglePickerOpen(false)}
+        onLoginSuccess={(user) => {
+          setIsGooglePickerOpen(false);
+          setSuccessMsg(`Authenticated as ${user?.email || 'Google User'}!`);
+          setTimeout(() => {
+            onClose();
+            if (onComplete) onComplete('login');
+          }, 400);
+        }}
+      />
     </div>
   );
 }

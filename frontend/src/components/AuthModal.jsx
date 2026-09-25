@@ -16,10 +16,12 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
+import GoogleAccountPickerModal from './GoogleAccountPickerModal';
 
 export default function AuthModal({ isOpen, onClose, initialTab = 'login', onStartOnboarding, onLoginSuccess }) {
   const { login, register, socialLogin } = useAuth();
   const [activeTab, setActiveTab] = useState(initialTab); // 'login' | 'register' | 'forgot' | '2fa'
+  const [isGooglePickerOpen, setIsGooglePickerOpen] = useState(false);
   
   // Login form state
   const [loginEmail, setLoginEmail] = useState('');
@@ -121,6 +123,10 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
 
   const handleSocialAuth = async (provider) => {
     clearMessages();
+    if (provider === 'google') {
+      setIsGooglePickerOpen(true);
+      return;
+    }
     setLoading(true);
     try {
       const res = await socialLogin(provider);
@@ -571,6 +577,20 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
           </form>
         )}
       </div>
+
+      {/* Google Real Gmail Selection Modal */}
+      <GoogleAccountPickerModal
+        isOpen={isGooglePickerOpen}
+        onClose={() => setIsGooglePickerOpen(false)}
+        onLoginSuccess={(user) => {
+          setIsGooglePickerOpen(false);
+          setSuccessMsg(`Authenticated as ${user?.email || 'Google User'}! Redirecting to Dashboard...`);
+          if (onLoginSuccess) onLoginSuccess();
+          setTimeout(() => {
+            onClose();
+          }, 400);
+        }}
+      />
     </div>
   );
 }

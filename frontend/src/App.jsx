@@ -435,6 +435,11 @@ function MainLayout() {
               <span className="text-xs font-semibold text-slate-900 block truncate">
                 {activeProfile.name?.split(' - ')[0] || 'User Profile'}
               </span>
+              {activeProfile.email && (
+                <span className="text-[10px] text-teal-700 font-semibold block truncate">
+                  {activeProfile.email}
+                </span>
+              )}
               <span className="text-[11px] text-slate-500 font-normal block truncate">
                 {activeProfile.careerGoal || 'Frontend Developer'}
               </span>
@@ -499,10 +504,17 @@ function MainLayout() {
             </button>
 
             {/* User status & Logout */}
-            <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
-              <span className="text-xs font-medium text-slate-700 truncate max-w-[120px] sm:max-w-none">
-                {activeProfile.name?.split(' - ')[0]}
-              </span>
+            <div className="flex items-center gap-2.5 pl-2 border-l border-slate-200">
+              <div className="flex flex-col items-end">
+                <span className="text-xs font-semibold text-slate-800 truncate max-w-[130px] sm:max-w-none">
+                  {activeProfile.name?.split(' - ')[0]}
+                </span>
+                {activeProfile.email && (
+                  <span className="text-[10px] text-teal-700 font-medium truncate max-w-[150px] sm:max-w-none">
+                    {activeProfile.email}
+                  </span>
+                )}
+              </div>
               {isAuthenticated && (
                 <button 
                   onClick={logout}

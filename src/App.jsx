@@ -438,6 +438,11 @@ function MainLayout() {
               <span className="text-xs font-semibold text-slate-900 block truncate">
                 {activeProfile.name?.split(' - ')[0] || 'User Profile'}
               </span>
+              {activeProfile.email && (
+                <span className="text-[10px] text-teal-700 font-semibold block truncate">
+                  {activeProfile.email}
+                </span>
+              )}
               <span className="text-[11px] text-slate-500 font-normal block truncate">
                 {activeProfile.careerGoal || 'Frontend Developer'}
               </span>
@@ -513,12 +518,18 @@ function MainLayout() {
                   {activeProfile.name ? activeProfile.name.charAt(0).toUpperCase() : 'U'}
                 </div>
                 <div className="hidden lg:block text-left">
-                  <span className="text-xs font-semibold text-slate-800 block truncate max-w-[110px]">
+                  <span className="text-xs font-semibold text-slate-800 block truncate max-w-[120px]">
                     {activeProfile.name?.split(' - ')[0] || 'User'}
                   </span>
-                  <span className="text-[10px] text-slate-400 block truncate max-w-[110px]">
-                    {activeProfile.careerGoal || 'Student'}
-                  </span>
+                  {activeProfile.email ? (
+                    <span className="text-[10px] text-teal-700 font-medium block truncate max-w-[120px]">
+                      {activeProfile.email}
+                    </span>
+                  ) : (
+                    <span className="text-[10px] text-slate-400 block truncate max-w-[120px]">
+                      {activeProfile.careerGoal || 'Student'}
+                    </span>
+                  )}
                 </div>
                 <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
               </button>
