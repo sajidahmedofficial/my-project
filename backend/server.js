@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Main Express API server with MongoDB connection, CORS, health check, and route mounts", deps: ["dotenv", "express", "cors", "mongoose", "./routes/*"], state: "active", last: "anti@2026-08-25" }
+// agent-notes: { ctx: "Main Express API server with MongoDB connection, CORS, health check, and route mounts", deps: ["dotenv", "express", "cors", "mongoose", "./routes/*", "../lib/extractName.js"], state: "active", last: "anti@2026-09-30" }
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -15,6 +15,7 @@ import skillGapRoutes from './routes/skillGap.routes.js';
 import aiRoutes from './routes/ai.js';
 import { checkSupabaseConnection } from './services/supabase.service.js';
 import { aiRateLimiter } from './middleware/rateLimiter.js';
+import { extractContact } from '../lib/extractName.js';
 
 const app = express();
 
@@ -76,6 +77,22 @@ app.use(
 );
 
 app.use(express.json());
+
+// Contact and Name extraction endpoint
+const handleParseResume = async (req, res) => {
+  try {
+    const { resumeText } = req.body || {};
+    const contact = await extractContact(resumeText || "");
+    return res.json(contact);
+  } catch (err) {
+    return res.status(500).json({
+      error: err.message || "Failed to extract contact information"
+    });
+  }
+};
+
+app.post("/api/parse-resume", handleParseResume);
+app.post("/parse-resume", handleParseResume);
 
 // Standard API routes
 app.use("/api/auth", authRoutes);

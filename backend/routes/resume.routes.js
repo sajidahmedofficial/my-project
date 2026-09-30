@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Express router handling multer resume uploads with try/finally temp file cleanup, AI analysis, and centralized store", deps: ["express", "multer", "fs", "../services/resumeParser.service.js", "../services/resumeAnalyzer.service.js", "../services/resumeStore.service.js", "../middleware/auth.js"], state: "active", last: "anti@2026-08-25" }
+// agent-notes: { ctx: "Express router handling multer resume uploads with try/finally temp file cleanup, AI analysis, and centralized store", deps: ["express", "multer", "fs", "../services/resumeParser.service.js", "../services/resumeAnalyzer.service.js", "../services/resumeStore.service.js", "../middleware/auth.js", "../../lib/extractName.js"], state: "active", last: "anti@2026-09-30" }
 import express from "express";
 import multer from "multer";
 import fs from "fs";
@@ -8,6 +8,7 @@ import { analyzeResume } from "../services/resumeAnalyzer.service.js";
 import { saveParsedResume } from "../services/resumeStore.service.js";
 import { authenticateUser, getAuthenticatedUserId } from "../middleware/auth.js";
 import { resumeAnalyzeLimiter } from "../middleware/rateLimiter.js";
+import { extractContact } from "../../lib/extractName.js";
 
 const router = express.Router();
 router.use(authenticateUser);
@@ -154,6 +155,19 @@ router.post('/apply-fix', (req, res) => {
     message: `Problem fix '${problemId}' applied successfully!`,
     appliedId: problemId
   });
+});
+
+// Extract contact details directly from resume text
+router.post('/parse-resume', async (req, res) => {
+  try {
+    const { resumeText } = req.body || {};
+    const contact = await extractContact(resumeText || "");
+    return res.json(contact);
+  } catch (err) {
+    return res.status(500).json({
+      error: err.message || "Failed to extract contact information"
+    });
+  }
 });
 
 // Update resume from verified skills
