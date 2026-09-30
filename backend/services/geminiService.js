@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Unified Gemini AI client module with exponential backoff, model fallback chains, and structured JSON parsing", deps: ["@google/generative-ai"], state: "active", last: "anti@2026-08-25" }
+// agent-notes: { ctx: "Unified Gemini AI client module with exponential backoff, model fallback chains, and structured JSON parsing", deps: ["@google/generative-ai"], state: "active", last: "anti@2026-09-30" }
 
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
@@ -31,8 +31,8 @@ export function getGenAIClient() {
 
 // Default model fallback chain
 export const DEFAULT_MODEL_NAMES = [
-  'gemini-1.5-pro',
-  'gemini-1.5-flash'
+  'gemini-3.8-flash',
+  'gemini-3.6-flash'
 ];
 
 /**
