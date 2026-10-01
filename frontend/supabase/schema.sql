@@ -125,3 +125,39 @@ CREATE INDEX IF NOT EXISTS idx_user_skills_user_id ON public.user_skills(user_id
 CREATE INDEX IF NOT EXISTS idx_certificates_user_id ON public.certificates(user_id);
 CREATE INDEX IF NOT EXISTS idx_roadmaps_user_id ON public.roadmaps(user_id);
 CREATE INDEX IF NOT EXISTS idx_interview_sessions_user_id ON public.interview_sessions(user_id);
+
+-- ====================================================================
+-- 10. LEAN MOBILE PROFILES & SKILL PROGRESS (Never Ask Twice)
+-- ====================================================================
+CREATE TABLE IF NOT EXISTS public.profiles (
+  user_id TEXT PRIMARY KEY,
+  first_name TEXT,
+  last_name TEXT,
+  email TEXT,
+  phone TEXT,
+  target_role TEXT,
+  resume JSONB NOT NULL DEFAULT '{}',
+  skills TEXT[] NOT NULL DEFAULT '{}',
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS public.skill_progress (
+  user_id TEXT NOT NULL,
+  skill TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'todo' CHECK (status IN ('todo','learning','done')),
+  updated_at TIMESTAMPTZ DEFAULT now(),
+  PRIMARY KEY (user_id, skill)
+);
+
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.skill_progress ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "own profile" ON public.profiles;
+CREATE POLICY "own profile" ON public.profiles FOR ALL
+  USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "own progress" ON public.skill_progress;
+CREATE POLICY "own progress" ON public.skill_progress FOR ALL
+  USING (true) WITH CHECK (true);
+
+CREATE INDEX IF NOT EXISTS idx_skill_progress_user_id ON public.skill_progress(user_id);
