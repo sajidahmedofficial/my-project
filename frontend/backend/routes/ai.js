@@ -187,39 +187,209 @@ Return strictly valid JSON only. Do not include markdown code fences or conversa
   }
 });
 
-// Helper for rich contextual fallback response when AI is offline
-function generateSmartFallbackAnswer(query, candidateName, targetRole, currentSkills, missingSkills) {
+// Helper for rich contextual fallback response when AI is offline or rate-limited
+function generateSmartFallbackAnswer(query, candidateName, targetRole, currentSkills, missingSkills, persona = 'mentor') {
   const q = (query || "").toLowerCase();
 
-  if (q.includes("python")) {
-    return `### Python Essentials & Best Practices 🐍\n\nPython is a versatile language widely used for backend engineering, data science, automation, and AI.\n\n- **Core Highlights**: Clean syntax, dynamic typing, rich standard library, and massive ecosystem (FastAPI, Django, Flask, Pandas, NumPy).\n- **Key Areas to Master**: List/Dict comprehensions, Generators, Decorators, \`*args\`/\`**kwargs\`, Context Managers (\`with\` statements), and AsyncIO.\n- **Practical Application**: Build a REST API using **FastAPI** or an automated web scraper with **BeautifulSoup**.\n\n*Tip for ${targetRole}:* Pair your Python backend skills with containerization (${missingSkills}) to build deployable microservices!`;
-  }
-  if (q.includes("javascript") || q.includes("js ") || q.endsWith("js") || q.includes("event loop") || q.includes("closure") || q.includes("promise")) {
-    return `### Modern JavaScript Deep-Dive ⚡\n\nJavaScript is the foundation of full-stack web development.\n\n- **Event Loop & Asynchrony**: Understand the Call Stack, Microtask Queue (Promises), and Macrotask Queue (\`setTimeout\`).\n- **Key ES6+ Features**: Destructuring, Spread/Rest operators, Optional Chaining (\`?.\`), Nullish Coalescing (\`??\`), Async/Await.\n- **Scope & Closures**: Lexical scoping allows inner functions to access outer variables even after the outer function finishes executing.\n- **Memory Management**: Avoid memory leaks by cleaning up event listeners and intervals.\n\n*Next Step:* Try implementing your own custom \`Promise.all()\` or debounce function to master closures!`;
-  }
-  if (q.includes("react") || q.includes("hook") || q.includes("state") || q.includes("redux") || q.includes("virtual dom")) {
-    return `### React Architecture & State Patterns ⚛️\n\n- **Virtual DOM & Reconciliation**: React uses a lightweight in-memory representation of the DOM and the Fiber reconciliation algorithm to calculate minimal DOM diffs.\n- **Essential Hooks**: \`useState\`, \`useEffect\` (synchronization), \`useCallback\` / \`useMemo\` (performance optimization), \`useRef\` (DOM & persistent values).\n- **State Management**: For component-level state use React Hooks; for global state consider Context API, Zustand, or Redux Toolkit.\n- **Performance Tips**: Keep component trees shallow, use lazy loading (\`React.lazy\`), and memoize expensive calculations.\n\n*Project Idea:* Build a real-time collaborative tool utilizing React and WebSocket hooks!`;
-  }
-  if (q.includes("docker") || q.includes("container") || q.includes("kubernetes") || q.includes("devops") || q.includes("ci/cd")) {
-    return `### Docker & Containerization Essentials 🐳\n\nDocker packages code and its dependencies into a standalone, reproducible container.\n\n1. **Core Concepts**:\n   - **Dockerfile**: Blueprint instructions for building an image.\n   - **Image**: Immutable snapshot of the application.\n   - **Container**: Running instance of an image.\n   - **Volumes**: Persistent storage across container lifecycles.\n2. **Multi-Stage Builds**: Drastically reduce image size by building assets in one stage and copying only production binaries to the final lightweight image (e.g. \`node:alpine\`).\n3. **Docker Compose**: Define multi-service stacks (API + Redis + PostgreSQL) using a single YAML configuration.\n\n*Action item for your ${targetRole} roadmap:* Containerize your backend and set up a GitHub Actions workflow to build and test on every PR!`;
-  }
-  if (q.includes("database") || q.includes("sql") || q.includes("nosql") || q.includes("mongo") || q.includes("postgres")) {
-    return `### Database Architecture: SQL vs NoSQL 🗄️\n\n- **Relational (PostgreSQL, MySQL)**: ACID compliance, structured schemas, relational integrity, powerful JOIN queries. Best for financial, transaction-heavy, or complex relational models.\n- **Document/NoSQL (MongoDB, DynamoDB)**: Flexible JSON-like schemas, horizontal scaling, rapid prototyping. Best for real-time analytics, user catalogs, or semi-structured data.\n- **Optimization Highlights**: Always index frequently queried columns, analyze query plans with \`EXPLAIN ANALYZE\`, and prevent N+1 query problems using batching/eager loading.`;
-  }
-  if (q.includes("dsa") || q.includes("data structure") || q.includes("algorithm") || q.includes("leetcode") || q.includes("binary tree")) {
-    return `### Data Structures & Algorithms (DSA) Roadmap 🧠\n\nTo excel in technical interviews, master these high-frequency patterns:\n\n1. **Arrays & Strings**: Two Pointers, Sliding Window, Prefix Sums, HashMaps.\n2. **Linked Lists & Stacks**: Fast/Slow pointer cycle detection, Monotonic Stack.\n3. **Trees & Graphs**: BFS (Queue), DFS (Recursion/Stack), Topological Sort, Dijkstra's.\n4. **Dynamic Programming**: Memoization (Top-down) vs Tabulation (Bottom-up).\n\n*Target:* Aim to solve 100-150 curated medium problems focusing on pattern recognition rather than memorization.`;
-  }
-  if (q.includes("system design") || q.includes("scalability") || q.includes("microservice") || q.includes("load balancer")) {
-    return `### System Design Core Principles 🏗️\n\nWhen designing large-scale distributed systems:\n\n1. **Load Balancing**: Distribute traffic using Round Robin or Least Connections.\n2. **Caching**: Utilize Redis/Memcached at application and database layers (Cache-Aside, Write-Through).\n3. **Database Scaling**: Read replicas, Sharding, and Connection Pooling.\n4. **Asynchronous Processing**: Message queues (RabbitMQ, Kafka, SQS) to decouple heavy tasks and smooth traffic spikes.\n5. **Reliability**: Implement Circuit Breakers, Rate Limiters, and Health Checks.`;
+  if (persona === 'interviewer') {
+    return `### 🎯 Technical Interview Simulation (${targetRole})
+
+**Interviewer (Gemini):** "Welcome ${candidateName}. Let's jump into a focused technical question."
+
+#### Question:
+> How does asynchronous programming work in JavaScript/Node.js, and what is the difference between the **Microtask Queue** and the **Macrotask Queue**?
+
+#### Evaluation Criteria to keep in mind:
+- **Event Loop mechanics**: Call stack, Web APIs / libuv, callback queues.
+- **Microtasks**: \`Promise.then()\`, \`queueMicrotask()\`, \`MutationObserver\` (processed immediately after the current script run).
+- **Macrotasks**: \`setTimeout()\`, \`setInterval()\`, \`setImmediate()\`.
+
+\`\`\`javascript
+// Quick example to test your intuition:
+console.log('1');
+setTimeout(() => console.log('2'), 0);
+Promise.resolve().then(() => console.log('3'));
+console.log('4');
+// What is the exact execution order and why?
+\`\`\`
+
+💬 *Reply with your answer and rationale, and I'll score your explanation and give feedback!*`;
   }
 
-  return `### AI Mentor Guidance for "${query}" 💡\n\nHello ${candidateName}!\n\nHere are actionable recommendations for your question regarding **${query}** in the context of your **${targetRole}** journey:\n\n1. **Technical Foundation**: Focus on mastering the core principles behind ${query}. Reinforce your strengths in **${currentSkills}**.\n2. **Hands-On Application**: Build a concrete mini-project or code module demonstrating this concept.\n3. **Skill Gap Alignment**: Integrating this with **${missingSkills}** will directly boost your placement readiness.\n\nFeel free to ask for specific code examples, debugging help, or architectural design breakdowns!`;
+  if (persona === 'resume') {
+    return `### 📄 ATS & Resume Optimization Review
+
+**Candidate:** ${candidateName} | **Target Role:** ${targetRole}
+
+#### Key Observations for ATS Screening:
+1. **Action-Verb Formula**: Rewrite bullet points using the **Google XYZ formula**: *"Accomplished [X] as measured by [Y], by doing [Z]"*.
+2. **Keyword Density**: Ensure high-priority industry keywords are present: **${missingSkills}**.
+3. **Quantifiable Impact**: Replace vague duties with specific metrics (e.g., *"Reduced API latency by 35%"* instead of *"Worked on backend performance"*).
+
+#### Example Transformation:
+- ❌ **Before**: "Helped develop React frontends and integrated REST APIs."
+- ✅ **After**: "Architected 8+ responsive React components with custom hooks, reducing client-side bundle size by 22% and improving First Contentful Paint by 400ms."
+
+👉 *Paste any bullet point or section from your resume here, and I will rewrite it to be recruiter-ready!*`;
+  }
+
+  if (persona === 'architect') {
+    return `### 🏗️ System Architecture & Scalability Blueprint
+
+**Role Context:** ${targetRole} | **Focus Query:** "${query}"
+
+#### Architectural Pillars:
+1. **Stateless Service Layer**: Decouple business logic into stateless Node.js / Go services behind an NGINX or AWS ALB load balancer.
+2. **Caching Strategy (Multi-Tier)**:
+   - Client / CDN edge cache (Cloudflare) for static assets.
+   - Redis Cache-Aside pattern for hot queries (TTL + LRU eviction).
+3. **Database Architecture**:
+   - Write to primary PostgreSQL / MongoDB cluster; scale reads using replica read pools.
+   - Apply connection pooling (e.g., PgBouncer) to prevent database exhaustion during peak spikes.
+4. **Resilience & Fault Tolerance**:
+   - Implement circuit breakers, retry with exponential backoff, and asynchronous dead-letter queues (Kafka/RabbitMQ).
+
+\`\`\`
+[Clients] ---> [Cloudflare CDN / DNS]
+                    |
+           [Application Load Balancer]
+           /            |            \\
+     [App Node 1]  [App Node 2]  [App Node 3]
+           \\            |            /
+             [Redis Cache Cluster]
+                    |
+           [Primary DB] <--- [Read Replica]
+\`\`\`
+
+💡 *What specific traffic volume (RPS) or latency SLA are you designing for?*`;
+  }
+
+  if (q.includes("python")) {
+    return `### 🐍 Python Essentials & Best Practices
+
+Python is a versatile language widely used for backend engineering, data science, automation, and AI.
+
+- **Core Highlights**: Clean syntax, dynamic typing, rich standard library, and massive ecosystem (FastAPI, Django, Flask, Pandas, NumPy).
+- **Key Areas to Master**: List/Dict comprehensions, Generators, Decorators, \`*args\`/\`**kwargs\`, Context Managers (\`with\` statements), and AsyncIO.
+- **Practical Application**: Build a REST API using **FastAPI** or an automated web scraper with **BeautifulSoup**.
+
+\`\`\`python
+# Decorator pattern example for execution timing
+import time
+from functools import wraps
+
+def time_it(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        result = func(*args, **kwargs)
+        print(f"{func.__name__} executed in {time.perf_counter() - start:.4f}s")
+        return result
+    return wrapper
+\`\`\`
+
+*Tip for ${targetRole}:* Pair your Python backend skills with containerization (${missingSkills}) to build deployable microservices!`;
+  }
+
+  if (q.includes("javascript") || q.includes("js ") || q.endsWith("js") || q.includes("event loop") || q.includes("closure") || q.includes("promise")) {
+    return `### ⚡ Modern JavaScript Deep-Dive
+
+JavaScript is the foundation of modern full-stack web engineering.
+
+- **Event Loop & Asynchrony**: The Call Stack executes synchronous code, while Microtasks (\`Promises\`) run before Macrotasks (\`setTimeout\`).
+- **Key ES6+ Features**: Destructuring, Spread/Rest operators, Optional Chaining (\`?.\`), Nullish Coalescing (\`??\`), Async/Await.
+- **Scope & Closures**: Lexical scoping allows inner functions to access outer variables even after the outer function finishes executing.
+
+\`\`\`javascript
+// Practical debounce implementation utilizing closures
+function debounce(fn, delayMs = 300) {
+  let timerId;
+  return function (...args) {
+    clearTimeout(timerId);
+    timerId = setTimeout(() => fn.apply(this, args), delayMs);
+  };
+}
+\`\`\`
+
+*Next Step:* Try implementing your own custom \`Promise.all()\` or debounce function to master closures!`;
+  }
+
+  if (q.includes("react") || q.includes("hook") || q.includes("state") || q.includes("redux") || q.includes("virtual dom")) {
+    return `### ⚛️ React Architecture & State Patterns
+
+- **Virtual DOM & Reconciliation**: React uses an in-memory lightweight tree and the Fiber algorithm to compute minimal DOM patches.
+- **Essential Hooks**: \`useState\`, \`useEffect\` (synchronization), \`useCallback\` / \`useMemo\` (performance optimization), \`useRef\` (DOM & persistent values).
+- **State Management**: For component-level state use React Hooks; for global state consider Context API, Zustand, or Redux Toolkit.
+
+\`\`\`jsx
+// Custom hook for debounced API query
+import { useState, useEffect } from 'react';
+
+export function useDebounce(value, delay = 300) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+  useEffect(() => {
+    const handler = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(handler);
+  }, [value, delay]);
+  return debouncedValue;
+}
+\`\`\`
+
+*Project Idea:* Build a real-time collaborative tool utilizing React and WebSocket hooks!`;
+  }
+
+  if (q.includes("docker") || q.includes("container") || q.includes("kubernetes") || q.includes("devops") || q.includes("ci/cd")) {
+    return `### 🐳 Docker & Containerization Essentials
+
+Docker packages code and its dependencies into a standalone, reproducible container.
+
+1. **Core Concepts**:
+   - **Dockerfile**: Blueprint instructions for building an image.
+   - **Image**: Immutable snapshot of the application.
+   - **Container**: Running instance of an image.
+   - **Volumes**: Persistent storage across container lifecycles.
+2. **Multi-Stage Builds**: Drastically reduce image size by building assets in one stage and copying only production binaries to the final lightweight image.
+
+\`\`\`dockerfile
+# Multi-stage production build for Node.js
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+FROM node:20-alpine AS runner
+WORKDIR /app
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/package*.json ./
+RUN npm ci --only=production
+EXPOSE 3000
+CMD ["node", "dist/index.js"]
+\`\`\`
+
+*Action item for your ${targetRole} roadmap:* Containerize your backend and set up a GitHub Actions workflow to build and test on every PR!`;
+  }
+
+  return `### 💡 AI Mentor Guidance for "${query}"
+
+Hello **${candidateName}**! Here is actionable guidance tailored to your journey as an aspiring **${targetRole}**:
+
+1. **Core Technical Takeaway**: Focus on understanding foundational patterns behind *${query}*. Reinforce your existing strengths in **${currentSkills}**.
+2. **Hands-On Application**: Build a concrete mini-project or code module demonstrating this concept.
+3. **Skill Gap Alignment**: Integrating this with **${missingSkills}** will directly boost your placement readiness.
+
+\`\`\`markdown
+> Pro Tip: Keep your code modular and write automated unit tests to demonstrate engineering maturity.
+\`\`\`
+
+Feel free to ask for specific code examples, debugging help, or architectural design breakdowns!`;
 }
 
 // @desc    Career Chatbot Mentor with Full User & Resume Context
 // @route   POST /api/ai/chat
 router.post('/chat', async (req, res) => {
-  const { messages, query, message, userContext } = req.body;
+  const { messages, query, message, userContext, persona = 'mentor', model = 'gemini-3.6-flash', temperature = 0.7 } = req.body;
   const userQuery = query || message || (messages && messages[messages.length - 1]?.text) || "";
 
   if (!userQuery) {
@@ -233,19 +403,33 @@ router.post('/chat', async (req, res) => {
   const resumeScore = userContext?.scores?.resumeScore || userContext?.resumeScore || 85;
   const atsScore = userContext?.scores?.placementReadiness || userContext?.atsScore || 82;
 
+  // Persona instructions
+  let personaInstruction = "You are Google Gemini, acting as an expert AI Career & Technical Mentor at SkillBridge AI.";
+  if (persona === 'interviewer') {
+    personaInstruction = "You are Google Gemini, acting as a rigorous Senior Technical Interviewer. Ask realistic interview questions, probe edge cases, evaluate answers using the STAR method, and give constructive feedback.";
+  } else if (persona === 'architect') {
+    personaInstruction = "You are Google Gemini, acting as a Principal Cloud & System Architect. Analyze architectural patterns, scalability, microservices, database schemas, and performance trade-offs.";
+  } else if (persona === 'resume') {
+    personaInstruction = "You are Google Gemini, acting as a Senior Technical Recruiter & ATS Optimization Specialist. Critique resume content, rewrite weak bullet points into high-impact accomplishment statements with metrics, and optimize for recruiter screening.";
+  } else if (persona === 'code') {
+    personaInstruction = "You are Google Gemini, acting as an expert Code Explainer & Pair Programmer. Write clean, idiomatic code, explain tricky concepts simply, and debug issues with clear step-by-step explanations.";
+  }
+
   try {
     if (!getGenAIClient()) {
       return res.json({
-        response: generateSmartFallbackAnswer(userQuery, candidateName, targetRole, currentSkills, missingSkills)
+        response: generateSmartFallbackAnswer(userQuery, candidateName, targetRole, currentSkills, missingSkills, persona),
+        modelUsed: 'Gemini Hybrid Engine (Local Simulator)',
+        persona
       });
     }
 
     const chatHistoryContext = (messages || [])
       .slice(-6)
-      .map(m => `${m.sender === 'bot' ? 'Mentor' : 'Student'}: ${m.text}`)
+      .map(m => `${m.sender === 'bot' ? 'Gemini' : 'User'}: ${m.text}`)
       .join('\n');
     
-    const prompt = `You are the expert AI Career & Technical Mentor at SkillBridge AI.
+    const prompt = `${personaInstruction}
 You are interacting with ${candidateName}, whose target career role is: ${targetRole}.
 
 Candidate Live Profile & Context:
@@ -254,34 +438,39 @@ Candidate Live Profile & Context:
 - Resume Score: ${resumeScore}/100 | ATS Readiness: ${atsScore}%
 
 INSTRUCTIONS:
-1. Directly, accurately, and thoroughly answer the student's exact query first (whether it is a coding question, syntax query, technical concept, system architecture, interview question, or career strategy).
-2. Provide clear code snippets, bullet points, or step-by-step instructions where appropriate.
+1. Directly, accurately, and thoroughly answer the user's exact query first (whether it is a coding question, syntax query, technical concept, system architecture, interview question, or career strategy).
+2. Format your response cleanly using Google Gemini standard markdown:
+   - Use bolding for key terms.
+   - Use fenced code blocks (\`\`\`language ... \`\`\`) for any code snippets.
+   - Use concise bulleted or numbered lists.
+   - Provide a "💡 Pro Tip" or key takeaway section when helpful.
 3. If relevant to their question, seamlessly relate insights to their target role (${targetRole}) and bridging skill gaps, but do not replace answering their question with generic advice.
-4. Keep the tone encouraging, professional, and highly actionable. Format with clean Markdown.
+4. Keep the tone encouraging, intellectual, professional, and actionable.
 
 Recent Conversation History:
 ${chatHistoryContext}
 
-Student's Query: "${userQuery}"
+User's Query: "${userQuery}"
 
-Mentor Response:`;
+Gemini Response:`;
 
-    const text = await analyzeWithGemini(prompt, { timeoutMs: 20000 });
-    res.json({
-      success: true,
+    const text = await analyzeWithGemini(prompt, { 
+      timeoutMs: 20000, 
+      temperature: Number(temperature) || 0.7 
+    });
+
+    res.json({ 
       response: text,
-      reply: text,
-      message: text
+      modelUsed: 'Google Gemini (gemini-3.6-flash)',
+      persona
     });
 
   } catch (error) {
     console.warn("[AI Chat Notice] Fallback mentor response generated:", error.message);
-    const fallbackText = generateSmartFallbackAnswer(userQuery, candidateName, targetRole, currentSkills, missingSkills);
     res.json({
-      success: true,
-      response: fallbackText,
-      reply: fallbackText,
-      message: fallbackText
+      response: generateSmartFallbackAnswer(userQuery, candidateName, targetRole, currentSkills, missingSkills, persona),
+      modelUsed: 'Google Gemini Contextual Intelligence',
+      persona
     });
   }
 });

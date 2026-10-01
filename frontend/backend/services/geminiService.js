@@ -45,8 +45,10 @@ export function getGenAIClient() {
 
 // Default model fallback chain with distinct models
 export const DEFAULT_MODEL_NAMES = [
-  'gemini-3.8-flash',
-  'gemini-3.6-flash'
+  'gemini-3.6-flash',
+  'gemini-3.5-flash',
+  'gemini-flash-latest',
+  'gemini-3.8-flash'
 ];
 
 /**
