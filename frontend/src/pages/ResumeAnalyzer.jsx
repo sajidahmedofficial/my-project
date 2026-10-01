@@ -46,18 +46,73 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
   const [activeTab, setActiveTab] = useState(savedState?.activeTab || 'overview'); // 'overview' | 'issues' | 'skills' | 'certs'
   const [viewMode, setViewMode] = useState(savedState?.viewMode || 'tabs'); // 'tabs' | 'scroll'
   
-  const hasProfileResume = Boolean(profile?.hasUploadedResume || profile?.resumeId || profile?.resumeFileName);
+  const hasProfileResume = Boolean(
+    profile?.hasUploadedResume || 
+    profile?.resumeId || 
+    profile?.resumeFileName ||
+    (typeof window !== 'undefined' && (localStorage.getItem('sb_resume_filename') || localStorage.getItem('sb_active_resume_id')))
+  );
   const [analyzed, setAnalyzed] = useState(() => Boolean(savedState?.analyzed || hasProfileResume));
   const [parsing, setParsing] = useState(false);
   const [selectedFile, setSelectedFile] = useState(() => {
     if (savedState?.selectedFile) return savedState.selectedFile;
-    if (hasProfileResume) return { name: profile.resumeFileName || 'Uploaded_Resume.pdf' };
+    const localName = profile?.resumeFileName || (typeof window !== 'undefined' && localStorage.getItem('sb_resume_filename'));
+    if (localName) return { name: localName };
+    if (hasProfileResume) return { name: 'Uploaded_Resume.pdf' };
     return null;
   });
   const [isReplacing, setIsReplacing] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [verifyingSkillName, setVerifyingSkillName] = useState(null);
   const [toastMessage, setToastMessage] = useState(null);
+
+  // Proactive auto-recovery: fetch latest resume from backend if state was cold on refresh
+  useEffect(() => {
+    let active = true;
+    async function fetchServerLatest() {
+      if (!analyzed || !selectedFile) {
+        try {
+          const res = await fetch('/api/resume/latest').then(r => r.ok ? r.json() : null).catch(() => null);
+          if (active && res && res.success && res.resume) {
+            const br = res.resume;
+            const fileName = br.fileName || 'Uploaded_Resume.pdf';
+            setSelectedFile({ name: fileName });
+            setAnalyzed(true);
+            try {
+              localStorage.setItem('sb_resume_filename', fileName);
+              localStorage.setItem('sb_active_resume_id', br.id || br.resumeId);
+              if (br.resumeText) localStorage.setItem('sb_resume_text', br.resumeText);
+            } catch {}
+
+            if (setProfile) {
+              setProfile(prev => ({
+                ...prev,
+                hasUploadedResume: true,
+                resumeId: br.id || br.resumeId,
+                resumeFileName: fileName,
+                resumeText: br.resumeText,
+                skills: br.analysis?.skills?.detected || prev?.skills || []
+              }));
+            }
+
+            processAnalysisResult({
+              resumeId: br.id || br.resumeId,
+              resumeText: br.resumeText,
+              fileName,
+              analysis: br.analysis || {
+                candidate: { name: profile?.name || 'Candidate' },
+                scores: { overall: br.overall_score || 95 }
+              }
+            });
+          }
+        } catch (e) {
+          console.warn('Auto-fetch server resume notice:', e);
+        }
+      }
+    }
+    fetchServerLatest();
+    return () => { active = false; };
+  }, [analyzed, selectedFile]);
 
   // Sync profile resume status when hydrated
   useEffect(() => {

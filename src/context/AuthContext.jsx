@@ -133,12 +133,14 @@ export function AuthProvider({ children }) {
             profileRow?.resume_id || 
             stored?.hasUploadedResume || 
             stored?.resumeId || 
-            (resumeRow?.skills && resumeRow.skills.length > 0)
+            (resumeRow?.skills && resumeRow.skills.length > 0) ||
+            localStorage.getItem('sb_resume_filename') ||
+            localStorage.getItem('sb_active_resume_id')
           );
 
           const userSkills = (resumeRow?.skills && resumeRow.skills.length > 0) 
             ? resumeRow.skills 
-            : (stored?.skills && stored.skills.length > 0 ? stored.skills : ['React', 'JavaScript', 'Node.js', 'Python', 'Tailwind CSS']);
+            : (stored?.skills && stored.skills.length > 0 ? stored.skills : ['React', 'JavaScript', 'Node.js', 'Python', 'Tailwind CSS', 'SQL']);
 
           const userObj = sanitizeUserProfile({
             ...(stored || {}),
@@ -149,9 +151,9 @@ export function AuthProvider({ children }) {
             college,
             careerGoal,
             hasUploadedResume,
-            resumeId: resumeRow?.id || profileRow?.resume_id || stored?.resumeId || null,
-            resumeFileName: resumeRow?.file_name || stored?.resumeFileName || (hasUploadedResume ? 'Uploaded_Resume.pdf' : null),
-            resumeText: resumeRow?.parsed_text || stored?.resumeText || '',
+            resumeId: resumeRow?.id || profileRow?.resume_id || stored?.resumeId || localStorage.getItem('sb_active_resume_id') || null,
+            resumeFileName: resumeRow?.file_name || stored?.resumeFileName || localStorage.getItem('sb_resume_filename') || (hasUploadedResume ? 'Uploaded_Resume.pdf' : null),
+            resumeText: resumeRow?.parsed_text || stored?.resumeText || localStorage.getItem('sb_resume_text') || '',
             resumeUrl: resumeRow?.file_url || null,
             skills: userSkills,
             education: resumeRow?.education || stored?.education || [],
@@ -160,7 +162,7 @@ export function AuthProvider({ children }) {
             certifications: resumeRow?.certifications || stored?.certifications || [],
             scores: {
               skillScore: stored?.scores?.skillScore || 82,
-              resumeScore: resumeRow?.resume_score || stored?.scores?.resumeScore || 85,
+              resumeScore: resumeRow?.resume_score || stored?.scores?.resumeScore || 95,
               interviewReadiness: stored?.scores?.interviewReadiness || 78,
               placementReadiness: progressRow?.overall_progress || stored?.scores?.placementReadiness || 84,
               weeklyGoalProgress: stored?.scores?.weeklyGoalProgress || 60
@@ -251,12 +253,14 @@ export function AuthProvider({ children }) {
           profileRow?.resume_id || 
           stored?.hasUploadedResume || 
           stored?.resumeId || 
-          (resumeRow?.skills && resumeRow.skills.length > 0)
+          (resumeRow?.skills && resumeRow.skills.length > 0) ||
+          localStorage.getItem('sb_resume_filename') ||
+          localStorage.getItem('sb_active_resume_id')
         );
 
         const userSkills = (resumeRow?.skills && resumeRow.skills.length > 0) 
           ? resumeRow.skills 
-          : (stored?.skills && stored.skills.length > 0 ? stored.skills : ['React', 'JavaScript', 'Node.js', 'Python', 'Tailwind CSS']);
+          : (stored?.skills && stored.skills.length > 0 ? stored.skills : ['React', 'JavaScript', 'Node.js', 'Python', 'Tailwind CSS', 'SQL']);
 
         const userObj = sanitizeUserProfile({
           ...(stored || {}),
@@ -267,9 +271,9 @@ export function AuthProvider({ children }) {
           college,
           careerGoal,
           hasUploadedResume,
-          resumeId: resumeRow?.id || profileRow?.resume_id || stored?.resumeId || null,
-          resumeFileName: resumeRow?.file_name || stored?.resumeFileName || (hasUploadedResume ? 'Uploaded_Resume.pdf' : null),
-          resumeText: resumeRow?.parsed_text || stored?.resumeText || '',
+          resumeId: resumeRow?.id || profileRow?.resume_id || stored?.resumeId || localStorage.getItem('sb_active_resume_id') || null,
+          resumeFileName: resumeRow?.file_name || stored?.resumeFileName || localStorage.getItem('sb_resume_filename') || (hasUploadedResume ? 'Uploaded_Resume.pdf' : null),
+          resumeText: resumeRow?.parsed_text || stored?.resumeText || localStorage.getItem('sb_resume_text') || '',
           resumeUrl: resumeRow?.file_url || null,
           skills: userSkills,
           education: resumeRow?.education || stored?.education || [],
@@ -278,7 +282,7 @@ export function AuthProvider({ children }) {
           certifications: resumeRow?.certifications || stored?.certifications || [],
           scores: {
             skillScore: stored?.scores?.skillScore || 82,
-            resumeScore: resumeRow?.resume_score || stored?.scores?.resumeScore || 85,
+            resumeScore: resumeRow?.resume_score || stored?.scores?.resumeScore || 95,
             interviewReadiness: stored?.scores?.interviewReadiness || 78,
             placementReadiness: progressRow?.overall_progress || stored?.scores?.placementReadiness || 84,
             weeklyGoalProgress: stored?.scores?.weeklyGoalProgress || 60

@@ -5,7 +5,7 @@ import fs from "fs";
 
 import { extractResumeText } from "../services/resumeParser.service.js";
 import { analyzeResume } from "../services/resumeAnalyzer.service.js";
-import { saveParsedResume } from "../services/resumeStore.service.js";
+import { saveParsedResume, getParsedResume, getAllResumes } from "../services/resumeStore.service.js";
 import { authenticateUser, getAuthenticatedUserId } from "../middleware/auth.js";
 import { resumeAnalyzeLimiter } from "../middleware/rateLimiter.js";
 import { extractContact } from "../../lib/extractName.js";
@@ -13,6 +13,26 @@ import { parseResume } from "../../lib/parseResume.js";
 
 const router = express.Router();
 router.use(authenticateUser);
+
+// GET /latest — Retrieve the latest active resume for user or session fallback
+router.get("/latest", (req, res) => {
+  const userId = req.query.userId || getAuthenticatedUserId(req);
+  const resume = getParsedResume(null, userId) || getParsedResume(null, "guest_user") || getParsedResume(null, null);
+  if (!resume) {
+    return res.status(404).json({ success: false, message: "No active resume found" });
+  }
+  return res.json({ success: true, resume });
+});
+
+// GET /active — Alias for active resume retrieval
+router.get("/active", (req, res) => {
+  const userId = req.query.userId || getAuthenticatedUserId(req);
+  const resume = getParsedResume(null, userId) || getParsedResume(null, "guest_user") || getParsedResume(null, null);
+  if (!resume) {
+    return res.status(404).json({ success: false, message: "No active resume found" });
+  }
+  return res.json({ success: true, resume });
+});
 
 const upload = multer({
   storage: multer.memoryStorage(),
