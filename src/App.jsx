@@ -136,7 +136,8 @@ function MainLayout() {
   ];
 
   const renderActiveView = () => {
-    if (showOnboarding) {
+    const hasUploadedResume = Boolean(activeProfile?.hasUploadedResume || activeProfile?.resumeId);
+    if (showOnboarding && !hasUploadedResume) {
       return (
         <OnboardingWizard 
           onComplete={() => {

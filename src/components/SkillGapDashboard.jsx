@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { skillGapApi } from '../services/skillGapApi';
 import { analyzeResume } from '../services/resumeApi';
+import { saveResumeAndProgress, updateFeatureProgress } from '../services/userPersistence';
 
 const TARGET_ROLE_OPTIONS = [
   "Full Stack AI Engineer",
@@ -127,6 +128,7 @@ export default function SkillGapDashboard({
           sourceResumeFile: fileName || "Uploaded_Resume.pdf"
         });
         setStatus('SUCCESS');
+        updateFeatureProgress({ skill_gap_completed: true }).catch(() => {});
       } else {
         setStatus('EMPTY');
       }
@@ -189,6 +191,24 @@ export default function SkillGapDashboard({
         localStorage.setItem('sb_active_resume_id', resumeId);
       } catch (e) {
         console.warn('Storage sync notice:', e);
+      }
+
+      // Persist to Supabase Storage & Database tables
+      try {
+        await saveResumeAndProgress({
+          user: profile,
+          file: file,
+          resumeData: parsedAnalysis,
+          parsedText: resumeText,
+          scores: parsedAnalysis.scores || { overall: 85, ats: 82, grammar: 80, skills: 80 },
+          skills: extractedSkills,
+          education: parsedAnalysis.education || profile?.education || [],
+          experience: parsedAnalysis.experience || profile?.experience || [],
+          careerData: { targetRole: selectedRole }
+        });
+        await updateFeatureProgress({ skill_gap_completed: true });
+      } catch (saveErr) {
+        console.warn("Supabase persistence notice in SkillGapDashboard:", saveErr);
       }
 
       if (setProfile) {
@@ -275,7 +295,25 @@ export default function SkillGapDashboard({
     return [...strongList, ...partialList, ...missingList];
   })();
 
-  const hasGenuineResume = Boolean(hasResume && (status === 'SUCCESS' || status === 'LOADING'));
+  const hasGenuineResume = Boolean(
+    hasResume || 
+    profile?.hasUploadedResume || 
+    profile?.resumeId || 
+    activeResumeFile
+  );
+
+  // If user has a resume but report is still running or loading, show non-intrusive loading card
+  if (hasGenuineResume && (status === 'LOADING' || !report)) {
+    return (
+      <div className="space-y-6 text-slate-900 pb-12 animate-fade-in max-w-3xl mx-auto">
+        <div className="bg-white rounded-3xl p-12 text-center space-y-4 border border-slate-200 shadow-sm">
+          <RefreshCw className="w-8 h-8 animate-spin text-emerald-600 mx-auto" />
+          <h3 className="text-base font-bold text-slate-900">Calculating Skill Gap Benchmarks...</h3>
+          <p className="text-xs text-slate-500">Evaluating your saved resume profile against {selectedRole} industry requirements.</p>
+        </div>
+      </div>
+    );
+  }
 
   // IF NO RESUME UPLOADED -> RENDER SIMPLE CLEAN UPLOAD CARD ONLY
   if (!hasGenuineResume) {

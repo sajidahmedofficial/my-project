@@ -30,6 +30,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { analyzeResume } from '../services/resumeApi';
 import { saveUserDataToSupabase } from '../services/supabaseData';
+import { saveResumeAndProgress } from '../services/userPersistence';
 import { sanitizeUserProfile } from '../utils/sanitizeProfile';
 import SkillGapDashboard from './SkillGapDashboard';
 
@@ -543,6 +544,27 @@ export default function OnboardingWizard({ onComplete }) {
 
     // Persist to Supabase and LocalStorage
     saveUserDataToSupabase(finalProfile);
+
+    // Persist full resume file and progress records to Supabase tables and storage
+    try {
+      await saveResumeAndProgress({
+        user: finalProfile,
+        file: uploadFile,
+        resumeData: analysisResult || {},
+        parsedText: analysisResult?.resumeText || (skillsList || []).join(', '),
+        scores: finalProfile.scores,
+        skills: skillsList,
+        education: educationList,
+        experience: experienceList,
+        careerData: {
+          targetRole,
+          recommendedRoles: [targetRole],
+          careerRecommendations: { targetIndustry, experienceLevel }
+        }
+      });
+    } catch (persistErr) {
+      console.warn('Supabase wizard persistence notice:', persistErr);
+    }
 
     if (onComplete) {
       onComplete();

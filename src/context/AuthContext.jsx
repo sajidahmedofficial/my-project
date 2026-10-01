@@ -1,8 +1,8 @@
-// agent-notes: { ctx: "React Auth Context for user session with resilient Google 1-click auth, URL token exchange, robust field sanitization & remote persistence", deps: ["../services/api", "../services/supabase", "../services/supabaseData", "../utils/sanitizeProfile"], state: "active", last: "sato@2026-09-24" }
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { api } from '../services/api';
 import { supabase } from '../services/supabase';
 import { saveUserDataToSupabase, loadUserDataFromSupabase } from '../services/supabaseData';
+import { initializeUserData, saveResumeAndProgress } from '../services/userPersistence';
 import { sanitizeUserProfile, extractString } from '../utils/sanitizeProfile';
 
 const AuthContext = createContext(null);
@@ -113,14 +113,32 @@ export function AuthProvider({ children }) {
           }
         }
 
-        // 4. If Supabase session is established, hydrate user profile and navigate to dashboard
+        // 4. If Supabase session is established, hydrate user profile, resume & progress from Supabase
         if (session?.user && isMounted) {
+          const initData = await initializeUserData().catch(() => null);
           const u = session.user;
           const stored = await loadUserDataFromSupabase(u.id, u.email).catch(() => null);
-          const name = stored?.name || u.user_metadata?.full_name || u.user_metadata?.name || u.email?.split('@')[0] || 'User Profile';
-          const avatar = u.user_metadata?.avatar_url || u.user_metadata?.picture || stored?.avatar || null;
+          
+          const profileRow = initData?.profile || null;
+          const resumeRow = initData?.resume || null;
+          const progressRow = initData?.progress || null;
+
+          const name = profileRow?.full_name || stored?.name || u.user_metadata?.full_name || u.user_metadata?.name || u.email?.split('@')[0] || 'User Profile';
+          const avatar = profileRow?.profile_image_url || u.user_metadata?.avatar_url || u.user_metadata?.picture || stored?.avatar || null;
           const college = stored?.college || u.user_metadata?.college || 'SkillBridge Academy';
-          const careerGoal = stored?.careerGoal || u.user_metadata?.careerGoal || 'Full Stack AI Engineer';
+          const careerGoal = profileRow?.career_goal || stored?.careerGoal || u.user_metadata?.careerGoal || 'Full Stack Developer';
+
+          const hasUploadedResume = Boolean(
+            resumeRow?.id || 
+            profileRow?.resume_id || 
+            stored?.hasUploadedResume || 
+            stored?.resumeId || 
+            (resumeRow?.skills && resumeRow.skills.length > 0)
+          );
+
+          const userSkills = (resumeRow?.skills && resumeRow.skills.length > 0) 
+            ? resumeRow.skills 
+            : (stored?.skills && stored.skills.length > 0 ? stored.skills : ['React', 'JavaScript', 'Node.js', 'Python', 'Tailwind CSS']);
 
           const userObj = sanitizeUserProfile({
             ...(stored || {}),
@@ -130,27 +148,42 @@ export function AuthProvider({ children }) {
             avatar,
             college,
             careerGoal,
-            degree: stored?.degree || u.user_metadata?.degree || 'B.Tech / B.S.',
-            department: stored?.department || u.user_metadata?.department || 'Computer Science & Engineering',
-            graduationYear: stored?.graduationYear || u.user_metadata?.graduationYear || 2027,
-            skills: stored?.skills && stored.skills.length > 0 ? stored.skills : ['React', 'JavaScript', 'Node.js', 'Python', 'Tailwind CSS'],
-            interests: stored?.interests || ['Artificial Intelligence', 'Web Development'],
-            scores: stored?.scores || {
-              skillScore: 82,
-              resumeScore: 85,
-              interviewReadiness: 78,
-              placementReadiness: 84,
-              weeklyGoalProgress: 60
+            hasUploadedResume,
+            resumeId: resumeRow?.id || profileRow?.resume_id || stored?.resumeId || null,
+            resumeFileName: resumeRow?.file_name || stored?.resumeFileName || (hasUploadedResume ? 'Uploaded_Resume.pdf' : null),
+            resumeText: resumeRow?.parsed_text || stored?.resumeText || '',
+            resumeUrl: resumeRow?.file_url || null,
+            skills: userSkills,
+            education: resumeRow?.education || stored?.education || [],
+            experience: resumeRow?.experience || stored?.experience || [],
+            projects: resumeRow?.projects || stored?.projects || [],
+            certifications: resumeRow?.certifications || stored?.certifications || [],
+            scores: {
+              skillScore: stored?.scores?.skillScore || 82,
+              resumeScore: resumeRow?.resume_score || stored?.scores?.resumeScore || 85,
+              interviewReadiness: stored?.scores?.interviewReadiness || 78,
+              placementReadiness: progressRow?.overall_progress || stored?.scores?.placementReadiness || 84,
+              weeklyGoalProgress: stored?.scores?.weeklyGoalProgress || 60
             },
+            progress: progressRow,
             isVerified: true
           });
 
           setCurrentUser(userObj);
           setIsAuthenticated(true);
-          setIsOnboarded(Boolean(userObj.college && userObj.careerGoal));
+          setIsOnboarded(Boolean(userObj.hasUploadedResume || (userObj.college && userObj.careerGoal)));
           setToken(session.access_token);
           localStorage.setItem('sb_token', session.access_token);
           localStorage.setItem('sb_user', JSON.stringify(userObj));
+          if (userObj.resumeFileName) {
+            localStorage.setItem('sb_resume_filename', userObj.resumeFileName);
+          }
+          if (userObj.resumeText) {
+            localStorage.setItem('sb_resume_text', userObj.resumeText);
+          }
+          if (userObj.resumeId) {
+            localStorage.setItem('sb_active_resume_id', userObj.resumeId);
+          }
           saveUserDataToSupabase(userObj).catch(() => {});
 
           // Clean URL hash or search params to avoid re-running on refresh
@@ -200,12 +233,30 @@ export function AuthProvider({ children }) {
       }
 
       if (session?.user && isMounted) {
+        const initData = await initializeUserData().catch(() => null);
         const u = session.user;
         const stored = await loadUserDataFromSupabase(u.id, u.email).catch(() => null);
-        const name = stored?.name || u.user_metadata?.full_name || u.user_metadata?.name || u.email?.split('@')[0] || 'User Profile';
-        const avatar = u.user_metadata?.avatar_url || u.user_metadata?.picture || stored?.avatar || null;
+        
+        const profileRow = initData?.profile || null;
+        const resumeRow = initData?.resume || null;
+        const progressRow = initData?.progress || null;
+
+        const name = profileRow?.full_name || stored?.name || u.user_metadata?.full_name || u.user_metadata?.name || u.email?.split('@')[0] || 'User Profile';
+        const avatar = profileRow?.profile_image_url || u.user_metadata?.avatar_url || u.user_metadata?.picture || stored?.avatar || null;
         const college = stored?.college || u.user_metadata?.college || 'SkillBridge Academy';
-        const careerGoal = stored?.careerGoal || u.user_metadata?.careerGoal || 'Full Stack AI Engineer';
+        const careerGoal = profileRow?.career_goal || stored?.careerGoal || u.user_metadata?.careerGoal || 'Full Stack Developer';
+
+        const hasUploadedResume = Boolean(
+          resumeRow?.id || 
+          profileRow?.resume_id || 
+          stored?.hasUploadedResume || 
+          stored?.resumeId || 
+          (resumeRow?.skills && resumeRow.skills.length > 0)
+        );
+
+        const userSkills = (resumeRow?.skills && resumeRow.skills.length > 0) 
+          ? resumeRow.skills 
+          : (stored?.skills && stored.skills.length > 0 ? stored.skills : ['React', 'JavaScript', 'Node.js', 'Python', 'Tailwind CSS']);
 
         const userObj = sanitizeUserProfile({
           ...(stored || {}),
@@ -215,27 +266,42 @@ export function AuthProvider({ children }) {
           avatar,
           college,
           careerGoal,
-          degree: stored?.degree || u.user_metadata?.degree || 'B.Tech / B.S.',
-          department: stored?.department || u.user_metadata?.department || 'Computer Science & Engineering',
-          graduationYear: stored?.graduationYear || u.user_metadata?.graduationYear || 2027,
-          skills: stored?.skills && stored.skills.length > 0 ? stored.skills : ['React', 'JavaScript', 'Node.js', 'Python', 'Tailwind CSS'],
-          interests: stored?.interests || ['Artificial Intelligence', 'Web Development'],
-          scores: stored?.scores || {
-            skillScore: 82,
-            resumeScore: 85,
-            interviewReadiness: 78,
-            placementReadiness: 84,
-            weeklyGoalProgress: 60
+          hasUploadedResume,
+          resumeId: resumeRow?.id || profileRow?.resume_id || stored?.resumeId || null,
+          resumeFileName: resumeRow?.file_name || stored?.resumeFileName || (hasUploadedResume ? 'Uploaded_Resume.pdf' : null),
+          resumeText: resumeRow?.parsed_text || stored?.resumeText || '',
+          resumeUrl: resumeRow?.file_url || null,
+          skills: userSkills,
+          education: resumeRow?.education || stored?.education || [],
+          experience: resumeRow?.experience || stored?.experience || [],
+          projects: resumeRow?.projects || stored?.projects || [],
+          certifications: resumeRow?.certifications || stored?.certifications || [],
+          scores: {
+            skillScore: stored?.scores?.skillScore || 82,
+            resumeScore: resumeRow?.resume_score || stored?.scores?.resumeScore || 85,
+            interviewReadiness: stored?.scores?.interviewReadiness || 78,
+            placementReadiness: progressRow?.overall_progress || stored?.scores?.placementReadiness || 84,
+            weeklyGoalProgress: stored?.scores?.weeklyGoalProgress || 60
           },
+          progress: progressRow,
           isVerified: true
         });
 
         setCurrentUser(userObj);
         setIsAuthenticated(true);
-        setIsOnboarded(Boolean(userObj.college && userObj.careerGoal));
+        setIsOnboarded(Boolean(userObj.hasUploadedResume || (userObj.college && userObj.careerGoal)));
         setToken(session.access_token);
         localStorage.setItem('sb_token', session.access_token);
         localStorage.setItem('sb_user', JSON.stringify(userObj));
+        if (userObj.resumeFileName) {
+          localStorage.setItem('sb_resume_filename', userObj.resumeFileName);
+        }
+        if (userObj.resumeText) {
+          localStorage.setItem('sb_resume_text', userObj.resumeText);
+        }
+        if (userObj.resumeId) {
+          localStorage.setItem('sb_active_resume_id', userObj.resumeId);
+        }
         saveUserDataToSupabase(userObj).catch(() => {});
 
         if (typeof window !== 'undefined' && (window.location.hash || window.location.search.includes('code='))) {
