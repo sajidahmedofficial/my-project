@@ -32,13 +32,3 @@ export async function checkSupabaseConnection() {
     };
   }
 }
-
-export {
-  ensureUser,
-  getStoredProfile,
-  saveProfile,
-  getSkillProgressRows,
-  updateSkillStatus,
-  batchStoreMissingSkills,
-} from '../../lib/supabase.js';
-

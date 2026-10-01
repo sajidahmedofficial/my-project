@@ -1,947 +1,577 @@
-// agent-notes: { ctx: "Crisp 3-screen mobile-first app with Supabase persistence and never-ask-twice upload gate", deps: ["react", "lucide-react", "./services/supabase.js"], state: "active", last: "anti@2026-10-01" }
-import React, { useEffect, useState, useMemo } from 'react';
-import {
-  User,
-  Target,
-  PieChart,
-  UploadCloud,
-  CheckCircle2,
-  Clock,
-  Sparkles,
-  Edit3,
-  Save,
+// agent-notes: { ctx: "Main App Component with clean, minimal SaaS visual design (Linear/Stripe/Vercel style), unified navigation and preserved active tab on login", deps: ["lucide-react", "./context/AuthContext", "./components/common/AIAssistantAvatar", "./components/common/CartoonDecorations"], state: "active", last: "sato@2026-09-24" }
+import React, { useState } from 'react';
+import { 
+  LayoutDashboard, 
+  FileText, 
+  Briefcase, 
+  Map, 
+  MessageSquare, 
+  Menu,
   X,
-  FileText,
-  AlertCircle,
-  Plus,
-  RefreshCw,
-  ChevronRight,
+  Bell,
+  LogOut,
+  LogIn,
+  Sparkles,
+  Layers,
+  ArrowRight,
   ShieldCheck,
-  Check
+  ChevronRight,
+  User,
+  CheckCircle2
 } from 'lucide-react';
-import {
-  ensureUser,
-  getStoredProfile,
-  saveProfile,
-  getSkillProgressRows,
-  updateSkillStatus,
-  batchStoreMissingSkills
-} from './services/supabase.js';
 
-// Pre-defined target roles for quick selection
-const POPULAR_ROLES = [
-  "Frontend Developer",
-  "Full Stack Developer",
-  "Backend Developer",
-  "AI / ML Engineer",
-  "Data Scientist",
-  "DevOps & Cloud Engineer"
-];
+import { AuthProvider, useAuth } from './context/AuthContext';
+import AuthModal from './components/AuthModal';
+import TaskFlowAuth from './components/TaskFlowAuth';
+import OnboardingWizard from './components/OnboardingWizard';
+import NotificationsDrawer from './components/NotificationsDrawer';
+import AIAssistantAvatar from './components/common/AIAssistantAvatar';
+import CartoonDecorations from './components/common/CartoonDecorations';
 
-// Fallback role curriculum if API call fails
-const FALLBACK_ROLE_SKILLS = {
-  "Frontend Developer": ["TypeScript", "Next.js", "Tailwind CSS", "Jest / Unit Testing", "Web Performance", "REST APIs", "GraphQL", "Web Accessibility"],
-  "Full Stack Developer": ["TypeScript", "Docker", "PostgreSQL", "Redis", "CI/CD Pipelines", "AWS", "REST APIs", "System Design"],
-  "Backend Developer": ["PostgreSQL", "Docker", "Redis", "Microservices", "Kubernetes", "Message Queues", "REST APIs", "System Design"],
-  "AI / ML Engineer": ["PyTorch", "TensorFlow", "Vector Databases", "LangChain", "LLM Fine-Tuning", "Docker", "MLOps", "Python"],
-  "Data Scientist": ["Python", "SQL", "Pandas", "Scikit-Learn", "Data Warehousing", "Tableau", "Statistical Modeling", "ETL Pipelines"],
-  "DevOps & Cloud Engineer": ["Docker", "Kubernetes", "Terraform", "AWS", "CI/CD Pipelines", "Prometheus", "Grafana", "Linux Administration"]
-};
+import Dashboard from './components/Dashboard';
 
-// Hook for managing skills progress state with optimistic updates
-function useSkills(userId) {
-  const [rows, setRows] = useState([]);
-  const [loading, setLoading] = useState(true);
+// Dynamic lazy route imports for optimal bundle splitting
+const ResumeAnalyzer = React.lazy(() => import('./pages/ResumeAnalyzer'));
+const SkillGapDashboard = React.lazy(() => import('./components/SkillGapDashboard'));
+const LearningRoadmap = React.lazy(() => import('./components/LearningRoadmap'));
+const CareerMentor = React.lazy(() => import('./components/CareerMentor'));
+const SkillVerificationModal = React.lazy(() => import('./components/resume/SkillVerificationModal'));
 
-  const load = async () => {
-    if (!userId) return;
-    try {
-      const data = await getSkillProgressRows(userId);
-      setRows(data || []);
-    } finally {
-      setLoading(false);
+const TabLoadingFallback = () => (
+  <div className="saas-card p-12 text-center space-y-3 my-6">
+    <div className="w-8 h-8 rounded-full border-2 border-indigo-600 border-t-transparent animate-spin mx-auto" />
+    <p className="text-xs font-medium text-slate-500">Loading module...</p>
+  </div>
+);
+
+import { RESUME_PRESETS } from './utils/mockData';
+
+function MainLayout() {
+  const { currentUser, isAuthenticated, isOnboarded, logout, updateProfile, isLoading } = useAuth();
+  
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [missingSkillsList, setMissingSkillsList] = useState([]);
+  const [targetRole, setTargetRole] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [globalVerifyingSkill, setGlobalVerifyingSkill] = useState(null);
+  const [avatarState, setAvatarState] = useState('idle');
+
+  // Modals & Overlays
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authModalTab, setAuthModalTab] = useState('login');
+  const [isTaskFlowAuthOpen, setIsTaskFlowAuthOpen] = useState(false);
+  const [taskFlowMode, setTaskFlowMode] = useState('signup');
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+
+  // Automatically close auth modals and ensure active tab is set when user logs in
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      setActiveTab((prev) => (prev ? prev : 'dashboard'));
+      setShowOnboarding(false);
+      setIsAuthModalOpen(false);
+      setIsTaskFlowAuthOpen(false);
+    }
+  }, [isAuthenticated]);
+
+  const activeProfile = currentUser || {
+    id: 'guest_user',
+    name: 'Student Profile',
+    college: 'SkillBridge Academy',
+    careerGoal: 'Frontend Developer',
+    skills: [],
+    verifiedSkills: [],
+    hasUploadedResume: false,
+    resumeId: null,
+    resumeText: '',
+    resumeFileName: null,
+    scores: {
+      resumeScore: 0,
+      skillScore: 0,
+      placementReadiness: 0,
+      weeklyGoalsProgress: 0
     }
   };
 
-  useEffect(() => {
-    load();
-  }, [userId]);
-
-  const setStatus = async (skill, status) => {
-    // Instant optimistic UI update
-    setRows((prev) =>
-      prev.map((row) => (row.skill === skill ? { ...row, status } : row))
-    );
-    try {
-      await updateSkillStatus(userId, skill, status);
-    } catch (err) {
-      console.error("[useSkills] Failed to persist status update:", err);
-    }
+  const handleProfileChange = (newProfile) => {
+    updateProfile(newProfile);
   };
 
-  return { rows, setRows, setStatus, loading, reload: load };
-}
-
-/* =========================================================================
-   SCREEN 1: PROFILE (View, Edit, Skills Badges, Re-upload Option)
-   ========================================================================= */
-function Profile({ profile, onChange, onReuploadRequest }) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({
-    firstName: profile?.first_name || '',
-    lastName: profile?.last_name || '',
-    email: profile?.email || '',
-    phone: profile?.phone || '',
-    targetRole: profile?.target_role || 'Full Stack Developer',
-    newSkillInput: ''
-  });
-  const [skills, setSkills] = useState(profile?.skills || []);
-  const [saving, setSaving] = useState(false);
-  const [saveSuccess, setSaveSuccess] = useState(false);
-
-  const handleSave = async (e) => {
-    e.preventDefault();
-    setSaving(true);
-    try {
-      const updated = {
-        ...profile,
-        first_name: formData.firstName.trim() || null,
-        last_name: formData.lastName.trim() || null,
-        email: formData.email.trim() || null,
-        phone: formData.phone.trim() || null,
-        target_role: formData.targetRole.trim() || profile.target_role,
-        skills
-      };
-      const saved = await saveProfile(updated);
-      onChange(saved);
-      setIsEditing(false);
-      setSaveSuccess(true);
-      setTimeout(() => setSaveSuccess(false), 3000);
-    } catch (err) {
-      console.error("[Profile] Save failed:", err);
-    } finally {
-      setSaving(false);
+  const handleGenerateRoadmap = (missingSkills, role) => {
+    setMissingSkillsList(missingSkills || []);
+    if (role) {
+      setTargetRole(role);
     }
+    setActiveTab('roadmap');
   };
 
-  const addSkill = () => {
-    const s = formData.newSkillInput.trim();
-    if (s && !skills.some((x) => x.toLowerCase() === s.toLowerCase())) {
-      setSkills([...skills, s]);
-      setFormData({ ...formData, newSkillInput: '' });
-    }
+  const handleOpenGlobalVerification = (skillName) => {
+    setGlobalVerifyingSkill(skillName);
   };
 
-  const removeSkill = (skillToRemove) => {
-    setSkills(skills.filter((s) => s !== skillToRemove));
+  const handleCompleteGlobalVerification = ({ skillName, certificateCode, score }) => {
+    const updatedSkills = Array.from(new Set([...(activeProfile.skills || []), skillName]));
+    const updatedCertificates = [
+      ...(activeProfile.certificates || []),
+      { skillName, certificateCode, score: score || 95, date: new Date().toLocaleDateString() }
+    ];
+    handleProfileChange({
+      ...activeProfile,
+      skills: updatedSkills,
+      certificates: updatedCertificates
+    });
+    setGlobalVerifyingSkill(null);
+    setActiveTab('resume');
   };
 
-  const fullName = [profile?.first_name, profile?.last_name].filter(Boolean).join(' ') || 'Candidate';
+  const navigationItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'wizard', label: 'Profile Setup', icon: User },
+    { id: 'skillgap', label: 'Skill Gap Analysis', icon: Briefcase },
+    { id: 'resume', label: 'Resume Analyzer', icon: FileText },
+    { id: 'roadmap', label: 'Learning Roadmap', icon: Map },
+    { id: 'chat', label: 'Career Mentor', icon: MessageSquare }
+  ];
 
-  return (
-    <div className="space-y-5 animate-fadeIn">
-      {/* Header card with Avatar and Quick Edit */}
-      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 p-5 shadow-sm">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3.5">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white font-bold text-xl shadow-md">
-              {fullName.charAt(0).toUpperCase()}
-            </div>
-            <div>
-              <h1 className="text-lg font-bold text-slate-900 dark:text-white leading-tight">
-                {fullName}
-              </h1>
-              <span className="inline-flex items-center text-xs font-semibold text-emerald-600 dark:text-emerald-400 mt-0.5">
-                <Target className="mr-1 h-3.5 w-3.5" />
-                {profile?.target_role || "Target Role Unspecified"}
-              </span>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => setIsEditing(!isEditing)}
-            className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition"
-            aria-label="Edit Profile"
-          >
-            {isEditing ? <X className="h-5 w-5" /> : <Edit3 className="h-5 w-5" />}
-          </button>
-        </div>
-
-        {saveSuccess && (
-          <div className="mt-3 flex items-center rounded-xl bg-emerald-50 dark:bg-emerald-950/40 p-2.5 text-xs font-medium text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
-            <CheckCircle2 className="mr-2 h-4 w-4 shrink-0" />
-            Profile saved to Supabase successfully!
-          </div>
-        )}
-      </div>
-
-      {/* Editing Form (Phone-friendly: 1 column, h-12 inputs, text-base to prevent iPhone auto-zoom) */}
-      {isEditing ? (
-        <form onSubmit={handleSave} className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm space-y-4">
-          <h2 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider">
-            Edit Profile Details
-          </h2>
-
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <div>
-              <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">First Name</label>
-              <input
-                type="text"
-                value={formData.firstName}
-                onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                className="h-12 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-transparent px-4 text-base text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-                placeholder="First name"
-              />
-            </div>
-            <div>
-              <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">Last Name</label>
-              <input
-                type="text"
-                value={formData.lastName}
-                onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                className="h-12 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-transparent px-4 text-base text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-                placeholder="Last name"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">Email Address</label>
-            <input
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="h-12 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-transparent px-4 text-base text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-              placeholder="you@domain.com"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">Phone Number</label>
-            <input
-              type="tel"
-              value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="h-12 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-transparent px-4 text-base text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-              placeholder="+1 555-0199"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">Target Role</label>
-            <input
-              type="text"
-              value={formData.targetRole}
-              onChange={(e) => setFormData({ ...formData, targetRole: e.target.value })}
-              className="h-12 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-transparent px-4 text-base text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-              placeholder="e.g. Frontend Developer"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">Add Skill</label>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={formData.newSkillInput}
-                onChange={(e) => setFormData({ ...formData, newSkillInput: e.target.value })}
-                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addSkill(); } }}
-                className="h-12 flex-1 rounded-xl border border-slate-300 dark:border-slate-700 bg-transparent px-4 text-base text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-                placeholder="e.g. React Native"
-              />
-              <button
-                type="button"
-                onClick={addSkill}
-                className="h-12 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 px-4 text-sm font-semibold text-slate-800 dark:text-slate-200"
-              >
-                Add
-              </button>
-            </div>
-          </div>
-
-          <div className="flex gap-2 pt-2">
-            <button
-              type="submit"
-              disabled={saving}
-              className="h-12 flex-1 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm flex items-center justify-center transition disabled:opacity-50"
-            >
-              <Save className="mr-2 h-4 w-4" />
-              {saving ? 'Saving...' : 'Save Profile'}
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsEditing(false)}
-              className="h-12 rounded-xl border border-slate-300 dark:border-slate-700 px-5 text-sm font-medium text-slate-600 dark:text-slate-400"
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
-      ) : (
-        /* Read-only Profile Details */
-        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm space-y-4">
-          <div className="grid grid-cols-1 gap-3 text-sm">
-            <div className="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800/80">
-              <span className="text-slate-500 dark:text-slate-400">Email</span>
-              <span className="font-medium text-slate-800 dark:text-slate-200 truncate max-w-[200px]">
-                {profile?.email || 'Not specified'}
-              </span>
-            </div>
-            <div className="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800/80">
-              <span className="text-slate-500 dark:text-slate-400">Phone</span>
-              <span className="font-medium text-slate-800 dark:text-slate-200">
-                {profile?.phone || 'Not specified'}
-              </span>
-            </div>
-            <div className="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800/80">
-              <span className="text-slate-500 dark:text-slate-400">Target Role</span>
-              <span className="font-medium text-emerald-600 dark:text-emerald-400">
-                {profile?.target_role || 'Not set'}
-              </span>
-            </div>
-            <div className="flex justify-between py-2">
-              <span className="text-slate-500 dark:text-slate-400">Identified Skills</span>
-              <span className="font-medium text-slate-800 dark:text-slate-200">
-                {skills.length} skills
-              </span>
-            </div>
-          </div>
-
-          {/* Current Skills Badges */}
-          <div className="pt-2">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2.5">
-              Verified Candidate Skills
-            </h3>
-            {skills.length > 0 ? (
-              <div className="flex flex-wrap gap-1.5">
-                {skills.map((skill, idx) => (
-                  <span
-                    key={idx}
-                    className="inline-flex items-center rounded-lg bg-slate-100 dark:bg-slate-800 px-2.5 py-1 text-xs font-medium text-slate-700 dark:text-slate-300"
-                  >
-                    <Check className="mr-1 h-3 w-3 text-emerald-500" />
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            ) : (
-              <p className="text-xs text-slate-400 italic">No skills listed yet.</p>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Re-upload Option */}
-      <div className="rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/40 p-4 text-center">
-        <p className="text-xs text-slate-500 dark:text-slate-400 mb-2.5">
-          Have an updated resume or aiming for a different role?
-        </p>
-        <button
-          type="button"
-          onClick={onReuploadRequest}
-          className="h-11 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center justify-center space-x-2"
-        >
-          <RefreshCw className="h-4 w-4 text-slate-500" />
-          <span>Re-upload Resume & Reset Gap</span>
-        </button>
-      </div>
-    </div>
-  );
-}
-
-/* =========================================================================
-   SCREEN 2: GAP (Only the Missing Skills for the Given Role)
-   ========================================================================= */
-function Gap({ profile, rows, setStatus, loading }) {
-  // ONLY show missing skills (status !== 'done')
-  const gap = useMemo(() => rows.filter((r) => r.status !== 'done'), [rows]);
-  const completedCount = rows.filter((r) => r.status === 'done').length;
-
-  return (
-    <div className="space-y-4 animate-fadeIn">
-      {/* Header Banner */}
-      <div>
-        <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
-          Your Skill Gap
-        </h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          Identified missing requirements for <span className="font-semibold text-slate-700 dark:text-slate-200">{profile?.target_role || "your role"}</span>
-        </p>
-      </div>
-
-      {loading ? (
-        <div className="py-12 text-center text-sm text-slate-400 flex flex-col items-center">
-          <RefreshCw className="h-6 w-6 animate-spin text-emerald-600 mb-2" />
-          Checking skill gap...
-        </div>
-      ) : gap.length === 0 ? (
-        /* Empty Gap State = 100% Complete! */
-        <div className="rounded-2xl border border-emerald-200 dark:border-emerald-800/80 bg-gradient-to-b from-emerald-50 to-white dark:from-emerald-950/30 dark:to-slate-900 p-8 text-center space-y-3 shadow-sm">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-600">
-            <Sparkles className="h-8 w-8" />
-          </div>
-          <h2 className="text-lg font-bold text-emerald-800 dark:text-emerald-300">
-            No Gaps Left! 🎉
-          </h2>
-          <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed max-w-xs mx-auto">
-            You've marked all required skills as completed. Your profile meets the benchmark for {profile?.target_role}.
-          </p>
-          <div className="pt-2">
-            <span className="inline-flex items-center rounded-full bg-emerald-100 dark:bg-emerald-900/40 px-3 py-1 text-xs font-semibold text-emerald-700 dark:text-emerald-300">
-              <CheckCircle2 className="mr-1.5 h-3.5 w-3.5" />
-              {completedCount} of {rows.length} Skills Mastered
-            </span>
-          </div>
-        </div>
-      ) : (
-        /* The Gap List */
-        <ul className="space-y-2.5">
-          {gap.map((r) => {
-            const isLearning = r.status === 'learning';
-            return (
-              <li
-                key={r.skill}
-                className="flex items-center justify-between rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3.5 shadow-sm transition hover:border-slate-300 dark:hover:border-slate-700"
-              >
-                <div className="flex flex-col pr-2">
-                  <span className="font-semibold text-sm text-slate-900 dark:text-white leading-tight">
-                    {r.skill}
-                  </span>
-                  <span className="text-[11px] font-medium text-slate-400 mt-0.5">
-                    {isLearning ? (
-                      <span className="inline-flex items-center text-amber-600 dark:text-amber-400">
-                        <Clock className="mr-1 h-3 w-3" /> In Progress
-                      </span>
-                    ) : (
-                      'Recommended Gap Skill'
-                    )}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-1.5 shrink-0">
-                  {/* Learning Toggle Button */}
-                  <button
-                    type="button"
-                    onClick={() => setStatus(r.skill, isLearning ? 'todo' : 'learning')}
-                    className={`h-10 rounded-full px-3.5 text-xs font-semibold transition active:scale-95 ${
-                      isLearning
-                        ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 border border-amber-300 dark:border-amber-700'
-                        : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300'
-                    }`}
-                  >
-                    {isLearning ? 'Learning' : 'Learn'}
-                  </button>
-
-                  {/* Done Button */}
-                  <button
-                    type="button"
-                    onClick={() => setStatus(r.skill, 'done')}
-                    className="h-10 rounded-full bg-emerald-600 hover:bg-emerald-500 px-3.5 text-xs font-semibold text-white shadow-sm transition active:scale-95 flex items-center space-x-1"
-                  >
-                    <Check className="h-3.5 w-3.5" />
-                    <span>Done</span>
-                  </button>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </div>
-  );
-}
-
-/* =========================================================================
-   SCREEN 3: PROGRESS (Circular Ring % and Breakdown)
-   ========================================================================= */
-function Progress({ rows, profile }) {
-  const done = useMemo(() => rows.filter((r) => r.status === 'done').length, [rows]);
-  const learning = useMemo(() => rows.filter((r) => r.status === 'learning').length, [rows]);
-  const todo = useMemo(() => rows.filter((r) => r.status === 'todo').length, [rows]);
-  const total = rows.length || 0;
-  const pct = total ? Math.round((done / total) * 100) : 0;
-
-  // Circle dimensions
-  const R = 52;
-  const C = 2 * Math.PI * R;
-  const strokeDashoffset = C * (1 - pct / 100);
-
-  return (
-    <div className="space-y-6 animate-fadeIn">
-      {/* Header */}
-      <div>
-        <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
-          Learning Progress
-        </h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          Target role readiness for <span className="font-semibold text-slate-700 dark:text-slate-200">{profile?.target_role}</span>
-        </p>
-      </div>
-
-      {/* Circular Progress Ring */}
-      <div className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm flex flex-col items-center">
-        <div className="relative flex items-center justify-center">
-          <svg viewBox="0 0 120 120" className="h-44 w-44 -rotate-90">
-            {/* Background Track */}
-            <circle
-              cx="60"
-              cy="60"
-              r={R}
-              fill="none"
-              stroke="currentColor"
-              className="text-slate-100 dark:text-slate-800"
-              strokeWidth="10"
-            />
-            {/* Animated Progress Circle */}
-            <circle
-              cx="60"
-              cy="60"
-              r={R}
-              fill="none"
-              stroke="#059669"
-              strokeWidth="10"
-              strokeLinecap="round"
-              strokeDasharray={C}
-              strokeDashoffset={strokeDashoffset}
-              style={{ transition: 'stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1)' }}
-            />
-          </svg>
-
-          {/* Centered Percentage Overlay */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-            <span className="text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-              {pct}%
-            </span>
-            <span className="text-xs font-semibold text-slate-400 mt-0.5">
-              {done} of {total} skills
-            </span>
-          </div>
-        </div>
-
-        {/* 3 Metric Pills */}
-        <div className="grid grid-cols-3 gap-2 w-full mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 text-center">
-          <div className="rounded-xl bg-emerald-50 dark:bg-emerald-950/40 p-2.5">
-            <span className="block text-lg font-bold text-emerald-600 dark:text-emerald-400">{done}</span>
-            <span className="block text-[11px] font-medium text-slate-500">Done</span>
-          </div>
-          <div className="rounded-xl bg-amber-50 dark:bg-amber-950/40 p-2.5">
-            <span className="block text-lg font-bold text-amber-600 dark:text-amber-400">{learning}</span>
-            <span className="block text-[11px] font-medium text-slate-500">Learning</span>
-          </div>
-          <div className="rounded-xl bg-slate-100 dark:bg-slate-800 p-2.5">
-            <span className="block text-lg font-bold text-slate-700 dark:text-slate-300">{todo}</span>
-            <span className="block text-[11px] font-medium text-slate-500">To Do</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Completed & In-Progress Skill Lists */}
-      <div className="space-y-3">
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-          Skills Breakdown
-        </h2>
-        {rows.length === 0 ? (
-          <p className="text-xs text-slate-400 italic">No skills registered yet.</p>
-        ) : (
-          <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 divide-y divide-slate-100 dark:divide-slate-800/80 overflow-hidden shadow-sm">
-            {rows.map((r) => (
-              <div key={r.skill} className="flex items-center justify-between p-3.5 text-sm">
-                <span className={`font-medium ${r.status === 'done' ? 'line-through text-slate-400' : 'text-slate-800 dark:text-slate-200'}`}>
-                  {r.skill}
-                </span>
-                <span
-                  className={`text-xs px-2.5 py-0.5 rounded-full font-semibold ${
-                    r.status === 'done'
-                      ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300'
-                      : r.status === 'learning'
-                      ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300'
-                      : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
-                  }`}
-                >
-                  {r.status === 'done' ? 'Completed' : r.status === 'learning' ? 'In Progress' : 'Pending'}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-/* =========================================================================
-   ONBOARDING GATE: UPLOAD (Appears ONLY for First-Time Users)
-   ========================================================================= */
-function Upload({ onDone }) {
-  const [role, setRole] = useState(POPULAR_ROLES[0]);
-  const [resumeText, setResumeText] = useState('');
-  const [fileName, setFileName] = useState('');
-  const [analyzing, setAnalyzing] = useState(false);
-  const [statusMessage, setStatusMessage] = useState('');
-  const [error, setError] = useState('');
-
-  // Handle local file read (.pdf, .txt, .docx)
-  const handleFileChange = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setFileName(file.name);
-    setError('');
-
-    // If text file, read text directly
-    if (file.type.includes("text") || file.name.endsWith(".txt")) {
-      const text = await file.text();
-      setResumeText(text);
-      return;
+  const renderActiveView = () => {
+    if (showOnboarding) {
+      return (
+        <OnboardingWizard 
+          onComplete={() => {
+            setShowOnboarding(false);
+            setActiveTab('dashboard');
+          }} 
+        />
+      );
     }
 
-    // For PDF or DOCX, we send file to server or read content
-    const reader = new FileReader();
-    reader.onload = async (event) => {
-      const raw = event.target?.result;
-      if (typeof raw === "string") {
-        setResumeText(raw);
-      } else {
-        // Fallback default sample text for candidate if binary
-        setResumeText(`Candidate Resume for ${file.name}. Skills: JavaScript, React, HTML, CSS, Git, Node.js.`);
-      }
-    };
-    reader.readAsText(file);
-  };
-
-  const handleUploadSubmit = async (e) => {
-    e.preventDefault();
-    if (!resumeText.trim()) {
-      setError("Please paste your resume text or choose a resume file.");
-      return;
-    }
-
-    setAnalyzing(true);
-    setError("");
-    setStatusMessage("1/3 Ensuring secure visitor profile...");
-
-    try {
-      const user = await ensureUser();
-
-      setStatusMessage("2/3 Parsing resume & extracting skills...");
-      let parsed = {
-        firstName: "Candidate",
-        lastName: "",
-        email: "user@example.com",
-        phone: "",
-        skills: ["JavaScript", "React", "HTML5", "CSS3", "Git"]
-      };
-
-      // Call parse-resume API
-      try {
-        const parseRes = await fetch("/api/parse-resume", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ resumeText })
-        });
-        if (parseRes.ok) {
-          const parsedData = await parseRes.json();
-          if (parsedData && (parsedData.skills || parsedData.firstName)) {
-            parsed = {
-              firstName: parsedData.firstName || "Candidate",
-              lastName: parsedData.lastName || "",
-              email: parsedData.email || "",
-              phone: parsedData.phone || "",
-              skills: Array.isArray(parsedData.skills) ? parsedData.skills : parsed.skills
-            };
-          }
-        }
-      } catch (err) {
-        console.warn("[Upload] /api/parse-resume fetch notice, using extracted fallback:", err);
-      }
-
-      setStatusMessage("3/3 Computing skill gap & saving to Supabase...");
-
-      // Compute skill gap
-      let missing = [];
-      try {
-        const gapRes = await fetch("/api/skill-gap", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ role, skills: parsed.skills })
-        });
-        if (gapRes.ok) {
-          const gapData = await gapRes.json();
-          if (Array.isArray(gapData?.missing) && gapData.missing.length > 0) {
-            missing = gapData.missing;
-          }
-        }
-      } catch (err) {
-        console.warn("[Upload] /api/skill-gap fetch notice, using role fallback:", err);
-      }
-
-      // If missing is still empty, apply role-curriculum fallback
-      if (!missing || missing.length === 0) {
-        const curriculum = FALLBACK_ROLE_SKILLS[role] || FALLBACK_ROLE_SKILLS["Full Stack Developer"];
-        const normCandidate = parsed.skills.map((s) => s.toLowerCase());
-        missing = curriculum.filter((c) => !normCandidate.includes(c.toLowerCase())).slice(0, 8);
-      }
-
-      // Save profile to Supabase & local cache
-      const profilePayload = {
-        user_id: user.id,
-        first_name: parsed.firstName,
-        last_name: parsed.lastName,
-        email: parsed.email,
-        phone: parsed.phone,
-        target_role: role,
-        resume: { parsed, fileName },
-        skills: parsed.skills,
-        updated_at: new Date().toISOString()
-      };
-
-      const savedProfile = await saveProfile(profilePayload);
-
-      // Save missing skills to Supabase `skill_progress` table
-      await batchStoreMissingSkills(user.id, missing);
-
-      // Done! Hand off profile to render the 3-screen app
-      onDone(savedProfile);
-    } catch (err) {
-      console.error("[Upload] Error during onboarding:", err);
-      setError("An error occurred while analyzing the resume. Please try again.");
-    } finally {
-      setAnalyzing(false);
-    }
-  };
-
-  return (
-    <div className="min-h-dvh max-w-md mx-auto flex flex-col justify-center px-4 py-8 bg-slate-50 dark:bg-slate-950">
-      <div className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-xl space-y-5">
-        {/* Brand header */}
-        <div className="text-center space-y-1">
-          <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-600 text-white shadow-md mb-2">
-            <Sparkles className="h-6 w-6" />
-          </div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-            SkillBridge AI
-          </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            Upload your resume once. We analyze your skill gap, store your profile in Supabase, and track your progress forever.
-          </p>
-        </div>
-
-        {error && (
-          <div className="flex items-center rounded-xl bg-red-50 dark:bg-red-950/40 p-3 text-xs text-red-700 dark:text-red-300 border border-red-200 dark:border-red-900">
-            <AlertCircle className="mr-2 h-4 w-4 shrink-0" />
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleUploadSubmit} className="space-y-4">
-          {/* Target Role Selector */}
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
-              1. Select Target Role
-            </label>
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="h-12 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 text-base text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 font-medium"
-            >
-              {POPULAR_ROLES.map((r) => (
-                <option key={r} value={r}>
-                  {r}
-                </option>
-              ))}
-            </select>
-
-            {/* Quick role pills for fast thumb tap */}
-            <div className="flex flex-wrap gap-1.5 mt-2">
-              {POPULAR_ROLES.slice(0, 3).map((r) => (
-                <button
-                  key={r}
-                  type="button"
-                  onClick={() => setRole(r)}
-                  className={`text-[11px] px-2.5 py-1 rounded-full font-medium transition ${
-                    role === r
-                      ? 'bg-emerald-600 text-white'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
-                  }`}
-                >
-                  {r.split(' ')[0]}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Resume Upload or Paste */}
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
-              2. Upload or Paste Resume
-            </label>
-
-            {/* File Upload Button */}
-            <label className="flex h-14 w-full cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-slate-300 hover:border-emerald-500 dark:border-slate-700 dark:hover:border-emerald-500 bg-slate-50 dark:bg-slate-800/50 px-4 transition">
-              <UploadCloud className="mr-2 h-5 w-5 text-emerald-600" />
-              <span className="text-sm font-medium text-slate-700 dark:text-slate-300 truncate">
-                {fileName || "Tap to select resume (PDF/TXT)"}
-              </span>
-              <input
-                type="file"
-                accept=".pdf,.txt,.docx"
-                onChange={handleFileChange}
-                className="hidden"
-              />
-            </label>
-
-            {/* Or Paste text */}
-            <div className="mt-2.5">
-              <textarea
-                value={resumeText}
-                onChange={(e) => setResumeText(e.target.value)}
-                placeholder="Or paste resume text here (education, skills, projects)..."
-                rows={4}
-                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-transparent p-3 text-base text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-              />
-            </div>
-          </div>
-
-          {/* Action Button */}
-          <button
-            type="submit"
-            disabled={analyzing}
-            className="h-14 w-full rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-base shadow-lg shadow-emerald-600/20 active:scale-[0.98] transition disabled:opacity-50 flex items-center justify-center space-x-2"
-          >
-            {analyzing ? (
-              <>
-                <RefreshCw className="h-5 w-5 animate-spin" />
-                <span>{statusMessage || 'Analyzing...'}</span>
-              </>
-            ) : (
-              <>
-                <span>Analyze & Build Profile</span>
-                <ChevronRight className="h-5 w-5" />
-              </>
-            )}
-          </button>
-        </form>
-
-        <div className="flex items-center justify-center text-[11px] text-slate-400 space-x-1.5">
-          <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
-          <span>Anonymous persistent session • No password needed</span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* =========================================================================
-   MAIN APP: 3 SCREENS, 1 BOTTOM BAR (Never ask twice gate)
-   ========================================================================= */
-export default function App() {
-  const [loading, setLoading] = useState(true);
-  const [profile, setProfile] = useState(null);
-  const [tab, setTab] = useState("gap"); // Default to Gap screen
-  const [userId, setUserId] = useState(null);
-
-  // Initialize user & verify if profile already exists in Supabase/localStorage
-  useEffect(() => {
-    (async () => {
-      try {
-        const user = await ensureUser();
-        setUserId(user.id);
-        const stored = await getStoredProfile(user.id);
-        setProfile(stored);
-      } catch (err) {
-        console.error("[App] Initialization error:", err);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
-
-  // Skill progress hook bound to current user
-  const { rows, setStatus, loading: skillsLoading } = useSkills(userId);
-
-  // Initial loading spinner
-  if (loading) {
     return (
-      <div className="grid h-dvh place-items-center bg-slate-50 dark:bg-slate-950 text-slate-400">
-        <div className="flex flex-col items-center space-y-3">
-          <div className="h-10 w-10 rounded-full border-3 border-emerald-600 border-t-transparent animate-spin" />
-          <p className="text-xs font-medium tracking-wide">Loading SkillBridge...</p>
+      <React.Suspense fallback={<TabLoadingFallback />}>
+        <div>
+          <div className={activeTab === 'dashboard' ? 'block' : 'hidden'}>
+            <Dashboard 
+              profile={activeProfile} 
+              setProfile={handleProfileChange} 
+              onNavigate={setActiveTab} 
+              onOpenVerification={handleOpenGlobalVerification}
+            />
+          </div>
+          <div className={activeTab === 'skillgap' ? 'block' : 'hidden'}>
+            <SkillGapDashboard 
+              profile={activeProfile} 
+              setProfile={handleProfileChange}
+              onGenerateRoadmap={handleGenerateRoadmap} 
+              onNavigate={setActiveTab} 
+              onOpenVerification={handleOpenGlobalVerification}
+            />
+          </div>
+          <div className={activeTab === 'resume' ? 'block' : 'hidden'}>
+            <ResumeAnalyzer 
+              profile={activeProfile} 
+              setProfile={handleProfileChange} 
+              onNavigate={setActiveTab}
+            />
+          </div>
+          <div className={activeTab === 'roadmap' ? 'block' : 'hidden'}>
+            <LearningRoadmap 
+              profile={activeProfile} 
+              missingSkillsList={missingSkillsList} 
+              targetRole={targetRole || activeProfile?.careerGoal || "Frontend Developer"}
+              onOpenVerification={handleOpenGlobalVerification}
+            />
+          </div>
+          <div className={activeTab === 'chat' ? 'block' : 'hidden'}>
+            <CareerMentor 
+              profile={activeProfile} 
+            />
+          </div>
+          <div className={activeTab === 'wizard' ? 'block' : 'hidden'}>
+            <OnboardingWizard 
+              onComplete={() => {
+                setShowOnboarding(false);
+                setActiveTab('skillgap');
+              }} 
+            />
+          </div>
         </div>
+      </React.Suspense>
+    );
+  };
+
+  // Loading state while verifying authentication session
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#fafafa] flex flex-col items-center justify-center p-6 text-slate-900">
+        <div className="flex items-center gap-2.5 mb-6">
+          <div className="w-10 h-10 rounded-xl bg-[#0f766e] flex items-center justify-center text-white font-black text-base shadow-sm">
+            <span>SB</span>
+          </div>
+          <span className="font-extrabold text-slate-900 text-xl tracking-tight">Skill<span className="text-[#0f766e]">Bridge</span></span>
+        </div>
+        <div className="w-8 h-8 rounded-full border-2 border-[#0f766e] border-t-transparent animate-spin mb-4" />
+        <p className="text-sm font-medium text-slate-600">Verifying authentication & loading dashboard...</p>
       </div>
     );
   }
 
-  // Upload screen appears ONLY for brand-new users without a profile
-  if (!profile) {
-    return <Upload onDone={(newProfile) => setProfile(newProfile)} />;
+  // Unauthenticated Hero & Landing Section
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-[#fafafa] text-slate-900 flex flex-col justify-between relative overflow-hidden">
+        <CartoonDecorations />
+
+        {/* Minimal Navigation Header */}
+        <header className="max-w-6xl w-full mx-auto px-6 py-6 flex items-center justify-between relative z-10">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-[#0f766e] flex items-center justify-center text-white font-black text-sm shadow-sm">
+              <span>SB</span>
+            </div>
+            <div className="flex items-baseline gap-1">
+              <span className="font-extrabold text-slate-900 text-lg tracking-tight">Skill</span>
+              <span className="font-bold text-[#0f766e] text-lg tracking-tight">Bridge</span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-6">
+            <button
+              onClick={() => { setAuthModalTab('login'); setIsAuthModalOpen(true); }}
+              className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors hidden sm:block"
+            >
+              How It Works
+            </button>
+            <button
+              onClick={() => { setAuthModalTab('login'); setIsAuthModalOpen(true); }}
+              className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors hidden sm:block"
+            >
+              Features
+            </button>
+            <button
+              onClick={() => { setTaskFlowMode('signup'); setIsTaskFlowAuthOpen(true); }}
+              className="px-5 py-2.5 rounded-xl bg-[#0f766e] hover:bg-[#0d594f] text-white text-xs font-semibold shadow-sm transition-all"
+            >
+              Get Started
+            </button>
+          </div>
+        </header>
+
+        {/* Hero Content Section */}
+        <main className="max-w-4xl mx-auto px-6 py-16 text-center space-y-8 relative z-10 my-auto">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-medium">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>AI-Powered Career & Skill Gap Intelligence</span>
+          </div>
+
+          <div className="space-y-4">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-slate-900 leading-tight">
+              Bridge the gap between your skills and your dream career.
+            </h1>
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
+              Analyze job descriptions, assess readiness, get verified certificates, and follow personalized learning roadmaps designed for placement success.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
+            <button
+              onClick={() => { setTaskFlowMode('login'); setIsTaskFlowAuthOpen(true); }}
+              className="saas-btn-primary w-full sm:w-auto px-6 py-3 text-sm font-medium gap-2"
+            >
+              <FileText className="w-4 h-4" /> Analyze Resume Step-by-Step <ArrowRight className="w-4 h-4" />
+            </button>
+
+            <button
+              onClick={() => { setTaskFlowMode('signup'); setIsTaskFlowAuthOpen(true); }}
+              className="saas-btn-secondary w-full sm:w-auto px-6 py-3 text-sm font-medium gap-2"
+            >
+              <LogIn className="w-4 h-4 text-slate-500" /> Sign Up with Google / GitHub
+            </button>
+          </div>
+
+          {/* Clean Feature Highlights Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-12 text-left border-t border-slate-200/80">
+            <div className="saas-card p-5 space-y-2">
+              <div className="w-9 h-9 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-medium">
+                <FileText className="w-5 h-5" />
+              </div>
+              <h3 className="text-sm font-semibold text-slate-900">ATS Resume Optimizer</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Scan your resume against live job descriptions to find keyword gaps and formatting issues.
+              </p>
+            </div>
+
+            <div className="saas-card p-5 space-y-2">
+              <div className="w-9 h-9 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-medium">
+                <Layers className="w-5 h-5" />
+              </div>
+              <h3 className="text-sm font-semibold text-slate-900">Skill Gap Benchmarking</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Compare your current skills with industry standards and target roles in real-time.
+              </p>
+            </div>
+
+            <div className="saas-card p-5 space-y-2">
+              <div className="w-9 h-9 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-medium">
+                <Map className="w-5 h-5" />
+              </div>
+              <h3 className="text-sm font-semibold text-slate-900">Curated Learning Roadmaps</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Follow structured milestone roadmaps and earn verifiable skill badges through testing.
+              </p>
+            </div>
+          </div>
+        </main>
+
+        {/* Minimal Footer */}
+        <footer className="max-w-6xl w-full mx-auto px-6 py-8 border-t border-slate-200 text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-4 relative z-10">
+          <p>© 2026 SkillBridge AI. Professional career intelligence platform.</p>
+          <div className="flex items-center gap-6">
+            <button onClick={() => { setAuthModalTab('login'); setIsAuthModalOpen(true); }} className="hover:text-slate-900">Log In</button>
+            <button onClick={() => { setTaskFlowMode('signup'); setIsTaskFlowAuthOpen(true); }} className="hover:text-slate-900">Sign Up</button>
+          </div>
+        </footer>
+
+        {/* Task Flow Auth Overlay */}
+        <TaskFlowAuth 
+          isOpen={isTaskFlowAuthOpen} 
+          onClose={() => setIsTaskFlowAuthOpen(false)} 
+          initialMode={taskFlowMode}
+          onComplete={() => {
+            setShowOnboarding(false);
+            setActiveTab('dashboard');
+          }}
+        />
+
+        {/* Standard Auth Modal */}
+        <AuthModal 
+          isOpen={isAuthModalOpen} 
+          onClose={() => setIsAuthModalOpen(false)} 
+          initialTab={authModalTab}
+          onLoginSuccess={() => {
+            setShowOnboarding(false);
+            setActiveTab('dashboard');
+          }}
+          onStartOnboarding={() => {
+            setShowOnboarding(false);
+            setActiveTab('dashboard');
+          }}
+        />
+      </div>
+    );
   }
 
+  // Authenticated App Layout
   return (
-    <div className="mx-auto flex h-dvh max-w-md flex-col bg-white dark:bg-slate-900 shadow-2xl relative border-x border-slate-200 dark:border-slate-800">
-      {/* Top Mobile Bar */}
-      <header className="flex h-14 items-center justify-between border-b border-slate-100 dark:border-slate-800 px-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur shrink-0 z-10">
-        <div className="flex items-center space-x-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-600 text-white font-bold text-xs shadow-sm">
-            SB
-          </div>
-          <span className="font-extrabold text-slate-900 dark:text-white tracking-tight text-base">
-            SkillBridge
-          </span>
-        </div>
-        <span className="inline-flex items-center rounded-full bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
-          {profile?.target_role || "Profile Active"}
-        </span>
-      </header>
+    <div className="min-h-screen bg-[#fafafa] text-slate-900 flex relative overflow-x-hidden">
+      <CartoonDecorations />
 
-      {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto p-4 sm:p-5">
-        {tab === 'profile' && (
-          <Profile
-            profile={profile}
-            onChange={setProfile}
-            onReuploadRequest={() => setProfile(null)}
-          />
-        )}
-        {tab === 'gap' && (
-          <Gap
-            profile={profile}
-            rows={rows}
-            setStatus={setStatus}
-            loading={skillsLoading}
-          />
-        )}
-        {tab === 'progress' && (
-          <Progress
-            rows={rows}
-            profile={profile}
-          />
-        )}
-      </main>
-
-      {/* Bottom 3-Tab Bar (Phone friendly, safe-area inset, h-16 tap targets) */}
-      <nav className="grid grid-cols-3 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 pb-[env(safe-area-inset-bottom)] shrink-0 z-20">
-        {[
-          { id: 'profile', label: 'Profile', icon: User },
-          { id: 'gap', label: 'Gap', icon: Target },
-          { id: 'progress', label: 'Progress', icon: PieChart }
-        ].map(({ id, label, icon: Icon }) => {
-          const isActive = tab === id;
-          return (
-            <button
-              key={id}
-              onClick={() => setTab(id)}
-              className={`h-16 flex flex-col items-center justify-center space-y-1 transition active:scale-95 ${
-                isActive
-                  ? 'text-emerald-600 dark:text-emerald-400 font-bold'
-                  : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 font-medium'
-              }`}
+      {/* Minimal SaaS Sidebar */}
+      <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-slate-200 flex flex-col justify-between transform transition-transform duration-200 md:translate-x-0 md:static ${sidebarOpen ? 'translate-x-0 shadow-lg' : '-translate-x-full'}`}>
+        <div className="overflow-y-auto">
+          {/* Brand Logo Header */}
+          <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-[#0f766e] flex items-center justify-center text-white font-black text-sm shadow-sm">
+                <span>SB</span>
+              </div>
+              <div>
+                <div className="flex items-baseline gap-1">
+                  <span className="font-extrabold text-slate-900 text-sm tracking-tight">Skill</span>
+                  <span className="font-bold text-[#0f766e] text-sm tracking-tight">Bridge</span>
+                </div>
+                <span className="text-[11px] text-slate-500 font-normal block">Software Career Engine</span>
+              </div>
+            </div>
+            
+            <button 
+              onClick={() => setSidebarOpen(false)}
+              className="p-1.5 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 md:hidden"
             >
-              <Icon className={`h-5 w-5 ${isActive ? 'stroke-[2.5]' : 'stroke-[1.8]'}`} />
-              <span className="text-xs capitalize tracking-tight">{label}</span>
+              <X className="w-4 h-4" />
             </button>
-          );
-        })}
-      </nav>
+          </div>
+
+          {/* Navigation Links */}
+          <nav className="p-3 space-y-1">
+            {navigationItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeTab === item.id && !showOnboarding;
+              
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    setShowOnboarding(false);
+                    setActiveTab(item.id);
+                    setSidebarOpen(false);
+                  }}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+                    isActive 
+                      ? 'bg-indigo-50 text-indigo-700 font-semibold' 
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                  }`}
+                >
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-indigo-600' : 'text-slate-400'}`} />
+                  <span className="flex-1 text-left">{item.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* Sidebar Footer User Info */}
+        <div className="p-3 border-t border-slate-100 bg-white space-y-2">
+          <div className="flex items-center gap-2.5 p-2 rounded-lg bg-slate-50 border border-slate-200/60">
+            <AIAssistantAvatar size="sm" state={avatarState} onClick={() => setAvatarState('success')} />
+            <div className="overflow-hidden flex-1 min-w-0">
+              <span className="text-xs font-semibold text-slate-900 block truncate">
+                {activeProfile.name?.split(' - ')[0] || 'User Profile'}
+              </span>
+              {activeProfile.email && (
+                <span className="text-[10px] text-teal-700 font-semibold block truncate">
+                  {activeProfile.email}
+                </span>
+              )}
+              <span className="text-[11px] text-slate-500 font-normal block truncate">
+                {activeProfile.careerGoal || 'Frontend Developer'}
+              </span>
+            </div>
+            
+            {isAuthenticated && (
+              <button 
+                onClick={logout}
+                className="p-1.5 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                title="Log Out"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+
+          <button
+            onClick={() => setShowOnboarding(true)}
+            className="w-full py-1.5 px-2.5 rounded-md bg-white hover:bg-slate-50 border border-slate-200 text-xs font-medium text-slate-700 flex items-center justify-center gap-1.5 transition-colors"
+          >
+            <Sparkles className="w-3 h-3 text-indigo-600" /> Edit Profile Setup
+          </button>
+        </div>
+      </aside>
+
+      {/* Main Content Wrap */}
+      <div className="flex-1 flex flex-col min-w-0 z-10">
+        {/* Top Header */}
+        <header className="px-6 py-3.5 bg-white border-b border-slate-200/80 flex items-center justify-between shrink-0 sticky top-0 z-30">
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => setSidebarOpen(true)}
+              className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:text-slate-900 md:hidden"
+            >
+              <Menu className="w-4 h-4" />
+            </button>
+
+            {/* Breadcrumb / Page Title */}
+            <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500">
+              <span>SkillBridge</span>
+              <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+              <span className="font-medium text-slate-900 capitalize">{navigationItems.find(i => i.id === activeTab)?.label || 'Dashboard'}</span>
+            </div>
+          </div>
+
+          {/* Header Action Buttons */}
+          <div className="flex items-center gap-3 text-xs">
+            {/* Placement Readiness Pill */}
+            <div className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-xs font-medium">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Readiness: {activeProfile.scores?.placementReadiness || 81}%</span>
+            </div>
+
+            {/* Notifications Toggle */}
+            <button
+              onClick={() => setIsNotificationsOpen(true)}
+              className="p-2 rounded-lg border border-slate-200 text-slate-500 hover:text-slate-900 hover:bg-slate-50 relative transition-colors"
+              title="Notifications"
+            >
+              <Bell className="w-4 h-4" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-indigo-600"></span>
+            </button>
+
+            {/* User status & Logout */}
+            <div className="flex items-center gap-2.5 pl-2 border-l border-slate-200">
+              <div className="flex flex-col items-end">
+                <span className="text-xs font-semibold text-slate-800 truncate max-w-[130px] sm:max-w-none">
+                  {activeProfile.name?.split(' - ')[0]}
+                </span>
+                {activeProfile.email && (
+                  <span className="text-[10px] text-teal-700 font-medium truncate max-w-[150px] sm:max-w-none">
+                    {activeProfile.email}
+                  </span>
+                )}
+              </div>
+              {isAuthenticated && (
+                <button 
+                  onClick={logout}
+                  className="p-1.5 rounded-lg border border-slate-200 hover:border-rose-200 hover:bg-rose-50 text-slate-500 hover:text-rose-600 transition-colors flex items-center gap-1 text-[11px] font-medium"
+                  title="Sign Out"
+                >
+                  <LogOut className="w-3.5 h-3.5 text-rose-500" />
+                  <span className="hidden sm:inline">Sign Out</span>
+                </button>
+              )}
+            </div>
+          </div>
+        </header>
+
+        {/* Content Body */}
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 max-w-7xl w-full mx-auto">
+          {renderActiveView()}
+        </main>
+      </div>
+
+      {/* Task Flow Auth Overlay */}
+      <TaskFlowAuth 
+        isOpen={isTaskFlowAuthOpen} 
+        onClose={() => setIsTaskFlowAuthOpen(false)} 
+        initialMode={taskFlowMode}
+        onComplete={() => {
+          setShowOnboarding(false);
+          setActiveTab('dashboard');
+        }}
+      />
+
+      {/* Standard Auth Modal Overlay */}
+      <AuthModal 
+        isOpen={isAuthModalOpen} 
+        onClose={() => setIsAuthModalOpen(false)} 
+        initialTab={authModalTab}
+        onLoginSuccess={() => {
+          setShowOnboarding(false);
+          setActiveTab('dashboard');
+        }}
+        onStartOnboarding={() => setShowOnboarding(true)}
+      />
+
+      {/* Notifications Drawer */}
+      <NotificationsDrawer 
+        isOpen={isNotificationsOpen} 
+        onClose={() => setIsNotificationsOpen(false)} 
+      />
+
+      {/* Global Skill Verification Modal */}
+      {globalVerifyingSkill && (
+        <React.Suspense fallback={null}>
+          <SkillVerificationModal
+            skillName={globalVerifyingSkill}
+            onClose={() => setGlobalVerifyingSkill(null)}
+            onCompleteVerification={handleCompleteGlobalVerification}
+          />
+        </React.Suspense>
+      )}
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <MainLayout />
+    </AuthProvider>
   );
 }

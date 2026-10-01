@@ -17,7 +17,6 @@ import { checkSupabaseConnection } from './services/supabase.service.js';
 import { aiRateLimiter } from './middleware/rateLimiter.js';
 import { extractContact } from '../lib/extractName.js';
 import { parseResume } from '../lib/parseResume.js';
-import { computeSkillGap } from '../lib/computeSkillGap.js';
 
 const app = express();
 
@@ -95,27 +94,6 @@ const handleParseResume = async (req, res) => {
 
 app.post("/api/parse-resume", handleParseResume);
 app.post("/parse-resume", handleParseResume);
-
-// Lean skill gap computation endpoint
-const handleSkillGap = async (req, res, next) => {
-  // If request contains role & skills directly (from mobile app), compute missing skills
-  if (req.body && (req.body.role || req.body.skills)) {
-    try {
-      const { role, skills } = req.body;
-      const missing = await computeSkillGap(role || "Full Stack Developer", skills || []);
-      return res.json({ missing: Array.isArray(missing) ? missing.slice(0, 8) : [] });
-    } catch (err) {
-      return res.status(500).json({
-        missing: [],
-        error: err.message || "Failed to compute skill gap"
-      });
-    }
-  }
-  return next();
-};
-
-app.post("/api/skill-gap", handleSkillGap);
-app.post("/skill-gap", handleSkillGap);
 
 // Standard API routes
 app.use("/api/auth", authRoutes);
