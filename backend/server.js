@@ -16,6 +16,7 @@ import aiRoutes from './routes/ai.js';
 import { checkSupabaseConnection } from './services/supabase.service.js';
 import { aiRateLimiter } from './middleware/rateLimiter.js';
 import { extractContact } from '../lib/extractName.js';
+import { parseResume } from '../lib/parseResume.js';
 
 const app = express();
 
@@ -78,15 +79,15 @@ app.use(
 
 app.use(express.json());
 
-// Contact and Name extraction endpoint
+// Full structured resume parser endpoint
 const handleParseResume = async (req, res) => {
   try {
     const { resumeText } = req.body || {};
-    const contact = await extractContact(resumeText || "");
-    return res.json(contact);
+    const data = await parseResume(resumeText || "");
+    return res.json(data);
   } catch (err) {
     return res.status(500).json({
-      error: err.message || "Failed to extract contact information"
+      error: err.message || "Failed to parse resume"
     });
   }
 };

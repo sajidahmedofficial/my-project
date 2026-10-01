@@ -1,5 +1,6 @@
-// agent-notes: { ctx: "Comprehensive AI Resume Analyzer service leveraging Gemini prompt schemas", deps: ["./geminiService.js"], state: "active", last: "anti@2026-09-23" }
+// agent-notes: { ctx: "Comprehensive AI Resume Analyzer service leveraging Gemini prompt schemas with strict education/experience separation", deps: ["./geminiService.js", "../../lib/parseResume.js"], state: "active", last: "anti@2026-10-01" }
 import { analyzeJSON } from "./geminiService.js";
+import { cleanExperience, EDU_WORDS, DATE_ONLY, TEMPLATE_TEXT } from "../../lib/parseResume.js";
 
 export async function analyzeResume(
   resumeText,
@@ -99,10 +100,10 @@ Return JSON with exactly this structure:
       "endDate": "End Date or Present",
       "duration": "e.g. Jan 2022 – Present",
       "bullets": [
-        "Action + Metric + Impact: Architected and deployed microservices infrastructure, reducing API response times by 35%.",
-        "Action + Metric + Impact: Managed a cross-functional team of 8 engineers to ship real-time analytics dashboard 3 weeks ahead of schedule."
+        "Architected and deployed microservices infrastructure, reducing API response times by 35%.",
+        "Managed a cross-functional team of 8 engineers to ship real-time analytics dashboard 3 weeks ahead of schedule."
       ],
-      "description": "• Action + Metric + Impact: Architected and deployed microservices infrastructure..."
+      "description": "• Architected and deployed microservices infrastructure..."
     }
   ],
 
@@ -206,6 +207,12 @@ Extraction Rules:
 7. NEVER derive firstName or lastName from the email address, username, or LinkedIn slug. Use ONLY an actual name line from the resume header. If no clear name line exists, return empty strings.
 8. Stop extracting the professional summary at the first sign of a new section — including headers like "Education", "Educational Qualification", "Academic Qualification", or table/column labels like "Institution", "% of Marks", "CGPA", "Year".
 9. Never merge two adjacent pieces of contact info (e.g. a phone number and an email) into a single field value — split them at the '@' symbol and standard phone-number boundaries.
+10. CRITICAL: "experience" is ONLY paid or unpaid work: jobs, internships, freelance, volunteering with an employer/organization.
+11. Degrees, schools, colleges, diplomas, CGPA, "Higher Secondary", "B.E.", "B.Tech", "MBA", "Expected 2027" belong ONLY in "education", NEVER in "experience".
+12. Personal or academic projects belong in "projects", NOT in "experience", unless they were done for a company.
+13. If the resume has no real work experience (common for students and freshers), return "experience": []. An empty array is correct and expected. Do NOT move education or projects into it to fill it.
+14. "bullets" must be the candidate's real accomplishments copied or lightly cleaned from the resume. Never output template or instructional text such as "Action + Metric + Impact".
+15. "company" must be an organization name, never a date, degree, or location.
 `;
 
   try {
@@ -227,23 +234,26 @@ Extraction Rules:
 
       // Normalize Experience array (including internships)
       const rawExp = Array.isArray(aiResult.experience) ? aiResult.experience : [];
-      aiResult.experience = rawExp.map(exp => {
+      const cleanedAiExp = cleanExperience(rawExp);
+      aiResult.experience = cleanedAiExp.map(exp => {
         let bullets = Array.isArray(exp.bullets) && exp.bullets.length > 0
           ? exp.bullets
           : (exp.description ? exp.description.split('\n').map(l => l.replace(/^[•\-\*|\d+\.]\s*/, '').trim()).filter(Boolean) : []);
-        bullets = bullets.map(b => /^action\s*\+\s*metric\s*\+\s*impact\s*:/i.test(b) ? b : `Action + Metric + Impact: ${b}`);
+        bullets = bullets
+          .map(b => b.replace(/^action\s*\+\s*metric\s*\+\s*impact\s*:\s*/i, '').trim())
+          .filter(b => b && !TEMPLATE_TEXT.test(b));
 
         return {
           company: exp.company || exp.organization || exp.employer || '',
           role: exp.role || exp.title || exp.positionTitle || exp.position || '',
           location: exp.location || 'City, State',
           startDate: exp.startDate || '',
-          endDate: exp.endDate || '',
+          endDate: (exp.endDate === "Present" || /present|current|now/i.test(exp.endDate || '')) ? "" : (exp.endDate || ''),
           duration: exp.duration || (exp.startDate && exp.endDate ? `${exp.startDate} – ${exp.endDate}` : exp.startDate || ''),
           bullets: bullets,
-          description: bullets.length > 0 ? bullets.map(b => `• ${b}`).join('\n\n') : (exp.description || '')
+          description: bullets.length > 0 ? bullets.map(b => `• ${b}`).join('\n\n') : (exp.description || '').replace(/^•?\s*action\s*\+\s*metric\s*\+\s*impact\s*:\s*/gim, '• ').trim()
         };
-      }).filter(e => e.company || e.role);
+      }).filter(e => (e.company || e.role) && !EDU_WORDS.test(e.role) && !DATE_ONLY.test(e.company.trim()) && !EDU_WORDS.test(e.company.trim()));
 
       aiResult.hasExperience = aiResult.experience.length > 0;
       aiResult.hasEducation = aiResult.education.length > 0;
@@ -722,8 +732,16 @@ function finalizeExperience(exp) {
     }
   }
 
+  const role = (exp.role || "").trim();
+  const company = (exp.company || "").trim();
+
+  if (!role && !company) return null;
+  if (EDU_WORDS.test(role) || DATE_ONLY.test(company) || EDU_WORDS.test(company)) return null;
+
   const bullets = (exp.bullets && exp.bullets.length > 0)
-    ? exp.bullets.map(b => /^action\s*\+\s*metric\s*\+\s*impact\s*:/i.test(b) ? b : `Action + Metric + Impact: ${b}`)
+    ? exp.bullets
+        .map(b => b.replace(/^action\s*\+\s*metric\s*\+\s*impact\s*:\s*/i, '').trim())
+        .filter(b => b && !TEMPLATE_TEXT.test(b))
     : [];
 
   let formattedDesc = "";
@@ -731,17 +749,12 @@ function finalizeExperience(exp) {
     formattedDesc = bullets.map(b => b.startsWith('•') ? b : `• ${b}`).join('\n\n');
   }
 
-  const role = (exp.role || "").trim();
-  const company = (exp.company || "").trim();
-
-  if (!role && !company) return null;
-
   return {
     role: role || "Software Developer",
     company: company,
     location: exp.location || "City, State",
     startDate: exp.startDate || "",
-    endDate: exp.endDate || "",
+    endDate: (exp.endDate === "Present" || /present|current|now/i.test(exp.endDate || '')) ? "" : (exp.endDate || ""),
     duration: exp.duration || (exp.startDate ? `${exp.startDate} – ${exp.endDate || 'Present'}` : "2023 – Present"),
     bullets: bullets,
     description: formattedDesc
@@ -801,18 +814,14 @@ function extractWorkExperiences(text, lines) {
     for (let i = 0; i < expLines.length; i++) {
       const rawLine = expLines[i].trim();
       if (!rawLine) continue;
+      if (EDU_WORDS.test(rawLine)) continue; // Education degrees/qualifications never belong in experience
 
       const isAction = actionVerbRegex.test(rawLine);
       const isBullet = /^[•\-\*|\d+\.]\s*/.test(rawLine) || isAction;
       const hasDate = dateRangeRegex.test(rawLine);
       const hasRole = roleKeywords.test(rawLine) && !isBullet && !isAction && rawLine.length < 60;
 
-      if ((hasRole || (hasDate && !currentExp)) && !isBullet && !isAction) {
-        if (currentExp && (currentExp.role || currentExp.company)) {
-          const finalized = finalizeExperience(currentExp);
-          if (finalized) experiences.push(finalized);
-        }
-
+      if (!currentExp && !isBullet && !isAction) {
         currentExp = {
           role: "",
           company: "",
@@ -821,8 +830,35 @@ function extractWorkExperiences(text, lines) {
           duration: "",
           bullets: []
         };
-
-        parseHeaderLine(rawLine, currentExp);
+        if (hasRole) {
+          parseHeaderLine(rawLine, currentExp);
+        } else if (hasDate) {
+          parseDateIntoExp(rawLine, currentExp);
+        } else {
+          const parts = rawLine.replace(/^[•\-\*]\s*/, '').split(',').map(p => p.trim()).filter(Boolean);
+          currentExp.company = parts[0] || rawLine;
+          if (parts.length > 1) {
+            currentExp.location = parts.slice(1).join(', ');
+          }
+        }
+      } else if (hasRole && !isBullet && !isAction) {
+        if (currentExp && !currentExp.role) {
+          parseHeaderLine(rawLine, currentExp);
+        } else {
+          if (currentExp && (currentExp.role || currentExp.company)) {
+            const finalized = finalizeExperience(currentExp);
+            if (finalized) experiences.push(finalized);
+          }
+          currentExp = {
+            role: "",
+            company: "",
+            startDate: "",
+            endDate: "",
+            duration: "",
+            bullets: []
+          };
+          parseHeaderLine(rawLine, currentExp);
+        }
       } else if (currentExp) {
         if (hasDate && (!currentExp.startDate || !currentExp.duration)) {
           parseDateIntoExp(rawLine, currentExp);
@@ -841,11 +877,8 @@ function extractWorkExperiences(text, lines) {
             currentExp.location = parts.slice(1).join(', ');
           }
         } else {
-          let cleanBullet = rawLine.replace(/^[•\-\*|\d+\.]\s*/, '').trim();
-          if (cleanBullet) {
-            if (!/^action\s*\+\s*metric\s*\+\s*impact\s*:/i.test(cleanBullet)) {
-              cleanBullet = `Action + Metric + Impact: ${cleanBullet}`;
-            }
+          let cleanBullet = rawLine.replace(/^[•\-\*|\d+\.]\s*/, '').replace(/^action\s*\+\s*metric\s*\+\s*impact\s*:\s*/i, '').trim();
+          if (cleanBullet && !TEMPLATE_TEXT.test(cleanBullet)) {
             currentExp.bullets.push(cleanBullet);
           }
         }
@@ -858,7 +891,7 @@ function extractWorkExperiences(text, lines) {
     }
   }
 
-  return experiences;
+  return cleanExperience(experiences);
 }
 
 function extractEducationList(text, lines) {

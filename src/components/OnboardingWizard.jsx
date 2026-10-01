@@ -194,16 +194,44 @@ export default function OnboardingWizard({ onComplete }) {
       setAnalyzingText('Analyzed successfully.');
       setIsParsing(false);
 
+      // Helper function to sanitize summary and prune table headers / stray section headers
+      const cleanSummaryText = (raw) => {
+        if (!raw || typeof raw !== 'string') return '';
+        let cleaned = raw.replace(/\r\n/g, '\n').trim();
+        const stopPatterns = [
+          /\b(?:educational\s+qualification|academic\s+qualification|academic\s+background)\b/i,
+          /\b(?:qualificationinstitution|institution%|% of marks|marksyear|percentage_or_gpa|percentage\s+or\s+gpa)\b/i,
+          /(?:^|\n)\s*(?:education|qualifications|technical\s+skills|skills|work\s+experience|experience|projects|certifications|declaration)\s*[:\n]/im,
+          /\b(?:technical\s+skills|work\s+experience|key\s+projects|personal\s+details)\s*[:\n]/i,
+          /\b(?:institution\s*(?:%|marks|year|cgpa|gpa))\b/i,
+          /\b(?:qualification\s+institution)\b/i,
+          /\b(?:cgpa|gpa|passing\s+year|board\s*\/\s*university)\s*[:\n]/i
+        ];
+        for (const pattern of stopPatterns) {
+          const match = cleaned.search(pattern);
+          if (match !== -1) {
+            cleaned = cleaned.substring(0, match);
+          }
+        }
+        return cleaned
+          .replace(/(?:educational\s+qualification|qualificationinstitution|institution%|% of marks|marksyear|institution|qualification|cgpa|gpa|year)+$/gi, '')
+          .trim()
+          .replace(/[\s\r\n]+/g, ' ');
+      };
+
       // Populate parsed fields into Step 2 state
       const parsedAnalysis = response?.analysis || response?.data?.analysis || response?.data || response || {};
       console.log('[OnboardingWizard] Parsed Resume Payload:', parsedAnalysis);
 
       const cand = parsedAnalysis.candidate || parsedAnalysis.data?.candidate || {};
-
-      let extractedFirst = cand.firstName || '';
-      let extractedLast = cand.lastName || '';
-      if (!extractedFirst && cand.name) {
-        const parts = cand.name.split(/\s+/).filter(Boolean);
+      
+      // STRICT RULE 1: Split name as it appears in the resume header ONLY. Never derive from email/username.
+      let extractedFirst = (cand.firstName || parsedAnalysis.first_name || '').trim();
+      let extractedLast = (cand.lastName || parsedAnalysis.last_name || '').trim();
+      
+      if (!extractedFirst && (cand.name || parsedAnalysis.name)) {
+        const rawFullName = (cand.name || parsedAnalysis.name || '').trim();
+        const parts = rawFullName.split(/\s+/).filter(Boolean);
         extractedFirst = parts[0] || '';
         extractedLast = parts.slice(1).join(' ') || '';
       }
@@ -211,13 +239,15 @@ export default function OnboardingWizard({ onComplete }) {
       // Populate Candidate Contact Details
       if (extractedFirst) setFirstName(extractedFirst);
       if (extractedLast) setLastName(extractedLast);
-      if (cand.email) setEmail(cand.email);
-      if (cand.phone) setPhone(cand.phone);
-      if (cand.linkedIn) setLinkedIn(cand.linkedIn);
+      if (cand.email || parsedAnalysis.email) setEmail(cand.email || parsedAnalysis.email);
+      if (cand.phone || parsedAnalysis.phone) setPhone(cand.phone || parsedAnalysis.phone);
+      if (cand.linkedIn || parsedAnalysis.linkedin_url) setLinkedIn(cand.linkedIn || parsedAnalysis.linkedin_url);
 
-      // Populate Professional Summary
-      if (parsedAnalysis.summary || cand.summary) {
-        setSummary(parsedAnalysis.summary || cand.summary || '');
+      // STRICT RULE 2: Populate Professional Summary without table fragments
+      const rawSummary = parsedAnalysis.professional_summary || parsedAnalysis.summary || cand.summary || '';
+      const sanitizedSummary = cleanSummaryText(rawSummary);
+      if (sanitizedSummary) {
+        setSummary(sanitizedSummary);
       }
 
       // Populate Extracted Skills as discrete array
@@ -227,39 +257,69 @@ export default function OnboardingWizard({ onComplete }) {
         setSkillsList(parsedAnalysis.skills);
       }
 
-      // Populate Education Details (multi-alias support)
-      const parsedEdu = Array.isArray(parsedAnalysis.education) && parsedAnalysis.education.length > 0 
+      // STRICT RULE 5: Populate Education Details (multi-alias support & project filter)
+      const rawEduList = Array.isArray(parsedAnalysis.education) && parsedAnalysis.education.length > 0 
         ? parsedAnalysis.education 
-        : Array.isArray(parsedAnalysis.data?.education) ? parsedAnalysis.data.education : [];
+        : (Array.isArray(parsedAnalysis.data?.education) ? parsedAnalysis.data.education : []);
         
-      if (parsedEdu.length > 0) {
-        setEducationList(parsedEdu.map((edu, idx) => ({
+      const invalidEduProjectRegex = /(?:project|ai-based|artificial\s+general\s+intelligence|developed|application\s+development|image-to-text|chatbot|wordpress|seo\s+analysis)/i;
+
+      const validParsedEdu = rawEduList.filter(edu => {
+        const school = (edu.institution || edu.school || edu.university || edu.college || '').trim();
+        if (!school || school.length < 3) return false;
+        if (invalidEduProjectRegex.test(school)) return false;
+        if (/^(?:educational\s+qualification|qualification|institution|%\s*of\s*marks|percentage|year|cgpa|gpa|marks|board)/i.test(school)) return false;
+        return true;
+      });
+
+      if (validParsedEdu.length > 0) {
+        setEducationList(validParsedEdu.map((edu, idx) => ({
           id: idx + 1,
-          school: edu.school || edu.institution || edu.university || edu.college || '',
-          degree: edu.degree || 'Bachelor of Technology (B.Tech)',
-          field: edu.field || edu.fieldOfStudy || edu.major || edu.department || 'Computer Science & Engineering',
-          year: String(edu.year || edu.graduationYear || '2025').slice(0, 4)
+          school: edu.institution || edu.school || edu.university || edu.college || '',
+          degree: (!invalidEduProjectRegex.test(edu.qualification || edu.degree || '')) ? (edu.qualification || edu.degree || 'Bachelor of Technology (B.Tech)') : 'Bachelor of Technology (B.Tech)',
+          field: edu.field_of_study || edu.field || edu.fieldOfStudy || edu.major || edu.department || 'Computer Science & Engineering',
+          year: String(edu.graduation_year || edu.year || edu.graduationYear || '2025').slice(0, 4)
         })));
       }
 
-      // Populate Work Experience History (including Internships)
-      const rawParsedExp = Array.isArray(parsedAnalysis.experience) && parsedAnalysis.experience.length > 0 
-        ? parsedAnalysis.experience 
-        : Array.isArray(parsedAnalysis.data?.experience) ? parsedAnalysis.data.experience : [];
+      // STRICT RULE 4: Populate Work Experience History (filtering soft skills, stray fragments, and EDUCATION data)
+      const rawParsedExp = Array.isArray(parsedAnalysis.work_experience) && parsedAnalysis.work_experience.length > 0
+        ? parsedAnalysis.work_experience
+        : (Array.isArray(parsedAnalysis.experience) && parsedAnalysis.experience.length > 0 
+          ? parsedAnalysis.experience 
+          : (Array.isArray(parsedAnalysis.data?.work_experience) ? parsedAnalysis.data.work_experience : (Array.isArray(parsedAnalysis.data?.experience) ? parsedAnalysis.data.experience : [])));
         
+      const invalidTitleSoftSkills = /^(?:problem-solving|and\s+leadership\s+skills|leadership\s+skills|leadership|communication|team\s+player|fast\s+learner|engineering|madurai|developed|responsible\s+for|projects|tools|p|aper\s+p|r|esen)$/i;
+      const invalidCompanyFragments = /^(?:and\s+leadership\s+skills|leadership\s+skills|madurai|tools|projects|engineering|p|aper\s+p|r|esen)$/i;
+      const EDU_WORDS = /\b(b\.?e\.?|b\.?tech|m\.?tech|b\.?sc|m\.?sc|b\.?a|m\.?a|mba|bachelor|master|diploma|higher secondary|hsc|sslc|school|college|university|cgpa|gpa|expected)\b/i;
+      const DATE_ONLY = /^(expected\s*)?(\d{4}|\w{3,9}\.?\s*\d{4})(\s*[-–]\s*(\d{4}|present))?$/i;
+      const TEMPLATE_TEXT = /action\s*\+\s*metric\s*\+\s*impact/i;
+
       const validParsedExp = rawParsedExp.filter(exp => {
-        const role = (exp.role || exp.title || '').trim();
+        const role = (exp.position_title || exp.role || exp.title || '').trim();
         const company = (exp.company || exp.organization || '').trim();
-        if (!role && !company) return false;
-        // Filter out bullet action sentences parsed as roles when there is no company
+        if (!role || !company) return false;
+        if (EDU_WORDS.test(role)) return false; // degrees belong only in education
+        if (DATE_ONLY.test(company)) return false; // dates sitting in company field
+        if (EDU_WORDS.test(company)) return false; // schools/degrees sitting in company field
+        if (invalidTitleSoftSkills.test(role) && (!company || invalidCompanyFragments.test(company))) return false;
+        if (invalidCompanyFragments.test(company) && (!role || invalidTitleSoftSkills.test(role))) return false;
         if (!company && /^(?:engineered|developed|implemented|built|designed|created|optimized|worked|maintained|managed|led)\b/i.test(role)) return false;
         return true;
       });
 
       if (validParsedExp.length > 0) {
         setExperienceList(validParsedExp.map((exp, idx) => {
-          let start = exp.startDate || '';
-          let end = exp.endDate || '';
+          let role = (exp.position_title || exp.role || exp.title || exp.positionTitle || exp.position || '').trim();
+          let comp = (exp.company || exp.organization || exp.employer || '').trim();
+          if (invalidTitleSoftSkills.test(role)) role = "";
+          if (invalidCompanyFragments.test(comp)) comp = "";
+
+          let start = exp.start_date || exp.startDate || '';
+          let end = exp.end_date || exp.endDate || '';
+          if (end === "Present" || /present|current|now/i.test(end)) {
+            end = ""; // blank = current, as form says
+          }
           if (!start && exp.duration) {
             const parts = exp.duration.split(/\s*(?:-|–|to)\s*/i);
             start = parts[0] || '';
@@ -267,16 +327,33 @@ export default function OnboardingWizard({ onComplete }) {
               end = parts[1];
             }
           }
+
+          // Clean description bullets - remove Action + Metric + Impact
+          let cleanDesc = '';
+          if (Array.isArray(exp.bullets) && exp.bullets.length > 0) {
+            cleanDesc = exp.bullets
+              .map(b => (b || '').replace(/^action\s*\+\s*metric\s*\+\s*impact\s*:\s*/i, '').trim())
+              .filter(b => b && !TEMPLATE_TEXT.test(b))
+              .map(b => `• ${b}`)
+              .join('\n');
+          } else if (exp.description) {
+            const lines = exp.description.split(/\r?\n|•/)
+              .map(b => b.replace(/^action\s*\+\s*metric\s*\+\s*impact\s*:\s*/i, '').trim())
+              .filter(Boolean);
+            const filtered = lines.filter(l => l.length >= 5 && !/[✆📭✉📞]/.test(l) && !/^(?:p|aper\s+p|r|esen)$/i.test(l) && !TEMPLATE_TEXT.test(l));
+            cleanDesc = filtered.map(l => l.startsWith('•') ? l : `• ${l}`).join('\n');
+          }
+
           return {
             id: idx + 1,
-            company: exp.company || exp.organization || exp.employer || '',
-            role: exp.role || exp.title || exp.positionTitle || exp.position || '',
+            company: comp,
+            role: role || (comp ? "Software Engineer" : ""),
             startDate: start,
             endDate: end,
             duration: exp.duration || (start ? `${start} - ${end || 'Present'}` : ''),
-            description: exp.description || ''
+            description: cleanDesc
           };
-        }));
+        }).filter(exp => exp.company && exp.role && !EDU_WORDS.test(exp.role) && !DATE_ONLY.test(exp.company)));
       } else {
         setExperienceList([]);
       }

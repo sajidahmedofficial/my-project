@@ -282,7 +282,7 @@ export default function OnboardingWizard({ onComplete }) {
         })));
       }
 
-      // STRICT RULE 4: Populate Work Experience History (filtering soft skills and stray fragments)
+      // STRICT RULE 4: Populate Work Experience History (filtering soft skills, stray fragments, and EDUCATION data)
       const rawParsedExp = Array.isArray(parsedAnalysis.work_experience) && parsedAnalysis.work_experience.length > 0
         ? parsedAnalysis.work_experience
         : (Array.isArray(parsedAnalysis.experience) && parsedAnalysis.experience.length > 0 
@@ -291,11 +291,17 @@ export default function OnboardingWizard({ onComplete }) {
         
       const invalidTitleSoftSkills = /^(?:problem-solving|and\s+leadership\s+skills|leadership\s+skills|leadership|communication|team\s+player|fast\s+learner|engineering|madurai|developed|responsible\s+for|projects|tools|p|aper\s+p|r|esen)$/i;
       const invalidCompanyFragments = /^(?:and\s+leadership\s+skills|leadership\s+skills|madurai|tools|projects|engineering|p|aper\s+p|r|esen)$/i;
+      const EDU_WORDS = /\b(b\.?e\.?|b\.?tech|m\.?tech|b\.?sc|m\.?sc|b\.?a|m\.?a|mba|bachelor|master|diploma|higher secondary|hsc|sslc|school|college|university|cgpa|gpa|expected)\b/i;
+      const DATE_ONLY = /^(expected\s*)?(\d{4}|\w{3,9}\.?\s*\d{4})(\s*[-–]\s*(\d{4}|present))?$/i;
+      const TEMPLATE_TEXT = /action\s*\+\s*metric\s*\+\s*impact/i;
 
       const validParsedExp = rawParsedExp.filter(exp => {
         const role = (exp.position_title || exp.role || exp.title || '').trim();
         const company = (exp.company || exp.organization || '').trim();
-        if (!role && !company) return false;
+        if (!role || !company) return false;
+        if (EDU_WORDS.test(role)) return false; // degrees belong only in education
+        if (DATE_ONLY.test(company)) return false; // dates sitting in company field
+        if (EDU_WORDS.test(company)) return false; // schools/degrees sitting in company field
         if (invalidTitleSoftSkills.test(role) && (!company || invalidCompanyFragments.test(company))) return false;
         if (invalidCompanyFragments.test(company) && (!role || invalidTitleSoftSkills.test(role))) return false;
         if (!company && /^(?:engineered|developed|implemented|built|designed|created|optimized|worked|maintained|managed|led)\b/i.test(role)) return false;
@@ -311,6 +317,9 @@ export default function OnboardingWizard({ onComplete }) {
 
           let start = exp.start_date || exp.startDate || '';
           let end = exp.end_date || exp.endDate || '';
+          if (end === "Present" || /present|current|now/i.test(end)) {
+            end = ""; // blank = current, as form says
+          }
           if (!start && exp.duration) {
             const parts = exp.duration.split(/\s*(?:-|–|to)\s*/i);
             start = parts[0] || '';
@@ -319,11 +328,19 @@ export default function OnboardingWizard({ onComplete }) {
             }
           }
 
-          // Clean description bullets
-          let cleanDesc = exp.description || '';
-          if (cleanDesc) {
-            const lines = cleanDesc.split(/\r?\n|•/).map(b => b.trim()).filter(Boolean);
-            const filtered = lines.filter(l => l.length >= 10 && !/[✆📭✉📞]/.test(l) && !/^(?:p|aper\s+p|r|esen)$/i.test(l));
+          // Clean description bullets - remove Action + Metric + Impact
+          let cleanDesc = '';
+          if (Array.isArray(exp.bullets) && exp.bullets.length > 0) {
+            cleanDesc = exp.bullets
+              .map(b => (b || '').replace(/^action\s*\+\s*metric\s*\+\s*impact\s*:\s*/i, '').trim())
+              .filter(b => b && !TEMPLATE_TEXT.test(b))
+              .map(b => `• ${b}`)
+              .join('\n');
+          } else if (exp.description) {
+            const lines = exp.description.split(/\r?\n|•/)
+              .map(b => b.replace(/^action\s*\+\s*metric\s*\+\s*impact\s*:\s*/i, '').trim())
+              .filter(Boolean);
+            const filtered = lines.filter(l => l.length >= 5 && !/[✆📭✉📞]/.test(l) && !/^(?:p|aper\s+p|r|esen)$/i.test(l) && !TEMPLATE_TEXT.test(l));
             cleanDesc = filtered.map(l => l.startsWith('•') ? l : `• ${l}`).join('\n');
           }
 
@@ -336,7 +353,7 @@ export default function OnboardingWizard({ onComplete }) {
             duration: exp.duration || (start ? `${start} - ${end || 'Present'}` : ''),
             description: cleanDesc
           };
-        }).filter(exp => exp.company || exp.role));
+        }).filter(exp => exp.company && exp.role && !EDU_WORDS.test(exp.role) && !DATE_ONLY.test(exp.company)));
       } else {
         setExperienceList([]);
       }

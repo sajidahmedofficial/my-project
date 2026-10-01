@@ -9,6 +9,7 @@ import { saveParsedResume } from "../services/resumeStore.service.js";
 import { authenticateUser, getAuthenticatedUserId } from "../middleware/auth.js";
 import { resumeAnalyzeLimiter } from "../middleware/rateLimiter.js";
 import { extractContact } from "../../lib/extractName.js";
+import { parseResume } from "../../lib/parseResume.js";
 
 const router = express.Router();
 router.use(authenticateUser);
@@ -157,15 +158,15 @@ router.post('/apply-fix', (req, res) => {
   });
 });
 
-// Extract contact details directly from resume text
+// Extract full structured resume data (contact, education, experience, skills, projects)
 router.post('/parse-resume', async (req, res) => {
   try {
     const { resumeText } = req.body || {};
-    const contact = await extractContact(resumeText || "");
-    return res.json(contact);
+    const data = await parseResume(resumeText || "");
+    return res.json(data);
   } catch (err) {
     return res.status(500).json({
-      error: err.message || "Failed to extract contact information"
+      error: err.message || "Failed to parse resume"
     });
   }
 });

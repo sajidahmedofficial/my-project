@@ -1,15 +1,5 @@
-// agent-notes: { ctx: "Main Express API server with MongoDB connection, CORS, health check, and route mounts", deps: ["dotenv", "express", "cors", "mongoose", "./routes/*"], state: "active", last: "anti@2026-09-19" }
+// agent-notes: { ctx: "Main Express API server with MongoDB connection, CORS, health check, and route mounts", deps: ["dotenv", "express", "cors", "mongoose", "./routes/*", "../lib/extractName.js"], state: "active", last: "anti@2026-09-30" }
 import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
-dotenv.config({ path: path.resolve(__dirname, '.env') });
-dotenv.config({ path: path.resolve(process.cwd(), '.env') });
-dotenv.config({ path: path.resolve(process.cwd(), 'frontend/.env') });
 dotenv.config();
 
 import express from 'express';
@@ -25,6 +15,8 @@ import skillGapRoutes from './routes/skillGap.routes.js';
 import aiRoutes from './routes/ai.js';
 import { checkSupabaseConnection } from './services/supabase.service.js';
 import { aiRateLimiter } from './middleware/rateLimiter.js';
+import { extractContact } from '../lib/extractName.js';
+import { parseResume } from '../lib/parseResume.js';
 
 const app = express();
 
@@ -87,6 +79,22 @@ app.use(
 
 app.use(express.json());
 
+// Full structured resume parser endpoint
+const handleParseResume = async (req, res) => {
+  try {
+    const { resumeText } = req.body || {};
+    const data = await parseResume(resumeText || "");
+    return res.json(data);
+  } catch (err) {
+    return res.status(500).json({
+      error: err.message || "Failed to parse resume"
+    });
+  }
+};
+
+app.post("/api/parse-resume", handleParseResume);
+app.post("/parse-resume", handleParseResume);
+
 // Standard API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/ai", aiRateLimiter, aiRoutes);
@@ -148,13 +156,9 @@ app.get("/api/health", async (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-const normalizedArgv = (process.argv[1] || '').replace(/\\/g, '/');
-const isDirectRun = Boolean(
-  process.argv[1] && (
-    normalizedArgv.endsWith("backend/server.js") || 
-    normalizedArgv.endsWith("/server.js") ||
-    normalizedArgv.endsWith("server.js")
-  )
+const isDirectRun = process.argv[1] && (
+  process.argv[1].endsWith("backend/server.js") || 
+  process.argv[1].endsWith("server.js")
 );
 
 if (isDirectRun && !process.env.VERCEL && !process.env.NOW_REGION && !process.env.AWS_LAMBDA_FUNCTION_NAME) {
