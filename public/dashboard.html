@@ -1,0 +1,287 @@
+<!-- agent-notes: { ctx: "static HTML dashboard mockup for career features", deps: [], state: active, last: "antigravity@2026-10-02" } -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            DEFAULT: '#41d888', // The primary green color from the header
+                            light: '#e8fbf0'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar to match modern UI */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-[#f4f7f6] font-sans text-gray-800 h-screen overflow-hidden flex flex-col">
+
+    <!-- Top Navigation -->
+    <header class="bg-brand text-white h-16 flex items-center justify-between px-6 shrink-0">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-white text-brand rounded flex items-center justify-center font-bold text-xl">
+                T
+            </div>
+        </div>
+        <div class="flex items-center gap-6 text-sm font-medium">
+            <a href="#" class="flex items-center gap-2 border-b-2 border-white pb-1"><i class="fas fa-th-large"></i> Dashboard</a>
+            <a href="#" class="flex items-center gap-2 opacity-80 hover:opacity-100"><i class="fas fa-book-open"></i> Learning Center</a>
+            <div class="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center text-white ml-2">S</div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto p-6 lg:px-10">
+        <h1 class="text-2xl font-semibold mb-6">Welcome, Sajid Ahmed</h1>
+
+        <!-- Top Section: Goals -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            
+            <!-- Aspirations Card -->
+            <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-100 flex flex-col">
+                <div class="flex justify-between items-center mb-4 text-brand font-semibold text-sm">
+                    <span class="flex items-center gap-2"><i class="fas fa-bullseye"></i> Your Aspirations</span>
+                    <button class="text-gray-400 hover:text-brand"><i class="fas fa-pencil-alt"></i></button>
+                </div>
+                <div class="bg-gray-50 border border-gray-100 rounded-md p-3 text-sm text-gray-600 mb-auto mt-2 w-3/4">
+                    "Backend Developer"
+                </div>
+            </div>
+
+            <!-- Career Next Step Card -->
+            <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-100 lg:col-span-2 relative">
+                <div class="flex justify-between items-start mb-4 text-brand font-semibold text-sm">
+                    <span class="flex items-center gap-2"><i class="fas fa-location-arrow"></i> Your Career Next Step</span>
+                    <div class="flex items-center gap-4">
+                        <div class="text-center">
+                            <div class="w-12 h-12 rounded-full border-4 border-gray-100 flex items-center justify-center text-xs font-bold text-gray-500 mb-1">
+                                0%
+                            </div>
+                            <div class="text-[10px] text-gray-400 leading-tight">Interview<br>Chance</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <h2 class="text-gray-500 text-xs uppercase tracking-wider mb-1">Database Administrator</h2>
+                    <button class="bg-brand text-white text-xs px-4 py-1.5 rounded-md hover:bg-green-500 transition shadow-sm">
+                        <i class="fas fa-pencil-alt mr-1 text-[10px]"></i> Change Goal
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-3 gap-4 mt-6">
+                    <div class="bg-brand-light border border-green-100 rounded p-3">
+                        <div class="text-brand font-semibold text-lg">1-2 years</div>
+                        <div class="text-gray-400 text-xs">Interview Readiness</div>
+                    </div>
+                    <div class="bg-brand-light border border-green-100 rounded p-3">
+                        <div class="text-brand font-semibold text-lg">Medium</div>
+                        <div class="text-gray-400 text-xs">Market Demand</div>
+                    </div>
+                    <div class="bg-brand-light border border-green-100 rounded p-3">
+                        <div class="text-brand font-semibold text-lg">$70,000</div>
+                        <div class="text-gray-400 text-xs">Target Salary</div>
+                    </div>
+                </div>
+                <div class="text-right mt-3 text-xs text-gray-400 underline cursor-pointer hover:text-gray-600">
+                    Is this data helpful?
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Section: Skills & Learning -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pb-10">
+            
+            <!-- Skills Required -->
+            <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-100">
+                <h3 class="text-brand font-semibold mb-4 text-sm flex items-center gap-2">
+                    <i class="fas fa-list-ul"></i> Skills Required
+                </h3>
+                <div class="space-y-4">
+                    <!-- Skill Item -->
+                    <div class="flex items-center justify-between border-b border-gray-50 pb-3">
+                        <label class="flex items-center gap-3 text-sm text-gray-600 cursor-pointer">
+                            <input type="checkbox" class="w-4 h-4 text-brand rounded border-gray-300 focus:ring-brand">
+                            SQL
+                        </label>
+                        <div class="text-right">
+                            <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded border border-gray-200">Missing</span>
+                            <div class="text-[10px] text-gray-400 mt-1">Skill relevancy <div class="w-16 h-1 bg-gray-200 inline-block ml-1 rounded"><div class="w-full h-full bg-brand rounded"></div></div></div>
+                        </div>
+                    </div>
+                    <!-- Skill Item -->
+                    <div class="flex items-center justify-between border-b border-gray-50 pb-3">
+                        <label class="flex items-center gap-3 text-sm text-gray-600 cursor-pointer">
+                            <input type="checkbox" class="w-4 h-4 text-brand rounded border-gray-300 focus:ring-brand">
+                            PostgreSQL
+                        </label>
+                        <div class="text-right">
+                            <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded border border-gray-200">Missing</span>
+                            <div class="text-[10px] text-gray-400 mt-1">Skill relevancy <div class="w-16 h-1 bg-gray-200 inline-block ml-1 rounded"><div class="w-full h-full bg-brand rounded"></div></div></div>
+                        </div>
+                    </div>
+                    <!-- Skill Item -->
+                    <div class="flex items-center justify-between border-b border-gray-50 pb-3">
+                        <label class="flex items-center gap-3 text-sm text-gray-600 cursor-pointer">
+                            <input type="checkbox" class="w-4 h-4 text-brand rounded border-gray-300 focus:ring-brand">
+                            MySQL
+                        </label>
+                        <div class="text-right">
+                            <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded border border-gray-200">Missing</span>
+                            <div class="text-[10px] text-gray-400 mt-1">Skill relevancy <div class="w-16 h-1 bg-gray-200 inline-block ml-1 rounded"><div class="w-3/4 h-full bg-brand rounded"></div></div></div>
+                        </div>
+                    </div>
+                    <!-- Skill Item -->
+                    <div class="flex items-center justify-between border-b border-gray-50 pb-3">
+                        <label class="flex items-center gap-3 text-sm text-gray-600 cursor-pointer">
+                            <input type="checkbox" class="w-4 h-4 text-brand rounded border-gray-300 focus:ring-brand">
+                            NoSQL Databases
+                        </label>
+                        <div class="text-right">
+                            <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded border border-gray-200">Missing</span>
+                            <div class="text-[10px] text-gray-400 mt-1">Skill relevancy <div class="w-16 h-1 bg-gray-200 inline-block ml-1 rounded"><div class="w-1/2 h-full bg-brand rounded"></div></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Skills Analysis -->
+            <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-100">
+                <h3 class="text-brand font-semibold mb-4 text-sm flex items-center gap-2">
+                    <i class="fas fa-chart-bar"></i> Skills Analysis
+                </h3>
+                <div class="h-48 w-full mt-6 relative">
+                    <canvas id="skillsChart"></canvas>
+                </div>
+                <div class="mt-6 flex flex-col gap-2 text-xs text-gray-600">
+                    <div class="flex justify-between items-center"><span class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-brand"></div> Matching Skills</span> <span>0</span></div>
+                    <div class="flex justify-between items-center"><span class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-cyan-400"></div> Unique Skills</span> <span>16</span></div>
+                    <div class="flex justify-between items-center"><span class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-red-400"></div> Missing Skills</span> <span>7</span></div>
+                </div>
+                <div class="text-right mt-6 text-xs text-gray-400 underline cursor-pointer hover:text-gray-600">
+                    Was this analysis helpful?
+                </div>
+            </div>
+
+            <!-- Learning Plan -->
+            <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-100 flex flex-col max-h-[500px]">
+                <h3 class="text-brand font-semibold mb-4 text-sm flex items-center gap-2 shrink-0">
+                    <i class="fas fa-graduation-cap"></i> Learning Plan
+                </h3>
+                <div class="overflow-y-auto pr-2 space-y-4">
+                    <!-- Course 1 -->
+                    <div class="border-b border-gray-100 pb-4">
+                        <div class="flex items-start gap-3 mb-2">
+                            <i class="fab fa-cuttlefish text-blue-600 text-lg mt-0.5"></i>
+                            <div>
+                                <h4 class="text-sm font-semibold text-gray-800 leading-tight">Database Management Essentials</h4>
+                                <p class="text-xs text-gray-400">Coursera</p>
+                            </div>
+                            <span class="ml-auto text-xs text-gray-400">0%</span>
+                        </div>
+                        <button class="bg-brand text-white text-xs px-5 py-1.5 rounded-md hover:bg-green-500 transition shadow-sm font-medium">Start</button>
+                    </div>
+                    <!-- Course 2 -->
+                    <div class="border-b border-gray-100 pb-4">
+                        <div class="flex items-start gap-3 mb-2">
+                            <i class="fab fa-cuttlefish text-blue-600 text-lg mt-0.5"></i>
+                            <div>
+                                <h4 class="text-sm font-semibold text-gray-800 leading-tight">SQL for Data Science</h4>
+                                <p class="text-xs text-gray-400">Coursera</p>
+                            </div>
+                            <span class="ml-auto text-xs text-gray-400">0%</span>
+                        </div>
+                        <button class="bg-brand text-white text-xs px-5 py-1.5 rounded-md hover:bg-green-500 transition shadow-sm font-medium">Start</button>
+                    </div>
+                    <!-- Course 3 -->
+                    <div class="border-b border-gray-100 pb-4">
+                        <div class="flex items-start gap-3 mb-2">
+                            <i class="fab fa-cuttlefish text-blue-600 text-lg mt-0.5"></i>
+                            <div>
+                                <h4 class="text-sm font-semibold text-gray-800 leading-tight">Introduction to NoSQL Databases</h4>
+                                <p class="text-xs text-gray-400">Coursera</p>
+                            </div>
+                            <span class="ml-auto text-xs text-gray-400">0%</span>
+                        </div>
+                        <button class="bg-brand text-white text-xs px-5 py-1.5 rounded-md hover:bg-green-500 transition shadow-sm font-medium">Start</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Chart.js Configuration -->
+    <script>
+        const ctx = document.getElementById('skillsChart').getContext('2d');
+        const skillsChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Your Profile', 'Target Role'],
+                datasets: [{
+                    label: 'Skills',
+                    data: [16, 7],
+                    backgroundColor: [
+                        '#38bdf8', // Cyan for profile
+                        '#f87171'  // Red/Pink for target role
+                    ],
+                    barThickness: 50,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 20,
+                        grid: {
+                            color: '#f1f5f9',
+                            drawBorder: false,
+                        },
+                        ticks: {
+                            stepSize: 5,
+                            color: '#94a3b8',
+                            font: { size: 10 }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false,
+                            drawBorder: false,
+                        },
+                        ticks: {
+                            color: '#94a3b8',
+                            font: { size: 11 }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
