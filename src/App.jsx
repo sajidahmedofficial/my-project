@@ -18,7 +18,8 @@ import {
   ChevronRight,
   User,
   CheckCircle2,
-  ChevronDown
+  ChevronDown,
+  Target
 } from 'lucide-react';
 
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -37,6 +38,7 @@ const SkillGapDashboard = React.lazy(() => import('./components/SkillGapDashboar
 const LearningRoadmap = React.lazy(() => import('./components/LearningRoadmap'));
 const CareerMentor = React.lazy(() => import('./components/CareerMentor'));
 const SkillVerificationModal = React.lazy(() => import('./components/resume/SkillVerificationModal'));
+const CareerOverviewDashboard = React.lazy(() => import('./components/CareerOverviewDashboard'));
 
 const TabLoadingFallback = () => (
   <div className="saas-card p-12 text-center space-y-3 my-6">
@@ -129,6 +131,7 @@ function MainLayout() {
   const navigationItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'wizard', label: 'Profile Setup', icon: User },
+    { id: 'careeroverview', label: 'Career Overview', icon: Target },
     { id: 'skillgap', label: 'Skill Gap Analysis', icon: Briefcase },
     { id: 'resume', label: 'Resume Analyzer', icon: FileText },
     { id: 'roadmap', label: 'Learning Roadmap', icon: Map },
@@ -196,6 +199,9 @@ function MainLayout() {
                 setActiveTab('skillgap');
               }} 
             />
+          </div>
+          <div className={activeTab === 'careeroverview' ? 'block' : 'hidden'}>
+            <CareerOverviewDashboard profile={activeProfile} />
           </div>
         </div>
       </React.Suspense>
