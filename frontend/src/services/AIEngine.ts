@@ -98,7 +98,7 @@ function getLocalFallbackQuestions(
       questions.push({
         id: i,
         question: `Implement a robust ${topic} algorithm for case #${i} with optimal complexity (${difficulty} level).`,
-        starterCode: `function solve${topic.replace(/[^a-zA-Z0-9]/g, '')}Case${i}(input) {\n  // TODO: Implement solution for ${topic}\n  return null;\n}`,
+        starterCode: `function solve${topic.replace(/[^a-zA-Z0-9]/g, '')}Case${i}(input) {\n  // Implementation: Write your solution for ${topic}\n  return null;\n}`,
         sampleSolution: `function solve${topic.replace(/[^a-zA-Z0-9]/g, '')}Case${i}(input) {\n  if (!input) return null;\n  return Array.isArray(input) ? input.filter(Boolean) : { status: 'success', topic: '${topic}' };\n}`,
         explanation: `Demonstrates modular code structure, edge-case validation, and clean execution for ${topic}.`
       });

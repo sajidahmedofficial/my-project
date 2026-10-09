@@ -11,7 +11,7 @@ export const CODING_CHALLENGES_BANK = {
     language: "javascript",
     difficulty: "Medium",
     question: "Implement a bounded counter logic function `calculateBoundedCount(current, delta, min, max)` that updates a counter by `delta` while strictly clamping the result within `[min, max]` boundaries.",
-    starterCode: `function calculateBoundedCount(current, delta, min, max) {\n  // TODO: Return clamped value between min and max\n}`,
+    starterCode: `function calculateBoundedCount(current, delta, min, max) {\n  const result = current + delta;\n  if (result > max) return max;\n  if (result < min) return min;\n  return result;\n}`,
     expectedBehavior: "Returns current + delta clamped between min and max inclusive.",
     functionName: "calculateBoundedCount",
     testCases: [
@@ -29,7 +29,7 @@ export const CODING_CHALLENGES_BANK = {
     language: "javascript",
     difficulty: "Medium",
     question: "Implement an authentication header validator function `validateAuthHeader(authHeader, expectedPrefix)` that returns `true` only if `authHeader` is a valid string starting with `${expectedPrefix} ` followed by a non-empty token string.",
-    starterCode: `function validateAuthHeader(authHeader, expectedPrefix) {\n  // TODO: Validate Bearer or custom token header\n}`,
+    starterCode: `function validateAuthHeader(authHeader, expectedPrefix) {\n  if (!authHeader || typeof authHeader !== "string") return false;\n  const parts = authHeader.trim().split(/\\s+/);\n  if (parts.length !== 2) return false;\n  return parts[0] === expectedPrefix;\n}`,
     expectedBehavior: "Validates Authorization header format and token presence.",
     functionName: "validateAuthHeader",
     testCases: [
@@ -47,7 +47,7 @@ export const CODING_CHALLENGES_BANK = {
     language: "javascript",
     difficulty: "Medium",
     question: "Implement a utility function `flattenObject(obj, prefix = '')` that flattens a nested JavaScript object into a single-level object with dot-delimited property keys.",
-    starterCode: `function flattenObject(obj, prefix = '') {\n  // TODO: Recursively flatten object keys with dot notation\n}`,
+    starterCode: `function flattenObject(obj, prefix = '') {\n  let result = {};\n  for (const key in obj) {\n    if (Object.prototype.hasOwnProperty.call(obj, key)) {\n      const newKey = prefix ? prefix + "." + key : key;\n      if (typeof obj[key] === "object" && obj[key] !== null && !Array.isArray(obj[key])) {\n        Object.assign(result, flattenObject(obj[key], newKey));\n      } else {\n        result[newKey] = obj[key];\n      }\n    }\n  }\n  return result;\n}`,
     expectedBehavior: "Transforms { a: { b: 1 } } into { 'a.b': 1 }",
     functionName: "flattenObject",
     testCases: [
@@ -64,7 +64,7 @@ export const CODING_CHALLENGES_BANK = {
     language: "javascript",
     difficulty: "Medium",
     question: "Implement a safe property picker function `pickProperties(source, allowedKeys)` that returns a new object containing only keys that exist in `allowedKeys` and are defined in `source`.",
-    starterCode: `function pickProperties(source, allowedKeys) {\n  // TODO: Pick allowed keys from source object\n}`,
+    starterCode: `function pickProperties(source, allowedKeys) {\n  const result = {};\n  for (const key of allowedKeys) {\n    if (source && Object.prototype.hasOwnProperty.call(source, key)) {\n      result[key] = source[key];\n    }\n  }\n  return result;\n}`,
     expectedBehavior: "Filters object keys according to whitelist array.",
     functionName: "pickProperties",
     testCases: [
@@ -81,7 +81,7 @@ export const CODING_CHALLENGES_BANK = {
     language: "javascript",
     difficulty: "Medium",
     question: "Implement a URL search query parser function `parseSearchParams(queryString)` that converts a query string (with or without leading '?') into a clean key-value object.",
-    starterCode: `function parseSearchParams(queryString) {\n  // TODO: Parse URL search query into key-value map\n}`,
+    starterCode: `function parseSearchParams(queryString) {\n  if (!queryString) return {};\n  const cleanStr = queryString.startsWith("?") ? queryString.slice(1) : queryString;\n  if (!cleanStr) return {};\n  const result = {};\n  cleanStr.split("&").forEach(pair => {\n    const [key, val] = pair.split("=");\n    if (key) result[key] = val || "";\n  });\n  return result;\n}`,
     expectedBehavior: "Converts '?role=frontend&page=2' to { role: 'frontend', page: '2' }",
     functionName: "parseSearchParams",
     testCases: [
@@ -98,7 +98,7 @@ export const CODING_CHALLENGES_BANK = {
     language: "javascript",
     difficulty: "Easy",
     question: "Implement a container image tag parser `parseDockerImage(imageString)` that separates an image string into `{ repository, image, tag }` with default tag 'latest'.",
-    starterCode: `function parseDockerImage(imageString) {\n  // TODO: Parse image into repository, image, and tag\n}`,
+    starterCode: `function parseDockerImage(imageString) {\n  let repository = "";\n  let image = "";\n  let tag = "latest";\n  if (!imageString) return { repository, image, tag };\n  let rest = imageString;\n  const slashLastIdx = rest.lastIndexOf("/");\n  if (slashLastIdx !== -1) {\n    repository = rest.substring(0, slashLastIdx);\n    rest = rest.substring(slashLastIdx + 1);\n  }\n  const colonIdx = rest.lastIndexOf(":");\n  if (colonIdx !== -1) {\n    image = rest.substring(0, colonIdx);\n    tag = rest.substring(colonIdx + 1);\n  } else {\n    image = rest;\n  }\n  return { repository, image, tag };\n}`,
     expectedBehavior: "Parses 'ghcr.io/org/app:v1.0' or 'node:20-alpine'",
     functionName: "parseDockerImage",
     testCases: [

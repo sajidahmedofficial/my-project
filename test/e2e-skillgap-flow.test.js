@@ -375,7 +375,7 @@ async function runFullE2ETest() {
   console.log("===============================================================================");
 
   if (results.failed.length > 0) {
-    process.exit(1);
+    throw new Error(`E2E tests failed: ${results.failed.length} tests failed.`);
   }
 }
 

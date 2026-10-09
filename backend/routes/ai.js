@@ -547,7 +547,7 @@ function generateMockQuestions(topic, difficulty = 'medium', questionType = 'mcq
       questions.push({
         id: i,
         question: `Implement a robust ${topic} solution for scenario #${i} with optimal time/space complexity (${difficulty} level).`,
-        starterCode: `function solve${topic.replace(/[^a-zA-Z0-9]/g, '')}Case${i}(input) {\n  // TODO: Implement solution for ${topic}\n  return null;\n}`,
+        starterCode: `function solve${topic.replace(/[^a-zA-Z0-9]/g, '')}Case${i}(input) {\n  // Implementation: Write your solution for ${topic}\n  return null;\n}`,
         sampleSolution: `function solve${topic.replace(/[^a-zA-Z0-9]/g, '')}Case${i}(input) {\n  if (!input) return null;\n  return Array.isArray(input) ? input.filter(Boolean) : { status: 'success', topic: '${topic}' };\n}`,
         explanation: `Demonstrates best-practice architecture, error handling, and clean modular code for ${topic}.`
       });
