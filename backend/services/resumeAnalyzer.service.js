@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Comprehensive AI Resume Analyzer service leveraging Gemini prompt schemas with strict education/experience separation", deps: ["./geminiService.js", "../../lib/parseResume.js"], state: "active", last: "anti@2026-10-01" }
+// agent-notes: { ctx: "Comprehensive AI Resume Analyzer service leveraging Gemini prompt schemas with strict education/experience separation", deps: ["./geminiService.js", "../../lib/parseResume.js"], state: "active", last: "anti@2026-10-09" }
 import { analyzeJSON } from "./geminiService.js";
 import { cleanExperience, EDU_WORDS, DATE_ONLY, TEMPLATE_TEXT } from "../../lib/parseResume.js";
 
@@ -596,56 +596,6 @@ ${certFormatted}
 `;
 }
 
-function generateRuleBasedAnalysis(text, targetRole) {
-  if (!text || typeof text !== 'string' || text.trim().length === 0) {
-    return {
-      candidate: { firstName: "", lastName: "", name: "", email: "", phone: "", linkedIn: "", summary: "", headline: "" },
-      summary: "",
-      education: [],
-      experience: [],
-      hasExperience: false,
-      hasEducation: false,
-      scores: { overall: 0, ats: 0, grammar: 0, format: 0, skills: 0, experience: 0, projects: 0 },
-      grammarIssues: [],
-      resumeProblems: [],
-      formatProblems: [],
-      atsProblems: [],
-      missingSections: ["Resume Content"],
-      skills: { detected: [], strong: [], weak: [], missing: [] },
-      projects: [],
-      improvements: [],
-      skillGap: []
-    };
-  }
-
-  const lowerText = text.toLowerCase();
-  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
-
-  // 1. Extract email, phone, linkedIn
-  const emailMatch = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-  const linkedInMatch = text.match(/(?:https?:\/\/)?(?:www\.)?linkedin\.com\/in\/([a-zA-Z0-9_-]+)/i);
-  const githubMatch = text.match(/(?:https?:\/\/)?(?:www\.)?github\.com\/([a-zA-Z0-9_-]+)/i);
-
-  const email = emailMatch ? emailMatch[0] : "";
-  const phone = extractPhoneNumber(text);
-  const linkedIn = linkedInMatch ? `https://linkedin.com/in/${linkedInMatch[1]}` : "";
-  const location = extractCandidateLocation(lines, text);
-  const portfolio = githubMatch ? `https://github.com/${githubMatch[1]}` : "";
-
-  // 2. High-Confidence Candidate Name Extraction
-  const { firstName, lastName, name: candidateName } = extractCandidateName(lines, text, email, linkedIn);
-
-  const allKnownSkills = [
-    "HTML", "CSS", "JavaScript", "TypeScript", "React", "Node.js", "Express", 
-    "MongoDB", "PostgreSQL", "SQL", "Python", "Git", "Tailwind CSS", "Redux", 
-    "Docker", "AWS", "RESTful API", "WordPress", "Website development", "GraphQL", 
-    "Next.js", "System Architecture", "Machine Learning", "Data Analysis", "Java", "C++"
-  ];
-
-  const detectedSkills = allKnownSkills.filter(skill => 
-    lowerText.includes(skill.toLowerCase())
-  );
-
 function extractProfessionalSummary(text, lines) {
   const summaryHeaderIndex = lines.findIndex(l => 
     /^(?:professional\s+summary|summary|about\s+me|profile|career\s+objective|objective)$/i.test(l.trim())
@@ -996,6 +946,57 @@ function extractEducationList(text, lines) {
 
   return education;
 }
+
+function generateRuleBasedAnalysis(text, targetRole) {
+  if (!text || typeof text !== 'string' || text.trim().length === 0) {
+    return {
+      candidate: { firstName: "", lastName: "", name: "", email: "", phone: "", linkedIn: "", summary: "", headline: "" },
+      summary: "",
+      education: [],
+      experience: [],
+      hasExperience: false,
+      hasEducation: false,
+      scores: { overall: 0, ats: 0, grammar: 0, format: 0, skills: 0, experience: 0, projects: 0 },
+      grammarIssues: [],
+      resumeProblems: [],
+      formatProblems: [],
+      atsProblems: [],
+      missingSections: ["Resume Content"],
+      skills: { detected: [], strong: [], weak: [], missing: [] },
+      projects: [],
+      improvements: [],
+      skillGap: []
+    };
+  }
+
+  const lowerText = text.toLowerCase();
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+
+  // 1. Extract email, phone, linkedIn
+  const emailMatch = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+  const linkedInMatch = text.match(/(?:https?:\/\/)?(?:www\.)?linkedin\.com\/in\/([a-zA-Z0-9_-]+)/i);
+  const githubMatch = text.match(/(?:https?:\/\/)?(?:www\.)?github\.com\/([a-zA-Z0-9_-]+)/i);
+
+  const email = emailMatch ? emailMatch[0] : "";
+  const phone = extractPhoneNumber(text);
+  const linkedIn = linkedInMatch ? `https://linkedin.com/in/${linkedInMatch[1]}` : "";
+  const location = extractCandidateLocation(lines, text);
+  const portfolio = githubMatch ? `https://github.com/${githubMatch[1]}` : "";
+
+  // 2. High-Confidence Candidate Name Extraction
+  const { firstName, lastName, name: candidateName } = extractCandidateName(lines, text, email, linkedIn);
+
+  const allKnownSkills = [
+    "HTML", "CSS", "JavaScript", "TypeScript", "React", "Node.js", "Express", 
+    "MongoDB", "PostgreSQL", "SQL", "Python", "Git", "Tailwind CSS", "Redux", 
+    "Docker", "AWS", "RESTful API", "WordPress", "Website development", "GraphQL", 
+    "Next.js", "System Architecture", "Machine Learning", "Data Analysis", "Java", "C++"
+  ];
+
+  const detectedSkills = allKnownSkills.filter(skill => 
+    lowerText.includes(skill.toLowerCase())
+  );
+
 
   const summary = extractProfessionalSummary(text, lines);
   const experience = extractWorkExperiences(text, lines);
