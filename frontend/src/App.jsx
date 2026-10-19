@@ -53,7 +53,7 @@ function MainLayout() {
   const [activeTab, setActiveTab] = useState(() => {
     try {
       const savedTab = localStorage.getItem('sb_active_tab');
-      const validTabs = ['dashboard', 'wizard', 'careeroverview', 'skillgap', 'resume', 'roadmap', 'chat'];
+      const validTabs = ['dashboard', 'wizard', 'skillgap', 'resume', 'roadmap', 'chat'];
       if (savedTab && validTabs.includes(savedTab)) {
         return savedTab;
       }
@@ -293,9 +293,6 @@ function MainLayout() {
                 handleTabChange('skillgap');
               }} 
             />
-          </div>
-          <div className={activeTab === 'careeroverview' ? 'block' : 'hidden'}>
-            <CareerOverviewDashboard profile={activeProfile} />
           </div>
         </div>
       </React.Suspense>
