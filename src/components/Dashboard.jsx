@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "SkillBridge career dashboard with hero skill gap card, career benchmarks & software engineering tools", deps: ["lucide-react", "recharts", "./common/AIAssistantAvatar"], state: "active", last: "sato@2026-09-25" }
+// agent-notes: { ctx: "SkillBridge career dashboard with hero skill gap card, career benchmarks & software engineering tools", deps: ["lucide-react", "recharts", "./common/AIAssistantAvatar"], state: "active", last: "anti@2026-10-19" }
 
 import React, { useState } from 'react';
 import { 
@@ -171,14 +171,6 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
               >
                 <span>Start Your Analysis</span>
                 <ArrowRight className="w-4 h-4" />
-              </button>
-
-              <button
-                onClick={() => onNavigate('skillgap')}
-                className="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-sm font-medium transition-all"
-              >
-                <Briefcase className="w-4 h-4 text-[#0d594f]" />
-                <span>Explore Skill Gap</span>
               </button>
             </div>
           </div>

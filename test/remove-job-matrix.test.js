@@ -30,16 +30,14 @@ async function runTests() {
   assert(!appSrcContent.includes("activeTab === 'job'"), "src/App.jsx must not have activeTab === 'job'");
   console.log("✅ Test 2 Passed: JobAnalyzer view removed from main layout in both App.jsx files.\n");
 
-  // TEST 3: Dashboard.jsx Explore action routes to 'skillgap'
-  console.log("Test 3: Checking Dashboard explore button action...");
+  // TEST 3: Dashboard.jsx does not navigate to 'job'
+  console.log("Test 3: Checking Dashboard has no job matrix action...");
   const dashFrontendContent = fs.readFileSync(dashboardFrontendPath, 'utf8');
   const dashSrcContent = fs.readFileSync(dashboardSrcPath, 'utf8');
 
   assert(!dashFrontendContent.includes("onNavigate('job')"), "frontend Dashboard must not navigate to 'job'");
   assert(!dashSrcContent.includes("onNavigate('job')"), "src Dashboard must not navigate to 'job'");
-  assert(dashFrontendContent.includes("onNavigate('skillgap')"), "frontend Dashboard explore button must navigate to 'skillgap'");
-  assert(dashSrcContent.includes("onNavigate('skillgap')"), "src Dashboard explore button must navigate to 'skillgap'");
-  console.log("✅ Test 3 Passed: Dashboard explore action now routes to 'skillgap'.\n");
+  console.log("✅ Test 3 Passed: Dashboard has no job matrix navigation.\n");
 
   // TEST 4: ResumeAnalyzer.jsx onOpenSkillBridge routes to 'skillgap'
   console.log("Test 4: Checking ResumeAnalyzer SkillBridge action button...");
