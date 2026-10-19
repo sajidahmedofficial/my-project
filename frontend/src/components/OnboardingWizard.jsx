@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Interactive Resume Onboarding with user name input in profile review & auto-navigation", deps: ["lucide-react", "../context/AuthContext", "../services/resumeApi", "../services/api", "../services/supabaseData", "../utils/sanitizeProfile"], state: "active", last: "anti@2026-10-19" }
+// agent-notes: { ctx: "Onboarding with mandatory name modal popup and validation strike", deps: ["lucide-react", "../context/AuthContext", "../services/resumeApi", "../services/api", "../services/supabaseData", "../utils/sanitizeProfile"], state: "active", last: "anti@2026-10-19" }
 
 import React, { useState, useRef, useEffect } from 'react';
 import { 
@@ -69,29 +69,71 @@ export default function OnboardingWizard({ onComplete }) {
   const [uploadError, setUploadError] = useState('');
   const [isParsing, setIsParsing] = useState(false);
 
-  // Form State with clean initial values - User input of name is prioritized
-  const [firstName, setFirstName] = useState(() => {
-    const rawName = currentUser?.firstName || currentUser?.name || '';
-    if (rawName === 'Student Profile' || rawName === 'Candidate' || rawName === 'Aarav Sharma') return '';
-    return rawName.split(' ')[0] || '';
-  });
-  const [lastName, setLastName] = useState(() => {
-    if (currentUser?.lastName) {
-      if (currentUser.lastName === 'Student Profile' || currentUser.lastName === 'Candidate' || currentUser.lastName === 'Aarav Sharma') return '';
-      return currentUser.lastName;
-    }
-    const rawName = currentUser?.name || '';
-    if (rawName === 'Student Profile' || rawName === 'Candidate' || rawName === 'Aarav Sharma') return '';
-    const parts = rawName.split(' ');
-    return parts.slice(1).join(' ') || '';
-  });
+  // Form State: DO NOT auto-fill or prefill name details. User input of name is strictly required.
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
 
-  // Focus firstName input when user lands on Step 2 (Profile Review)
+  // Modal pop-up state for mandatory user name input
+  const [isNameModalOpen, setIsNameModalOpen] = useState(false);
+  const [modalFirstName, setModalFirstName] = useState('');
+  const [modalLastName, setModalLastName] = useState('');
+  const [nameModalError, setNameModalError] = useState('');
+  const [nameModalShake, setNameModalShake] = useState(false);
+  const modalFirstInputRef = useRef(null);
+
+  // Trigger modal pop-up automatically when user lands on Step 2 (Profile Review) if name is missing
   useEffect(() => {
-    if (currentStep === 2 && !firstName.trim() && firstNameInputRef.current) {
-      setTimeout(() => firstNameInputRef.current?.focus(), 150);
+    if (currentStep === 2 && (!firstName.trim() || !lastName.trim())) {
+      setModalFirstName(firstName);
+      setModalLastName(lastName);
+      setIsNameModalOpen(true);
+      setTimeout(() => {
+        modalFirstInputRef.current?.focus();
+      }, 250);
     }
-  }, [currentStep, firstName]);
+  }, [currentStep]);
+
+  const triggerNameModalStrike = (errorMessage) => {
+    setNameModalError(errorMessage);
+    setNameModalShake(true);
+    setTimeout(() => setNameModalShake(false), 500);
+  };
+
+  const handleConfirmNameModal = (e) => {
+    if (e) e.preventDefault();
+    const trimmedFirst = modalFirstName.trim();
+    const trimmedLast = modalLastName.trim();
+
+    if (!trimmedFirst && !trimmedLast) {
+      triggerNameModalStrike('⚠️ Please enter both your First Name and Last Name.');
+      modalFirstInputRef.current?.focus();
+      return;
+    }
+    if (!trimmedFirst) {
+      triggerNameModalStrike('⚠️ First Name is required. Please enter your first name.');
+      modalFirstInputRef.current?.focus();
+      return;
+    }
+    if (!trimmedLast) {
+      triggerNameModalStrike('⚠️ Last Name is required. Please enter your last name.');
+      return;
+    }
+
+    setFirstName(trimmedFirst);
+    setLastName(trimmedLast);
+    setStepErrors(prev => ({ ...prev, firstName: null, lastName: null }));
+    setNameModalError('');
+    setIsNameModalOpen(false);
+  };
+
+  const handleDismissNameModal = () => {
+    if (!modalFirstName.trim() || !modalLastName.trim()) {
+      triggerNameModalStrike('⚠️ You must enter your First Name and Last Name to proceed!');
+      return;
+    }
+    handleConfirmNameModal();
+  };
+
   const [email, setEmail] = useState(() => currentUser?.email || '');
   const [phone, setPhone] = useState(() => currentUser?.phone || '');
   const [linkedIn, setLinkedIn] = useState(() => currentUser?.linkedIn || '');
@@ -388,8 +430,8 @@ export default function OnboardingWizard({ onComplete }) {
     setUploadProgress(0);
     setAnalyzingText('');
     setUploadError('');
-    setFirstName(currentUser?.firstName || '');
-    setLastName(currentUser?.lastName || '');
+    setFirstName('');
+    setLastName('');
     setEmail(currentUser?.email || '');
     setPhone(currentUser?.phone || '');
     setLinkedIn(currentUser?.linkedIn || '');
@@ -475,13 +517,19 @@ export default function OnboardingWizard({ onComplete }) {
       return;
     }
 
-    // Step 2 validation (First & Last Name required from user input)
+    // Step 2 validation (First & Last Name required from user input via modal popup)
     if (currentStep === 2 && targetStep > 2) {
-      const errors = {};
-      if (!firstName.trim()) errors.firstName = 'Please fill up your First Name *';
-      if (!lastName.trim()) errors.lastName = 'Please fill up your Last Name *';
+      const trimmedFirst = firstName.trim();
+      const trimmedLast = lastName.trim();
 
-      if (Object.keys(errors).length > 0) {
+      if (!trimmedFirst || !trimmedLast) {
+        setModalFirstName(firstName);
+        setModalLastName(lastName);
+        setIsNameModalOpen(true);
+        triggerNameModalStrike('⚠️ You must enter your First Name and Last Name to continue!');
+        const errors = {};
+        if (!trimmedFirst) errors.firstName = 'Please fill up your First Name *';
+        if (!trimmedLast) errors.lastName = 'Please fill up your Last Name *';
         setStepErrors(errors);
         return;
       }
@@ -824,23 +872,39 @@ export default function OnboardingWizard({ onComplete }) {
             </div>
 
             {/* Profile Review: Prompt asking user to fill up their name */}
-            <div className="bg-gradient-to-r from-teal-50/90 via-emerald-50/70 to-teal-50/90 border border-teal-200 rounded-2xl p-4 sm:p-5 flex items-start gap-3.5 shadow-sm">
-              <div className="w-8 h-8 rounded-xl bg-[#0f766e] text-white flex items-center justify-center font-bold flex-shrink-0 text-sm shadow-sm mt-0.5">
-                <User className="w-4 h-4" />
+            <div className="bg-gradient-to-r from-teal-50/90 via-emerald-50/70 to-teal-50/90 border border-teal-200 rounded-2xl p-4 sm:p-5 flex items-start justify-between gap-3.5 shadow-sm">
+              <div className="flex items-start gap-3.5">
+                <div className="w-8 h-8 rounded-xl bg-[#0f766e] text-white flex items-center justify-center font-bold flex-shrink-0 text-sm shadow-sm mt-0.5">
+                  <User className="w-4 h-4" />
+                </div>
+                <div className="space-y-1">
+                  <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                    Please Enter Your Name
+                    {(!firstName.trim() || !lastName.trim()) && (
+                      <span className="bg-amber-100 text-amber-800 text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full">
+                        Required
+                      </span>
+                    )}
+                  </h4>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Fill up your <strong>First Name</strong> and <strong>Last Name</strong> below to complete your profile review and personalize your roadmap & verified certificates.
+                  </p>
+                </div>
               </div>
-              <div className="space-y-1">
-                <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                  Please Enter Your Name
-                  {(!firstName.trim() || !lastName.trim()) && (
-                    <span className="bg-amber-100 text-amber-800 text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full">
-                      Required
-                    </span>
-                  )}
-                </h4>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  Fill up your <strong>First Name</strong> and <strong>Last Name</strong> below to complete your profile review and personalize your roadmap & verified certificates.
-                </p>
-              </div>
+              {(!firstName.trim() || !lastName.trim()) && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setModalFirstName(firstName);
+                    setModalLastName(lastName);
+                    setIsNameModalOpen(true);
+                  }}
+                  className="px-3.5 py-2 rounded-xl bg-[#0f766e] hover:bg-[#0d594f] text-white text-xs font-semibold shadow-sm transition-all shrink-0 cursor-pointer flex items-center gap-1.5"
+                >
+                  <User className="w-3.5 h-3.5" />
+                  <span>Enter Name</span>
+                </button>
+              )}
             </div>
 
             {/* Personal Details */}
@@ -1502,6 +1566,120 @@ export default function OnboardingWizard({ onComplete }) {
 
       </div>
 
+      {/* ===================================================================== */}
+      {/* NAME INPUT POPUP MODAL (MANDATORY USER NAME ENTRY & STRIKE NOTIFICATION) */}
+      {/* ===================================================================== */}
+      {isNameModalOpen && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in"
+          onClick={handleDismissNameModal}
+        >
+          <div 
+            className={`bg-white rounded-2xl shadow-2xl max-w-md w-full border border-slate-200 overflow-hidden transform transition-all ${
+              nameModalShake ? 'animate-shake' : ''
+            }`}
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="name-modal-title"
+          >
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-teal-700 via-[#0f766e] to-emerald-700 p-5 text-white flex items-center justify-between shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white shadow-inner">
+                  <User className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 id="name-modal-title" className="text-base font-bold text-white tracking-tight">
+                    Please Enter Your Name
+                  </h3>
+                  <p className="text-[11px] text-teal-100 font-medium">
+                    Personal Information Required
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={handleDismissNameModal}
+                className="p-1.5 rounded-lg text-teal-200 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                title="Close"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Striking Notification Banner */}
+            {nameModalError && (
+              <div className="mx-6 mt-4 p-3 rounded-xl bg-rose-50 border-2 border-rose-300 text-rose-800 text-xs font-semibold flex items-center gap-2.5 animate-shake shadow-sm">
+                <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+                <span>{nameModalError}</span>
+              </div>
+            )}
+
+            {/* Modal Body Form */}
+            <form onSubmit={handleConfirmNameModal} className="p-6 space-y-4">
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Please enter your full identity. We require your <strong>First Name</strong> and <strong>Last Name</strong> to personalize your career roadmap, skill gap analysis, and verified certificates.
+              </p>
+
+              <div className="space-y-3 pt-1">
+                <div className="space-y-1">
+                  <label className="block text-xs font-semibold text-slate-700">
+                    First Name <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    ref={modalFirstInputRef}
+                    type="text"
+                    value={modalFirstName}
+                    onChange={(e) => {
+                      setModalFirstName(e.target.value);
+                      if (nameModalError) setNameModalError('');
+                    }}
+                    placeholder="Enter your first name (e.g. Sajid)"
+                    className={`w-full bg-slate-50 border rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 focus:bg-white focus:outline-none transition-colors ${
+                      nameModalError && !modalFirstName.trim()
+                        ? 'border-rose-400 focus:ring-2 focus:ring-rose-400/20'
+                        : 'border-slate-300 focus:border-[#0f766e] focus:ring-2 focus:ring-[#0f766e]/20'
+                    }`}
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="block text-xs font-semibold text-slate-700">
+                    Last Name <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={modalLastName}
+                    onChange={(e) => {
+                      setModalLastName(e.target.value);
+                      if (nameModalError) setNameModalError('');
+                    }}
+                    placeholder="Enter your last name (e.g. Ahmed)"
+                    className={`w-full bg-slate-50 border rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 focus:bg-white focus:outline-none transition-colors ${
+                      nameModalError && !modalLastName.trim()
+                        ? 'border-rose-400 focus:ring-2 focus:ring-rose-400/20'
+                        : 'border-slate-300 focus:border-[#0f766e] focus:ring-2 focus:ring-[#0f766e]/20'
+                    }`}
+                  />
+                </div>
+              </div>
+
+              <div className="pt-3">
+                <button
+                  type="submit"
+                  className="w-full py-3 px-4 rounded-xl bg-[#0f766e] hover:bg-[#0d594f] text-white text-xs sm:text-sm font-semibold shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <span>Confirm Name & Continue</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
+
