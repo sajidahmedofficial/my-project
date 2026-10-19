@@ -234,9 +234,10 @@ function MainLayout() {
     if (showOnboarding && !hasUploadedResume) {
       return (
         <OnboardingWizard 
+          profile={activeProfile}
           onComplete={() => {
             setShowOnboarding(false);
-            setActiveTab('dashboard');
+            handleTabChange('dashboard');
           }} 
         />
       );
@@ -286,6 +287,7 @@ function MainLayout() {
           </div>
           <div className={activeTab === 'wizard' ? 'block' : 'hidden'}>
             <OnboardingWizard 
+              profile={activeProfile}
               onComplete={() => {
                 setShowOnboarding(false);
                 handleTabChange('skillgap');

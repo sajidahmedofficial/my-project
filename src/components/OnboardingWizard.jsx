@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Onboarding with mandatory name modal popup and validation strike", deps: ["lucide-react", "../context/AuthContext", "../services/resumeApi", "../services/api", "../services/supabaseData", "../utils/sanitizeProfile"], state: "active", last: "anti@2026-10-19" }
+// agent-notes: { ctx: "Onboarding with mandatory name modal popup, resume persistence & refresh restoration", deps: ["lucide-react", "../context/AuthContext", "../services/resumeApi", "../services/api", "../services/supabaseData", "../utils/sanitizeProfile"], state: "active", last: "anti@2026-10-19" }
 
 import React, { useState, useRef, useEffect } from 'react';
 import { 
@@ -51,27 +51,82 @@ import { TARGET_INDUSTRY_OPTIONS } from '../constants/industryOptions';
 
 export { TARGET_INDUSTRY_OPTIONS };
 
-export default function OnboardingWizard({ onComplete }) {
+export default function OnboardingWizard({ onComplete, profile }) {
   const { currentUser, updateProfile, completeOnboarding } = useAuth();
+  const effectiveProfile = profile || currentUser;
   const fileInputRef = useRef(null);
   const firstNameInputRef = useRef(null);
 
+  // Helper to determine initial uploaded resume file from storage or profile
+  const getInitialUploadFile = () => {
+    try {
+      const storedName = localStorage.getItem('sb_resume_filename') || effectiveProfile?.resumeFileName || currentUser?.resumeFileName;
+      const hasResume = localStorage.getItem('sb_has_uploaded_resume') === 'true' || Boolean(effectiveProfile?.hasUploadedResume) || Boolean(currentUser?.hasUploadedResume);
+      if (storedName || hasResume) {
+        const storedSize = Number(localStorage.getItem('sb_resume_filesize')) || 145 * 1024;
+        return {
+          name: storedName || 'Uploaded_Resume.pdf',
+          size: storedSize,
+          type: 'application/pdf'
+        };
+      }
+    } catch {}
+    return null;
+  };
+
   // Wizard Step: 1 = Resume Upload, 2 = Profile Review, 3 = Career Vision, 4 = Career Path, 5 = Skill Gap Analysis
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(() => {
+    try {
+      const savedStep = Number(localStorage.getItem('sb_wizard_step'));
+      if (savedStep && savedStep >= 1 && savedStep <= 5) {
+        return savedStep;
+      }
+    } catch {}
+    return 1;
+  });
+
+  // Track step in localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('sb_wizard_step', String(currentStep));
+    } catch {}
+  }, [currentStep]);
 
   // -------------------------------------------------------------
   // STEP 1: RESUME UPLOAD STATE
   // -------------------------------------------------------------
   const [dragActive, setDragActive] = useState(false);
-  const [uploadFile, setUploadFile] = useState(null);
-  const [uploadProgress, setUploadProgress] = useState(0); // 0 = idle, 1 = summary, 2 = education, 3 = done
-  const [analyzingText, setAnalyzingText] = useState('');
+  const [uploadFile, setUploadFile] = useState(() => getInitialUploadFile());
+  const [uploadProgress, setUploadProgress] = useState(() => (getInitialUploadFile() ? 3 : 0)); // 0 = idle, 1 = summary, 2 = education, 3 = done
+  const [analyzingText, setAnalyzingText] = useState(() => (getInitialUploadFile() ? 'Analyzed successfully.' : ''));
   const [uploadError, setUploadError] = useState('');
   const [isParsing, setIsParsing] = useState(false);
 
+  // Sync uploadFile if profile or currentUser updates after mount
+  useEffect(() => {
+    const prof = effectiveProfile || currentUser;
+    const storedName = prof?.resumeFileName || localStorage.getItem('sb_resume_filename');
+    const hasResume = Boolean(prof?.hasUploadedResume) || localStorage.getItem('sb_has_uploaded_resume') === 'true';
+
+    if ((storedName || hasResume) && !uploadFile) {
+      const storedSize = Number(localStorage.getItem('sb_resume_filesize')) || 145 * 1024;
+      setUploadFile({
+        name: storedName || 'Uploaded_Resume.pdf',
+        size: storedSize,
+        type: 'application/pdf'
+      });
+      setUploadProgress(3);
+      setAnalyzingText('Analyzed successfully.');
+    }
+  }, [effectiveProfile?.hasUploadedResume, effectiveProfile?.resumeFileName, currentUser?.hasUploadedResume, currentUser?.resumeFileName]);
+
   // Form State: DO NOT auto-fill or prefill name details. User input of name is strictly required.
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const [firstName, setFirstName] = useState(() => {
+    return localStorage.getItem('sb_profile_firstname') || '';
+  });
+  const [lastName, setLastName] = useState(() => {
+    return localStorage.getItem('sb_profile_lastname') || '';
+  });
 
   // Modal pop-up state for mandatory user name input
   const [isNameModalOpen, setIsNameModalOpen] = useState(false);
@@ -121,6 +176,10 @@ export default function OnboardingWizard({ onComplete }) {
 
     setFirstName(trimmedFirst);
     setLastName(trimmedLast);
+    try {
+      localStorage.setItem('sb_profile_firstname', trimmedFirst);
+      localStorage.setItem('sb_profile_lastname', trimmedLast);
+    } catch {}
     setStepErrors(prev => ({ ...prev, firstName: null, lastName: null }));
     setNameModalError('');
     setIsNameModalOpen(false);
@@ -134,32 +193,65 @@ export default function OnboardingWizard({ onComplete }) {
     handleConfirmNameModal();
   };
 
-  const [email, setEmail] = useState(() => currentUser?.email || '');
-  const [phone, setPhone] = useState(() => currentUser?.phone || '');
-  const [linkedIn, setLinkedIn] = useState(() => currentUser?.linkedIn || '');
+  const [email, setEmail] = useState(() => effectiveProfile?.email || currentUser?.email || localStorage.getItem('sb_profile_email') || '');
+  const [phone, setPhone] = useState(() => effectiveProfile?.phone || currentUser?.phone || localStorage.getItem('sb_profile_phone') || '');
+  const [linkedIn, setLinkedIn] = useState(() => effectiveProfile?.linkedIn || currentUser?.linkedIn || localStorage.getItem('sb_profile_linkedin') || '');
 
   // Skills as discrete chips (Defaults to empty unless user profile already has skills)
   const [skillsList, setSkillsList] = useState(() => {
+    if (Array.isArray(effectiveProfile?.skills) && effectiveProfile.skills.length > 0) {
+      return effectiveProfile.skills;
+    }
     if (Array.isArray(currentUser?.skills) && currentUser.skills.length > 0) {
       return currentUser.skills;
     }
+    try {
+      const localSkills = JSON.parse(localStorage.getItem('sb_profile_skills'));
+      if (Array.isArray(localSkills) && localSkills.length > 0) return localSkills;
+      const rawAnalysis = localStorage.getItem('sb_resume_analysis');
+      if (rawAnalysis) {
+        const parsed = JSON.parse(rawAnalysis);
+        const s = parsed.skills?.detected || parsed.skills;
+        if (Array.isArray(s) && s.length > 0) return s;
+      }
+    } catch {}
     return [];
   });
   const [newSkillInput, setNewSkillInput] = useState('');
 
   // Education list (Defaults to empty unless user profile already has education)
   const [educationList, setEducationList] = useState(() => {
-    if (Array.isArray(currentUser?.education) && currentUser.education.length > 0) {
-      return currentUser.education;
+    const list = effectiveProfile?.education || currentUser?.education;
+    if (Array.isArray(list) && list.length > 0) {
+      return list;
     }
-    if (currentUser?.college) {
+    try {
+      const localEdu = JSON.parse(localStorage.getItem('sb_profile_education'));
+      if (Array.isArray(localEdu) && localEdu.length > 0) return localEdu;
+      const rawAnalysis = localStorage.getItem('sb_resume_analysis');
+      if (rawAnalysis) {
+        const parsed = JSON.parse(rawAnalysis);
+        const e = parsed.education || parsed.data?.education;
+        if (Array.isArray(e) && e.length > 0) {
+          return e.map((edu, idx) => ({
+            id: idx + 1,
+            school: edu.institution || edu.school || edu.university || edu.college || '',
+            degree: edu.qualification || edu.degree || 'Bachelor of Technology (B.Tech)',
+            field: edu.field_of_study || edu.field || edu.department || 'Computer Science',
+            year: String(edu.graduation_year || edu.year || '2025').slice(0, 4)
+          }));
+        }
+      }
+    } catch {}
+    const college = effectiveProfile?.college || currentUser?.college;
+    if (college) {
       return [
         {
           id: 1,
-          school: currentUser.college,
-          degree: currentUser.degree || 'Bachelor of Technology (B.Tech)',
-          field: currentUser.department || 'Computer Science',
-          year: currentUser.graduationYear || '2025'
+          school: college,
+          degree: effectiveProfile?.degree || currentUser?.degree || 'Bachelor of Technology (B.Tech)',
+          field: effectiveProfile?.department || currentUser?.department || 'Computer Science',
+          year: effectiveProfile?.graduationYear || currentUser?.graduationYear || '2025'
         }
       ];
     }
@@ -167,13 +259,52 @@ export default function OnboardingWizard({ onComplete }) {
   });
 
   // Professional Summary state (Defaults to empty)
-  const [summary, setSummary] = useState('');
+  const [summary, setSummary] = useState(() => {
+    if (effectiveProfile?.summary || effectiveProfile?.professionalSummary) {
+      return effectiveProfile.summary || effectiveProfile.professionalSummary;
+    }
+    if (currentUser?.summary || currentUser?.professionalSummary) {
+      return currentUser.summary || currentUser.professionalSummary;
+    }
+    try {
+      const localSummary = localStorage.getItem('sb_profile_summary');
+      if (localSummary) return localSummary;
+      const rawAnalysis = localStorage.getItem('sb_resume_analysis');
+      if (rawAnalysis) {
+        const parsed = JSON.parse(rawAnalysis);
+        const s = parsed.summary || parsed.professional_summary || parsed.candidate?.summary;
+        if (s) return s;
+      }
+    } catch {}
+    return '';
+  });
 
   // Work Experience list (Defaults to empty)
   const [experienceList, setExperienceList] = useState(() => {
-    if (Array.isArray(currentUser?.experience) && currentUser.experience.length > 0) {
-      return currentUser.experience;
+    const exp = effectiveProfile?.experience || currentUser?.experience;
+    if (Array.isArray(exp) && exp.length > 0) {
+      return exp;
     }
+    try {
+      const localExp = JSON.parse(localStorage.getItem('sb_profile_experience'));
+      if (Array.isArray(localExp) && localExp.length > 0) return localExp;
+      const rawAnalysis = localStorage.getItem('sb_resume_analysis');
+      if (rawAnalysis) {
+        const parsed = JSON.parse(rawAnalysis);
+        const e = parsed.work_experience || parsed.experience || parsed.data?.work_experience;
+        if (Array.isArray(e) && e.length > 0) {
+          return e.map((item, idx) => ({
+            id: idx + 1,
+            company: item.company || item.organization || '',
+            role: item.position_title || item.role || item.title || '',
+            startDate: item.start_date || item.startDate || '',
+            endDate: item.end_date || item.endDate || '',
+            duration: item.duration || '',
+            description: item.description || ''
+          }));
+        }
+      }
+    } catch {}
     return [];
   });
 
@@ -183,9 +314,14 @@ export default function OnboardingWizard({ onComplete }) {
   // -------------------------------------------------------------
   // STEP 3: CAREER VISION STATE
   // -------------------------------------------------------------
-  const [targetRole, setTargetRole] = useState(
-    typeof currentUser?.careerGoal === 'string' ? currentUser.careerGoal : 'Full Stack AI Engineer'
-  );
+  const [targetRole, setTargetRole] = useState(() => {
+    return (
+      (typeof effectiveProfile?.careerGoal === 'string' && effectiveProfile.careerGoal) ||
+      (typeof currentUser?.careerGoal === 'string' && currentUser.careerGoal) ||
+      localStorage.getItem('sb_target_role') ||
+      'Full Stack AI Engineer'
+    );
+  });
   const [targetIndustry, setTargetIndustry] = useState('SaaS & Cloud Computing');
   const [experienceLevel, setExperienceLevel] = useState('Intermediate');
   const [visionGoals, setVisionGoals] = useState('Build scalable AI-native software and land a senior engineering role.');
@@ -404,6 +540,39 @@ export default function OnboardingWizard({ onComplete }) {
 
       setAnalysisResult(parsedAnalysis);
 
+      try {
+        localStorage.setItem('sb_resume_filename', file.name);
+        localStorage.setItem('sb_resume_filesize', String(file.size || 148480));
+        localStorage.setItem('sb_has_uploaded_resume', 'true');
+        localStorage.setItem('sb_resume_analysis', JSON.stringify(parsedAnalysis));
+        if (parsedAnalysis.resumeText) {
+          localStorage.setItem('sb_resume_text', parsedAnalysis.resumeText);
+        }
+        if (sanitizedSummary) {
+          localStorage.setItem('sb_profile_summary', sanitizedSummary);
+        }
+        if (validParsedEdu.length > 0) {
+          localStorage.setItem('sb_profile_education', JSON.stringify(validParsedEdu.map((edu, idx) => ({
+            id: idx + 1,
+            school: edu.institution || edu.school || edu.university || edu.college || '',
+            degree: (!invalidEduProjectRegex.test(edu.qualification || edu.degree || '')) ? (edu.qualification || edu.degree || 'Bachelor of Technology (B.Tech)') : 'Bachelor of Technology (B.Tech)',
+            field: edu.field_of_study || edu.field || edu.fieldOfStudy || edu.major || edu.department || 'Computer Science & Engineering',
+            year: String(edu.graduation_year || edu.year || edu.graduationYear || '2025').slice(0, 4)
+          }))));
+        }
+        const detectedSkills = Array.isArray(parsedAnalysis.skills?.detected) ? parsedAnalysis.skills.detected : (Array.isArray(parsedAnalysis.skills) ? parsedAnalysis.skills : []);
+        if (detectedSkills.length > 0) {
+          localStorage.setItem('sb_profile_skills', JSON.stringify(detectedSkills));
+        }
+      } catch (e) {}
+
+      if (updateProfile) {
+        updateProfile({
+          hasUploadedResume: true,
+          resumeFileName: file.name
+        });
+      }
+
       // User requirement: After upload resume, automatically advance to Profile Review so user can input their name
       setTimeout(() => {
         setCurrentStep(2);
@@ -432,14 +601,35 @@ export default function OnboardingWizard({ onComplete }) {
     setUploadError('');
     setFirstName('');
     setLastName('');
-    setEmail(currentUser?.email || '');
-    setPhone(currentUser?.phone || '');
-    setLinkedIn(currentUser?.linkedIn || '');
+    setEmail(effectiveProfile?.email || currentUser?.email || '');
+    setPhone(effectiveProfile?.phone || currentUser?.phone || '');
+    setLinkedIn(effectiveProfile?.linkedIn || currentUser?.linkedIn || '');
     setSummary('');
-    setSkillsList(Array.isArray(currentUser?.skills) ? currentUser.skills : []);
-    setEducationList(Array.isArray(currentUser?.education) ? currentUser.education : []);
-    setExperienceList(Array.isArray(currentUser?.experience) ? currentUser.experience : []);
+    setSkillsList(Array.isArray(effectiveProfile?.skills) ? effectiveProfile.skills : (Array.isArray(currentUser?.skills) ? currentUser.skills : []));
+    setEducationList(Array.isArray(effectiveProfile?.education) ? effectiveProfile.education : (Array.isArray(currentUser?.education) ? currentUser.education : []));
+    setExperienceList(Array.isArray(effectiveProfile?.experience) ? effectiveProfile.experience : (Array.isArray(currentUser?.experience) ? currentUser.experience : []));
     if (fileInputRef.current) fileInputRef.current.value = '';
+
+    try {
+      localStorage.removeItem('sb_resume_filename');
+      localStorage.removeItem('sb_resume_filesize');
+      localStorage.removeItem('sb_resume_analysis');
+      localStorage.removeItem('sb_profile_summary');
+      localStorage.removeItem('sb_profile_skills');
+      localStorage.removeItem('sb_profile_education');
+      localStorage.removeItem('sb_profile_experience');
+      localStorage.removeItem('sb_profile_firstname');
+      localStorage.removeItem('sb_profile_lastname');
+      localStorage.setItem('sb_wizard_step', '1');
+      localStorage.setItem('sb_has_uploaded_resume', 'false');
+    } catch {}
+
+    if (updateProfile) {
+      updateProfile({
+        hasUploadedResume: false,
+        resumeFileName: null
+      });
+    }
   };
 
   // -------------------------------------------------------------
@@ -653,11 +843,16 @@ export default function OnboardingWizard({ onComplete }) {
           return (
             <React.Fragment key={s.num}>
               <div 
-                onClick={() => isDone && setCurrentStep(s.num)}
+                onClick={() => {
+                  if (s.num === currentStep) return;
+                  if (isDone || (uploadFile && uploadProgress === 3 && s.num <= 2)) {
+                    validateAndProceed(s.num);
+                  }
+                }}
                 className={`flex items-center gap-2 cursor-pointer select-none transition-all ${
                   isActive 
                     ? 'text-[#0f766e] font-semibold' 
-                    : isDone 
+                    : (isDone || (uploadFile && uploadProgress === 3 && s.num <= 2))
                     ? 'text-[#0f766e] font-medium' 
                     : 'text-slate-400 font-normal'
                 }`}
@@ -667,6 +862,8 @@ export default function OnboardingWizard({ onComplete }) {
                     ? 'border-2 border-[#0f766e] bg-white text-[#0f766e] shadow-sm ring-4 ring-[#0f766e]/10' 
                     : isDone 
                     ? 'bg-[#0f766e] text-white' 
+                    : (uploadFile && uploadProgress === 3 && s.num <= 2)
+                    ? 'border border-[#0f766e] bg-white text-[#0f766e]'
                     : 'border border-slate-300 bg-white text-slate-400'
                 }`}>
                   {isDone ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : s.num}

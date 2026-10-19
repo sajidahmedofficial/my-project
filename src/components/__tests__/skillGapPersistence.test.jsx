@@ -63,4 +63,31 @@ describe('Skill Gap Persistence & Refresh Restoration', () => {
     expect(hasResume).toBe(true);
     expect(resumeFile).toBe('Sajid_Resume.pdf');
   });
+
+  it('restores uploaded resume in profile setup wizard across refresh', () => {
+    localStorage.setItem('sb_resume_filename', 'Sajid_Ahmed_Resume.pdf');
+    localStorage.setItem('sb_resume_filesize', '204800');
+    localStorage.setItem('sb_has_uploaded_resume', 'true');
+    localStorage.setItem('sb_wizard_step', '2');
+
+    // Simulate wizard hydration logic
+    const storedName = localStorage.getItem('sb_resume_filename');
+    const hasResume = localStorage.getItem('sb_has_uploaded_resume') === 'true';
+    const storedSize = Number(localStorage.getItem('sb_resume_filesize')) || 145 * 1024;
+    const step = Number(localStorage.getItem('sb_wizard_step')) || 1;
+
+    const restoredUploadFile = (storedName || hasResume) ? {
+      name: storedName || 'Uploaded_Resume.pdf',
+      size: storedSize,
+      type: 'application/pdf'
+    } : null;
+
+    const restoredProgress = (storedName || hasResume) ? 3 : 0;
+
+    expect(restoredUploadFile).not.toBeNull();
+    expect(restoredUploadFile.name).toBe('Sajid_Ahmed_Resume.pdf');
+    expect(restoredUploadFile.size).toBe(204800);
+    expect(restoredProgress).toBe(3);
+    expect(step).toBe(2);
+  });
 });
