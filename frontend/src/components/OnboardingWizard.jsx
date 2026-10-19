@@ -237,6 +237,8 @@ export default function OnboardingWizard({ onComplete }) {
       const parsedAnalysis = response?.analysis || response?.data?.analysis || response?.data || response || {};
       console.log('[OnboardingWizard] Parsed Resume Payload:', parsedAnalysis);
 
+      const cand = parsedAnalysis.candidate || parsedAnalysis.data?.candidate || {};
+
       // User requirement: In profile review, name must come from user input — ask user to fill up their name.
       // Do NOT auto-extract or overwrite name from parsed resume.
       if (cand.email || parsedAnalysis.email) setEmail(cand.email || parsedAnalysis.email);
