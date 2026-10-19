@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "4-step interactive Resume Onboarding & Career Analysis Wizard matching Rolemint design specs with full error handling and chip rendering", deps: ["lucide-react", "../context/AuthContext", "../services/resumeApi", "../services/api", "../services/supabaseData", "../utils/sanitizeProfile"], state: "active", last: "anti@2026-08-29" }
+// agent-notes: { ctx: "Interactive Resume Onboarding with user name input in profile review & auto-navigation", deps: ["lucide-react", "../context/AuthContext", "../services/resumeApi", "../services/api", "../services/supabaseData", "../utils/sanitizeProfile"], state: "active", last: "anti@2026-10-19" }
 
 import React, { useState, useRef, useEffect } from 'react';
 import { 
@@ -54,6 +54,7 @@ export { TARGET_INDUSTRY_OPTIONS };
 export default function OnboardingWizard({ onComplete }) {
   const { currentUser, updateProfile, completeOnboarding } = useAuth();
   const fileInputRef = useRef(null);
+  const firstNameInputRef = useRef(null);
 
   // Wizard Step: 1 = Resume Upload, 2 = Profile Review, 3 = Career Vision, 4 = Career Path, 5 = Skill Gap Analysis
   const [currentStep, setCurrentStep] = useState(1);
@@ -68,17 +69,29 @@ export default function OnboardingWizard({ onComplete }) {
   const [uploadError, setUploadError] = useState('');
   const [isParsing, setIsParsing] = useState(false);
 
-  // Form State with clean initial values
+  // Form State with clean initial values - User input of name is prioritized
   const [firstName, setFirstName] = useState(() => {
     const rawName = currentUser?.firstName || currentUser?.name || '';
+    if (rawName === 'Student Profile' || rawName === 'Candidate' || rawName === 'Aarav Sharma') return '';
     return rawName.split(' ')[0] || '';
   });
   const [lastName, setLastName] = useState(() => {
-    if (currentUser?.lastName) return currentUser.lastName;
+    if (currentUser?.lastName) {
+      if (currentUser.lastName === 'Student Profile' || currentUser.lastName === 'Candidate' || currentUser.lastName === 'Aarav Sharma') return '';
+      return currentUser.lastName;
+    }
     const rawName = currentUser?.name || '';
+    if (rawName === 'Student Profile' || rawName === 'Candidate' || rawName === 'Aarav Sharma') return '';
     const parts = rawName.split(' ');
     return parts.slice(1).join(' ') || '';
   });
+
+  // Focus firstName input when user lands on Step 2 (Profile Review)
+  useEffect(() => {
+    if (currentStep === 2 && !firstName.trim() && firstNameInputRef.current) {
+      setTimeout(() => firstNameInputRef.current?.focus(), 150);
+    }
+  }, [currentStep, firstName]);
   const [email, setEmail] = useState(() => currentUser?.email || '');
   const [phone, setPhone] = useState(() => currentUser?.phone || '');
   const [linkedIn, setLinkedIn] = useState(() => currentUser?.linkedIn || '');
@@ -224,22 +237,8 @@ export default function OnboardingWizard({ onComplete }) {
       const parsedAnalysis = response?.analysis || response?.data?.analysis || response?.data || response || {};
       console.log('[OnboardingWizard] Parsed Resume Payload:', parsedAnalysis);
 
-      const cand = parsedAnalysis.candidate || parsedAnalysis.data?.candidate || {};
-      
-      // STRICT RULE 1: Split name as it appears in the resume header ONLY. Never derive from email/username.
-      let extractedFirst = (cand.firstName || parsedAnalysis.first_name || '').trim();
-      let extractedLast = (cand.lastName || parsedAnalysis.last_name || '').trim();
-      
-      if (!extractedFirst && (cand.name || parsedAnalysis.name)) {
-        const rawFullName = (cand.name || parsedAnalysis.name || '').trim();
-        const parts = rawFullName.split(/\s+/).filter(Boolean);
-        extractedFirst = parts[0] || '';
-        extractedLast = parts.slice(1).join(' ') || '';
-      }
-
-      // Populate Candidate Contact Details
-      if (extractedFirst) setFirstName(extractedFirst);
-      if (extractedLast) setLastName(extractedLast);
+      // User requirement: In profile review, name must come from user input — ask user to fill up their name.
+      // Do NOT auto-extract or overwrite name from parsed resume.
       if (cand.email || parsedAnalysis.email) setEmail(cand.email || parsedAnalysis.email);
       if (cand.phone || parsedAnalysis.phone) setPhone(cand.phone || parsedAnalysis.phone);
       if (cand.linkedIn || parsedAnalysis.linkedin_url) setLinkedIn(cand.linkedIn || parsedAnalysis.linkedin_url);
@@ -361,6 +360,11 @@ export default function OnboardingWizard({ onComplete }) {
 
       setAnalysisResult(parsedAnalysis);
 
+      // User requirement: After upload resume, automatically advance to Profile Review so user can input their name
+      setTimeout(() => {
+        setCurrentStep(2);
+      }, 700);
+
     } catch (err) {
       clearTimeout(stageTimer);
       console.error('[ResumeAnalysis] Failed:', err);
@@ -469,11 +473,11 @@ export default function OnboardingWizard({ onComplete }) {
       return;
     }
 
-    // Step 2 validation (First & Last Name required)
+    // Step 2 validation (First & Last Name required from user input)
     if (currentStep === 2 && targetStep > 2) {
       const errors = {};
-      if (!firstName.trim()) errors.firstName = 'First Name is required *';
-      if (!lastName.trim()) errors.lastName = 'Last Name is required *';
+      if (!firstName.trim()) errors.firstName = 'Please fill up your First Name *';
+      if (!lastName.trim()) errors.lastName = 'Please fill up your Last Name *';
 
       if (Object.keys(errors).length > 0) {
         setStepErrors(errors);
@@ -817,6 +821,26 @@ export default function OnboardingWizard({ onComplete }) {
               </p>
             </div>
 
+            {/* Profile Review: Prompt asking user to fill up their name */}
+            <div className="bg-gradient-to-r from-teal-50/90 via-emerald-50/70 to-teal-50/90 border border-teal-200 rounded-2xl p-4 sm:p-5 flex items-start gap-3.5 shadow-sm">
+              <div className="w-8 h-8 rounded-xl bg-[#0f766e] text-white flex items-center justify-center font-bold flex-shrink-0 text-sm shadow-sm mt-0.5">
+                <User className="w-4 h-4" />
+              </div>
+              <div className="space-y-1">
+                <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  Please Enter Your Name
+                  {(!firstName.trim() || !lastName.trim()) && (
+                    <span className="bg-amber-100 text-amber-800 text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full">
+                      Required
+                    </span>
+                  )}
+                </h4>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Fill up your <strong>First Name</strong> and <strong>Last Name</strong> below to complete your profile review and personalize your roadmap & verified certificates.
+                </p>
+              </div>
+            </div>
+
             {/* Personal Details */}
             <div className="space-y-4">
               <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
@@ -828,12 +852,13 @@ export default function OnboardingWizard({ onComplete }) {
                     First Name <span className="text-rose-500">*</span>
                   </label>
                   <input
+                    ref={firstNameInputRef}
                     type="text"
                     value={firstName}
                     onChange={(e) => { setFirstName(e.target.value); setStepErrors(prev => ({ ...prev, firstName: null })); }}
-                    placeholder="e.g. Sajid"
+                    placeholder="Enter your first name (e.g. Sajid)"
                     className={`w-full bg-white border rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 focus:outline-none transition-colors ${
-                      stepErrors.firstName ? 'border-rose-400 focus:ring-1 focus:ring-rose-400' : 'border-slate-200 focus:border-[#0f766e]'
+                      stepErrors.firstName ? 'border-rose-400 focus:ring-1 focus:ring-rose-400' : 'border-slate-300 focus:border-[#0f766e] focus:ring-2 focus:ring-[#0f766e]/20'
                     }`}
                   />
                   {stepErrors.firstName && (
@@ -849,9 +874,9 @@ export default function OnboardingWizard({ onComplete }) {
                     type="text"
                     value={lastName}
                     onChange={(e) => { setLastName(e.target.value); setStepErrors(prev => ({ ...prev, lastName: null })); }}
-                    placeholder="e.g. Ahmed"
+                    placeholder="Enter your last name (e.g. Ahmed)"
                     className={`w-full bg-white border rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 focus:outline-none transition-colors ${
-                      stepErrors.lastName ? 'border-rose-400 focus:ring-1 focus:ring-rose-400' : 'border-slate-200 focus:border-[#0f766e]'
+                      stepErrors.lastName ? 'border-rose-400 focus:ring-1 focus:ring-rose-400' : 'border-slate-300 focus:border-[#0f766e] focus:ring-2 focus:ring-[#0f766e]/20'
                     }`}
                   />
                   {stepErrors.lastName && (

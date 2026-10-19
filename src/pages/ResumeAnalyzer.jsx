@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Clean & modern tabbed ResumeAnalyzer page with persistent Supabase integration & CurrentResumeCard", deps: ["react", "lucide-react", "../components/resume/*", "../services/resumeApi", "../services/userPersistence"], state: "active", last: "anti@2026-10-01" }
+// agent-notes: { ctx: "Tabbed ResumeAnalyzer with persistent Supabase integration & interactive user name input", deps: ["react", "lucide-react", "../components/resume/*", "../services/resumeApi", "../services/userPersistence"], state: "active", last: "anti@2026-10-19" }
 import React, { useState, useEffect } from 'react';
 import { Sparkles, Eye, Download, Trophy, AlertCircle, Target, Award, LayoutGrid, Layers, RefreshCw, CheckCircle2, GraduationCap, Briefcase } from 'lucide-react';
 
@@ -269,7 +269,9 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
         resumeId: resumeId || prev?.resumeId,
         resumeText: resumeText || prev?.resumeText,
         resumeFileName: data.fileName || prev?.resumeFileName,
-        name: (analysis.candidate?.name && analysis.candidate.name !== 'Candidate') ? analysis.candidate.name : (prev?.name || data?.fileName?.replace(/\.[^/.]+$/, '') || 'Candidate'),
+        name: (prev?.name && prev.name !== 'Student Profile' && prev.name !== 'Candidate' && prev.name !== 'Aarav Sharma') 
+          ? prev.name 
+          : (analysis.candidate?.name && analysis.candidate.name !== 'Candidate' ? analysis.candidate.name : (prev?.name || 'Candidate')),
         skills: analysis.skills?.detected || prev?.skills || ["HTML", "CSS", "JavaScript"],
         scores: {
           ...prev?.scores,
@@ -644,9 +646,22 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
               Full Stack Target
             </span>
           </div>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Candidate: <strong className="text-slate-900">{profile?.name || 'Aarav Sharma'}</strong> — Upload, optimize, verify skills & generate certified resumes
-          </p>
+          <div className="flex items-center gap-2 mt-1 flex-wrap">
+            <span className="text-xs text-slate-500 font-medium">Candidate Name:</span>
+            <input 
+              type="text"
+              value={(profile?.name && profile.name !== 'Aarav Sharma' && profile.name !== 'Student Profile') ? profile.name : ''}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (setProfile) {
+                  setProfile(prev => ({ ...prev, name: val }));
+                }
+              }}
+              placeholder="Fill up your name..."
+              className="px-2.5 py-1 text-xs font-semibold text-slate-900 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 max-w-[220px]"
+            />
+            <span className="text-xs text-slate-400 hidden sm:inline">— Upload, optimize, verify skills & generate certified resumes</span>
+          </div>
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">

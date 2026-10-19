@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Comprehensive AI Resume Analyzer service leveraging Gemini prompt schemas with strict education/experience separation", deps: ["./geminiService.js", "../../lib/parseResume.js"], state: "active", last: "anti@2026-10-09" }
+// agent-notes: { ctx: "Comprehensive AI Resume Analyzer service with fallback name extraction & education/experience separation", deps: ["./geminiService.js", "../../lib/parseResume.js"], state: "active", last: "anti@2026-10-19" }
 import { analyzeJSON } from "./geminiService.js";
 import { cleanExperience, EDU_WORDS, DATE_ONLY, TEMPLATE_TEXT } from "../../lib/parseResume.js";
 
@@ -261,6 +261,14 @@ Extraction Rules:
       // Normalize Candidate details
       if (!aiResult.candidate) aiResult.candidate = {};
       const cand = aiResult.candidate;
+      if (!cand.name && !cand.firstName) {
+        const fallbackName = extractCandidateName(resumeLines, resumeText, cand.email, cand.linkedIn);
+        if (fallbackName && fallbackName.name) {
+          cand.name = fallbackName.name;
+          cand.firstName = fallbackName.firstName || '';
+          cand.lastName = fallbackName.lastName || '';
+        }
+      }
       if (!cand.firstName && cand.name) {
         const parts = cand.name.split(/\s+/).filter(Boolean);
         cand.firstName = parts[0] || '';
