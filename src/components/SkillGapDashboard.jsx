@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Ultra-clean, simple, and modern AI Skill Gap Analysis dashboard with smart resume skill extraction and seamless Resume Analyzer continuity", deps: ["react", "lucide-react", "../services/skillGapApi", "../services/resumeApi"], state: "active", last: "anti@2026-08-30" }
+// agent-notes: { ctx: "AI Skill Gap Analysis dashboard with persistent report state, refresh recovery, and Supabase storage", deps: ["react", "lucide-react", "../services/skillGapApi", "../services/resumeApi", "../services/userPersistence"], state: "active", last: "anti@2026-10-19" }
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Briefcase, 
@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import { skillGapApi } from '../services/skillGapApi';
 import { analyzeResume } from '../services/resumeApi';
-import { saveResumeAndProgress, updateFeatureProgress } from '../services/userPersistence';
+import { saveResumeAndProgress, updateFeatureProgress, saveSkillGapReportToSupabase, loadSavedSkillGapReport } from '../services/userPersistence';
 
 const TARGET_ROLE_OPTIONS = [
   "Full Stack AI Engineer",
@@ -38,21 +38,46 @@ export default function SkillGapDashboard({
   onOpenVerification, 
   onNavigate 
 }) {
-  const [selectedRole, setSelectedRole] = useState(profile?.careerGoal || "Full Stack AI Engineer");
+  const userId = profile?.id || profile?.email || "guest_user";
+
+  const [selectedRole, setSelectedRole] = useState(() => {
+    try {
+      const savedRole = localStorage.getItem('sb_target_role');
+      if (savedRole) return savedRole;
+    } catch {}
+    return profile?.careerGoal || "Full Stack AI Engineer";
+  });
   const [customJd, setCustomJd] = useState("");
   const [showJdInput, setShowJdInput] = useState(false);
   const [activeFilter, setActiveFilter] = useState("all"); // 'all' | 'strong' | 'gaps'
 
+  // Helper to load cached report from localStorage
+  const getInitialSkillGapReport = () => {
+    try {
+      const userKey = `sb_skillgap_report_${userId}`;
+      const raw = localStorage.getItem(userKey) || localStorage.getItem('sb_skillgap_report');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') return parsed;
+      }
+    } catch (e) {
+      console.warn("Failed to parse cached skillgap report:", e);
+    }
+    return null;
+  };
+
+  const initialReport = getInitialSkillGapReport();
+
   // State: 'IDLE' | 'LOADING' | 'SUCCESS' | 'EMPTY' | 'ERROR'
-  const [status, setStatus] = useState('EMPTY');
-  const [report, setReport] = useState(null);
+  const [status, setStatus] = useState(() => initialReport ? 'SUCCESS' : 'EMPTY');
+  const [report, setReport] = useState(() => initialReport);
   const [errorMessage, setErrorMessage] = useState(null);
 
   // Active uploaded resume file name
   const [activeResumeFile, setActiveResumeFile] = useState(() => {
-    return profile?.hasUploadedResume 
-      ? (profile?.resumeFileName || localStorage.getItem('sb_resume_filename') || 'Uploaded_Resume.pdf') 
-      : (localStorage.getItem('sb_resume_filename') || null);
+    return profile?.resumeFileName || 
+      localStorage.getItem('sb_resume_filename') || 
+      (profile?.hasUploadedResume ? 'Uploaded_Resume.pdf' : null);
   });
 
   // Upload dropzone state
@@ -69,16 +94,42 @@ export default function SkillGapDashboard({
     (profile?.skills && profile.skills.length > 0)
   );
 
-  // Auto-run analysis when resume is uploaded or role changes
+  // Persist report to local storage and Supabase in background
+  const persistReport = (newReport) => {
+    setReport(newReport);
+    if (newReport) {
+      saveSkillGapReportToSupabase({
+        userId,
+        targetRole: selectedRole,
+        report: newReport
+      }).catch(() => {});
+    }
+  };
+
+  // Restore or auto-run analysis when resume is uploaded or role changes
   useEffect(() => {
+    // 1. If we already have a loaded report for the current role, keep it and ensure status is SUCCESS
+    if (report && (report.targetRole === selectedRole || !selectedRole)) {
+      setStatus('SUCCESS');
+      return;
+    }
+
+    // 2. Check if there's a cached report in storage
+    const cached = getInitialSkillGapReport();
+    if (cached) {
+      setReport(cached);
+      setStatus('SUCCESS');
+      return;
+    }
+
+    // 3. Otherwise, if resume is uploaded, generate analysis
     if (hasResume) {
       const fileName = activeResumeFile || profile?.resumeFileName || localStorage.getItem('sb_resume_filename') || "Uploaded_Resume.pdf";
       const resumeText = profile?.resumeText || localStorage.getItem('sb_resume_text') || (profile?.skills || []).join(', ');
       setActiveResumeFile(fileName);
       runAnalysisWithResume(resumeText, fileName, selectedRole, customJd);
-    } else {
+    } else if (!report) {
       setStatus('EMPTY');
-      setReport(null);
     }
   }, [profile?.hasUploadedResume, profile?.resumeFileName, profile?.resumeText, profile?.skills, selectedRole]);
 
@@ -123,19 +174,26 @@ export default function SkillGapDashboard({
       });
 
       if (res && res.report) {
-        setReport({
+        const fullReport = {
           ...res.report,
-          sourceResumeFile: fileName || "Uploaded_Resume.pdf"
-        });
+          sourceResumeFile: fileName || "Uploaded_Resume.pdf",
+          targetRole: targetRole || selectedRole,
+          analyzedAt: new Date().toISOString()
+        };
+        persistReport(fullReport);
         setStatus('SUCCESS');
-        updateFeatureProgress({ skill_gap_completed: true }).catch(() => {});
-      } else {
+        updateFeatureProgress('skill_gap_completed', true).catch(() => {});
+      } else if (!report) {
         setStatus('EMPTY');
       }
     } catch (err) {
       console.error("Skill gap analysis error:", err);
-      setErrorMessage(err.message || "Unable to analyze skill gap.");
-      setStatus('ERROR');
+      if (!report) {
+        setErrorMessage(err.message || "Unable to analyze skill gap.");
+        setStatus('ERROR');
+      } else {
+        setStatus('SUCCESS');
+      }
     }
   };
 
@@ -261,6 +319,9 @@ export default function SkillGapDashboard({
   const handleRoleSelect = (e) => {
     const role = e.target.value;
     setSelectedRole(role);
+    try {
+      localStorage.setItem('sb_target_role', role);
+    } catch {}
     const resumeText = profile?.resumeText || localStorage.getItem('sb_resume_text') || (profile?.skills || []).join(', ');
     if (activeResumeFile) {
       runAnalysisWithResume(resumeText, activeResumeFile, role, customJd);

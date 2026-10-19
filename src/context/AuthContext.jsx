@@ -50,12 +50,18 @@ export function AuthProvider({ children }) {
   });
 
   useEffect(() => {
-    if (currentUser && isAuthenticated) {
+    if (currentUser) {
       const sanitized = sanitizeUserProfile(currentUser);
       const storage = localStorage.getItem('sb_remember') === 'true' ? localStorage : sessionStorage;
       storage.setItem('sb_user', JSON.stringify(sanitized));
-      // Asynchronously sync user data changes to Supabase
-      saveUserDataToSupabase(sanitized);
+      localStorage.setItem('sb_user', JSON.stringify(sanitized));
+      if (sanitized.resumeFileName) localStorage.setItem('sb_resume_filename', sanitized.resumeFileName);
+      if (sanitized.resumeText) localStorage.setItem('sb_resume_text', sanitized.resumeText);
+      if (sanitized.resumeId) localStorage.setItem('sb_active_resume_id', sanitized.resumeId);
+      // Asynchronously sync user data changes to Supabase if authenticated
+      if (isAuthenticated) {
+        saveUserDataToSupabase(sanitized);
+      }
     }
   }, [currentUser, isAuthenticated]);
 
@@ -196,14 +202,16 @@ export function AuthProvider({ children }) {
           // If no remote session, check if we have local stored profile
           const savedUser = localStorage.getItem('sb_user') || sessionStorage.getItem('sb_user');
           const savedToken = localStorage.getItem('sb_token') || sessionStorage.getItem('sb_token');
-          if (savedUser && savedToken) {
+          if (savedUser) {
             try {
               const parsed = JSON.parse(savedUser);
               const sanitized = sanitizeUserProfile(parsed);
               setCurrentUser(sanitized);
-              setIsAuthenticated(true);
-              setIsOnboarded(Boolean(sanitized.college && sanitized.careerGoal));
-              setToken(savedToken);
+              if (savedToken) {
+                setIsAuthenticated(true);
+                setToken(savedToken);
+              }
+              setIsOnboarded(Boolean(sanitized.hasUploadedResume || (sanitized.college && sanitized.careerGoal)));
             } catch {}
           }
         }
@@ -832,13 +840,25 @@ export function AuthProvider({ children }) {
   };
 
   const updateProfile = (newProfile) => {
-    const rawUpdated = typeof newProfile === 'function' ? newProfile(currentUser) : newProfile;
+    let prevBase = currentUser;
+    if (!prevBase) {
+      try {
+        const cached = localStorage.getItem('sb_user');
+        if (cached) prevBase = JSON.parse(cached);
+      } catch {}
+    }
+    const rawUpdated = typeof newProfile === 'function' ? newProfile(prevBase || {}) : newProfile;
     const sanitized = sanitizeUserProfile(rawUpdated);
     setCurrentUser(sanitized);
     try {
       localStorage.setItem('sb_user', JSON.stringify(sanitized));
+      if (sanitized.resumeFileName) localStorage.setItem('sb_resume_filename', sanitized.resumeFileName);
+      if (sanitized.resumeText) localStorage.setItem('sb_resume_text', sanitized.resumeText);
+      if (sanitized.resumeId) localStorage.setItem('sb_active_resume_id', sanitized.resumeId);
     } catch {}
-    saveUserDataToSupabase(sanitized);
+    if (isAuthenticated) {
+      saveUserDataToSupabase(sanitized);
+    }
   };
 
   return (

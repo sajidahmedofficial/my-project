@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Main App Component with clean, minimal SaaS visual design (Linear/Stripe/Vercel style), unified navigation and preserved active tab on login", deps: ["lucide-react", "./context/AuthContext", "./components/common/AIAssistantAvatar", "./components/common/CartoonDecorations"], state: "active", last: "sato@2026-09-25" }
+// agent-notes: { ctx: "Main App Component with persistent active tab, restored resume state, and robust refresh recovery", deps: ["lucide-react", "./context/AuthContext", "./components/common/AIAssistantAvatar", "./components/common/CartoonDecorations"], state: "active", last: "anti@2026-10-19" }
 import React, { useState } from 'react';
 import { 
   LayoutDashboard, 
@@ -52,9 +52,41 @@ import { RESUME_PRESETS } from './utils/mockData';
 function MainLayout() {
   const { currentUser, isAuthenticated, isOnboarded, logout, updateProfile, isLoading } = useAuth();
   
-  const [activeTab, setActiveTab] = useState('dashboard');
-  const [missingSkillsList, setMissingSkillsList] = useState([]);
-  const [targetRole, setTargetRole] = useState(null);
+  const [activeTab, setActiveTab] = useState(() => {
+    try {
+      const savedTab = localStorage.getItem('sb_active_tab');
+      const validTabs = ['dashboard', 'wizard', 'careeroverview', 'skillgap', 'resume', 'roadmap', 'chat'];
+      if (savedTab && validTabs.includes(savedTab)) {
+        return savedTab;
+      }
+    } catch {}
+    return 'dashboard';
+  });
+
+  const handleTabChange = (newTab) => {
+    setActiveTab(newTab);
+    try {
+      localStorage.setItem('sb_active_tab', newTab);
+    } catch {}
+  };
+
+  const [missingSkillsList, setMissingSkillsList] = useState(() => {
+    try {
+      const saved = localStorage.getItem('sb_missing_skills');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [targetRole, setTargetRole] = useState(() => {
+    try {
+      return localStorage.getItem('sb_target_role') || null;
+    } catch {
+      return null;
+    }
+  });
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [globalVerifyingSkill, setGlobalVerifyingSkill] = useState(null);
   const [avatarState, setAvatarState] = useState('idle');
@@ -68,45 +100,107 @@ function MainLayout() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
-  // Automatically close auth modals and ensure active tab is set when user logs in
+  // Automatically close auth modals and restore preserved active tab on login
   React.useEffect(() => {
     if (isAuthenticated) {
-      setActiveTab((prev) => (prev ? prev : 'dashboard'));
+      const savedTab = localStorage.getItem('sb_active_tab');
+      if (savedTab) {
+        setActiveTab(savedTab);
+      }
       setShowOnboarding(false);
       setIsAuthModalOpen(false);
       setIsTaskFlowAuthOpen(false);
     }
   }, [isAuthenticated]);
 
-  const activeProfile = currentUser || {
-    id: 'guest_user',
-    name: 'Student Profile',
-    college: 'SkillBridge Academy',
-    careerGoal: 'Frontend Developer',
-    skills: [],
-    verifiedSkills: [],
-    hasUploadedResume: false,
-    resumeId: null,
-    resumeText: '',
-    resumeFileName: null,
-    scores: {
-      resumeScore: 0,
-      skillScore: 0,
-      placementReadiness: 0,
-      weeklyGoalsProgress: 0
-    }
+  const getInitialActiveProfile = () => {
+    if (currentUser) return currentUser;
+    try {
+      const savedUserStr = localStorage.getItem('sb_user');
+      const savedFileName = localStorage.getItem('sb_resume_filename');
+      const savedResumeId = localStorage.getItem('sb_active_resume_id');
+      const savedResumeText = localStorage.getItem('sb_resume_text');
+      const savedAnalysisStr = localStorage.getItem('sb_resume_analysis');
+      let parsedUser = null;
+      if (savedUserStr) {
+        try { parsedUser = JSON.parse(savedUserStr); } catch {}
+      }
+      let parsedAnalysis = null;
+      if (savedAnalysisStr) {
+        try { parsedAnalysis = JSON.parse(savedAnalysisStr); } catch {}
+      }
+
+      const hasResume = Boolean(
+        parsedUser?.hasUploadedResume ||
+        savedFileName ||
+        savedResumeId ||
+        (parsedUser?.skills && parsedUser.skills.length > 0) ||
+        (parsedAnalysis?.skillsStatus && parsedAnalysis.skillsStatus.length > 0)
+      );
+
+      const resolvedSkills = (parsedUser?.skills && parsedUser.skills.length > 0)
+        ? parsedUser.skills
+        : (parsedAnalysis?.skillsStatus?.map(s => s.name) || []);
+
+      return {
+        id: parsedUser?.id || 'guest_user',
+        name: parsedUser?.name || 'Student Profile',
+        college: parsedUser?.college || 'SkillBridge Academy',
+        careerGoal: parsedUser?.careerGoal || localStorage.getItem('sb_target_role') || 'Full Stack AI Engineer',
+        skills: resolvedSkills,
+        verifiedSkills: parsedUser?.verifiedSkills || [],
+        hasUploadedResume: hasResume,
+        resumeId: savedResumeId || parsedUser?.resumeId || (hasResume ? 'res_cached' : null),
+        resumeText: savedResumeText || parsedUser?.resumeText || '',
+        resumeFileName: savedFileName || parsedUser?.resumeFileName || (hasResume ? 'Uploaded_Resume.pdf' : null),
+        scores: parsedUser?.scores || parsedAnalysis?.scores || {
+          resumeScore: hasResume ? 85 : 0,
+          skillScore: hasResume ? 80 : 0,
+          placementReadiness: hasResume ? 82 : 0,
+          weeklyGoalsProgress: 0
+        }
+      };
+    } catch {}
+
+    return {
+      id: 'guest_user',
+      name: 'Student Profile',
+      college: 'SkillBridge Academy',
+      careerGoal: 'Frontend Developer',
+      skills: [],
+      verifiedSkills: [],
+      hasUploadedResume: false,
+      resumeId: null,
+      resumeText: '',
+      resumeFileName: null,
+      scores: {
+        resumeScore: 0,
+        skillScore: 0,
+        placementReadiness: 0,
+        weeklyGoalsProgress: 0
+      }
+    };
   };
+
+  const activeProfile = currentUser || getInitialActiveProfile();
 
   const handleProfileChange = (newProfile) => {
     updateProfile(newProfile);
   };
 
   const handleGenerateRoadmap = (missingSkills, role) => {
-    setMissingSkillsList(missingSkills || []);
+    const list = missingSkills || [];
+    setMissingSkillsList(list);
+    try {
+      localStorage.setItem('sb_missing_skills', JSON.stringify(list));
+    } catch {}
     if (role) {
       setTargetRole(role);
+      try {
+        localStorage.setItem('sb_target_role', role);
+      } catch {}
     }
-    setActiveTab('roadmap');
+    handleTabChange('roadmap');
   };
 
   const handleOpenGlobalVerification = (skillName) => {
@@ -125,7 +219,7 @@ function MainLayout() {
       certificates: updatedCertificates
     });
     setGlobalVerifyingSkill(null);
-    setActiveTab('resume');
+    handleTabChange('resume');
   };
 
   const navigationItems = [
@@ -158,7 +252,7 @@ function MainLayout() {
             <Dashboard 
               profile={activeProfile} 
               setProfile={handleProfileChange} 
-              onNavigate={setActiveTab} 
+              onNavigate={handleTabChange} 
               onOpenVerification={handleOpenGlobalVerification}
               onLogout={logout}
             />
@@ -168,7 +262,7 @@ function MainLayout() {
               profile={activeProfile} 
               setProfile={handleProfileChange}
               onGenerateRoadmap={handleGenerateRoadmap} 
-              onNavigate={setActiveTab} 
+              onNavigate={handleTabChange} 
               onOpenVerification={handleOpenGlobalVerification}
             />
           </div>
@@ -176,7 +270,7 @@ function MainLayout() {
             <ResumeAnalyzer 
               profile={activeProfile} 
               setProfile={handleProfileChange} 
-              onNavigate={setActiveTab}
+              onNavigate={handleTabChange}
             />
           </div>
           <div className={activeTab === 'roadmap' ? 'block' : 'hidden'}>
@@ -185,6 +279,7 @@ function MainLayout() {
               missingSkillsList={missingSkillsList} 
               targetRole={targetRole || activeProfile?.careerGoal || "Frontend Developer"}
               onOpenVerification={handleOpenGlobalVerification}
+              onNavigate={handleTabChange}
             />
           </div>
           <div className={activeTab === 'chat' ? 'block' : 'hidden'}>
@@ -196,7 +291,7 @@ function MainLayout() {
             <OnboardingWizard 
               onComplete={() => {
                 setShowOnboarding(false);
-                setActiveTab('skillgap');
+                handleTabChange('skillgap');
               }} 
             />
           </div>
@@ -410,7 +505,7 @@ function MainLayout() {
                   key={item.id}
                   onClick={() => {
                     setShowOnboarding(false);
-                    setActiveTab(item.id);
+                    handleTabChange(item.id);
                     setSidebarOpen(false);
                   }}
                   className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${

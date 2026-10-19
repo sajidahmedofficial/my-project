@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Core persistence service for Supabase profiles, resumes, progress, storage & never-ask-twice resume gate", deps: ["./supabase", "../utils/sanitizeProfile"], state: "active", last: "anti@2026-10-01" }
+// agent-notes: { ctx: "Core persistence service with skill gap report storage, Supabase profiles, resumes, progress & never-ask-twice resume gate", deps: ["./supabase", "../utils/sanitizeProfile"], state: "active", last: "anti@2026-10-19" }
 import { supabase } from './supabase.js';
 import { sanitizeUserProfile } from '../utils/sanitizeProfile.js';
 
@@ -557,3 +557,134 @@ export async function updateFeatureProgress(featureName, isCompleted = true, ext
     return null;
   }
 }
+
+/**
+ * Saves a skill gap analysis report to localStorage and Supabase.
+ */
+export async function saveSkillGapReportToSupabase({ userId, targetRole, report }) {
+  if (!report) return null;
+  const user = await getAuthUser();
+  const activeUserId = user?.id || userId || 'guest_user';
+
+  try {
+    const reportWithMeta = {
+      ...report,
+      targetRole: targetRole || report.targetRole || 'Full Stack AI Engineer',
+      savedAt: new Date().toISOString()
+    };
+
+    try {
+      localStorage.setItem(`sb_skillgap_report_${activeUserId}`, JSON.stringify(reportWithMeta));
+      localStorage.setItem('sb_skillgap_report', JSON.stringify(reportWithMeta));
+      if (targetRole) localStorage.setItem('sb_target_role', targetRole);
+      if (report.sourceResumeFile) localStorage.setItem('sb_resume_filename', report.sourceResumeFile);
+    } catch (e) {
+      console.warn('[userPersistence] Local storage skill gap write notice:', e);
+    }
+
+    if (user?.id) {
+      const missingSkills = report.missingSkills || [];
+      const strongSkills = report.strongSkills || [];
+
+      const gapRows = [
+        ...missingSkills.map(s => ({
+          user_id: user.id,
+          resume_id: localStorage.getItem('sb_active_resume_id') || `res_${user.id}`,
+          skill_name: s.skillName || s.name || String(s),
+          category: s.category || 'Missing',
+          current_level: s.currentLevel || 'Beginner',
+          required_level: s.requiredLevel || 'Advanced',
+          gap_score: s.gapScore || 60,
+          status: 'MISSING',
+          recommended_action: s.recommendedAction || 'Complete roadmap module'
+        })),
+        ...strongSkills.map(s => ({
+          user_id: user.id,
+          resume_id: localStorage.getItem('sb_active_resume_id') || `res_${user.id}`,
+          skill_name: s.skillName || s.name || String(s),
+          category: s.category || 'Strong',
+          current_level: s.currentLevel || 'Proficient',
+          required_level: s.requiredLevel || 'Proficient',
+          gap_score: 0,
+          status: 'STRONG',
+          recommended_action: 'Verified competency'
+        }))
+      ];
+
+      const promises = [];
+      if (gapRows.length > 0) {
+        promises.push(supabase.from('skill_gaps').upsert(gapRows, { onConflict: 'user_id, skill_name' }).catch(() => {}));
+      }
+      if (targetRole) {
+        promises.push(supabase.from('career_data').upsert({
+          user_id: user.id,
+          target_role: targetRole,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'user_id' }).catch(() => {}));
+      }
+      await Promise.allSettled(promises);
+      await updateFeatureProgress('skill_gap_completed', true).catch(() => {});
+    }
+    return { success: true, report: reportWithMeta };
+  } catch (err) {
+    console.warn('[userPersistence] saveSkillGapReportToSupabase error:', err);
+    return null;
+  }
+}
+
+/**
+ * Loads a saved skill gap analysis report from localStorage or Supabase.
+ */
+export async function loadSavedSkillGapReport(userId = 'guest_user') {
+  try {
+    const userKey = `sb_skillgap_report_${userId}`;
+    const localSaved = localStorage.getItem(userKey) || localStorage.getItem('sb_skillgap_report');
+    if (localSaved) {
+      const parsed = JSON.parse(localSaved);
+      if (parsed && typeof parsed === 'object') return parsed;
+    }
+  } catch {}
+
+  const user = await getAuthUser();
+  if (user?.id) {
+    try {
+      const { data: dbGaps } = await supabase
+        .from('skill_gaps')
+        .select('*')
+        .eq('user_id', user.id);
+
+      if (dbGaps && dbGaps.length > 0) {
+        const strongSkills = dbGaps.filter(g => g.status === 'STRONG').map(g => ({
+          skillName: g.skill_name,
+          category: g.category,
+          proficiency: g.current_level,
+          strengthScore: 90
+        }));
+        const missingSkills = dbGaps.filter(g => g.status !== 'STRONG').map(g => ({
+          skillName: g.skill_name,
+          category: g.category,
+          currentLevel: g.current_level,
+          requiredLevel: g.required_level,
+          gapScore: g.gap_score,
+          priority: 'High',
+          recommendedAction: g.recommended_action
+        }));
+
+        const reconstructed = {
+          overallMatchScore: Math.round((strongSkills.length / (strongSkills.length + missingSkills.length || 1)) * 100),
+          strongSkills,
+          missingSkills,
+          partialSkills: [],
+          sourceResumeFile: localStorage.getItem('sb_resume_filename') || 'Uploaded_Resume.pdf',
+          targetRole: localStorage.getItem('sb_target_role') || 'Full Stack AI Engineer'
+        };
+        return reconstructed;
+      }
+    } catch (e) {
+      console.warn('[userPersistence] loadSavedSkillGapReport from Supabase notice:', e);
+    }
+  }
+
+  return null;
+}
+

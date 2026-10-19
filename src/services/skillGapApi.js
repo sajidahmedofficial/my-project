@@ -69,11 +69,28 @@ export const skillGapApi = {
    * Get saved skill gap report for user
    */
   getSavedSkillGap: async (userId = "guest_user") => {
-    const res = await fetch(`${API_BASE_URL}/skill-gap/${userId}`);
-    if (!res.ok) {
-      throw new Error("Failed to fetch saved skill gap");
+    try {
+      const res = await fetch(`${API_BASE_URL}/skill-gap/${userId}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.report) return data;
+      }
+    } catch (e) {
+      console.warn("Server skill gap fetch notice:", e?.message || e);
     }
-    return await res.json();
+
+    try {
+      const userKey = `sb_skillgap_report_${userId}`;
+      const saved = localStorage.getItem(userKey) || localStorage.getItem('sb_skillgap_report');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed === 'object') {
+          return { success: true, report: parsed };
+        }
+      }
+    } catch {}
+
+    return { success: false, report: null };
   },
 
   /**

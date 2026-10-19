@@ -20,25 +20,50 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
   const activeTargetRole = targetRole || profile?.careerGoal || "Frontend Developer";
   const userId = profile?.id || profile?.email || "guest_user";
 
+  const availableSkills = (missingSkillsList && missingSkillsList.length > 0)
+    ? missingSkillsList
+    : (() => {
+        try {
+          const savedMissing = localStorage.getItem('sb_missing_skills');
+          if (savedMissing) {
+            const parsed = JSON.parse(savedMissing);
+            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+          }
+        } catch {}
+        return (profile?.skills?.length ? ["React.js", "TypeScript", "Next.js", "Docker"] : []);
+      })();
+
+  const getCachedRoadmap = (skill) => {
+    if (!skill) return null;
+    try {
+      const raw = localStorage.getItem(`sb_roadmap_${userId}_${skill}`);
+      if (raw) return JSON.parse(raw);
+    } catch {}
+    return null;
+  };
+
+  const initialSkill = availableSkills[0] || "";
+  const initialRoadmap = getCachedRoadmap(initialSkill);
+
   // State: 'LOADING' | 'SUCCESS' | 'EMPTY' | 'ERROR'
-  const [status, setStatus] = useState('LOADING');
-  const [activeSkill, setActiveSkill] = useState("");
-  const [roadmapData, setRoadmapData] = useState(null);
+  const [status, setStatus] = useState(() => initialRoadmap ? 'SUCCESS' : (availableSkills.length > 0 ? 'LOADING' : 'EMPTY'));
+  const [activeSkill, setActiveSkill] = useState(initialSkill);
+  const [roadmapData, setRoadmapData] = useState(() => initialRoadmap);
   const [errorMessage, setErrorMessage] = useState(null);
   const [expandedStage, setExpandedStage] = useState(0);
 
   // Map of taskId -> boolean completed status loaded from backend & localStorage
   const [taskCompletionMap, setTaskCompletionMap] = useState({});
 
-  const availableSkills = (missingSkillsList && missingSkillsList.length > 0)
-    ? missingSkillsList
-    : (profile?.skills?.length ? ["React.js", "TypeScript", "Next.js", "Docker"] : []);
-
   useEffect(() => {
     if (availableSkills.length > 0) {
       const skillToLoad = activeSkill || availableSkills[0];
       if (!activeSkill) setActiveSkill(skillToLoad);
-      loadRoadmap(skillToLoad);
+      if (!roadmapData || roadmapData.skill !== skillToLoad) {
+        loadRoadmap(skillToLoad);
+      } else {
+        setStatus('SUCCESS');
+      }
     } else {
       setStatus('EMPTY');
     }
@@ -85,6 +110,9 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
       }
 
       setRoadmapData(loadedRoadmap);
+      try {
+        localStorage.setItem(`sb_roadmap_${userId}_${skillToFetch}`, JSON.stringify(loadedRoadmap));
+      } catch {}
 
       const initialMap = {};
       (loadedRoadmap.tasks || []).forEach(t => {
@@ -104,6 +132,9 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
       
       const fallbackRoadmap = formatFallbackRoadmap(skillToFetch, activeTargetRole, profile?.skills);
       setRoadmapData(fallbackRoadmap);
+      try {
+        localStorage.setItem(`sb_roadmap_${userId}_${skillToFetch}`, JSON.stringify(fallbackRoadmap));
+      } catch {}
 
       const initialMap = {};
       (fallbackRoadmap.tasks || []).forEach(t => {
