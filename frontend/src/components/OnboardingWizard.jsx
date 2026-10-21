@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Onboarding with mandatory name modal popup, resume persistence & refresh restoration", deps: ["lucide-react", "../context/AuthContext", "../services/resumeApi", "../services/api", "../services/supabaseData", "../utils/sanitizeProfile"], state: "active", last: "anti@2026-10-19" }
+// agent-notes: { ctx: "Onboarding with mandatory manual Target Role, Industry & Objective inputs", deps: ["lucide-react", "../context/AuthContext", "../services/resumeApi", "../services/api", "../services/supabaseData", "../utils/sanitizeProfile"], state: "active", last: "anti@2026-10-21" }
 
 import React, { useState, useRef, useEffect } from 'react';
 import { 
@@ -312,19 +312,30 @@ export default function OnboardingWizard({ onComplete, profile }) {
   const [stepErrors, setStepErrors] = useState({});
 
   // -------------------------------------------------------------
-  // STEP 3: CAREER VISION STATE
+  // STEP 3: CAREER VISION STATE (User must manually select Role, Industry & write Objective)
   // -------------------------------------------------------------
   const [targetRole, setTargetRole] = useState(() => {
-    return (
-      (typeof effectiveProfile?.careerGoal === 'string' && effectiveProfile.careerGoal) ||
-      (typeof currentUser?.careerGoal === 'string' && currentUser.careerGoal) ||
-      localStorage.getItem('sb_target_role') ||
-      'Full Stack AI Engineer'
-    );
+    const stored = localStorage.getItem('sb_target_role');
+    if (stored && stored !== 'Full Stack AI Engineer') return stored;
+    if (effectiveProfile?.careerGoal && effectiveProfile.careerGoal !== 'Full Stack AI Engineer') return effectiveProfile.careerGoal;
+    if (currentUser?.careerGoal && currentUser.careerGoal !== 'Full Stack AI Engineer') return currentUser.careerGoal;
+    return '';
   });
-  const [targetIndustry, setTargetIndustry] = useState('SaaS & Cloud Computing');
+  const [targetIndustry, setTargetIndustry] = useState(() => {
+    const stored = localStorage.getItem('sb_target_industry');
+    if (stored && stored !== 'SaaS & Cloud Computing') return stored;
+    if (effectiveProfile?.targetIndustry && effectiveProfile.targetIndustry !== 'SaaS & Cloud Computing') return effectiveProfile.targetIndustry;
+    if (currentUser?.targetIndustry && currentUser.targetIndustry !== 'SaaS & Cloud Computing') return currentUser.targetIndustry;
+    return '';
+  });
   const [experienceLevel, setExperienceLevel] = useState('Intermediate');
-  const [visionGoals, setVisionGoals] = useState('Build scalable AI-native software and land a senior engineering role.');
+  const [visionGoals, setVisionGoals] = useState(() => {
+    const stored = localStorage.getItem('sb_vision_goals');
+    if (stored && stored !== 'Build scalable AI-native software and land a senior engineering role.') return stored;
+    if (effectiveProfile?.visionGoals && effectiveProfile.visionGoals !== 'Build scalable AI-native software and land a senior engineering role.') return effectiveProfile.visionGoals;
+    if (currentUser?.visionGoals && currentUser.visionGoals !== 'Build scalable AI-native software and land a senior engineering role.') return currentUser.visionGoals;
+    return '';
+  });
   const [isGeneratingPath, setIsGeneratingPath] = useState(false);
 
   // -------------------------------------------------------------
@@ -727,8 +738,31 @@ export default function OnboardingWizard({ onComplete, profile }) {
       return;
     }
 
-    // Step 3 validation & AI Synthesis trigger
+    // Step 3 validation (Strictly require user to manually select Target Role, select Target Industry, and write Primary Objective)
     if (currentStep === 3 && targetStep > 3) {
+      const errors = {};
+      if (!targetRole || !targetRole.trim()) {
+        errors.targetRole = 'Please select your Target Role Specialization to continue *';
+      }
+      if (!targetIndustry || !targetIndustry.trim()) {
+        errors.targetIndustry = 'Please select your Target Industry Sector *';
+      }
+      if (!visionGoals || !visionGoals.trim()) {
+        errors.visionGoals = 'Please write your Primary Objective to continue *';
+      }
+
+      if (Object.keys(errors).length > 0) {
+        setStepErrors(errors);
+        return;
+      }
+
+      setStepErrors({});
+      try {
+        if (targetRole) localStorage.setItem('sb_target_role', targetRole);
+        if (targetIndustry) localStorage.setItem('sb_target_industry', targetIndustry);
+        if (visionGoals) localStorage.setItem('sb_vision_goals', visionGoals);
+      } catch {}
+
       setIsGeneratingPath(true);
       setTimeout(() => {
         setIsGeneratingPath(false);
@@ -1472,18 +1506,34 @@ export default function OnboardingWizard({ onComplete, profile }) {
 
             {/* Role Options Grid */}
             <div className="space-y-3">
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
-                Target Role Specialization
-              </label>
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  Target Role Specialization <span className="text-rose-500">*</span>
+                </label>
+                {targetRole ? (
+                  <span className="text-xs font-semibold text-[#0f766e] flex items-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> Selected: {targetRole}
+                  </span>
+                ) : (
+                  <span className="text-[11px] text-slate-500 font-medium">Please select 1 role *</span>
+                )}
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {CAREER_OPTIONS.map((role) => (
                   <button
                     key={role}
                     type="button"
-                    onClick={() => setTargetRole(role)}
+                    onClick={() => {
+                      setTargetRole(role);
+                      if (stepErrors.targetRole) {
+                        setStepErrors(prev => ({ ...prev, targetRole: '' }));
+                      }
+                    }}
                     className={`p-4 rounded-2xl border text-left flex items-center justify-between transition-all ${
                       targetRole === role 
                         ? 'border-[#0f766e] bg-[#eefaf4] text-[#0f766e] font-bold shadow-sm ring-2 ring-[#0f766e]/20' 
+                        : stepErrors.targetRole
+                        ? 'border-rose-200 bg-white hover:border-slate-300 text-slate-700 font-medium'
                         : 'border-slate-200 bg-white hover:border-slate-300 text-slate-700 font-medium'
                     }`}
                   >
@@ -1492,23 +1542,49 @@ export default function OnboardingWizard({ onComplete, profile }) {
                   </button>
                 ))}
               </div>
+              {stepErrors.targetRole && (
+                <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs font-medium text-rose-700 flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+                  <span>{stepErrors.targetRole}</span>
+                </div>
+              )}
             </div>
 
             {/* Experience Level & Industry */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
               <div className="space-y-1.5">
-                <label className="block text-xs font-semibold text-slate-700">Target Industry Sector</label>
+                <label className="block text-xs font-semibold text-slate-700">
+                  Target Industry Sector <span className="text-rose-500">*</span>
+                </label>
                 <select
                   value={targetIndustry}
-                  onChange={(e) => setTargetIndustry(e.target.value)}
-                  className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-[#0f766e] cursor-pointer"
+                  onChange={(e) => {
+                    setTargetIndustry(e.target.value);
+                    if (stepErrors.targetIndustry) {
+                      setStepErrors(prev => ({ ...prev, targetIndustry: '' }));
+                    }
+                  }}
+                  className={`w-full bg-white border ${
+                    stepErrors.targetIndustry 
+                      ? 'border-rose-400 ring-2 ring-rose-200' 
+                      : targetIndustry
+                      ? 'border-[#0f766e] ring-1 ring-[#0f766e]/20'
+                      : 'border-slate-200'
+                  } rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-[#0f766e] cursor-pointer`}
                 >
+                  <option value="" disabled>-- Select Target Industry Sector * --</option>
                   {TARGET_INDUSTRY_OPTIONS.map(industry => (
                     <option key={industry} value={industry}>
                       {industry}
                     </option>
                   ))}
                 </select>
+                {stepErrors.targetIndustry && (
+                  <p className="text-xs font-medium text-rose-600 flex items-center gap-1.5 mt-1">
+                    <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                    <span>{stepErrors.targetIndustry}</span>
+                  </p>
+                )}
               </div>
 
               <div className="space-y-1.5">
@@ -1527,14 +1603,36 @@ export default function OnboardingWizard({ onComplete, profile }) {
 
             {/* Stated Vision Goal */}
             <div className="space-y-1.5 pt-1">
-              <label className="block text-xs font-semibold text-slate-700">Primary Objective</label>
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-semibold text-slate-700">
+                  Primary Objective <span className="text-rose-500">*</span>
+                </label>
+                <span className="text-[11px] text-slate-400">Write manually</span>
+              </div>
               <textarea
-                rows={2}
+                rows={3}
                 value={visionGoals}
-                onChange={(e) => setVisionGoals(e.target.value)}
-                placeholder="What is your main goal for the next 6-12 months?"
-                className="w-full bg-white border border-slate-200 rounded-xl p-3.5 text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-[#0f766e]"
+                onChange={(e) => {
+                  setVisionGoals(e.target.value);
+                  if (stepErrors.visionGoals) {
+                    setStepErrors(prev => ({ ...prev, visionGoals: '' }));
+                  }
+                }}
+                placeholder="Write your primary career objective here (e.g. your dream job role, target companies, key technologies you want to master, or milestones for the next 6-12 months)..."
+                className={`w-full bg-white border ${
+                  stepErrors.visionGoals 
+                    ? 'border-rose-400 ring-2 ring-rose-200' 
+                    : visionGoals.trim()
+                    ? 'border-[#0f766e] ring-1 ring-[#0f766e]/20'
+                    : 'border-slate-200'
+                } rounded-xl p-3.5 text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-[#0f766e]`}
               />
+              {stepErrors.visionGoals && (
+                <p className="text-xs font-medium text-rose-600 flex items-center gap-1.5 mt-1">
+                  <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                  <span>{stepErrors.visionGoals}</span>
+                </p>
+              )}
             </div>
 
             {/* Footer Buttons */}
