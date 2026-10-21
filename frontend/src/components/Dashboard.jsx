@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "SkillBridge career dashboard with hero skill gap card, career benchmarks & software engineering tools", deps: ["lucide-react", "recharts", "./common/AIAssistantAvatar"], state: "active", last: "anti@2026-10-19" }
+// agent-notes: { ctx: "SkillBridge career dashboard with hero skill gap card, career benchmarks & software engineering tools", deps: ["lucide-react", "recharts", "./common/AIAssistantAvatar"], state: "active", last: "anti@2026-10-21" }
 
 import React, { useState } from 'react';
 import { 
@@ -138,14 +138,14 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#d5f5e9] border border-[#aeead4] text-[#0f766e] text-xs font-semibold tracking-wide">
                 <Sparkles className="w-3.5 h-3.5 text-[#0f766e]" />
-                <span>AI-Powered Career Growth</span>
+                <span>SKILL BRIDGE AI Career Growth</span>
               </div>
 
               {onLogout && (
                 <button
                   onClick={onLogout}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-rose-50 border border-slate-200 hover:border-rose-200 text-slate-600 hover:text-rose-600 text-xs font-semibold shadow-xs transition-all"
-                  title="Log out of SkillBridge"
+                  title="Log out of SKILL BRIDGE AI"
                 >
                   <LogOut className="w-3.5 h-3.5 text-rose-500" />
                   <span>Log Out</span>
@@ -160,7 +160,7 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
 
             {/* Subtitle */}
             <p className="text-slate-600 text-sm sm:text-base leading-relaxed max-w-xl">
-              Stop guessing what skills you need. Get personalized skill gap analysis and actionable learning paths to achieve your career goals with AI-powered insights.
+              Stop guessing what skills you need. Get personalized skill gap analysis and actionable learning paths to achieve your career goals with SKILL BRIDGE AI insights.
             </p>
 
             {/* Primary Action Button */}
@@ -428,7 +428,7 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-bold text-slate-900">Software Engineering Career Suite</h2>
-            <p className="text-xs text-slate-500">AI-powered tools designed to land software engineer positions.</p>
+            <p className="text-xs text-slate-500">SKILL BRIDGE AI tools designed to land software engineer positions.</p>
           </div>
         </div>
 

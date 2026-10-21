@@ -1,3 +1,4 @@
+// agent-notes: { ctx: "AI simulator fallback and career chat response generator", deps: ["./mockData"], state: "active", last: "anti@2026-10-21" }
 import { SKILL_LIBRARY } from './mockData';
 
 // Helper list of technical skills for keyword matching
@@ -878,7 +879,7 @@ I recommend utilizing our **Mock Interview** tab on the sidebar. Select your tra
 
 Project work is the best way to prove you have practical skills to recruiters. Here are projects that will make your resume stand out:
 
-1. **AI-Powered Skill gap analyzer (Like SkillBridge!)**
+1. **Skill gap analyzer (Like SKILL BRIDGE AI!)**
    - *Tech*: React, Tailwind, Gemini API, Node.js.
    - *Why*: Shows you can integrate modern LLMs, handle file data, and design dashboards.
 

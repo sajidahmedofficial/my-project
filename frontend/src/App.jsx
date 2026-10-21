@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Main App Component with persistent active tab, restored resume state, and robust refresh recovery", deps: ["lucide-react", "./context/AuthContext", "./components/common/AIAssistantAvatar", "./components/common/CartoonDecorations"], state: "active", last: "anti@2026-10-19" }
+// agent-notes: { ctx: "Main App Component with persistent active tab, restored resume state, and robust refresh recovery", deps: ["lucide-react", "./context/AuthContext", "./components/common/AIAssistantAvatar", "./components/common/CartoonDecorations", "./components/common/SkillBridgeLogo"], state: "active", last: "anti@2026-10-21" }
 import React, { useState } from 'react';
 import { 
   LayoutDashboard, 
@@ -28,6 +28,7 @@ import OnboardingWizard from './components/OnboardingWizard';
 import NotificationsDrawer from './components/NotificationsDrawer';
 import AIAssistantAvatar from './components/common/AIAssistantAvatar';
 import CartoonDecorations from './components/common/CartoonDecorations';
+import SkillBridgeLogo from './components/common/SkillBridgeLogo';
 
 import Dashboard from './components/Dashboard';
 
@@ -304,10 +305,8 @@ function MainLayout() {
     return (
       <div className="min-h-screen bg-[#fafafa] flex flex-col items-center justify-center p-6 text-slate-900">
         <div className="flex items-center gap-2.5 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-[#0f766e] flex items-center justify-center text-white font-black text-base shadow-sm">
-            <span>SB</span>
-          </div>
-          <span className="font-extrabold text-slate-900 text-xl tracking-tight">Skill<span className="text-[#0f766e]">Bridge</span></span>
+          <SkillBridgeLogo size={40} />
+          <span className="font-extrabold text-slate-900 text-xl tracking-tight">SKILL BRIDGE <span className="text-indigo-600">AI</span></span>
         </div>
         <div className="w-8 h-8 rounded-full border-2 border-[#0f766e] border-t-transparent animate-spin mb-4" />
         <p className="text-sm font-medium text-slate-600">Verifying authentication & loading dashboard...</p>
@@ -324,12 +323,10 @@ function MainLayout() {
         {/* Minimal Navigation Header */}
         <header className="max-w-6xl w-full mx-auto px-6 py-6 flex items-center justify-between relative z-10">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#0f766e] flex items-center justify-center text-white font-black text-sm shadow-sm">
-              <span>SB</span>
-            </div>
-            <div className="flex items-baseline gap-1">
-              <span className="font-extrabold text-slate-900 text-lg tracking-tight">Skill</span>
-              <span className="font-bold text-[#0f766e] text-lg tracking-tight">Bridge</span>
+            <SkillBridgeLogo size={32} />
+            <div className="flex items-baseline gap-1.5">
+              <span className="font-extrabold text-slate-900 text-lg tracking-tight">SKILL BRIDGE</span>
+              <span className="text-xs font-bold text-white bg-gradient-to-r from-indigo-600 to-violet-600 px-1.5 py-0.5 rounded shadow-xs tracking-wider">AI</span>
             </div>
           </div>
 
@@ -359,7 +356,7 @@ function MainLayout() {
         <main className="max-w-4xl mx-auto px-6 py-16 text-center space-y-8 relative z-10 my-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-medium">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>AI-Powered Career & Skill Gap Intelligence</span>
+            <span>Career & Skill Gap Intelligence</span>
           </div>
 
           <div className="space-y-4">
@@ -423,7 +420,7 @@ function MainLayout() {
 
         {/* Minimal Footer */}
         <footer className="max-w-6xl w-full mx-auto px-6 py-8 border-t border-slate-200 text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-4 relative z-10">
-          <p>© 2026 SkillBridge AI. Professional career intelligence platform.</p>
+          <p>© 2026 SKILL BRIDGE AI. Professional career intelligence platform.</p>
           <div className="flex items-center gap-6">
             <button onClick={() => { setAuthModalTab('login'); setIsAuthModalOpen(true); }} className="hover:text-slate-900">Log In</button>
             <button onClick={() => { setTaskFlowMode('signup'); setIsTaskFlowAuthOpen(true); }} className="hover:text-slate-900">Sign Up</button>
@@ -470,13 +467,11 @@ function MainLayout() {
           {/* Brand Logo Header */}
           <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-[#0f766e] flex items-center justify-center text-white font-black text-sm shadow-sm">
-                <span>SB</span>
-              </div>
+              <SkillBridgeLogo size={32} />
               <div>
-                <div className="flex items-baseline gap-1">
-                  <span className="font-extrabold text-slate-900 text-sm tracking-tight">Skill</span>
-                  <span className="font-bold text-[#0f766e] text-sm tracking-tight">Bridge</span>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="font-extrabold text-slate-900 text-sm tracking-tight">SKILL BRIDGE</span>
+                  <span className="text-[10px] font-bold text-white bg-gradient-to-r from-indigo-600 to-violet-600 px-1 py-0.5 rounded shadow-xs tracking-wider">AI</span>
                 </div>
                 <span className="text-[11px] text-slate-500 font-normal block">Software Career Engine</span>
               </div>
@@ -570,7 +565,7 @@ function MainLayout() {
 
             {/* Breadcrumb / Page Title */}
             <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500">
-              <span>SkillBridge</span>
+              <span className="font-semibold text-slate-800">SKILL BRIDGE AI</span>
               <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
               <span className="font-medium text-slate-900 capitalize">{navigationItems.find(i => i.id === activeTab)?.label || 'Dashboard'}</span>
             </div>

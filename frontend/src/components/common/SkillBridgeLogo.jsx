@@ -1,0 +1,64 @@
+// agent-notes: { ctx: "Official SVG logo for SkillBridge AI", deps: [], state: "active", last: "anti@2026-10-21" }
+import React from 'react';
+
+export default function SkillBridgeLogo({ size = 32, className = '' }) {
+  return (
+    <svg 
+      width={size} 
+      height={size} 
+      viewBox="0 0 64 64" 
+      fill="none" 
+      xmlns="http://www.w3.org/2000/svg"
+      className={`shrink-0 ${className}`}
+      aria-label="SkillBridge AI Logo"
+    >
+      <defs>
+        <linearGradient id="sb-brand-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#4f46e5" />
+          <stop offset="60%" stopColor="#7c3aed" />
+          <stop offset="100%" stopColor="#0284c7" />
+        </linearGradient>
+      </defs>
+      
+      {/* Premium Squircle Base */}
+      <rect width="64" height="64" rx="16" fill="url(#sb-brand-grad)" />
+      <rect x="1" y="1" width="62" height="62" rx="15" stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" />
+      
+      {/* Suspension Cables Arch */}
+      <path 
+        d="M 12 36 Q 22 26 32 34 Q 42 26 52 36" 
+        stroke="rgba(255,255,255,0.55)" 
+        strokeWidth="2" 
+        strokeLinecap="round" 
+        fill="none" 
+      />
+      
+      {/* Gateway Pillars / Twin Towers */}
+      <rect x="20" y="24" width="3.5" height="18" rx="1.75" fill="#ffffff" />
+      <rect x="40.5" y="24" width="3.5" height="18" rx="1.75" fill="#ffffff" />
+      
+      {/* Bridge Deck / Span */}
+      <path 
+        d="M 11 40 L 53 40" 
+        stroke="#ffffff" 
+        strokeWidth="3.5" 
+        strokeLinecap="round" 
+      />
+      
+      {/* Arch Under Bridge */}
+      <path 
+        d="M 23.5 40 C 23.5 32 40.5 32 40.5 40" 
+        stroke="#ffffff" 
+        strokeWidth="2.5" 
+        fill="none" 
+      />
+      
+      {/* AI Spark / Diamond Star at Apex */}
+      <path 
+        d="M 32 10 Q 32 18 40 18 Q 32 18 32 26 Q 32 18 24 18 Q 32 18 32 10 Z" 
+        fill="#ffffff" 
+      />
+      <circle cx="32" cy="18" r="1.75" fill="#38bdf8" />
+    </svg>
+  );
+}

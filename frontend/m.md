@@ -4,7 +4,7 @@
 
 You are working on my existing application:
 
-**SkillBridge AI — AI-Powered Skill Gap Analyzer & Career Guidance Platform**
+**SKILL BRIDGE AI — Career Intelligence & Guidance Platform**
 
 Live website:
 

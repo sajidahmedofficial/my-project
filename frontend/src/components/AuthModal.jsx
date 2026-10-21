@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Clean minimal SaaS Login & Registration Modal with OAuth, 2FA & Validation", deps: ["lucide-react", "../context/AuthContext", "../services/api"], state: "active", last: "anti@2026-08-27" }
+// agent-notes: { ctx: "Clean minimal SaaS Login & Registration Modal with OAuth, 2FA & Validation", deps: ["lucide-react", "../context/AuthContext", "../services/api", "./common/SkillBridgeLogo"], state: "active", last: "anti@2026-10-21" }
 import React, { useState } from 'react';
 import { 
   X, 
@@ -17,6 +17,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
 import GoogleAccountPickerModal from './GoogleAccountPickerModal';
+import SkillBridgeLogo from './common/SkillBridgeLogo';
 
 export default function AuthModal({ isOpen, onClose, initialTab = 'login', onStartOnboarding, onLoginSuccess }) {
   const { login, register, socialLogin } = useAuth();
@@ -229,11 +230,9 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login', onSta
         {/* Header Bar */}
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-xs">
-              SB
-            </div>
+            <SkillBridgeLogo size={32} />
             <div>
-              <h2 className="text-sm font-bold text-slate-900">SkillBridge AI</h2>
+              <h2 className="text-sm font-bold text-slate-900">SKILL BRIDGE AI</h2>
               <p className="text-[11px] text-slate-500">Placement & Career Guidance</p>
             </div>
           </div>
