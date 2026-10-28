@@ -40,11 +40,76 @@ const getInitialResumeState = (profile) => {
   return null;
 };
 
+export const isValidCandidateName = (name) => {
+  if (!name || typeof name !== 'string') return false;
+  const lower = name.trim().toLowerCase();
+  if (lower.length < 2) return false;
+  const invalidList = [
+    'student',
+    'student profile',
+    'candidate',
+    'first name last name',
+    'user profile',
+    'aarav sharma',
+    'undefined',
+    'null',
+    'your name',
+    'fill up your name',
+    'unknown',
+    'anonymous'
+  ];
+  return !invalidList.includes(lower);
+};
+
+export const resolveCandidateName = (profile, candidateData) => {
+  if (typeof window !== 'undefined') {
+    const directStored = localStorage.getItem('sb_candidate_name');
+    if (directStored && isValidCandidateName(directStored)) return directStored.trim();
+
+    const first = localStorage.getItem('sb_profile_firstname') || '';
+    const last = localStorage.getItem('sb_profile_lastname') || '';
+    const combined = `${first.trim()} ${last.trim()}`.trim();
+    if (combined && isValidCandidateName(combined)) return combined;
+  }
+
+  const candidates = [
+    profile?.name,
+    profile?.full_name,
+    profile?.candidateName,
+    candidateData?.name,
+    candidateData?.candidateName,
+    profile?.candidate?.name
+  ];
+
+  for (const c of candidates) {
+    if (c && isValidCandidateName(c)) return c.trim();
+  }
+
+  if (typeof window !== 'undefined') {
+    try {
+      const u = JSON.parse(localStorage.getItem('sb_user') || '{}');
+      const uName = u?.name || u?.full_name || u?.user_metadata?.full_name || u?.user_metadata?.name;
+      if (uName && isValidCandidateName(uName)) return uName.trim();
+    } catch {}
+
+    try {
+      const a = JSON.parse(localStorage.getItem('sb_resume_analysis') || '{}');
+      const aName = a?.candidate?.name || a?.candidateName || a?.name;
+      if (aName && isValidCandidateName(aName)) return aName.trim();
+    } catch {}
+  }
+
+  return '';
+};
+
 export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
   const savedState = getInitialResumeState(profile);
 
   const [activeTab, setActiveTab] = useState(savedState?.activeTab || 'overview'); // 'overview' | 'issues' | 'skills' | 'certs'
   const [viewMode, setViewMode] = useState(savedState?.viewMode || 'tabs'); // 'tabs' | 'scroll'
+  const [candidateName, setCandidateName] = useState(() => {
+    return resolveCandidateName(profile, savedState?.candidateData) || savedState?.candidateName || '';
+  });
   
   const hasProfileResume = Boolean(
     profile?.hasUploadedResume || 
@@ -194,6 +259,41 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
   const [apiAtsScore, setApiAtsScore] = useState(() => savedState?.apiAtsScore || null);
   const [apiGrammarScore, setApiGrammarScore] = useState(() => savedState?.apiGrammarScore || null);
 
+  // Keep candidateName synchronized if profile or candidateData receives a valid real name
+  useEffect(() => {
+    const resolved = resolveCandidateName(profile, candidateData);
+    if (resolved && (!candidateName || candidateName !== resolved)) {
+      setCandidateName(resolved);
+    }
+  }, [profile?.name, candidateData?.name]);
+
+  const handleCandidateNameChange = (val) => {
+    setCandidateName(val);
+    try {
+      if (val.trim()) {
+        localStorage.setItem('sb_candidate_name', val.trim());
+        const parts = val.trim().split(/\s+/);
+        if (parts[0]) localStorage.setItem('sb_profile_firstname', parts[0]);
+        if (parts.length > 1) localStorage.setItem('sb_profile_lastname', parts.slice(1).join(' '));
+      } else {
+        localStorage.removeItem('sb_candidate_name');
+      }
+    } catch {}
+
+    if (setProfile) {
+      setProfile(prev => ({
+        ...prev,
+        name: val,
+        candidate: { ...(prev?.candidate || {}), name: val }
+      }));
+    }
+
+    setCandidateData(prev => ({
+      ...(prev || {}),
+      name: val
+    }));
+  };
+
   useEffect(() => {
     if (analyzed && selectedFile) {
       const stateToSave = {
@@ -201,6 +301,7 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
         selectedFile,
         activeTab,
         viewMode,
+        candidateName,
         problems,
         grammarIssues,
         atsProblems,
@@ -219,7 +320,7 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
       };
       localStorage.setItem('sb_resume_analysis', JSON.stringify(stateToSave));
     }
-  }, [analyzed, selectedFile, activeTab, viewMode, problems, grammarIssues, atsProblems, skillsStatus, certificates, education, experience, hasExperience, hasEducation, experienceAnalysis, educationAnalysis, apiResumeScore, apiAtsScore, apiGrammarScore, pendingSuggestion]);
+  }, [analyzed, selectedFile, activeTab, viewMode, candidateName, problems, grammarIssues, atsProblems, skillsStatus, certificates, education, experience, hasExperience, hasEducation, experienceAnalysis, educationAnalysis, apiResumeScore, apiAtsScore, apiGrammarScore, pendingSuggestion]);
 
   const resumeScore = is100PercentComplete ? 100 : (apiResumeScore || Math.min(100, 75 + fixedCount * 8 + gainedCount * 3));
   const atsScore = is100PercentComplete ? 100 : (apiAtsScore || Math.min(100, 72 + fixedCount * 6));
@@ -247,7 +348,15 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
     setHasEducation(isEduFound);
     setExperienceAnalysis(analysis.experienceAnalysis || null);
     setEducationAnalysis(analysis.educationAnalysis || null);
-    setCandidateData(analysis.candidate || null);
+    const resolvedActiveName = (isValidCandidateName(candidateName) ? candidateName : null) ||
+                               (isValidCandidateName(analysis.candidate?.name) ? analysis.candidate.name : null) ||
+                               resolveCandidateName(profile, analysis.candidate) ||
+                               '';
+
+    setCandidateData({
+      ...(analysis.candidate || {}),
+      name: resolvedActiveName
+    });
     setCoreCompetencies(analysis.coreCompetencies || null);
     setSummaryText(analysis.summary || analysis.candidate?.summary || "");
     setCertificationsList(analysis.certifications || []);
@@ -263,24 +372,33 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
     }
 
     if (setProfile) {
-      setProfile(prev => ({
-        ...prev,
-        hasUploadedResume: true,
-        resumeId: resumeId || prev?.resumeId,
-        resumeText: resumeText || prev?.resumeText,
-        resumeFileName: data.fileName || prev?.resumeFileName,
-        name: (prev?.name && prev.name !== 'Student Profile' && prev.name !== 'Candidate' && prev.name !== 'Aarav Sharma') 
-          ? prev.name 
-          : (analysis.candidate?.name && analysis.candidate.name !== 'Candidate' ? analysis.candidate.name : (prev?.name || 'Candidate')),
-        skills: analysis.skills?.detected || prev?.skills || ["HTML", "CSS", "JavaScript"],
-        scores: {
-          ...prev?.scores,
-          resumeScore: overallScore,
-          skillScore: skillScoreVal,
-          placementReadiness: atsScoreVal,
-          interviewReadiness: grammarScoreVal
-        }
-      }));
+      setProfile(prev => {
+        const finalResolvedName = (isValidCandidateName(candidateName) ? candidateName : null) ||
+                                  (isValidCandidateName(prev?.name) ? prev.name : null) ||
+                                  (isValidCandidateName(analysis.candidate?.name) ? analysis.candidate.name : null) ||
+                                  resolveCandidateName(prev, analysis.candidate) ||
+                                  '';
+        return {
+          ...prev,
+          hasUploadedResume: true,
+          resumeId: resumeId || prev?.resumeId,
+          resumeText: resumeText || prev?.resumeText,
+          resumeFileName: data.fileName || prev?.resumeFileName,
+          name: finalResolvedName,
+          candidate: {
+            ...(prev?.candidate || {}),
+            name: finalResolvedName
+          },
+          skills: analysis.skills?.detected || prev?.skills || ["HTML", "CSS", "JavaScript"],
+          scores: {
+            ...prev?.scores,
+            resumeScore: overallScore,
+            skillScore: skillScoreVal,
+            placementReadiness: atsScoreVal,
+            interviewReadiness: grammarScoreVal
+          }
+        };
+      });
     }
 
     if (analysis.scores) {
@@ -665,14 +783,9 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
             <span className="text-xs text-slate-500 font-medium">Candidate Name:</span>
             <input 
               type="text"
-              value={(profile?.name && profile.name !== 'Aarav Sharma' && profile.name !== 'Student Profile') ? profile.name : ''}
-              onChange={(e) => {
-                const val = e.target.value;
-                if (setProfile) {
-                  setProfile(prev => ({ ...prev, name: val }));
-                }
-              }}
-              placeholder="Fill up your name..."
+              value={candidateName}
+              onChange={(e) => handleCandidateNameChange(e.target.value)}
+              placeholder="Enter your name..."
               className="px-2.5 py-1 text-xs font-semibold text-slate-900 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 max-w-[220px]"
             />
             <span className="text-xs text-slate-400 hidden sm:inline">— Upload, optimize, verify skills & generate certified resumes</span>
@@ -1116,7 +1229,7 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
             <div className="space-y-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <VerifiedSkills skillsStatus={skillsStatus} />
-                <CertificateList certificates={certificates} candidateName={profile?.name || "Aarav Sharma"} />
+                <CertificateList certificates={certificates} candidateName={candidateName || resolveCandidateName(profile, candidateData) || "Certified Developer"} />
               </div>
               <DownloadResume skillsStatus={skillsStatus} onPreview={() => setShowPreview(true)} onDownload={handleDownload} />
             </div>
@@ -1208,7 +1321,7 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <VerifiedSkills skillsStatus={skillsStatus} />
-                <CertificateList certificates={certificates} candidateName={profile?.name || "Aarav Sharma"} />
+                <CertificateList certificates={certificates} candidateName={candidateName || resolveCandidateName(profile, candidateData) || "Certified Developer"} />
               </div>
 
               <DownloadResume skillsStatus={skillsStatus} onPreview={() => setShowPreview(true)} onDownload={handleDownload} />
@@ -1230,7 +1343,7 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
       {showPreview && (
         <ResumePreview 
           profile={profile} 
-          candidate={candidateData}
+          candidate={candidateData ? { ...candidateData, name: candidateName || candidateData.name || resolveCandidateName(profile, candidateData) } : { name: candidateName || resolveCandidateName(profile, candidateData) || "Candidate" }}
           skillsStatus={skillsStatus} 
           problems={problems} 
           certificates={certificates}

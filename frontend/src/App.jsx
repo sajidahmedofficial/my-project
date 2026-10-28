@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Main App Component with persistent active tab, restored resume state, and robust refresh recovery", deps: ["lucide-react", "./context/AuthContext", "./components/common/AIAssistantAvatar", "./components/common/CartoonDecorations", "./components/common/SkillBridgeLogo"], state: "active", last: "anti@2026-10-21" }
+// agent-notes: { ctx: "Main App Component with persistent active tab, restored resume state, and robust refresh recovery", deps: ["lucide-react", "./context/AuthContext", "./components/common/AIAssistantAvatar", "./components/common/CartoonDecorations", "./components/common/SkillBridgeLogo"], state: "active", last: "anti@2026-10-28" }
 import React, { useState } from 'react';
 import { 
   LayoutDashboard, 
@@ -141,9 +141,16 @@ function MainLayout() {
         ? parsedUser.skills
         : (parsedAnalysis?.skillsStatus?.map(s => s.name) || []);
 
+      const savedCandidateName = typeof window !== 'undefined' ? localStorage.getItem('sb_candidate_name') : null;
+      const savedFirst = typeof window !== 'undefined' ? localStorage.getItem('sb_profile_firstname') || '' : '';
+      const savedLast = typeof window !== 'undefined' ? localStorage.getItem('sb_profile_lastname') || '' : '';
+      const combinedOnboard = `${savedFirst.trim()} ${savedLast.trim()}`.trim();
+      const rawUserName = parsedUser?.name && parsedUser.name !== 'Student Profile' && parsedUser.name !== 'Candidate' ? parsedUser.name : '';
+      const resolvedName = (savedCandidateName && savedCandidateName.trim()) || (combinedOnboard.length > 0 ? combinedOnboard : null) || rawUserName || '';
+
       return {
         id: parsedUser?.id || 'guest_user',
-        name: parsedUser?.name || 'Student Profile',
+        name: resolvedName,
         college: parsedUser?.college || 'SkillBridge Academy',
         careerGoal: parsedUser?.careerGoal || localStorage.getItem('sb_target_role') || 'Full Stack AI Engineer',
         skills: resolvedSkills,
@@ -161,9 +168,15 @@ function MainLayout() {
       };
     } catch {}
 
+    const fallbackCandidateName = typeof window !== 'undefined' ? localStorage.getItem('sb_candidate_name') : null;
+    const fallbackFirst = typeof window !== 'undefined' ? localStorage.getItem('sb_profile_firstname') || '' : '';
+    const fallbackLast = typeof window !== 'undefined' ? localStorage.getItem('sb_profile_lastname') || '' : '';
+    const fallbackOnboard = `${fallbackFirst.trim()} ${fallbackLast.trim()}`.trim();
+    const fallbackName = (fallbackCandidateName && fallbackCandidateName.trim()) || (fallbackOnboard.length > 0 ? fallbackOnboard : '') || '';
+
     return {
       id: 'guest_user',
-      name: 'Student Profile',
+      name: fallbackName,
       college: 'SkillBridge Academy',
       careerGoal: 'Frontend Developer',
       skills: [],

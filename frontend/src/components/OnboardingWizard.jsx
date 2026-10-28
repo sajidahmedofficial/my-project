@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Onboarding with mandatory manual Target Role, Industry & Objective inputs", deps: ["lucide-react", "../context/AuthContext", "../services/resumeApi", "../services/api", "../services/supabaseData", "../utils/sanitizeProfile"], state: "active", last: "anti@2026-10-21" }
+// agent-notes: { ctx: "Onboarding with mandatory manual Target Role, Industry & Objective inputs", deps: ["lucide-react", "../context/AuthContext", "../services/resumeApi", "../services/api", "../services/supabaseData", "../utils/sanitizeProfile"], state: "active", last: "anti@2026-10-28" }
 
 import React, { useState, useRef, useEffect } from 'react';
 import { 
@@ -176,10 +176,20 @@ export default function OnboardingWizard({ onComplete, profile }) {
 
     setFirstName(trimmedFirst);
     setLastName(trimmedLast);
+    const fullName = `${trimmedFirst} ${trimmedLast}`.trim();
     try {
+      localStorage.setItem('sb_candidate_name', fullName);
       localStorage.setItem('sb_profile_firstname', trimmedFirst);
       localStorage.setItem('sb_profile_lastname', trimmedLast);
     } catch {}
+    if (updateProfile) {
+      updateProfile(prev => ({
+        ...prev,
+        name: fullName,
+        firstName: trimmedFirst,
+        lastName: trimmedLast
+      }));
+    }
     setStepErrors(prev => ({ ...prev, firstName: null, lastName: null }));
     setNameModalError('');
     setIsNameModalOpen(false);
@@ -1152,7 +1162,16 @@ export default function OnboardingWizard({ onComplete, profile }) {
                     ref={firstNameInputRef}
                     type="text"
                     value={firstName}
-                    onChange={(e) => { setFirstName(e.target.value); setStepErrors(prev => ({ ...prev, firstName: null })); }}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setFirstName(val);
+                      setStepErrors(prev => ({ ...prev, firstName: null }));
+                      try {
+                        localStorage.setItem('sb_profile_firstname', val);
+                        const full = `${val} ${lastName}`.trim();
+                        if (full) localStorage.setItem('sb_candidate_name', full);
+                      } catch {}
+                    }}
                     placeholder="Enter your first name (e.g. Sajid)"
                     className={`w-full bg-white border rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 focus:outline-none transition-colors ${
                       stepErrors.firstName ? 'border-rose-400 focus:ring-1 focus:ring-rose-400' : 'border-slate-300 focus:border-[#0f766e] focus:ring-2 focus:ring-[#0f766e]/20'
@@ -1170,7 +1189,16 @@ export default function OnboardingWizard({ onComplete, profile }) {
                   <input
                     type="text"
                     value={lastName}
-                    onChange={(e) => { setLastName(e.target.value); setStepErrors(prev => ({ ...prev, lastName: null })); }}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setLastName(val);
+                      setStepErrors(prev => ({ ...prev, lastName: null }));
+                      try {
+                        localStorage.setItem('sb_profile_lastname', val);
+                        const full = `${firstName} ${val}`.trim();
+                        if (full) localStorage.setItem('sb_candidate_name', full);
+                      } catch {}
+                    }}
                     placeholder="Enter your last name (e.g. Ahmed)"
                     className={`w-full bg-white border rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 focus:outline-none transition-colors ${
                       stepErrors.lastName ? 'border-rose-400 focus:ring-1 focus:ring-rose-400' : 'border-slate-300 focus:border-[#0f766e] focus:ring-2 focus:ring-[#0f766e]/20'
