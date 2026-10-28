@@ -433,14 +433,15 @@ export async function saveResumeAndProgress(params = {}) {
   };
 
   // 3. Persist to Supabase if authenticated
-  if (user?.id) {
+  const effectiveUserId = user?.id || (params.user?.id && params.user.id !== 'guest_user' ? params.user.id : null);
+  if (effectiveUserId) {
     try {
       const promises = [
         supabase.from('resumes').insert(resumeRecord),
         supabase.from('profiles').upsert(profileRecord, { onConflict: 'id' }),
         supabase.from('user_progress').upsert(progressRecord, { onConflict: 'user_id' }),
         supabase.from('career_data').upsert({
-          user_id: user.id,
+          user_id: effectiveUserId,
           target_role: targetRole,
           updated_at: new Date().toISOString(),
         }, { onConflict: 'user_id' }),

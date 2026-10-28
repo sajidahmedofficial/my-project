@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Clean & modern tabbed ResumeAnalyzer page with persistent Supabase integration & CurrentResumeCard", deps: ["react", "lucide-react", "../components/resume/*", "../services/resumeApi", "../services/userPersistence"], state: "active", last: "anti@2026-10-01" }
+// agent-notes: { ctx: "Clean & modern tabbed ResumeAnalyzer page with persistent Supabase integration & CurrentResumeCard", deps: ["react", "lucide-react", "../components/resume/*", "../services/resumeApi", "../services/userPersistence"], state: "active", last: "anti@2026-10-28" }
 import React, { useState, useEffect } from 'react';
 import { Sparkles, Eye, Download, Trophy, AlertCircle, Target, Award, LayoutGrid, Layers, RefreshCw, CheckCircle2, GraduationCap, Briefcase } from 'lucide-react';
 
@@ -543,6 +543,21 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
       ...prev,
       { skillName, certificateCode }
     ]);
+
+    if (setProfile) {
+      setProfile(old => {
+        const currentSkills = Array.isArray(old?.skills) ? old.skills : [];
+        const newSkills = currentSkills.includes(skillName) ? currentSkills : [...currentSkills, skillName];
+        return {
+          ...old,
+          skills: newSkills,
+          certificates: [
+            ...(old?.certificates || []),
+            { skillName, certificateCode }
+          ]
+        };
+      });
+    }
 
     setPendingSuggestion(null);
   };

@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Supabase service for storing and restoring user profile, scores, resume analysis & progress with clean primitive sanitization", deps: ["./supabase", "../utils/sanitizeProfile"], state: "active", last: "anti@2026-08-27" }
+// agent-notes: { ctx: "Supabase service for storing and restoring user profile, scores, resume analysis & progress with clean primitive sanitization", deps: ["./supabase", "../utils/sanitizeProfile"], state: "active", last: "anti@2026-10-28" }
 
 import { supabase } from './supabase';
 import { sanitizeUserProfile, extractString } from '../utils/sanitizeProfile';
@@ -8,13 +8,39 @@ import { sanitizeUserProfile, extractString } from '../utils/sanitizeProfile';
  * Uses both Supabase Auth user_metadata and Supabase table upsert for maximum reliability.
  */
 export async function saveUserDataToSupabase(user) {
-  if (!user || !user.id) return { success: false, error: 'No valid user ID provided' };
+  if (!user) return { success: false, error: 'No valid user provided' };
 
-  const sanitized = sanitizeUserProfile(user);
+  let activeUserId = user.id;
+  let activeEmail = user.email;
+
+  // Resolve authenticated user ID if user.id is missing or guest
+  try {
+    const { data: authData } = await supabase.auth.getUser();
+    if (authData?.user?.id) {
+      if (!activeUserId || activeUserId === 'guest_user') {
+        activeUserId = authData.user.id;
+      }
+      if (!activeEmail) {
+        activeEmail = authData.user.email;
+      }
+    }
+  } catch (err) {
+    console.warn('Supabase auth resolve notice:', err?.message);
+  }
+
+  const effectiveId = activeUserId || user.id || 'guest_user';
+  const effectiveEmail = activeEmail || user.email || '';
+
+  const sanitized = sanitizeUserProfile({
+    ...user,
+    id: effectiveId,
+    email: effectiveEmail
+  });
+
   const payload = {
     ...sanitized,
-    id: sanitized.id,
-    email: sanitized.email,
+    id: effectiveId,
+    email: effectiveEmail,
     name: sanitized.name,
     college: sanitized.college,
     degree: sanitized.degree,
@@ -25,6 +51,8 @@ export async function saveUserDataToSupabase(user) {
     skills: sanitized.skills,
     interests: sanitized.interests,
     scores: sanitized.scores,
+    education: user.education || sanitized.education || [],
+    experience: user.experience || sanitized.experience || [],
     hasUploadedResume: Boolean(user.hasUploadedResume || user.resumeAnalysis?.analyzed),
     resumeAnalysis: user.resumeAnalysis || null,
     updatedAt: new Date().toISOString()
@@ -32,9 +60,9 @@ export async function saveUserDataToSupabase(user) {
 
   // 1. Save to LocalStorage cache keyed by user ID & active user
   try {
-    localStorage.setItem(`sb_user_data_${user.id}`, JSON.stringify(payload));
-    if (user.email) {
-      localStorage.setItem(`sb_user_data_email_${user.email.toLowerCase()}`, JSON.stringify(payload));
+    localStorage.setItem(`sb_user_data_${effectiveId}`, JSON.stringify(payload));
+    if (effectiveEmail) {
+      localStorage.setItem(`sb_user_data_email_${effectiveEmail.toLowerCase()}`, JSON.stringify(payload));
     }
   } catch (err) {
     console.warn('LocalStorage caching failed:', err);
@@ -56,26 +84,48 @@ export async function saveUserDataToSupabase(user) {
   }
 
   // 3. Persist to Supabase Database Table 'user_progress'
-  try {
-    const { error: dbError } = await supabase
-      .from('user_progress')
-      .upsert({
-        user_id: user.id,
-        email: user.email?.toLowerCase(),
-        name: sanitized.name,
-        college: sanitized.college,
-        career_goal: sanitized.careerGoal,
-        scores: sanitized.scores,
-        resume_analysis: user.resumeAnalysis,
-        raw_user_data: payload,
-        updated_at: payload.updatedAt
-      }, { onConflict: 'user_id' });
+  if (effectiveId && effectiveId !== 'guest_user') {
+    try {
+      const { error: dbError } = await supabase
+        .from('user_progress')
+        .upsert({
+          user_id: effectiveId,
+          email: effectiveEmail?.toLowerCase(),
+          name: sanitized.name,
+          college: sanitized.college,
+          career_goal: sanitized.careerGoal,
+          scores: sanitized.scores,
+          resume_analysis: user.resumeAnalysis,
+          raw_user_data: payload,
+          updated_at: payload.updatedAt
+        }, { onConflict: 'user_id' });
 
-    if (dbError) {
-      // Table may not exist in development or offline mode; Auth metadata & localStorage handle persistence
+      if (dbError) {
+        console.warn('Supabase user_progress upsert notice:', dbError.message);
+      }
+    } catch (_err) {
+      // Graceful offline fallback
     }
-  } catch (_err) {
-    // Graceful offline fallback
+
+    // 4. Persist to Supabase Database Table 'profiles'
+    try {
+      const { error: profError } = await supabase
+        .from('profiles')
+        .upsert({
+          id: effectiveId,
+          full_name: sanitized.name,
+          email: effectiveEmail?.toLowerCase() || null,
+          career_goal: sanitized.careerGoal || null,
+          skills: sanitized.skills || [],
+          updated_at: payload.updatedAt
+        }, { onConflict: 'id' });
+
+      if (profError) {
+        console.warn('Supabase profiles upsert notice:', profError.message);
+      }
+    } catch (_err) {
+      // Graceful offline fallback
+    }
   }
 
   return { success: true, data: payload };
