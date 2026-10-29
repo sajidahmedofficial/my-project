@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Official Google Gemini AI Career Mentor & Chatbot with persona switcher, code syntax blocks, voice TTS/STT, and model controls", deps: ["lucide-react", "./common/AIAssistantAvatar", "../utils/aiSimulator"], state: "active", last: "anti@2026-10-01" }
+// agent-notes: { ctx: "Official Google Gemini AI Chatbot with persona switcher, code syntax blocks, voice TTS/STT, and model controls", deps: ["lucide-react", "./common/AIAssistantAvatar", "../utils/aiSimulator"], state: "active", last: "anti@2026-10-29" }
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Send, 
@@ -56,13 +56,26 @@ export function GeminiSparkle({ className = "w-5 h-5", animate = false }) {
 // Available Gemini AI Personas for supreme flexibility
 const GEMINI_PERSONAS = [
   {
+    id: 'general',
+    name: 'General Assistant',
+    icon: Sparkles,
+    badge: 'Any Question',
+    tagline: 'Ask any general question, science, math, logic, concepts, code & career guidance',
+    chips: [
+      "Explain how neural networks learn in simple terms",
+      "What are the core skills and daily responsibilities for my chosen role?",
+      "Calculate 25 * 14 and explain the breakdown",
+      "Write a professional sick leave email draft"
+    ]
+  },
+  {
     id: 'mentor',
     name: 'Career Strategist',
     icon: Sparkles,
     badge: 'Strategic',
     tagline: 'Personalized career roadmaps, placement advice & milestone tracking',
     chips: [
-      "What are my highest priority skill gaps?",
+      "What are my highest priority skill gaps for my chosen role?",
       "Design a 30-day technical learning roadmap",
       "Recommend production project ideas for my stack",
       "How to transition towards senior software engineer roles?"
@@ -127,7 +140,7 @@ export default function CareerMentor({ profile }) {
   const targetRole = profile?.careerGoal || profile?.targetRole || 'Full Stack Developer';
 
   // Active Persona & Model Configuration
-  const [selectedPersonaId, setSelectedPersonaId] = useState('mentor');
+  const [selectedPersonaId, setSelectedPersonaId] = useState('general');
   const [selectedModel, setSelectedModel] = useState('gemini-3.6-flash');
   const [creativity, setCreativity] = useState('balanced'); // 'precise' | 'balanced' | 'creative'
   const [showSettings, setShowSettings] = useState(false);
@@ -153,8 +166,8 @@ export default function CareerMentor({ profile }) {
         id: "m-welcome",
         sender: "bot",
         modelUsed: "Google Gemini 3.6 Flash",
-        persona: "mentor",
-        text: `### Welcome to Google Gemini AI Career Mentor ✨\n\nHello **${candidateName}**! I'm your dedicated **Gemini AI Career & Technical Mentor** calibrated for your journey towards becoming a high-impact **${targetRole}**.\n\nI have reviewed your active profile, skills, and resume insights:\n- **Target Career**: ${targetRole}\n- **Verified Skills**: ${profile?.skills?.slice(0, 5).join(', ') || 'React, JavaScript, Node.js'}\n- **Target Growth Areas**: ${profile?.missingSkills?.slice(0, 3).join(', ') || 'Docker, AWS, System Design'}\n\n**How can I assist you today?** Choose a persona above or pick a suggested topic below to get started!`
+        persona: "general",
+        text: `### Welcome to Google Gemini AI Chatbot ✨\n\nHello **${candidateName}**! I'm your dedicated **Gemini AI Chatbot**, ready to answer any general question, explain concepts, solve problems, and provide specialized guidance tailored to your chosen role as **${targetRole}**.\n\nI have reviewed your active profile, skills, and resume insights:\n- **Target Career**: ${targetRole}\n- **Verified Skills**: ${profile?.skills?.slice(0, 5).join(', ') || 'React, JavaScript, Node.js'}\n- **Target Growth Areas**: ${profile?.missingSkills?.slice(0, 3).join(', ') || 'Docker, AWS, System Design'}\n\n**How can I assist you today?** Ask me any general question, request code, explore your roadmap, or dive deep into **${targetRole}**!`
       }
     ];
   });
@@ -381,7 +394,7 @@ export default function CareerMentor({ profile }) {
       let modelUsed = data?.modelUsed || 'Google Gemini 3.6 Flash';
 
       if (!responseText || responseText.includes("Local Mentor response fallback trigger")) {
-        responseText = generateMentorResponse(messages, query);
+        responseText = generateMentorResponse(messages, query, userContextPayload);
         modelUsed = 'Gemini Local Engine';
       }
 
@@ -401,7 +414,7 @@ export default function CareerMentor({ profile }) {
       }
     } catch (err) {
       console.warn("Gemini Chat Network Fallback:", err.message);
-      const fallbackText = generateMentorResponse(messages, query);
+      const fallbackText = generateMentorResponse(messages, query, userContextPayload);
       const botMsg = {
         id: `gemini-${Date.now()}`,
         sender: "bot",
@@ -545,7 +558,7 @@ export default function CareerMentor({ profile }) {
               <h3 className="text-sm font-bold text-slate-900 tracking-tight flex items-center gap-1.5">
                 <span>Google Gemini</span>
                 <span className="text-slate-400 font-normal">|</span>
-                <span className="text-indigo-600 font-semibold">Career Mentor</span>
+                <span className="text-indigo-600 font-semibold">AI Chatbot</span>
               </h3>
               <span className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -914,7 +927,7 @@ export default function CareerMentor({ profile }) {
               type="text"
               value={inputVal}
               onChange={(e) => setInputVal(e.target.value)}
-              placeholder={`Ask Gemini (${activePersona.name}) about roadmaps, code, interviews, or architecture...`}
+              placeholder={`Ask Gemini AI Chatbot (${activePersona.name}) any general question or about ${targetRole}...`}
               className="flex-1 bg-transparent text-xs text-slate-900 placeholder-slate-400 focus:outline-none"
               disabled={typing}
             />

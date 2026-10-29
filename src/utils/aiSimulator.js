@@ -1,5 +1,5 @@
-// agent-notes: { ctx: "AI simulator fallback and career chat response generator", deps: ["./mockData"], state: "active", last: "anti@2026-10-21" }
-import { SKILL_LIBRARY } from './mockData';
+// agent-notes: { ctx: "AI simulator fallback and career chat response generator", deps: ["./mockData.js"], state: "active", last: "anti@2026-10-29" }
+import { SKILL_LIBRARY } from './mockData.js';
 
 // Helper list of technical skills for keyword matching
 const TECH_KEYWORDS = [
@@ -673,11 +673,181 @@ export function generateRoadmap(missingSkills, targetRole = "Frontend Developer"
 }
 
 /**
- * Simulates the AI Career Mentor Chatbot response
+ * Simulates the AI Chatbot response for any general question and user's chosen role
  */
-export function generateMentorResponse(history, query) {
-  const q = query.toLowerCase();
-  
+export function generateMentorResponse(history, query, context = {}) {
+  const q = (query || "").toLowerCase().trim();
+  const targetRole = context?.targetRole || context?.careerGoal || "Full Stack AI Engineer";
+  const candidateName = context?.candidateName || context?.name || "Developer";
+  const skillsStr = Array.isArray(context?.skills) 
+    ? context.skills.join(', ') 
+    : (typeof context?.skills === 'string' ? context.skills : "HTML, CSS, JavaScript, React, Node.js");
+  const missingStr = Array.isArray(context?.missingSkills) 
+    ? context.missingSkills.join(', ') 
+    : (typeof context?.missingSkills === 'string' ? context.missingSkills : "Docker, AWS, System Design, Vector Databases");
+
+  // 1. Math & Calculation Evaluator
+  const mathMatch = q.match(/(?:what\s+is\s+|calculate\s+|solve\s+)?(\d+(?:\.\d+)?)\s*([\+\-\*\/xX\^])\s*(\d+(?:\.\d+)?)/);
+  if (mathMatch) {
+    const n1 = parseFloat(mathMatch[1]);
+    const op = mathMatch[2].toLowerCase();
+    const n2 = parseFloat(mathMatch[3]);
+    let result = 0;
+    let opSymbol = op;
+    if (op === '+') result = n1 + n2;
+    else if (op === '-') result = n1 - n2;
+    else if (op === '*' || op === 'x') { result = n1 * n2; opSymbol = '×'; }
+    else if (op === '/') { result = n2 !== 0 ? (n1 / n2) : 'Undefined (division by zero)'; opSymbol = '÷'; }
+    else if (op === '^') { result = Math.pow(n1, n2); opSymbol = '^'; }
+
+    return `### 🧮 Math Calculation Result
+
+**Expression:** \`${n1} ${opSymbol} ${n2}\`  
+**Calculated Result:** **\`${result}\`**
+
+#### Step-by-Step Breakdown:
+1. **Operator Identified**: Arithmetic operation (\`${opSymbol}\`).
+2. **Operands**: First operand = \`${n1}\`, Second operand = \`${n2}\`.
+3. **Execution**: Evaluated \`${n1} ${opSymbol} ${n2}\` to yield **\`${result}\`**.
+
+*Need another calculation, algorithm complexity formula, or mathematical proof? Just ask!*`;
+  }
+
+  // 2. User Chosen Role Queries
+  const isRoleQuery = 
+    q.includes("my chosen role") || 
+    q.includes("my role") || 
+    q.includes("what is my role") || 
+    q.includes("tell me about my role") || 
+    q.includes("chosen role") || 
+    q.includes("target role") || 
+    q.includes("full stack ai engineer") || 
+    q.includes("career goal") ||
+    (q.includes("become") && (q.includes("role") || q.includes("engineer") || q.includes("developer"))) ||
+    (q.includes("skills") && q.includes("for") && (q.includes("role") || q.includes("my")));
+
+  if (isRoleQuery) {
+    return `### 🚀 Role Overview & Roadmap: ${targetRole}
+
+Hello **${candidateName}**! You are calibrated for the high-impact role of **${targetRole}**.
+
+#### 1. Core Industry Definition & Responsibilities
+A **${targetRole}** combines modern full-stack web architectures with machine learning models and intelligent workflows:
+- **Architecture & System Design**: Building performant, responsive UIs with modern frameworks (React/Next.js) coupled with robust, scalable backend APIs (Node.js/Express or Python/FastAPI).
+- **AI & LLM Integration**: Incorporating Large Language Models, embeddings, vector databases (Chroma, Pinecone, pgvector), and streaming inference pipelines into enterprise products.
+- **Data Engineering & Retrieval**: Building Retrieval-Augmented Generation (RAG) pipelines, semantic search, and prompt engineering orchestration.
+- **Deployment & Cloud Infrastructure**: Containerizing services with Docker, deploying to AWS or GCP, and setting up automated CI/CD workflows.
+
+#### 2. Your Active Skills Calibration
+- **Verified Strengths**: ${skillsStr}
+- **High-Priority Target Growth Areas**: ${missingStr}
+
+#### 3. Recommended Next Milestones
+1. **Milestone 1 (API & Data Mastery)**: Solidify backend patterns, database connection pooling, and REST API best practices.
+2. **Milestone 2 (AI Integration)**: Build an interactive application featuring streaming LLM responses, vector search, and token usage optimization.
+3. **Milestone 3 (Production Capstone)**: Deploy a containerized full-stack AI application with monitoring, rate limiting, and comprehensive test suites.
+
+*Would you like a specialized mock interview, system architecture diagram, or sample code for your journey as a ${targetRole}?*`;
+  }
+
+  // 3. General Writing / Professional Emails
+  if (q.includes("email") && (q.includes("sick") || q.includes("leave") || q.includes("pto") || q.includes("vacation") || q.includes("unwell"))) {
+    return `### ✉️ Professional Leave Request Email Template
+
+**Subject:** Leave of Absence Request - ${candidateName} - [Dates]
+
+Dear [Manager's Name],
+
+I am writing to formally request leave due to feeling unwell and requiring rest to recover. I anticipate being away from work for two days starting [Start Date] through [End Date].
+
+During this period:
+- I have ensured that current urgent tasks are documented and handed off to [Colleague's Name].
+- I will check urgent communications once I have sufficiently recovered.
+
+Thank you for your understanding and support.
+
+Best regards,  
+**${candidateName}**  
+${targetRole}`;
+  }
+
+  // 4. General Science & Physics Concepts
+  if (q.includes("photosynthesis") || q.includes("chlorophyll")) {
+    return `### 🌿 How Photosynthesis Works
+
+**Photosynthesis** is the biological process by which green plants, algae, and cyanobacteria convert light energy into chemical energy stored in glucose carbohydrates.
+
+#### The Fundamental Chemical Equation:
+$$\\text{6CO}_2 + \\text{6H}_2\\text{O} + \\text{Sunlight (Photons)} \\longrightarrow \\text{C}_6\\text{H}_{12}\\text{O}_6 + \\text{6O}_2$$
+
+#### The Two Main Stages:
+1. **Light-Dependent Reactions (Occur in Thylakoid Membranes)**:
+   - Chlorophyll pigments absorb sunlight energy, exciting electrons.
+   - Water molecules ($\\text{H}_2\\text{O}$) are split (photolysis), releasing oxygen ($\\text{O}_2$) as a byproduct.
+   - Produces energy carriers **ATP** and **NADPH**.
+2. **Light-Independent Reactions / Calvin Cycle (Occur in the Stroma)**:
+   - Takes carbon dioxide ($\\text{CO}_2$) from the atmosphere.
+   - Utilizes ATP and NADPH from the light reactions to convert $\\text{CO}_2$ into high-energy glucose ($\\text{C}_6\\text{H}_{12}\\text{O}_6$).
+
+#### Ecological Importance:
+- Produces nearly all the breathable oxygen in Earth's atmosphere.
+- Serves as the primary energy source at the foundation of all terrestrial food chains.`;
+  }
+
+  if (q.includes("gravity") || q.includes("gravitation")) {
+    return `### 🌌 What is Gravity and How Does It Work?
+
+**Gravity** is one of the four fundamental interactions in nature (alongside electromagnetism, strong nuclear, and weak nuclear forces).
+
+#### 1. Classical Newtonian Physics
+Sir Isaac Newton described gravity as an attractive force acting directly between any two objects with mass:
+$$F = G \\frac{m_1 \\cdot m_2}{r^2}$$
+- Where $G$ is the gravitational constant, $m_1$ and $m_2$ are masses, and $r$ is the separation distance.
+
+#### 2. Einstein's General Relativity
+In 1915, Albert Einstein revolutionized our understanding: gravity is **not** an invisible pulling force, but rather the **curvature of four-dimensional spacetime** caused by mass and energy.
+- Massive objects like Earth or the Sun warp the fabric of spacetime around them.
+- Satellites, planets, and light beams naturally travel along straight paths (geodesics) through this curved geometry.
+
+#### Everyday & Astronomical Phenomena:
+- **Tides**: Created by the gravitational pull gradient between the Moon, Sun, and Earth's oceans.
+- **Planetary Orbits**: Keeps celestial bodies in stable orbits.
+- **Gravitational Time Dilation**: Clocks closer to strong gravitational fields run measurably slower than clocks in deep space!`;
+  }
+
+  // 5. Recursion & Core Algorithms
+  if (q.includes("recursion") || q.includes("recursive")) {
+    return `### 🔄 Understanding Recursion in Computer Science
+
+**Recursion** is a programming technique where a function solves a problem by calling itself with smaller subsets of the same problem.
+
+#### The 2 Mandatory Components:
+1. **Base Case**: The condition under which the function terminates and returns a result without making further recursive calls. Prevents infinite recursion and call stack overflow!
+2. **Recursive Case**: The logic that reduces the problem size and calls itself, pushing a new frame onto the **Call Stack**.
+
+\`\`\`javascript
+// Classic recursive example: Factorial (n!)
+function factorial(n) {
+  // 1. Base case: 0! = 1, 1! = 1
+  if (n <= 1) return 1;
+
+  // 2. Recursive case: calls itself with n - 1
+  return n * factorial(n - 1);
+}
+
+console.log(factorial(5)); // Output: 120 (5 * 4 * 3 * 2 * 1)
+\`\`\`
+
+#### How the Call Stack Unwinds:
+1. \`factorial(3)\` pauses and calls \`factorial(2)\`
+2. \`factorial(2)\` pauses and calls \`factorial(1)\`
+3. \`factorial(1)\` hits the base case and returns \`1\`
+4. \`factorial(2)\` evaluates \`2 * 1 = 2\` and returns
+5. \`factorial(3)\` evaluates \`3 * 2 = 6\` and returns
+
+*Pro Tip for ${targetRole}:* Use recursion for tree traversals (DOM, AST, JSON), divide-and-conquer algorithms (Merge Sort), and graph DFS. Watch out for call stack depth limits!`;
+  }
+
   let response = "";
   
   if (q.includes("python")) {
@@ -894,15 +1064,22 @@ Project work is the best way to prove you have practical skills to recruiters. H
 *Tip: Check the **Project recommendations** page in the dashboard sidebar for step-by-step instructions on building these!*`;
   }
   else {
-    response = `### AI Mentor Guidance for "${query}" 💡
+    response = `### 💡 AI Chatbot Insights for "${query}"
 
-Here is targeted guidance to help you master **${query}**:
+Hello **${candidateName}**! Here is an informative overview regarding **${query}**:
 
-1. **Core Understanding**: Study the fundamental concepts, lifecycle, and syntax associated with this topic.
-2. **Practical Application**: Implement a working prototype or code snippet to reinforce your understanding.
-3. **Interview & Project Integration**: Add this topic to your technical vocabulary and be ready to explain trade-offs and real-world use cases.
+1. **Overview & Core Concept**:
+   - Understand the primary definitions, foundational context, and practical significance behind *${query}*.
+2. **Key Practical Mechanics**:
+   - Apply clean patterns, structured thinking, and verified approaches when working with this subject.
+3. **Relevance to Your Chosen Role (${targetRole})**:
+   - Leveraging this knowledge enhances your problem-solving capabilities, bridging your verified strengths (**${skillsStr}**) with your target growth milestones (**${missingStr}**).
 
-*Feel free to ask for specific code examples, architecture breakdowns, or interview questions on this topic!*`;
+\`\`\`markdown
+> Pro Tip: Feel free to ask me to write code, solve math problems, draft emails, simulate an interview, or design a system architecture!
+\`\`\`
+
+*How else can I assist you with this topic or your journey as a ${targetRole}?*`;
   }
 
   return response;

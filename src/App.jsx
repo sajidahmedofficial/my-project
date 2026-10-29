@@ -255,7 +255,7 @@ function MainLayout() {
     { id: 'skillgap', label: 'Skill Gap Analysis', icon: Briefcase },
     { id: 'resume', label: 'Resume Analyzer', icon: FileText },
     { id: 'roadmap', label: 'Learning Roadmap', icon: Map },
-    { id: 'chat', label: 'Career Mentor', icon: MessageSquare }
+    { id: 'chat', label: 'AI Chatbot', icon: MessageSquare }
   ];
 
   const renderActiveView = () => {

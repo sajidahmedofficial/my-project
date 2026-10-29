@@ -188,7 +188,7 @@ Return strictly valid JSON only. Do not include markdown code fences or conversa
 });
 
 // Helper for rich contextual fallback response when AI is offline or rate-limited
-function generateSmartFallbackAnswer(query, candidateName, targetRole, currentSkills, missingSkills, persona = 'mentor') {
+export function generateSmartFallbackAnswer(query, candidateName, targetRole, currentSkills, missingSkills, persona = 'mentor') {
   const q = (query || "").toLowerCase();
 
   if (persona === 'interviewer') {
@@ -262,6 +262,164 @@ console.log('4');
 \`\`\`
 
 💡 *What specific traffic volume (RPS) or latency SLA are you designing for?*`;
+  }
+
+  // Math & Calculation Evaluator
+  const mathMatch = q.match(/(?:what\s+is\s+|calculate\s+|solve\s+)?(\d+(?:\.\d+)?)\s*([\+\-\*\/xX\^])\s*(\d+(?:\.\d+)?)/);
+  if (mathMatch) {
+    const n1 = parseFloat(mathMatch[1]);
+    const op = mathMatch[2].toLowerCase();
+    const n2 = parseFloat(mathMatch[3]);
+    let result = 0;
+    let opSymbol = op;
+    if (op === '+') result = n1 + n2;
+    else if (op === '-') result = n1 - n2;
+    else if (op === '*' || op === 'x') { result = n1 * n2; opSymbol = '×'; }
+    else if (op === '/') { result = n2 !== 0 ? (n1 / n2) : 'Undefined'; opSymbol = '÷'; }
+    else if (op === '^') { result = Math.pow(n1, n2); opSymbol = '^'; }
+
+    return `### 🧮 Math Calculation Result
+
+**Expression:** \`${n1} ${opSymbol} ${n2}\`  
+**Calculated Result:** **\`${result}\`**
+
+#### Step-by-Step Breakdown:
+1. Evaluated first operand \`${n1}\` against second operand \`${n2}\` using operator \`${opSymbol}\`.
+2. Computed numeric result: **\`${result}\`**.`;
+  }
+
+  // User Chosen Role Queries
+  const isRoleQuery = 
+    q.includes("my chosen role") || 
+    q.includes("my role") || 
+    q.includes("what is my role") || 
+    q.includes("tell me about my role") || 
+    q.includes("chosen role") || 
+    q.includes("target role") || 
+    q.includes("full stack ai engineer") || 
+    q.includes("career goal") ||
+    (q.includes("become") && (q.includes("role") || q.includes("engineer") || q.includes("developer"))) ||
+    (q.includes("skills") && q.includes("for") && (q.includes("role") || q.includes("my")));
+
+  if (isRoleQuery) {
+    return `### 🚀 Role Overview & Roadmap: ${targetRole}
+
+Hello **${candidateName}**! Here is an expert blueprint calibrated for your chosen role as **${targetRole}**:
+
+#### 1. Core Industry Responsibilities
+As a **${targetRole}**, you design and deliver intelligent software systems:
+- **Full-Stack Architecture**: Developing high-performance frontend interfaces and scalable microservice APIs.
+- **AI & ML Integration**: Connecting foundation models, embeddings, vector stores, and automated pipelines into production applications.
+- **Data & Model Workflows**: Engineering RAG architectures, evaluation benchmarks, and fine-tuning datasets.
+- **Cloud & DevOps**: Deploying containerized services with Docker, Kubernetes, CI/CD, and cloud infrastructure.
+
+#### 2. Skills Analysis for Your Profile
+- **Current Strengths**: ${currentSkills}
+- **High-Priority Target Growth Areas**: ${missingSkills}
+
+#### 3. Recommended Roadmap & Next Steps
+1. **Foundations**: Deepen knowledge of asynchronous concurrency, state management, and relational database indexing.
+2. **AI Engineering**: Implement real-time streaming LLM pipelines, prompt chaining, and semantic caching.
+3. **Production Deployment**: Build end-to-end containerized deployments with automated testing and health monitoring.`;
+  }
+
+  // General Writing / Emails
+  if (q.includes("email") && (q.includes("sick") || q.includes("leave") || q.includes("pto") || q.includes("vacation") || q.includes("unwell"))) {
+    return `### ✉️ Professional Leave Request Email Template
+
+**Subject:** Leave of Absence Request - ${candidateName} - [Dates]
+
+Dear [Manager's Name],
+
+I am writing to formally request leave due to feeling unwell and requiring rest to recover. I anticipate being away from work for two days starting [Start Date] through [End Date].
+
+During this period:
+- I have ensured that current urgent tasks are documented and handed off to [Colleague's Name].
+- I will check urgent communications once I have sufficiently recovered.
+
+Thank you for your understanding and support.
+
+Best regards,  
+**${candidateName}**  
+${targetRole}`;
+  }
+
+  // General Science: Photosynthesis
+  if (q.includes("photosynthesis") || q.includes("chlorophyll")) {
+    return `### 🌿 How Photosynthesis Works
+
+**Photosynthesis** is the biological process by which green plants, algae, and cyanobacteria convert light energy into chemical energy stored in glucose carbohydrates.
+
+#### The Fundamental Chemical Equation:
+$$\\text{6CO}_2 + \\text{6H}_2\\text{O} + \\text{Sunlight (Photons)} \\longrightarrow \\text{C}_6\\text{H}_{12}\\text{O}_6 + \\text{6O}_2$$
+
+#### The Two Main Stages:
+1. **Light-Dependent Reactions (Occur in Thylakoid Membranes)**:
+   - Chlorophyll pigments absorb sunlight energy, exciting electrons.
+   - Water molecules ($\\text{H}_2\\text{O}$) are split (photolysis), releasing oxygen ($\\text{O}_2$) as a byproduct.
+   - Generates **ATP** and **NADPH**.
+2. **Light-Independent Reactions / Calvin Cycle (Occur in the Stroma)**:
+   - Takes carbon dioxide ($\\text{CO}_2$) from the atmosphere.
+   - Utilizes ATP and NADPH from the light reactions to convert $\\text{CO}_2$ into high-energy glucose ($\\text{C}_6\\text{H}_{12}\\text{O}_6$).
+
+#### Ecological Importance:
+- Produces nearly all the breathable oxygen in Earth's atmosphere.
+- Serves as the primary energy source at the foundation of all terrestrial food chains.`;
+  }
+
+  // General Science: Gravity
+  if (q.includes("gravity") || q.includes("gravitation")) {
+    return `### 🌌 What is Gravity and How Does It Work?
+
+**Gravity** is one of the four fundamental interactions in nature (alongside electromagnetism, strong nuclear, and weak nuclear forces).
+
+#### 1. Classical Newtonian Physics
+Sir Isaac Newton described gravity as an attractive force acting directly between any two objects with mass:
+$$F = G \\frac{m_1 \\cdot m_2}{r^2}$$
+- Where $G$ is the gravitational constant, $m_1$ and $m_2$ are masses, and $r$ is the separation distance.
+
+#### 2. Einstein's General Relativity
+In 1915, Albert Einstein revolutionized physics: gravity is **not** an invisible pulling force, but rather the **curvature of four-dimensional spacetime** caused by mass and energy.
+- Massive objects warp the fabric of spacetime around them.
+- Satellites, planets, and light beams naturally travel along straight paths (geodesics) through this curved geometry.
+
+#### Everyday & Astronomical Phenomena:
+- **Tides**: Created by the gravitational pull gradient between the Moon, Sun, and Earth's oceans.
+- **Planetary Orbits**: Keeps celestial bodies in stable orbits.
+- **Gravitational Time Dilation**: Clocks closer to strong gravitational fields run measurably slower than clocks in deep space!`;
+  }
+
+  // Recursion
+  if (q.includes("recursion") || q.includes("recursive")) {
+    return `### 🔄 Understanding Recursion in Computer Science
+
+**Recursion** is a programming technique where a function solves a problem by calling itself with smaller subsets of the same problem.
+
+#### The 2 Mandatory Components:
+1. **Base Case**: The condition under which the function terminates and returns a result without making further recursive calls. Prevents infinite recursion and call stack overflow!
+2. **Recursive Case**: The logic that reduces the problem size and calls itself, pushing a new frame onto the **Call Stack**.
+
+\`\`\`javascript
+// Classic recursive example: Factorial (n!)
+function factorial(n) {
+  // 1. Base case: 0! = 1, 1! = 1
+  if (n <= 1) return 1;
+
+  // 2. Recursive case: calls itself with n - 1
+  return n * factorial(n - 1);
+}
+
+console.log(factorial(5)); // Output: 120 (5 * 4 * 3 * 2 * 1)
+\`\`\`
+
+#### How the Call Stack Unwinds:
+1. \`factorial(3)\` pauses and calls \`factorial(2)\`
+2. \`factorial(2)\` pauses and calls \`factorial(1)\`
+3. \`factorial(1)\` hits the base case and returns \`1\`
+4. \`factorial(2)\` evaluates \`2 * 1 = 2\` and returns
+5. \`factorial(3)\` evaluates \`3 * 2 = 6\` and returns
+
+*Pro Tip for ${targetRole}:* Use recursion for tree traversals (DOM, AST, JSON), divide-and-conquer algorithms (Merge Sort), and graph DFS. Watch out for call stack depth limits!`;
   }
 
   if (q.includes("python")) {
@@ -371,19 +529,19 @@ CMD ["node", "dist/index.js"]
 *Action item for your ${targetRole} roadmap:* Containerize your backend and set up a GitHub Actions workflow to build and test on every PR!`;
   }
 
-  return `### 💡 AI Mentor Guidance for "${query}"
+  return `### 💡 AI Chatbot Insights for "${query}"
 
-Hello **${candidateName}**! Here is actionable guidance tailored to your journey as an aspiring **${targetRole}**:
+Hello **${candidateName}**! Here is actionable guidance tailored to your query and your journey as an aspiring **${targetRole}**:
 
-1. **Core Technical Takeaway**: Focus on understanding foundational patterns behind *${query}*. Reinforce your existing strengths in **${currentSkills}**.
-2. **Hands-On Application**: Build a concrete mini-project or code module demonstrating this concept.
-3. **Skill Gap Alignment**: Integrating this with **${missingSkills}** will directly boost your placement readiness.
+1. **Core Takeaway**: Focus on foundational principles and mechanics behind *${query}*.
+2. **Practical Application**: Implement a concrete project, test, or code snippet to reinforce mastery.
+3. **Relevance to ${targetRole}**: Integrating this topic with **${missingSkills}** will directly boost your placement readiness.
 
 \`\`\`markdown
 > Pro Tip: Keep your code modular and write automated unit tests to demonstrate engineering maturity.
 \`\`\`
 
-Feel free to ask for specific code examples, debugging help, or architectural design breakdowns!`;
+Feel free to ask for specific code examples, math solutions, debugging help, or architectural design breakdowns!`;
 }
 
 // @desc    Career Chatbot Mentor with Full User & Resume Context
@@ -404,15 +562,19 @@ router.post('/chat', async (req, res) => {
   const atsScore = userContext?.scores?.placementReadiness || userContext?.atsScore || 82;
 
   // Persona instructions
-  let personaInstruction = "You are Google Gemini, acting as an expert AI Career & Technical Mentor at SkillBridge AI.";
-  if (persona === 'interviewer') {
-    personaInstruction = "You are Google Gemini, acting as a rigorous Senior Technical Interviewer. Ask realistic interview questions, probe edge cases, evaluate answers using the STAR method, and give constructive feedback.";
+  let personaInstruction = `You are Google Gemini, an intelligent, versatile, and comprehensive AI Chatbot at SkillBridge AI. You can answer ANY type of question—general knowledge, science, mathematics, everyday queries, logic, writing, and deep technical problems. You are also calibrated with the user's active profile and chosen role (${targetRole}), and provide role-tailored insights whenever relevant or requested.`;
+  if (persona === 'general') {
+    personaInstruction = `You are Google Gemini, an all-purpose, highly intelligent AI Chatbot. You excel at answering ANY type of question—general knowledge, science, mathematics, everyday queries, logic, writing, culture, and programming. You also have full context of the user (${candidateName}) and their chosen target role (${targetRole}). If their question is about their role or career, provide tailored advice for ${targetRole}; if it is a general question, answer it directly, accurately, and comprehensively.`;
+  } else if (persona === 'mentor') {
+    personaInstruction = `You are Google Gemini, acting as an expert Career Strategist & Role Mentor for an aspiring ${targetRole}. Provide strategic career roadmaps, role-specific guidance, milestone tracking, and placement strategies.`;
+  } else if (persona === 'interviewer') {
+    personaInstruction = `You are Google Gemini, acting as a rigorous Senior Technical Interviewer for a ${targetRole}. Ask realistic interview questions, probe edge cases, evaluate answers using the STAR method, and give constructive feedback.`;
   } else if (persona === 'architect') {
-    personaInstruction = "You are Google Gemini, acting as a Principal Cloud & System Architect. Analyze architectural patterns, scalability, microservices, database schemas, and performance trade-offs.";
+    personaInstruction = `You are Google Gemini, acting as a Principal Cloud & System Architect. Analyze architectural patterns, scalability, microservices, database schemas, and performance trade-offs for ${targetRole}.`;
   } else if (persona === 'resume') {
-    personaInstruction = "You are Google Gemini, acting as a Senior Technical Recruiter & ATS Optimization Specialist. Critique resume content, rewrite weak bullet points into high-impact accomplishment statements with metrics, and optimize for recruiter screening.";
+    personaInstruction = `You are Google Gemini, acting as a Senior Technical Recruiter & ATS Optimization Specialist for ${targetRole}. Critique resume content, rewrite weak bullet points into high-impact accomplishment statements with metrics, and optimize for recruiter screening.`;
   } else if (persona === 'code') {
-    personaInstruction = "You are Google Gemini, acting as an expert Code Explainer & Pair Programmer. Write clean, idiomatic code, explain tricky concepts simply, and debug issues with clear step-by-step explanations.";
+    personaInstruction = `You are Google Gemini, acting as an expert Code Explainer & Pair Programmer. Write clean, idiomatic code, explain tricky concepts simply, and debug issues with clear step-by-step explanations.`;
   }
 
   try {
@@ -430,7 +592,7 @@ router.post('/chat', async (req, res) => {
       .join('\n');
     
     const prompt = `${personaInstruction}
-You are interacting with ${candidateName}, whose target career role is: ${targetRole}.
+You are interacting with ${candidateName}, whose chosen target career role is: ${targetRole}.
 
 Candidate Live Profile & Context:
 - Current Detected Skills: ${currentSkills}
@@ -438,14 +600,15 @@ Candidate Live Profile & Context:
 - Resume Score: ${resumeScore}/100 | ATS Readiness: ${atsScore}%
 
 INSTRUCTIONS:
-1. Directly, accurately, and thoroughly answer the user's exact query first (whether it is a coding question, syntax query, technical concept, system architecture, interview question, or career strategy).
-2. Format your response cleanly using Google Gemini standard markdown:
+1. Directly, accurately, and thoroughly answer the user's exact query first (whether it is a general knowledge question like science, history, math, writing, everyday concepts, or a coding question, syntax query, system architecture, interview question, or an inquiry about their chosen role as ${targetRole}).
+2. If the user asks about their chosen role (${targetRole}), career milestones, or technical stack, provide deep, actionable, role-calibrated insights including required skills, architectures, and career advice.
+3. For general knowledge or everyday questions, answer them completely and naturally without forcing irrelevant career advice.
+4. Format your response cleanly using Google Gemini standard markdown:
    - Use bolding for key terms.
    - Use fenced code blocks (\`\`\`language ... \`\`\`) for any code snippets.
    - Use concise bulleted or numbered lists.
    - Provide a "💡 Pro Tip" or key takeaway section when helpful.
-3. If relevant to their question, seamlessly relate insights to their target role (${targetRole}) and bridging skill gaps, but do not replace answering their question with generic advice.
-4. Keep the tone encouraging, intellectual, professional, and actionable.
+5. Keep the tone encouraging, intellectual, professional, and actionable.
 
 Recent Conversation History:
 ${chatHistoryContext}

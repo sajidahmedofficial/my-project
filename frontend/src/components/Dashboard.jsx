@@ -103,10 +103,10 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
     },
     {
       id: 'chat',
-      title: 'AI Career Mentor',
-      desc: '24/7 technical advisor for architecture questions, salary negotiation & career strategy.',
+      title: 'AI Chatbot',
+      desc: '24/7 intelligent assistant for general questions, role insights, architecture & problem solving.',
       icon: MessageSquare,
-      tag: 'AI Coach',
+      tag: 'AI Assistant',
       accent: 'bg-amber-50 text-amber-700 border-amber-200'
     }
   ];
@@ -116,7 +116,7 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
     { id: 1, text: 'Analyze resume against target software role', done: hasUploadedResume },
     { id: 2, text: 'Complete Full Stack System Design roadmap stage', done: false },
     { id: 3, text: 'Verify core technical skills for certificate credentials', done: false },
-    { id: 4, text: 'Consult AI Career Mentor on portfolio & career strategy', done: false }
+    { id: 4, text: 'Chat with AI Chatbot for role insights & problem solving', done: false }
   ]);
 
   const toggleGoal = (id) => {
