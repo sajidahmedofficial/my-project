@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "AI Skill Gap Analysis dashboard with persistent report state, refresh recovery, and Supabase storage", deps: ["react", "lucide-react", "../services/skillGapApi", "../services/resumeApi", "../services/userPersistence"], state: "active", last: "anti@2026-10-19" }
+// agent-notes: { ctx: "AI Skill Gap Analysis dashboard with persistent report state, refresh recovery, and Supabase storage", deps: ["react", "lucide-react", "../services/skillGapApi", "../services/resumeApi", "../services/userPersistence"], state: "active", last: "anti@2026-10-29" }
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Briefcase, 
@@ -336,9 +336,31 @@ export default function SkillGapDashboard({
   };
 
   const handleStartRoadmap = (skillName) => {
-    const missing = skillName ? [skillName] : (report?.missingSkills || []).map(s => s.skillName || s.name);
+    const missing = (report?.missingSkills || []).map(s => s.skillName || s.name || s);
+    const partial = (report?.partialSkills || []).map(s => s.skillName || s.name || s);
+    const strong = (report?.strongSkills || []).map(s => s.skillName || s.name || s);
+    
+    // Combine all report skills uniquely, putting the clicked skill first if present
+    const combined = Array.from(new Set([
+      ...(skillName ? [skillName] : []),
+      ...missing,
+      ...partial,
+      ...strong
+    ])).filter(Boolean);
+
+    const skillsToSend = combined.length > 0
+      ? combined
+      : (skillName ? [skillName] : ["React.js", "TypeScript", "Next.js", "Docker"]);
+
+    try {
+      if (skillName) {
+        localStorage.setItem('sb_active_roadmap_skill', skillName);
+      }
+      localStorage.setItem('sb_missing_skills', JSON.stringify(skillsToSend));
+    } catch {}
+
     if (onGenerateRoadmap) {
-      onGenerateRoadmap(missing, selectedRole);
+      onGenerateRoadmap(skillsToSend, selectedRole, skillName);
     } else if (onNavigate) {
       onNavigate('roadmap');
     }
@@ -753,19 +775,22 @@ export default function SkillGapDashboard({
                     </div>
 
                     <div className="flex items-center gap-1.5 shrink-0">
-                      {!isStrong ? (
-                        <button
-                          onClick={() => handleStartRoadmap(sName)}
-                          className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-semibold transition-all flex items-center gap-1 shadow-xs"
-                        >
-                          <Map className="w-3 h-3" />
-                          <span>Roadmap</span>
-                        </button>
-                      ) : (
-                        <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg">
+                      {isStrong && (
+                        <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded-lg">
                           ✓ Verified
                         </span>
                       )}
+
+                      <button
+                        onClick={() => handleStartRoadmap(sName)}
+                        className={`px-3 py-1.5 rounded-lg text-white text-[11px] font-semibold transition-all flex items-center gap-1 shadow-xs ${
+                          isStrong ? 'bg-slate-800 hover:bg-slate-900' : 'bg-indigo-600 hover:bg-indigo-700'
+                        }`}
+                        title={`View Roadmap for ${sName}`}
+                      >
+                        <Map className="w-3 h-3" />
+                        <span>Roadmap</span>
+                      </button>
 
                       <button
                         onClick={() => onOpenVerification && onOpenVerification(sName)}

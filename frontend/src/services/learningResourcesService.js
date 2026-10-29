@@ -1,5 +1,5 @@
-// agent-notes: { ctx: "Comprehensive learning resources service for YouTube tutorials, official free courses, AI study notes, and Supabase progress tracking", deps: ["./supabase"], state: "active", last: "sato@2026-10-28" }
-import { supabase } from './supabase';
+// agent-notes: { ctx: "Comprehensive learning resources service for YouTube tutorials, official free courses, AI study notes, and Supabase progress tracking", deps: ["./supabase.js"], state: "active", last: "anti@2026-10-29" }
+import { supabase } from './supabase.js';
 
 export const OFFICIAL_PROVIDERS = [
   'Google Skills',

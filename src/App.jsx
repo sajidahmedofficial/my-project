@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Main App Component with persistent active tab, restored resume state, and robust refresh recovery", deps: ["lucide-react", "./context/AuthContext", "./components/common/AIAssistantAvatar", "./components/common/CartoonDecorations", "./components/common/SkillBridgeLogo"], state: "active", last: "anti@2026-10-28" }
+// agent-notes: { ctx: "Main App Component with persistent active tab, restored resume state, and robust refresh recovery", deps: ["lucide-react", "./context/AuthContext", "./components/common/AIAssistantAvatar", "./components/common/CartoonDecorations", "./components/common/SkillBridgeLogo"], state: "active", last: "anti@2026-10-29" }
 import React, { useState } from 'react';
 import { 
   LayoutDashboard, 
@@ -81,6 +81,14 @@ function MainLayout() {
   const [targetRole, setTargetRole] = useState(() => {
     try {
       return localStorage.getItem('sb_target_role') || null;
+    } catch {
+      return null;
+    }
+  });
+
+  const [activeRoadmapSkill, setActiveRoadmapSkill] = useState(() => {
+    try {
+      return localStorage.getItem('sb_active_roadmap_skill') || null;
     } catch {
       return null;
     }
@@ -200,12 +208,18 @@ function MainLayout() {
     updateProfile(newProfile);
   };
 
-  const handleGenerateRoadmap = (missingSkills, role) => {
+  const handleGenerateRoadmap = (missingSkills, role, selectedSkill) => {
     const list = missingSkills || [];
     setMissingSkillsList(list);
     try {
       localStorage.setItem('sb_missing_skills', JSON.stringify(list));
     } catch {}
+    if (selectedSkill) {
+      setActiveRoadmapSkill(selectedSkill);
+      try {
+        localStorage.setItem('sb_active_roadmap_skill', selectedSkill);
+      } catch {}
+    }
     if (role) {
       setTargetRole(role);
       try {
@@ -290,6 +304,9 @@ function MainLayout() {
               profile={activeProfile} 
               missingSkillsList={missingSkillsList} 
               targetRole={targetRole || activeProfile?.careerGoal || "Frontend Developer"}
+              initialSkill={activeRoadmapSkill}
+              targetSkill={activeRoadmapSkill}
+              onSelectSkill={setActiveRoadmapSkill}
               onOpenVerification={handleOpenGlobalVerification}
               onNavigate={handleTabChange}
             />

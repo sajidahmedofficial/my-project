@@ -1,6 +1,6 @@
-// agent-notes: { ctx: "Supabase service for storing and restoring user profile, scores, resume analysis & progress with clean primitive sanitization", deps: ["./supabase", "../utils/sanitizeProfile"], state: "active", last: "anti@2026-10-28" }
+// agent-notes: { ctx: "Supabase service for storing and restoring user profile, scores, resume analysis & progress with clean primitive sanitization", deps: ["./supabase.js", "../utils/sanitizeProfile"], state: "active", last: "anti@2026-10-29" }
 
-import { supabase } from './supabase';
+import { supabase } from './supabase.js';
 import { sanitizeUserProfile, extractString } from '../utils/sanitizeProfile';
 
 /**

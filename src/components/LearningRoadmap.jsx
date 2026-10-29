@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Enhanced SaaS Learning Roadmap with YouTube tutorials, official free courses, AI study notes, and persistent learning progress", deps: ["lucide-react", "../services/skillGapApi", "../utils/aiSimulator", "../services/learningResourcesService", "./roadmap/*"], state: "active", last: "sato@2026-10-28" }
+// agent-notes: { ctx: "Enhanced SaaS Learning Roadmap with YouTube tutorials, official free courses, AI study notes, and persistent learning progress", deps: ["lucide-react", "../services/skillGapApi", "../utils/aiSimulator", "../services/learningResourcesService", "./roadmap/*"], state: "active", last: "anti@2026-10-29" }
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   CheckCircle2, 
@@ -30,11 +30,28 @@ import FreeCourseCatalog from './roadmap/FreeCourseCatalog';
 import StudyMaterials from './roadmap/StudyMaterials';
 import LearningProgressSummary from './roadmap/LearningProgressSummary';
 
-export default function LearningRoadmap({ profile, missingSkillsList = [], targetRole, onOpenVerification, onNavigate }) {
+export default function LearningRoadmap({ 
+  profile, 
+  missingSkillsList = [], 
+  targetRole, 
+  initialSkill, 
+  targetSkill, 
+  onSelectSkill, 
+  onOpenVerification, 
+  onNavigate 
+}) {
   const activeTargetRole = targetRole || profile?.careerGoal || "Frontend Developer";
   const userId = profile?.id || profile?.email || "guest_user";
 
-  const availableSkills = (missingSkillsList && missingSkillsList.length > 0)
+  const requestedSkill = initialSkill || targetSkill || (() => {
+    try {
+      return localStorage.getItem('sb_active_roadmap_skill') || null;
+    } catch {
+      return null;
+    }
+  })();
+
+  const rawSkills = (missingSkillsList && missingSkillsList.length > 0)
     ? missingSkillsList
     : (() => {
         try {
@@ -47,6 +64,11 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
         return (profile?.skills?.length ? ["React.js", "TypeScript", "Next.js", "Docker"] : []);
       })();
 
+  const availableSkills = Array.from(new Set([
+    ...(requestedSkill ? [requestedSkill] : []),
+    ...rawSkills
+  ])).filter(Boolean);
+
   const getCachedRoadmap = (skill) => {
     if (!skill) return null;
     try {
@@ -56,12 +78,12 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
     return null;
   };
 
-  const initialSkill = availableSkills[0] || "";
-  const initialRoadmap = getCachedRoadmap(initialSkill);
+  const startingSkill = requestedSkill || availableSkills[0] || "";
+  const initialRoadmap = getCachedRoadmap(startingSkill);
 
   // State: 'LOADING' | 'SUCCESS' | 'EMPTY' | 'ERROR'
   const [status, setStatus] = useState(() => initialRoadmap ? 'SUCCESS' : (availableSkills.length > 0 ? 'LOADING' : 'EMPTY'));
-  const [activeSkill, setActiveSkill] = useState(initialSkill);
+  const [activeSkill, setActiveSkill] = useState(startingSkill);
   const [roadmapData, setRoadmapData] = useState(() => initialRoadmap);
   const [expandedStage, setExpandedStage] = useState(0);
 
@@ -69,14 +91,37 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
   const [taskCompletionMap, setTaskCompletionMap] = useState({});
 
   // Dynamic Learning Resource Progress (YouTube, Courses, Notes)
-  const [resourceProgress, setResourceProgress] = useState(() => loadResourceProgress(userId, initialSkill));
+  const [resourceProgress, setResourceProgress] = useState(() => loadResourceProgress(userId, startingSkill));
   const [lastCatalogRefresh, setLastCatalogRefresh] = useState(() => {
     return localStorage.getItem('sb_course_sync_last_refreshed') || new Date().toISOString();
   });
 
+  const handleSelectSkillTab = (sk) => {
+    setActiveSkill(sk);
+    try {
+      localStorage.setItem('sb_active_roadmap_skill', sk);
+    } catch {}
+    if (onSelectSkill) {
+      onSelectSkill(sk);
+    }
+    loadRoadmap(sk);
+  };
+
   useEffect(() => {
-    if (availableSkills.length > 0) {
-      const skillToLoad = activeSkill || availableSkills[0];
+    const desiredSkill = initialSkill || targetSkill || (() => {
+      try {
+        return localStorage.getItem('sb_active_roadmap_skill');
+      } catch {
+        return null;
+      }
+    })();
+
+    if (desiredSkill && desiredSkill !== activeSkill) {
+      setActiveSkill(desiredSkill);
+      setExpandedStage(0);
+      loadRoadmap(desiredSkill);
+    } else if (availableSkills.length > 0) {
+      const skillToLoad = activeSkill || desiredSkill || availableSkills[0];
       if (!activeSkill) setActiveSkill(skillToLoad);
       setResourceProgress(loadResourceProgress(userId, skillToLoad));
       if (!roadmapData || roadmapData.skillName !== skillToLoad) {
@@ -87,7 +132,7 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
     } else {
       setStatus('EMPTY');
     }
-  }, [missingSkillsList, activeTargetRole, activeSkill]);
+  }, [missingSkillsList, activeTargetRole, initialSkill, targetSkill]);
 
   const loadRoadmap = async (skillToFetch, forceRefresh = false) => {
     if (!skillToFetch) {
@@ -431,15 +476,12 @@ export default function LearningRoadmap({ profile, missingSkillsList = [], targe
   return (
     <div className="space-y-6 text-slate-900 pb-12">
       {/* Skill Tabs */}
-      {availableSkills.length > 1 && (
+      {availableSkills.length > 0 && (
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
           {availableSkills.map((sk, idx) => (
             <button
               key={idx}
-              onClick={() => {
-                setActiveSkill(sk);
-                loadRoadmap(sk);
-              }}
+              onClick={() => handleSelectSkillTab(sk)}
               className={`py-1.5 px-3.5 text-xs font-medium rounded-lg transition-colors shrink-0 ${
                 activeSkill === sk
                   ? 'bg-slate-900 text-white shadow-sm'
