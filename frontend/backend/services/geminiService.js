@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Unified Gemini AI client module with exponential backoff, model fallback chains, and structured JSON parsing", deps: ["@google/generative-ai", "dotenv"], state: "active", last: "anti@2026-09-30" }
+// agent-notes: { ctx: "Unified Gemini AI client module with exponential backoff, model fallback chains, and structured JSON parsing", deps: ["@google/generative-ai", "dotenv"], state: "active", last: "anti@2026-10-29" }
 
 import dotenv from 'dotenv';
 import path from 'path';
@@ -45,10 +45,9 @@ export function getGenAIClient() {
 
 // Default model fallback chain with distinct models
 export const DEFAULT_MODEL_NAMES = [
-  'gemini-3.6-flash',
-  'gemini-3.5-flash',
-  'gemini-flash-latest',
-  'gemini-3.8-flash'
+  'gemini-3.8-flash',
+  'gemini-2.5-flash',
+  'gemini-2.0-flash'
 ];
 
 /**
@@ -109,14 +108,15 @@ export async function analyzeWithGemini(prompt, {
       } catch (err) {
         console.warn(`[GEMINI CLIENT] Model ${modelName} attempt ${attempts}/${maxAttempts} failed: ${err.message}`);
 
+        const isQuotaOrRateLimit = /429|quota|RESOURCE_EXHAUSTED|rate\s*limit/i.test(err.message);
+        if (isQuotaOrRateLimit) {
+          throw new Error(`Gemini API quota/rate-limit reached: ${err.message}`);
+        }
+
         if (
           err.message.includes('404') || 
           err.message.includes('not found') || 
           err.message.includes('timed out') || 
-          err.message.includes('429') || 
-          err.message.includes('Quota') || 
-          err.message.includes('quota') || 
-          err.message.includes('Too Many Requests') ||
           err.message.includes('503') ||
           err.message.includes('Service Unavailable') ||
           err.message.includes('high demand')

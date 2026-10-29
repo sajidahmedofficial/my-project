@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Unified Gemini AI client module with exponential backoff, model fallback chains, and structured JSON parsing", deps: ["@google/generative-ai"], state: "active", last: "anti@2026-09-30" }
+// agent-notes: { ctx: "Unified Gemini AI client module with exponential backoff, model fallback chains, and structured JSON parsing", deps: ["@google/generative-ai"], state: "active", last: "anti@2026-10-29" }
 
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
@@ -31,10 +31,9 @@ export function getGenAIClient() {
 
 // Default model fallback chain
 export const DEFAULT_MODEL_NAMES = [
-  'gemini-3.6-flash',
-  'gemini-3.5-flash',
-  'gemini-flash-latest',
-  'gemini-3.8-flash'
+  'gemini-3.8-flash',
+  'gemini-2.5-flash',
+  'gemini-2.0-flash'
 ];
 
 /**
@@ -94,6 +93,12 @@ export async function analyzeWithGemini(prompt, {
         }
       } catch (err) {
         console.warn(`[GEMINI CLIENT] Model ${modelName} attempt ${attempts}/${maxAttempts} failed: ${err.message}`);
+
+        const isQuotaOrRateLimit = /429|quota|RESOURCE_EXHAUSTED|rate\s*limit/i.test(err.message);
+        if (isQuotaOrRateLimit) {
+          // Immediately exit to rule-based fallback without delaying user
+          throw new Error(`Gemini API quota/rate-limit reached: ${err.message}`);
+        }
 
         if (err.message.includes('404') || err.message.includes('not found') || err.message.includes('timed out')) {
           break;
@@ -156,8 +161,8 @@ ${prompt}
       }
     }
   } catch (initialErr) {
-    // Retry once with a stricter instruction if not an auth error
-    if (initialErr.message && (initialErr.message.includes('API_KEY') || initialErr.message.includes('timed out'))) {
+    const isQuotaOrRateLimit = /429|quota|RESOURCE_EXHAUSTED|rate\s*limit/i.test(initialErr.message);
+    if (isQuotaOrRateLimit || (initialErr.message && (initialErr.message.includes('API_KEY') || initialErr.message.includes('timed out')))) {
       throw initialErr;
     }
 

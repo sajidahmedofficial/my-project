@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Main Express API server with MongoDB connection, CORS, health check, and route mounts", deps: ["dotenv", "express", "cors", "mongoose", "./routes/*", "../lib/extractName.js"], state: "active", last: "anti@2026-09-30" }
+// agent-notes: { ctx: "Main Express API server with MongoDB connection, CORS, health check, and route mounts", deps: ["dotenv", "express", "cors", "mongoose", "./routes/*", "../lib/extractName.js"], state: "active", last: "anti@2026-10-29" }
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -156,10 +156,8 @@ app.get("/api/health", async (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-const isDirectRun = process.argv[1] && (
-  process.argv[1].endsWith("backend/server.js") || 
-  process.argv[1].endsWith("server.js")
-);
+const normalizedArgv = (process.argv[1] || '').replace(/\\/g, '/');
+const isDirectRun = normalizedArgv.endsWith("backend/server.js") || normalizedArgv.endsWith("server.js");
 
 if (isDirectRun && !process.env.VERCEL && !process.env.NOW_REGION && !process.env.AWS_LAMBDA_FUNCTION_NAME) {
   app.listen(PORT, () => {
