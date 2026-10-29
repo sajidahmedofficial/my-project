@@ -19,6 +19,7 @@ import {
 import { skillGapApi } from '../services/skillGapApi';
 import { analyzeResume } from '../services/resumeApi';
 import { saveResumeAndProgress, updateFeatureProgress, saveSkillGapReportToSupabase, loadSavedSkillGapReport } from '../services/userPersistence';
+import SkillRoadmapModal from './roadmap/SkillRoadmapModal';
 
 const TARGET_ROLE_OPTIONS = [
   "Full Stack AI Engineer",
@@ -72,6 +73,7 @@ export default function SkillGapDashboard({
   const [status, setStatus] = useState(() => initialReport ? 'SUCCESS' : 'EMPTY');
   const [report, setReport] = useState(() => initialReport);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [activeRoadmapModalSkill, setActiveRoadmapModalSkill] = useState(null);
 
   // Active uploaded resume file name
   const [activeResumeFile, setActiveResumeFile] = useState(() => {
@@ -359,6 +361,12 @@ export default function SkillGapDashboard({
       localStorage.setItem('sb_missing_skills', JSON.stringify(skillsToSend));
     } catch {}
 
+    // 1. Immediately display the interactive roadmap modal on touch/click
+    if (skillName) {
+      setActiveRoadmapModalSkill(skillName);
+    }
+
+    // 2. Sync background navigation handler
     if (onGenerateRoadmap) {
       onGenerateRoadmap(skillsToSend, selectedRole, skillName);
     } else if (onNavigate) {
@@ -829,6 +837,34 @@ export default function SkillGapDashboard({
             )}
           </div>
         </>
+      )}
+
+      {/* 5. Instant Interactive Skill Roadmap Modal on Touch / Click */}
+      {activeRoadmapModalSkill && (
+        <SkillRoadmapModal
+          skillName={activeRoadmapModalSkill}
+          targetRole={selectedRole || "Full Stack Developer"}
+          userId={userId}
+          onClose={() => setActiveRoadmapModalSkill(null)}
+          onOpenFullWorkspace={(sk) => {
+            setActiveRoadmapModalSkill(null);
+            const missing = (report?.missingSkills || []).map(s => s.skillName || s.name || s);
+            const partial = (report?.partialSkills || []).map(s => s.skillName || s.name || s);
+            const strong = (report?.strongSkills || []).map(s => s.skillName || s.name || s);
+            const combined = Array.from(new Set([
+              sk,
+              ...missing,
+              ...partial,
+              ...strong
+            ])).filter(Boolean);
+            if (onGenerateRoadmap) {
+              onGenerateRoadmap(combined, selectedRole, sk);
+            } else if (onNavigate) {
+              onNavigate('roadmap');
+            }
+          }}
+          onOpenVerification={onOpenVerification}
+        />
       )}
 
     </div>

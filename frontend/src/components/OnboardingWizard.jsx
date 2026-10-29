@@ -51,7 +51,13 @@ import { TARGET_INDUSTRY_OPTIONS } from '../constants/industryOptions';
 
 export { TARGET_INDUSTRY_OPTIONS };
 
-export default function OnboardingWizard({ onComplete, profile }) {
+export default function OnboardingWizard({ 
+  onComplete, 
+  profile, 
+  onGenerateRoadmap, 
+  onNavigate, 
+  onOpenVerification 
+}) {
   const { currentUser, updateProfile, completeOnboarding } = useAuth();
   const effectiveProfile = profile || currentUser;
   const fileInputRef = useRef(null);
@@ -1862,6 +1868,9 @@ export default function OnboardingWizard({ onComplete, profile }) {
                 resumeFileName: uploadFile?.name || (uploadProgress === 3 ? (analysisResult?.fileName || 'Uploaded_Resume.pdf') : 'Uploaded_Resume.pdf'),
                 resumeText: (skillsList || []).join(', ')
               }}
+              onGenerateRoadmap={onGenerateRoadmap}
+              onNavigate={onNavigate}
+              onOpenVerification={onOpenVerification}
             />
 
             {/* Launch Workspace CTA */}

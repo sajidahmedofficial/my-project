@@ -209,6 +209,7 @@ function MainLayout() {
   };
 
   const handleGenerateRoadmap = (missingSkills, role, selectedSkill) => {
+    setShowOnboarding(false);
     const list = missingSkills || [];
     setMissingSkillsList(list);
     try {
@@ -263,6 +264,9 @@ function MainLayout() {
       return (
         <OnboardingWizard 
           profile={activeProfile}
+          onGenerateRoadmap={handleGenerateRoadmap}
+          onNavigate={handleTabChange}
+          onOpenVerification={handleOpenGlobalVerification}
           onComplete={() => {
             setShowOnboarding(false);
             handleTabChange('dashboard');
@@ -319,6 +323,9 @@ function MainLayout() {
           <div className={activeTab === 'wizard' ? 'block' : 'hidden'}>
             <OnboardingWizard 
               profile={activeProfile}
+              onGenerateRoadmap={handleGenerateRoadmap}
+              onNavigate={handleTabChange}
+              onOpenVerification={handleOpenGlobalVerification}
               onComplete={() => {
                 setShowOnboarding(false);
                 handleTabChange('skillgap');
