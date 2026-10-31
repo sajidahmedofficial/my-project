@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "AI-generated study materials and notes component with code snippets, exercises, interview Q&A, and markdown/pdf export", deps: ["lucide-react", "../../services/learningResourcesService"], state: "active", last: "sato@2026-10-28" }
+// agent-notes: { ctx: "AI-generated study materials and notes component with exercises, interview Q&A, and markdown/pdf export", deps: ["lucide-react", "../../services/learningResourcesService"], state: "active", last: "sato@2026-10-31" }
 import React, { useState } from 'react';
 import { 
   BookOpen, 
@@ -6,11 +6,9 @@ import {
   Download, 
   Printer, 
   FileText, 
-  Copy, 
   Check, 
   HelpCircle, 
   AlertTriangle, 
-  Code, 
   ChevronDown, 
   ChevronUp,
   Save,
@@ -30,16 +28,9 @@ export default function StudyMaterials({
   onSavePersonalNote,
   onRegenerateNotes
 }) {
-  const [copiedCodeIdx, setCopiedCodeIdx] = useState(null);
   const [localNoteText, setLocalNoteText] = useState(personalNote);
   const [isSavedNote, setIsSavedNote] = useState(false);
   const [showQuestions, setShowQuestions] = useState(false);
-
-  const handleCopy = (code, idx) => {
-    navigator.clipboard.writeText(code);
-    setCopiedCodeIdx(idx);
-    setTimeout(() => setCopiedCodeIdx(null), 2000);
-  };
 
   const handleDownloadMarkdown = () => {
     if (!notes) return;
@@ -143,77 +134,7 @@ export default function StudyMaterials({
         </p>
       </div>
 
-      {/* Key Topics & Code Blocks */}
-      <div className="space-y-3">
-        <span className="text-[11px] font-semibold text-slate-600 uppercase tracking-wider block">
-          Key Topics & Architecture Breakdown
-        </span>
 
-        <div className="space-y-3">
-          {(notes.keyTopics || []).map((topicItem, idx) => {
-            const isRead = readTopics.includes(`topic_${stageNumber}_${idx}`);
-
-            return (
-              <div
-                key={idx}
-                className="p-3.5 rounded-xl border border-slate-200 bg-white space-y-2.5 transition-all"
-              >
-                <div className="flex items-center justify-between">
-                  <h6 className="text-xs font-semibold text-slate-900 flex items-center gap-2">
-                    <span className="w-4 h-4 rounded-full bg-indigo-50 text-indigo-700 text-[10px] flex items-center justify-center font-bold">
-                      {idx + 1}
-                    </span>
-                    {topicItem.topic}
-                  </h6>
-
-                  <label className="inline-flex items-center gap-1.5 cursor-pointer text-[11px] text-slate-500 hover:text-slate-700">
-                    <input
-                      type="checkbox"
-                      checked={isRead}
-                      onChange={() => onToggleReadTopic && onToggleReadTopic(`topic_${stageNumber}_${idx}`)}
-                      className="w-3.5 h-3.5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
-                    />
-                    <span>{isRead ? 'Read' : 'Mark as Read'}</span>
-                  </label>
-                </div>
-
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  {topicItem.explanation}
-                </p>
-
-                {topicItem.codeExample && (
-                  <div className="rounded-lg bg-slate-900 border border-slate-800 p-3 relative overflow-hidden">
-                    <div className="flex items-center justify-between pb-1.5 mb-1.5 border-b border-slate-800 text-[10px] text-slate-400">
-                      <span className="flex items-center gap-1 font-mono">
-                        <Code className="w-3 h-3 text-indigo-400" /> code-example.js
-                      </span>
-                      <button
-                        onClick={() => handleCopy(topicItem.codeExample, idx)}
-                        className="flex items-center gap-1 text-slate-400 hover:text-white transition-colors"
-                      >
-                        {copiedCodeIdx === idx ? (
-                          <>
-                            <Check className="w-3 h-3 text-emerald-400" />
-                            <span className="text-emerald-400">Copied!</span>
-                          </>
-                        ) : (
-                          <>
-                            <Copy className="w-3 h-3" />
-                            <span>Copy</span>
-                          </>
-                        )}
-                      </button>
-                    </div>
-                    <pre className="text-[11px] font-mono text-slate-200 overflow-x-auto leading-relaxed">
-                      <code>{topicItem.codeExample}</code>
-                    </pre>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
 
       {/* Common Pitfalls & Solutions */}
       {notes.commonMistakes && notes.commonMistakes.length > 0 && (
