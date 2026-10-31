@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Clean & modern tabbed ResumeAnalyzer page with persistent Supabase integration & CurrentResumeCard", deps: ["react", "lucide-react", "../components/resume/*", "../services/resumeApi", "../services/userPersistence"], state: "active", last: "anti@2026-10-28" }
+// agent-notes: { ctx: "Tabbed ResumeAnalyzer with dynamic target role badge & Supabase integration", deps: ["react", "lucide-react", "../components/resume/*", "../services/resumeApi", "../services/userPersistence"], state: "active", last: "sato@2026-10-31" }
 import React, { useState, useEffect } from 'react';
 import { Sparkles, Eye, Download, Trophy, AlertCircle, Target, Award, LayoutGrid, Layers, RefreshCw, CheckCircle2, GraduationCap, Briefcase } from 'lucide-react';
 
@@ -102,6 +102,53 @@ export const resolveCandidateName = (profile, candidateData) => {
   return '';
 };
 
+export const resolveTargetRole = (profile) => {
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      const directStored = localStorage.getItem('sb_target_role');
+      if (directStored && typeof directStored === 'string' && directStored.trim()) {
+        return directStored.trim();
+      }
+    } catch {}
+  }
+
+  const candidateRoles = [
+    profile?.careerGoal,
+    profile?.targetRole,
+    profile?.role,
+    profile?.career_goal
+  ];
+
+  for (const r of candidateRoles) {
+    if (r && typeof r === 'string' && r.trim()) return r.trim();
+  }
+
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      const u = JSON.parse(localStorage.getItem('sb_user') || '{}');
+      const uRole = u?.careerGoal || u?.targetRole || u?.role;
+      if (uRole && typeof uRole === 'string' && uRole.trim()) return uRole.trim();
+    } catch {}
+
+    try {
+      const a = JSON.parse(localStorage.getItem('sb_resume_analysis') || '{}');
+      const aRole = a?.targetRole || a?.careerGoal;
+      if (aRole && typeof aRole === 'string' && aRole.trim()) return aRole.trim();
+    } catch {}
+  }
+
+  return 'Frontend Developer';
+};
+
+export const formatTargetRoleBadge = (role) => {
+  if (!role || typeof role !== 'string') return 'Target';
+  const trimmed = role.trim();
+  if (/target$/i.test(trimmed)) {
+    return trimmed;
+  }
+  return `${trimmed} Target`;
+};
+
 export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
   const savedState = getInitialResumeState(profile);
 
@@ -110,6 +157,27 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
   const [candidateName, setCandidateName] = useState(() => {
     return resolveCandidateName(profile, savedState?.candidateData) || savedState?.candidateName || '';
   });
+  const [activeTargetRole, setActiveTargetRole] = useState(() => resolveTargetRole(profile));
+
+  useEffect(() => {
+    const resolved = resolveTargetRole(profile);
+    if (resolved && resolved !== activeTargetRole) {
+      setActiveTargetRole(resolved);
+    }
+  }, [profile?.careerGoal, profile?.targetRole]);
+
+  useEffect(() => {
+    const handleStorageRoleSync = () => {
+      const resolved = resolveTargetRole(profile);
+      if (resolved && resolved !== activeTargetRole) {
+        setActiveTargetRole(resolved);
+      }
+    };
+    if (typeof window !== 'undefined') {
+      window.addEventListener('storage', handleStorageRoleSync);
+      return () => window.removeEventListener('storage', handleStorageRoleSync);
+    }
+  }, [profile, activeTargetRole]);
   
   const hasProfileResume = Boolean(
     profile?.hasUploadedResume || 
@@ -504,7 +572,8 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
     setParsing(true);
     setUploadError("");
     try {
-      const res = await uploadResume(file, profile?.careerGoal || "Full Stack Developer");
+      const currentRole = activeTargetRole || profile?.careerGoal || "Frontend Developer";
+      const res = await uploadResume(file, currentRole);
       if (res && res.success !== false) {
         processAnalysisResult({ ...res, fileName: file.name });
         
@@ -531,8 +600,8 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
             projects: parsedAnalysis.projects || profile?.projects || [],
             certifications: parsedAnalysis.certifications || profile?.certificates || [],
             careerData: {
-              targetRole: profile?.careerGoal || 'Full Stack Developer',
-              recommendedRoles: [profile?.careerGoal || 'Full Stack Developer']
+              targetRole: currentRole,
+              recommendedRoles: [currentRole]
             }
           });
 
@@ -775,8 +844,8 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
             <h1 className="text-lg font-bold text-slate-900 flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-indigo-600" /> AI Resume Analyzer
             </h1>
-            <span className="saas-badge text-[11px]">
-              Full Stack Target
+            <span className="saas-badge text-[11px]" data-testid="target-role-badge">
+              {formatTargetRoleBadge(activeTargetRole)}
             </span>
           </div>
           <div className="flex items-center gap-2 mt-1 flex-wrap">
@@ -857,7 +926,7 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
       {/* Render 100% Final Mastery Dashboard if candidate reaches 100% */}
       {is100PercentComplete && (
         <FinalMasteryDashboard 
-          targetRole="Full Stack Developer"
+          targetRole={activeTargetRole}
           skillsStatus={skillsStatus}
           onPreviewResume={() => setShowPreview(true)}
           onDownloadFinalResume={handleDownload}
@@ -959,7 +1028,7 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
                       selectedFile={selectedFile} 
                       onSelectPreset={handleSelectPreset} 
                       analyzed={analyzed}
-                      profile={profile}
+                      profile={{ ...profile, careerGoal: activeTargetRole, targetRole: activeTargetRole }}
                     />
                   </div>
                   <div className="lg:col-span-5 saas-card p-6 flex flex-col justify-center items-center text-center space-y-3">
@@ -988,6 +1057,7 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                     <div className="lg:col-span-6 space-y-4">
                       <CurrentResumeCard 
+                        profile={{ ...profile, careerGoal: activeTargetRole, targetRole: activeTargetRole }}
                         fileName={selectedFile?.name || profile?.resumeFileName || 'Uploaded_Resume.pdf'}
                         uploadedAt={profile?.uploadedAt ? new Date(profile.uploadedAt).toLocaleDateString() : 'Active'}
                         resumeScore={resumeScore}
@@ -1019,7 +1089,7 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
                             selectedFile={selectedFile} 
                             onSelectPreset={handleSelectPreset} 
                             analyzed={analyzed}
-                            profile={profile}
+                            profile={{ ...profile, careerGoal: activeTargetRole, targetRole: activeTargetRole }}
                           />
                         </div>
                       )}
@@ -1250,7 +1320,7 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
                 selectedFile={selectedFile} 
                 onSelectPreset={handleSelectPreset} 
                 analyzed={analyzed}
-                profile={profile}
+                profile={{ ...profile, careerGoal: activeTargetRole, targetRole: activeTargetRole }}
               />
             </div>
           ) : (
@@ -1265,6 +1335,7 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 <div className="lg:col-span-6 space-y-4">
                   <CurrentResumeCard 
+                    profile={{ ...profile, careerGoal: activeTargetRole, targetRole: activeTargetRole }}
                     fileName={selectedFile?.name || profile?.resumeFileName || 'Uploaded_Resume.pdf'}
                     uploadedAt={profile?.uploadedAt ? new Date(profile.uploadedAt).toLocaleDateString() : 'Active'}
                     resumeScore={resumeScore}
@@ -1342,7 +1413,7 @@ export default function ResumeAnalyzer({ profile, setProfile, onNavigate }) {
       {/* Preview Modal */}
       {showPreview && (
         <ResumePreview 
-          profile={profile} 
+          profile={{ ...profile, careerGoal: activeTargetRole, targetRole: activeTargetRole }} 
           candidate={candidateData ? { ...candidateData, name: candidateName || candidateData.name || resolveCandidateName(profile, candidateData) } : { name: candidateName || resolveCandidateName(profile, candidateData) || "Candidate" }}
           skillsStatus={skillsStatus} 
           problems={problems} 

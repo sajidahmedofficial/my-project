@@ -40,7 +40,7 @@ function UploadResume({ onAnalysis, onFileSelect, parsing, selectedFile, analyze
       if (onFileSelect) {
         await onFileSelect(file);
       } else {
-        const targetRole = profile?.careerGoal || "Full Stack Developer";
+        const targetRole = profile?.careerGoal || profile?.targetRole || (typeof window !== 'undefined' ? localStorage.getItem('sb_target_role') : null) || 'Frontend Developer';
         const result = await analyzeResume(file, targetRole);
         if (onAnalysis) onAnalysis(result);
       }
@@ -106,7 +106,7 @@ function UploadResume({ onAnalysis, onFileSelect, parsing, selectedFile, analyze
                   {activeFileName}
                 </h4>
                 <p className="text-[11px] text-slate-500">
-                  {profile?.name || 'Candidate'} • {profile?.careerGoal || 'Full Stack Developer'}
+                  {profile?.name || 'Candidate'} • {profile?.careerGoal || profile?.targetRole || (typeof window !== 'undefined' ? localStorage.getItem('sb_target_role') : null) || 'Frontend Developer'}
                 </p>
               </div>
             </div>

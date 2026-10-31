@@ -53,7 +53,7 @@ export default function CurrentResumeCard({
               </span>
               <span className="flex items-center gap-1">
                 <Target className="w-3.5 h-3.5 text-indigo-500" />
-                {profile?.careerGoal || 'Full Stack Developer'}
+                {profile?.careerGoal || profile?.targetRole || (typeof window !== 'undefined' ? localStorage.getItem('sb_target_role') : null) || 'Frontend Developer'}
               </span>
             </div>
           </div>

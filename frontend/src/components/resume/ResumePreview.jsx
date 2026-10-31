@@ -314,7 +314,7 @@ export default function ResumePreview({
               })
             ) : (
               <div className="text-[11px] text-gray-800">
-                <strong className="text-[#1a365d]">SkillBridge Certified Full Stack Developer</strong> (100% Mastery in React, Node.js, Express, SQL, Git), SkillBridge AI – 2024
+                <strong className="text-[#1a365d]">SkillBridge Certified {profile?.careerGoal || profile?.targetRole || (typeof window !== 'undefined' ? localStorage.getItem('sb_target_role') : null) || 'Frontend Developer'}</strong> (100% Mastery in React, Node.js, Express, SQL, Git), SkillBridge AI – 2024
               </div>
             )}
           </div>
