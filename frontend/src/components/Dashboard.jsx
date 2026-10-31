@@ -298,7 +298,7 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
         {/* 3-Column Grid: Milestones Checklist | Target Role & Skills | Score & Details */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
           {/* Column 1: Feature Completion Checklist */}
-          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-3">
+          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-3 flex flex-col justify-between">
             <div className="flex items-center justify-between text-xs font-bold text-slate-900 uppercase tracking-wider">
               <span>Your Career Progress</span>
               <span className="text-[10px] font-semibold text-emerald-700">Live Status</span>
@@ -334,7 +334,7 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
           </div>
 
           {/* Column 2: Career Goal & Extracted Skills */}
-          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-3">
+          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-3 flex flex-col justify-between">
             <div className="text-xs font-bold text-slate-900 uppercase tracking-wider">
               Current Career Goal
             </div>

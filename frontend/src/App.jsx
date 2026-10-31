@@ -383,11 +383,11 @@ function MainLayout() {
   // Unauthenticated Hero & Landing Section
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#fafafa] text-slate-900 flex flex-col justify-between relative overflow-hidden">
+      <div className="min-h-screen bg-[#f8fafc] text-slate-900 flex flex-col justify-between relative overflow-hidden">
         <CartoonDecorations />
 
         {/* Minimal Navigation Header */}
-        <header className="max-w-6xl w-full mx-auto px-6 py-6 flex items-center justify-between relative z-10">
+        <header className="h-16 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between relative z-10">
           <div className="flex items-center gap-2.5">
             <SkillBridgeLogo size={32} />
             <div className="flex items-baseline gap-1.5">
@@ -485,7 +485,7 @@ function MainLayout() {
         </main>
 
         {/* Minimal Footer */}
-        <footer className="max-w-6xl w-full mx-auto px-6 py-8 border-t border-slate-200 text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-4 relative z-10">
+        <footer className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 border-t border-slate-200 text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-4 relative z-10">
           <p>© 2026 SKILL BRIDGE AI. Professional career intelligence platform.</p>
           <div className="flex items-center gap-6">
             <button onClick={() => { setAuthModalTab('login'); setIsAuthModalOpen(true); }} className="hover:text-slate-900">Log In</button>
@@ -524,14 +524,14 @@ function MainLayout() {
 
   // Authenticated App Layout
   return (
-    <div className="min-h-screen bg-[#fafafa] text-slate-900 flex relative overflow-x-hidden">
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 flex relative overflow-x-hidden">
       <CartoonDecorations />
 
       {/* Minimal SaaS Sidebar */}
       <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-slate-200 flex flex-col justify-between transform transition-transform duration-200 md:translate-x-0 md:static ${sidebarOpen ? 'translate-x-0 shadow-lg' : '-translate-x-full'}`}>
         <div className="overflow-y-auto">
           {/* Brand Logo Header */}
-          <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+          <div className="h-16 px-5 border-b border-slate-100 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <SkillBridgeLogo size={32} />
               <div>
@@ -620,7 +620,7 @@ function MainLayout() {
       {/* Main Content Wrap */}
       <div className="flex-1 flex flex-col min-w-0 z-10">
         {/* Top Header */}
-        <header className="px-6 py-3.5 bg-white border-b border-slate-200/80 flex items-center justify-between shrink-0 sticky top-0 z-30">
+        <header className="h-16 px-4 sm:px-6 lg:px-8 bg-white/95 backdrop-blur-md border-b border-slate-200/80 flex items-center justify-between shrink-0 sticky top-0 z-30">
           <div className="flex items-center gap-3">
             <button 
               onClick={() => setSidebarOpen(true)}

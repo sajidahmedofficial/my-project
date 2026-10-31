@@ -508,7 +508,7 @@ export default function SkillGapDashboard({
 
   // IF RESUME IS UPLOADED -> RENDER ULTRA SIMPLE, CLEAN, & ELEGANT SKILL GAP DASHBOARD
   return (
-    <div className="space-y-5 text-slate-900 pb-10 animate-fade-in max-w-5xl mx-auto">
+    <div className="space-y-6 text-slate-900 pb-12 animate-fade-in max-w-7xl mx-auto w-full">
       
       {/* 1. Sleek Header Bar */}
       <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
