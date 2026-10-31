@@ -1559,6 +1559,19 @@ export default function OnboardingWizard({
                     type="button"
                     onClick={() => {
                       setTargetRole(role);
+                      try {
+                        localStorage.setItem('sb_target_role', role);
+                        if (typeof window !== 'undefined') {
+                          window.dispatchEvent(new Event('storage'));
+                        }
+                      } catch {}
+                      if (updateProfile) {
+                        updateProfile(prev => ({
+                          ...(prev || {}),
+                          careerGoal: role,
+                          targetRole: role
+                        }));
+                      }
                       if (stepErrors.targetRole) {
                         setStepErrors(prev => ({ ...prev, targetRole: '' }));
                       }

@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Main App Component with persistent active tab, restored resume state, and robust refresh recovery", deps: ["lucide-react", "./context/AuthContext", "./components/common/AIAssistantAvatar", "./components/common/CartoonDecorations", "./components/common/SkillBridgeLogo"], state: "active", last: "anti@2026-10-29" }
+// agent-notes: { ctx: "Main App Component with persistent active tab, restored resume state, and robust refresh recovery", deps: ["lucide-react", "./context/AuthContext", "./components/common/AIAssistantAvatar", "./components/common/CartoonDecorations", "./components/common/SkillBridgeLogo"], state: "active", last: "sato@2026-10-31" }
 import React, { useState } from 'react';
 import { 
   LayoutDashboard, 
@@ -120,6 +120,20 @@ function MainLayout() {
     }
   }, [isAuthenticated]);
 
+  // Synchronize target role across components and storage
+  React.useEffect(() => {
+    const handleRoleSync = () => {
+      const saved = localStorage.getItem('sb_target_role');
+      if (saved && saved !== targetRole) {
+        setTargetRole(saved);
+      }
+    };
+    if (typeof window !== 'undefined') {
+      window.addEventListener('storage', handleRoleSync);
+      return () => window.removeEventListener('storage', handleRoleSync);
+    }
+  }, [targetRole]);
+
   const getInitialActiveProfile = () => {
     if (currentUser) return currentUser;
     try {
@@ -202,7 +216,14 @@ function MainLayout() {
     };
   };
 
-  const activeProfile = currentUser || getInitialActiveProfile();
+  const baseProfile = currentUser || getInitialActiveProfile();
+  const currentTargetRole = targetRole || (typeof window !== 'undefined' ? localStorage.getItem('sb_target_role') : null);
+
+  const activeProfile = {
+    ...baseProfile,
+    careerGoal: currentTargetRole || baseProfile.careerGoal || 'Frontend Developer',
+    targetRole: currentTargetRole || baseProfile.targetRole || baseProfile.careerGoal || 'Frontend Developer'
+  };
 
   const handleProfileChange = (newProfile) => {
     updateProfile(newProfile);
@@ -225,7 +246,15 @@ function MainLayout() {
       setTargetRole(role);
       try {
         localStorage.setItem('sb_target_role', role);
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new Event('storage'));
+        }
       } catch {}
+      handleProfileChange({
+        ...activeProfile,
+        careerGoal: role,
+        targetRole: role
+      });
     }
     handleTabChange('roadmap');
   };
@@ -641,15 +670,9 @@ function MainLayout() {
                   <span className="text-xs font-semibold text-slate-800 block truncate max-w-[120px]">
                     {activeProfile.name?.split(' - ')[0] || 'User'}
                   </span>
-                  {activeProfile.email ? (
-                    <span className="text-[10px] text-teal-700 font-medium block truncate max-w-[120px]">
-                      {activeProfile.email}
-                    </span>
-                  ) : (
-                    <span className="text-[10px] text-slate-400 block truncate max-w-[120px]">
-                      {activeProfile.careerGoal || 'Student'}
-                    </span>
-                  )}
+                  <span className="text-[10px] text-teal-700 font-medium block truncate max-w-[140px]" title={activeProfile.careerGoal || activeProfile.email || 'Role'}>
+                    {activeProfile.careerGoal || activeProfile.email || 'Frontend Developer'}
+                  </span>
                 </div>
                 <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
               </button>

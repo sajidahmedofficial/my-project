@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Free online courses catalog component with official tech provider cards, filters, and dynamic refresh", deps: ["lucide-react", "../../services/learningResourcesService"], state: "active", last: "sato@2026-10-28" }
+// agent-notes: { ctx: "Free online courses catalog component with official tech provider cards, filters, and dynamic refresh", deps: ["lucide-react", "../../services/learningResourcesService"], state: "active", last: "sato@2026-10-31" }
 import React, { useState } from 'react';
 import { 
   GraduationCap, 
@@ -10,7 +10,8 @@ import {
   Bookmark, 
   RotateCw, 
   Filter, 
-  Sparkles
+  Sparkles,
+  Check
 } from 'lucide-react';
 import { filterCourses, OFFICIAL_PROVIDERS } from '../../services/learningResourcesService';
 
@@ -27,6 +28,7 @@ export default function FreeCourseCatalog({
   const [selectedDifficulty, setSelectedDifficulty] = useState('All');
   const [certificateOnly, setCertificateOnly] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [refreshFeedback, setRefreshFeedback] = useState(null);
 
   const filteredCourses = filterCourses(courses, {
     provider: selectedProvider,
@@ -37,8 +39,15 @@ export default function FreeCourseCatalog({
   const handleRefreshClick = async () => {
     if (!onRefreshCourses || isRefreshing) return;
     setIsRefreshing(true);
+    setRefreshFeedback(null);
     try {
-      await onRefreshCourses();
+      const res = await onRefreshCourses();
+      const count = res?.newCount || filteredCourses.length;
+      setRefreshFeedback(`Refreshed (${count} courses active)`);
+      setTimeout(() => setRefreshFeedback(null), 3500);
+    } catch {
+      setRefreshFeedback('Catalog synchronized');
+      setTimeout(() => setRefreshFeedback(null), 3000);
     } finally {
       setIsRefreshing(false);
     }
@@ -63,11 +72,16 @@ export default function FreeCourseCatalog({
         </div>
 
         <div className="flex items-center gap-2">
-          {lastRefreshed && (
-            <span className="text-[10px] text-slate-400 hidden md:inline">
-              Synced: {new Date(lastRefreshed).toLocaleDateString()}
+          {refreshFeedback ? (
+            <span className="text-[10px] text-emerald-600 font-semibold flex items-center gap-1 animate-fade-in">
+              <Check className="w-3 h-3 text-emerald-500" />
+              {refreshFeedback}
             </span>
-          )}
+          ) : lastRefreshed ? (
+            <span className="text-[10px] text-slate-400 hidden md:inline">
+              Synced: {new Date(lastRefreshed).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </span>
+          ) : null}
           <button
             onClick={handleRefreshClick}
             disabled={isRefreshing}

@@ -1,3 +1,4 @@
+// agent-notes: { ctx: "Authentication context with Supabase auth and profile role synchronization", deps: ["../services/api", "../services/supabase", "../services/supabaseData", "../services/userPersistence", "../utils/sanitizeProfile"], state: "active", last: "sato@2026-10-31" }
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { api } from '../services/api';
 import { supabase } from '../services/supabase';
@@ -10,9 +11,14 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(() => {
     const saved = localStorage.getItem('sb_user') || sessionStorage.getItem('sb_user');
+    const savedRole = typeof window !== 'undefined' ? localStorage.getItem('sb_target_role') : null;
     if (saved) {
       try { 
         const parsed = JSON.parse(saved);
+        if (savedRole) {
+          parsed.careerGoal = savedRole;
+          parsed.targetRole = savedRole;
+        }
         return sanitizeUserProfile(parsed);
       } catch {}
     }
@@ -132,7 +138,8 @@ export function AuthProvider({ children }) {
           const name = profileRow?.full_name || stored?.name || u.user_metadata?.full_name || u.user_metadata?.name || u.email?.split('@')[0] || 'User Profile';
           const avatar = profileRow?.profile_image_url || u.user_metadata?.avatar_url || u.user_metadata?.picture || stored?.avatar || null;
           const college = stored?.college || u.user_metadata?.college || 'SkillBridge Academy';
-          const careerGoal = profileRow?.career_goal || stored?.careerGoal || u.user_metadata?.careerGoal || 'Full Stack Developer';
+          const savedRole = typeof window !== 'undefined' ? localStorage.getItem('sb_target_role') : null;
+          const careerGoal = savedRole || profileRow?.career_goal || stored?.careerGoal || u.user_metadata?.careerGoal || 'Frontend Developer';
 
           const hasUploadedResume = Boolean(
             resumeRow?.id || 
@@ -427,7 +434,7 @@ export function AuthProvider({ children }) {
       degree: savedSupabaseData?.degree || res.user?.degree || 'B.Tech / B.S.',
       department: savedSupabaseData?.department || res.user?.department || 'Computer Science & Engineering',
       graduationYear: savedSupabaseData?.graduationYear || res.user?.graduationYear || 2027,
-      careerGoal: savedSupabaseData?.careerGoal || res.user?.careerGoal || 'Full Stack AI Engineer',
+      careerGoal: (typeof window !== 'undefined' && localStorage.getItem('sb_target_role')) || savedSupabaseData?.careerGoal || res.user?.careerGoal || 'Frontend Developer',
       experienceLevel: savedSupabaseData?.experienceLevel || res.user?.experienceLevel || 'Intermediate',
       skills: savedSupabaseData?.skills || res.user?.skills || ['React', 'JavaScript', 'HTML/CSS', 'Git'],
       interests: savedSupabaseData?.interests || res.user?.interests || ['Web Development', 'Artificial Intelligence'],
@@ -600,7 +607,7 @@ export function AuthProvider({ children }) {
         degree: savedSupabaseData?.degree || 'B.Tech / B.S. in Computer Science & AI',
         department: savedSupabaseData?.department || 'Computer Science & Engineering',
         graduationYear: savedSupabaseData?.graduationYear || 2027,
-        careerGoal: savedSupabaseData?.careerGoal || 'Full Stack AI Engineer',
+        careerGoal: (typeof window !== 'undefined' && localStorage.getItem('sb_target_role')) || savedSupabaseData?.careerGoal || 'Frontend Developer',
         experienceLevel: savedSupabaseData?.experienceLevel || 'Intermediate',
         skills: savedSupabaseData?.skills && savedSupabaseData.skills.length > 0 ? savedSupabaseData.skills : ['React', 'JavaScript', 'Node.js', 'Python', 'Tailwind CSS', 'SQL'],
         interests: savedSupabaseData?.interests || ['Artificial Intelligence', 'Web Development', 'Cloud Computing'],
@@ -705,7 +712,7 @@ export function AuthProvider({ children }) {
         degree: 'B.Tech / B.S. in Computer Science & AI',
         department: 'Computer Science & Engineering',
         graduationYear: 2027,
-        careerGoal: 'Full Stack AI Engineer',
+        careerGoal: (typeof window !== 'undefined' && localStorage.getItem('sb_target_role')) || 'Frontend Developer',
         experienceLevel: 'Intermediate',
         skills: ['React', 'JavaScript', 'Node.js', 'Python', 'Tailwind CSS', 'SQL'],
         interests: ['Artificial Intelligence', 'Web Development', 'Cloud Computing'],
@@ -775,7 +782,7 @@ export function AuthProvider({ children }) {
       degree: extractString(onboardingData.degree, currentUser?.degree || 'B.Tech / B.S.'),
       department: extractString(onboardingData.department, currentUser?.department || 'Computer Science & Engineering'),
       graduationYear: parseInt(onboardingData.graduationYear, 10) || currentUser?.graduationYear || 2027,
-      careerGoal: extractString(onboardingData.careerGoal, currentUser?.careerGoal || 'Full Stack AI Engineer'),
+      careerGoal: extractString(onboardingData.careerGoal, (typeof window !== 'undefined' && localStorage.getItem('sb_target_role')) || currentUser?.careerGoal || 'Frontend Developer'),
       experienceLevel: extractString(onboardingData.experienceLevel, currentUser?.experienceLevel || 'Intermediate'),
       skills: Array.isArray(onboardingData.skills) ? onboardingData.skills.map(s => extractString(s)) : (currentUser?.skills || []),
       interests: Array.isArray(onboardingData.interests) ? onboardingData.interests.map(i => extractString(i)) : (currentUser?.interests || []),
@@ -855,6 +862,12 @@ export function AuthProvider({ children }) {
       if (sanitized.resumeFileName) localStorage.setItem('sb_resume_filename', sanitized.resumeFileName);
       if (sanitized.resumeText) localStorage.setItem('sb_resume_text', sanitized.resumeText);
       if (sanitized.resumeId) localStorage.setItem('sb_active_resume_id', sanitized.resumeId);
+      if (sanitized.careerGoal) {
+        localStorage.setItem('sb_target_role', sanitized.careerGoal);
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new Event('storage'));
+        }
+      }
     } catch {}
     if (isAuthenticated) {
       saveUserDataToSupabase(sanitized);

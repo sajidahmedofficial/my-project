@@ -1,6 +1,6 @@
-// agent-notes: { ctx: "SkillBridge career dashboard with hero skill gap card, career benchmarks & software engineering tools", deps: ["lucide-react", "recharts", "./common/AIAssistantAvatar"], state: "active", last: "anti@2026-10-21" }
+// agent-notes: { ctx: "SkillBridge career dashboard with hero skill gap card, career benchmarks & software engineering tools", deps: ["lucide-react", "recharts", "./common/AIAssistantAvatar"], state: "active", last: "sato@2026-10-31" }
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   CheckCircle2, 
   TrendingUp, 
@@ -40,9 +40,36 @@ import { calculateOverallProgress } from '../services/userPersistence';
 export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerification, onLogout }) {
   const hasUploadedResume = Boolean(profile?.hasUploadedResume || profile?.resumeId);
   const [avatarState, setAvatarState] = useState('idle');
-  const [selectedRole, setSelectedRole] = useState(
-    typeof profile?.careerGoal === 'string' ? profile.careerGoal : 'Full Stack Developer'
-  );
+  const [selectedRole, setSelectedRole] = useState(() => {
+    try {
+      const stored = localStorage.getItem('sb_target_role');
+      if (stored) return stored;
+    } catch {}
+    return typeof profile?.careerGoal === 'string' ? profile.careerGoal : 'Frontend Developer';
+  });
+
+  useEffect(() => {
+    if (profile?.careerGoal && profile.careerGoal !== selectedRole) {
+      setSelectedRole(profile.careerGoal);
+    }
+  }, [profile?.careerGoal]);
+
+  const handleRoleChange = (role) => {
+    setSelectedRole(role);
+    try {
+      localStorage.setItem('sb_target_role', role);
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('storage'));
+      }
+    } catch {}
+    if (setProfile) {
+      setProfile(prev => ({
+        ...(prev || {}),
+        careerGoal: role,
+        targetRole: role
+      }));
+    }
+  };
 
   const rawName = profile?.name || profile?.user_metadata?.full_name || 'Candidate';
   const userName = rawName.split(' ')[0] || 'Candidate';
@@ -182,12 +209,13 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
                 <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Live Skill Benchmark</span>
                 <select
                   value={selectedRole}
-                  onChange={(e) => setSelectedRole(e.target.value)}
+                  onChange={(e) => handleRoleChange(e.target.value)}
                   className="text-xs font-semibold text-[#0d594f] bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 focus:outline-none focus:ring-1 focus:ring-[#0d594f]"
                 >
+                  <option value="Frontend Developer">Frontend Developer</option>
                   <option value="Full Stack Developer">Full Stack Developer</option>
                   <option value="AI & Data Engineer">AI & Data Engineer</option>
-                  <option value="Frontend Engineer">Frontend Engineer</option>
+                  <option value="Full Stack AI Engineer">Full Stack AI Engineer</option>
                   <option value="Backend Engineer">Backend Engineer</option>
                 </select>
               </div>

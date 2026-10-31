@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Instant interactive skill roadmap modal displaying multi-stage curriculum, YouTube tutorials, free courses, study notes, and full workspace launch on touch", deps: ["react", "lucide-react", "../../services/skillGapApi.js", "../../services/learningResourcesService.js", "./YouTubeResources.jsx", "./FreeCourseCatalog.jsx", "./StudyMaterials.jsx"], state: "active", last: "anti@2026-10-29" }
+// agent-notes: { ctx: "Instant interactive skill roadmap modal displaying multi-stage curriculum, YouTube tutorials, free courses, study notes, and full workspace launch on touch", deps: ["react", "lucide-react", "../../services/skillGapApi.js", "../../services/learningResourcesService.js", "./YouTubeResources.jsx", "./FreeCourseCatalog.jsx", "./StudyMaterials.jsx"], state: "active", last: "sato@2026-10-31" }
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   X, 
@@ -21,6 +21,7 @@ import {
   getYoutubeResourcesForStage, 
   getFreeCoursesForStage, 
   getStudyMaterialsForStage,
+  discoverAndRefreshCourses,
   saveResourceProgress,
   loadResourceProgress
 } from '../../services/learningResourcesService.js';
@@ -41,6 +42,13 @@ export default function SkillRoadmapModal({
   const [roadmap, setRoadmap] = useState(null);
   const [taskCompletionMap, setTaskCompletionMap] = useState({});
   const [activeTab, setActiveTab] = useState('curriculum'); // 'curriculum' | 'youtube' | 'courses' | 'notes'
+  const [lastRefreshed, setLastRefreshed] = useState(() => {
+    try {
+      return localStorage.getItem('sb_course_sync_last_refreshed') || new Date().toISOString();
+    } catch {
+      return new Date().toISOString();
+    }
+  });
 
   // Resource progress state (completed tutorials, saved courses, read notes)
   const [resourceProgress, setResourceProgress] = useState(() => loadResourceProgress(userId, skillName));
@@ -106,7 +114,15 @@ export default function SkillRoadmapModal({
       courses: getFreeCoursesForStage(skillName, activeStage),
       notes: getStudyMaterialsForStage(skillName, activeStage)
     };
-  }, [skillName, activeStage]);
+  }, [skillName, activeStage, lastRefreshed]);
+
+  const handleRefreshCourses = async () => {
+    const res = await discoverAndRefreshCourses(skillName);
+    if (res?.lastRefreshed) {
+      setLastRefreshed(res.lastRefreshed);
+    }
+    return res;
+  };
 
   // Toggle practice task completion
   const handleToggleTask = (task) => {
@@ -447,8 +463,10 @@ export default function SkillRoadmapModal({
                     courses={stageResources.courses}
                     courseStatus={resourceProgress.courseStatus}
                     savedForLater={resourceProgress.savedForLater}
+                    lastRefreshed={lastRefreshed}
                     onStatusChange={handleCourseStatusChange}
                     onToggleSave={handleToggleSave}
+                    onRefreshCourses={handleRefreshCourses}
                   />
                 </div>
               )}

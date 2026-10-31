@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Enhanced SaaS Learning Roadmap with YouTube tutorials, official free courses, AI study notes, and persistent learning progress", deps: ["lucide-react", "../services/skillGapApi", "../utils/aiSimulator", "../services/learningResourcesService", "./roadmap/*"], state: "active", last: "anti@2026-10-29" }
+// agent-notes: { ctx: "Enhanced SaaS Learning Roadmap with YouTube tutorials, official free courses, AI study notes, and persistent learning progress", deps: ["lucide-react", "../services/skillGapApi", "../utils/aiSimulator", "../services/learningResourcesService", "./roadmap/*"], state: "active", last: "sato@2026-10-31" }
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   CheckCircle2, 
@@ -314,9 +314,10 @@ export default function LearningRoadmap({
 
   const handleRefreshCoursesCatalog = async () => {
     const res = await discoverAndRefreshCourses(activeSkill || roadmapData?.skillName);
-    if (res.lastRefreshed) {
+    if (res?.lastRefreshed) {
       setLastCatalogRefresh(res.lastRefreshed);
     }
+    return res;
   };
 
   function formatFallbackRoadmap(skillName, role, userSkills = []) {
@@ -382,7 +383,7 @@ export default function LearningRoadmap({
       const notes = getStudyMaterialsForStage(roadmapData.skillName, stg);
       return { youtube, courses, notes };
     });
-  }, [roadmapData?.stages, roadmapData?.skillName]);
+  }, [roadmapData?.stages, roadmapData?.skillName, lastCatalogRefresh]);
 
   const dimensionalMetrics = useMemo(() => {
     if (!roadmapData) {

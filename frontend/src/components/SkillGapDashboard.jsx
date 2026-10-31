@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "AI Skill Gap Analysis dashboard with persistent report state, refresh recovery, and Supabase storage", deps: ["react", "lucide-react", "../services/skillGapApi", "../services/resumeApi", "../services/userPersistence"], state: "active", last: "anti@2026-10-29" }
+// agent-notes: { ctx: "AI Skill Gap Analysis dashboard with persistent report state, refresh recovery, and Supabase storage", deps: ["react", "lucide-react", "../services/skillGapApi", "../services/resumeApi", "../services/userPersistence"], state: "active", last: "sato@2026-10-31" }
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Briefcase, 
@@ -46,8 +46,15 @@ export default function SkillGapDashboard({
       const savedRole = localStorage.getItem('sb_target_role');
       if (savedRole) return savedRole;
     } catch {}
-    return profile?.careerGoal || "Full Stack AI Engineer";
+    return profile?.careerGoal || "Frontend Developer";
   });
+
+  useEffect(() => {
+    if (profile?.careerGoal && profile.careerGoal !== selectedRole) {
+      setSelectedRole(profile.careerGoal);
+    }
+  }, [profile?.careerGoal]);
+
   const [customJd, setCustomJd] = useState("");
   const [showJdInput, setShowJdInput] = useState(false);
   const [activeFilter, setActiveFilter] = useState("all"); // 'all' | 'strong' | 'gaps'
@@ -323,7 +330,17 @@ export default function SkillGapDashboard({
     setSelectedRole(role);
     try {
       localStorage.setItem('sb_target_role', role);
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('storage'));
+      }
     } catch {}
+    if (setProfile) {
+      setProfile(prev => ({
+        ...(prev || {}),
+        careerGoal: role,
+        targetRole: role
+      }));
+    }
     const resumeText = profile?.resumeText || localStorage.getItem('sb_resume_text') || (profile?.skills || []).join(', ');
     if (activeResumeFile) {
       runAnalysisWithResume(resumeText, activeResumeFile, role, customJd);
