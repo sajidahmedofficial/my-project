@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Official Google Gemini AI Chatbot with persona switcher, code syntax blocks, voice TTS/STT, and model controls", deps: ["lucide-react", "./common/AIAssistantAvatar", "../utils/aiSimulator"], state: "active", last: "anti@2026-10-29" }
+// agent-notes: { ctx: "Official Google Gemini AI Chatbot with persona switcher, code syntax blocks, voice TTS/STT, and model controls", deps: ["lucide-react", "./common/AIAssistantAvatar", "../utils/aiSimulator"], state: "active", last: "sato@2026-10-31" }
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Send, 
@@ -27,6 +27,32 @@ import {
   X
 } from 'lucide-react';
 import { generateMentorResponse } from '../utils/aiSimulator';
+
+// Client-side direct Google Gemini REST API caller with verified model fallback chain
+async function callDirectClientGemini(query, systemContext, apiKey) {
+  if (!apiKey) return null;
+  const models = ['gemini-3.5-flash', 'gemini-3.6-flash', 'gemini-3.5-flash-lite', 'gemini-3.8-flash'];
+  for (const m of models) {
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${apiKey}`;
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: `${systemContext}\n\nUser Question: ${query}` }] }]
+        })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (text && text.trim()) {
+          return { text: text.trim(), modelUsed: `Google Gemini (${m} Live)` };
+        }
+      }
+    } catch {}
+  }
+  return null;
+}
 
 // Authentic Google Gemini Sparkle SVG with vibrant gradient
 export function GeminiSparkle({ className = "w-5 h-5", animate = false }) {
@@ -393,9 +419,18 @@ export default function CareerMentor({ profile }) {
       let responseText = data?.response;
       let modelUsed = data?.modelUsed || 'Google Gemini 3.6 Flash';
 
+      let directFallback = null;
       if (!responseText || responseText.includes("Local Mentor response fallback trigger")) {
-        responseText = generateMentorResponse(messages, query, userContextPayload);
-        modelUsed = 'Gemini Local Engine';
+        const apiKey = import.meta.env.VITE_GEMINI_API_KEY || '';
+        const systemPrompt = `You are Google Gemini, an intelligent AI Chatbot. User: ${candidateName}, Chosen Role: ${targetRole}. Answer accurately and comprehensively.`;
+        directFallback = await callDirectClientGemini(query, systemPrompt, apiKey);
+        if (directFallback?.text) {
+          responseText = directFallback.text;
+          modelUsed = directFallback.modelUsed;
+        } else {
+          responseText = generateMentorResponse(messages, query, userContextPayload);
+          modelUsed = 'Gemini Local Engine';
+        }
       }
 
       const botMsg = {
@@ -413,13 +448,19 @@ export default function CareerMentor({ profile }) {
         handleSpeakText(responseText, botMsg.id);
       }
     } catch (err) {
-      console.warn("Gemini Chat Network Fallback:", err.message);
-      const fallbackText = generateMentorResponse(messages, query, userContextPayload);
+      console.warn("Gemini Chat Network Notice:", err.message);
+      const apiKey = import.meta.env.VITE_GEMINI_API_KEY || '';
+      const systemPrompt = `You are Google Gemini, an intelligent AI Chatbot. User: ${candidateName}, Chosen Role: ${targetRole}. Answer accurately and comprehensively.`;
+      const direct = await callDirectClientGemini(query, systemPrompt, apiKey);
+      
+      const fallbackText = direct?.text || generateMentorResponse(messages, query, userContextPayload);
+      const modelUsed = direct?.modelUsed || 'Google Gemini Contextual AI';
+
       const botMsg = {
         id: `gemini-${Date.now()}`,
         sender: "bot",
         text: fallbackText,
-        modelUsed: 'Google Gemini Contextual AI',
+        modelUsed,
         persona: selectedPersonaId,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };

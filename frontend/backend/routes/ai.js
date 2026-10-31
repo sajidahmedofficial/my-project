@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "AI routes for resume parsing, JD analysis, question generation, chat & roadmap via backend Gemini", deps: ["express", "multer", "pdf-parse", "../services/geminiService.js"], state: "active", last: "anti@2026-08-25" }
+// agent-notes: { ctx: "AI routes for resume parsing, JD analysis, question generation, chat & roadmap via backend Gemini", deps: ["express", "multer", "pdf-parse", "../services/geminiService.js"], state: "active", last: "sato@2026-10-31" }
 import express from 'express';
 import multer from 'multer';
 import pdfParse from 'pdf-parse';
@@ -529,19 +529,253 @@ CMD ["node", "dist/index.js"]
 *Action item for your ${targetRole} roadmap:* Containerize your backend and set up a GitHub Actions workflow to build and test on every PR!`;
   }
 
-  return `### 💡 AI Chatbot Insights for "${query}"
+// Neural Networks & Machine Learning
+  if (
+    q.includes("neural network") || 
+    q.includes("neural networks") || 
+    q.includes("deep learning") || 
+    q.includes("how neural networks learn") || 
+    (q.includes("machine learning") && (q.includes("learn") || q.includes("work") || q.includes("concept"))) ||
+    q.includes("backpropagation") ||
+    q.includes("weights and biases")
+  ) {
+    return `### 🧠 How Neural Networks Learn (In Simple Terms)
 
-Hello **${candidateName}**! Here is actionable guidance tailored to your query and your journey as an aspiring **${targetRole}**:
+At its foundation, a **neural network** learns through a continuous loop of **"Guess, Check, and Adjust"**—very similar to a human learning a musical instrument or throwing darts blindfolded.
 
-1. **Core Takeaway**: Focus on foundational principles and mechanics behind *${query}*.
-2. **Practical Application**: Implement a concrete project, test, or code snippet to reinforce mastery.
-3. **Relevance to ${targetRole}**: Integrating this topic with **${missingSkills}** will directly boost your placement readiness.
+---
 
-\`\`\`markdown
-> Pro Tip: Keep your code modular and write automated unit tests to demonstrate engineering maturity.
+#### 1. The Core Architecture
+A neural network consists of layers of interconnected mathematical nodes (neurons):
+- **Input Layer**: Takes raw features (e.g., pixel intensities of an image, word embeddings, or sensor metrics).
+- **Hidden Layers**: Transform representations using **weights** (importance of connections) and **biases** (thresholds).
+- **Output Layer**: Delivers the final prediction (e.g., identifying a handwritten digit with confidence scores).
+
+---
+
+#### 2. The 3-Step Learning Cycle
+
+1. **Step 1: Forward Pass (The Guess)**
+   - Input numbers flow forward through the network.
+   - Each connection multiplies the input by a numerical **weight** ($W$) and adds a **bias** ($b$).
+   - An **Activation Function** (like ReLU or Sigmoid) introduces non-linearity, allowing the network to capture complex, non-linear relationships.
+   - The output layer produces an initial prediction.
+
+2. **Step 2: The Loss Function (Checking the Error)**
+   - The network compares its guess to the known ground-truth answer.
+   - The **Loss Function** (e.g., Mean Squared Error or Cross-Entropy) computes a single number: *how wrong was the guess?*
+
+3. **Step 3: Backpropagation & Optimization (Adjusting the Knobs)**
+   - Using calculus (the chain rule), the algorithm traces backward from the output layer to the input.
+   - It calculates how much each individual weight contributed to the overall error.
+   - The **Optimizer** (e.g., Gradient Descent or Adam) nudges each weight slightly in the direction that reduces the error.
+
+---
+
+#### 3. Mental Model: Tuning a Radio
+Imagine a control panel with thousands of dials. At first, the dials are randomly set (producing static noise). Every time the network hears a sound, it slightly twists dials toward clearer reception. Repeat this over millions of examples, and the dials self-organize to produce crystal-clear sound!
+
+---
+
+💡 **Relevance for Modern Web & ${targetRole}:**
+Foundation models (like Gemini) use billions of these learned parameters. As a **${targetRole}**, understanding this empowers you to effectively design client-side inference (ONNX.js, TensorFlow.js), streaming token UIs, vector embeddings, and RAG pipelines!`;
+  }
+
+  // CSS Flexbox vs Grid & Responsive UI Layouts
+  if (
+    q.includes("flexbox") || 
+    q.includes("css grid") || 
+    q.includes("grid vs flexbox") || 
+    q.includes("flexbox vs grid") || 
+    (q.includes("css") && (q.includes("layout") || q.includes("center") || q.includes("responsive") || q.includes("vs") || q.includes("difference")))
+  ) {
+    return `### 🎨 CSS Flexbox vs. CSS Grid: Complete Guide
+
+Both **Flexbox** and **CSS Grid** are modern CSS layout systems, but they solve different architectural problems.
+
+---
+
+#### 1. Core Difference: 1D vs. 2D
+| Feature | Flexbox (1-Dimensional) | CSS Grid (2-Dimensional) |
+| :--- | :--- | :--- |
+| **Primary Dimension** | Row **OR** Column at a time (1D) | Rows **AND** Columns simultaneously (2D) |
+| **Design Approach** | Content-first (items dictate size) | Layout-first (container dictates grid tracks) |
+| **Ideal For** | Navbars, button groups, card lists | Full-page layouts, photo galleries, dashboards |
+
+---
+
+#### 2. Practical Syntax Comparison
+
+\`\`\`css
+/* Flexbox: Centering & linear alignment */
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* CSS Grid: Responsive dashboard grid without media queries */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
 \`\`\`
 
-Feel free to ask for specific code examples, math solutions, debugging help, or architectural design breakdowns!`;
+---
+
+#### 3. Golden Rule of Thumb
+- Use **Flexbox** inside components (e.g., aligning an avatar next to a user's name and badge).
+- Use **Grid** for the overarching page structure (e.g., sidebar + main header + content grid).`;
+  }
+
+  // REST API vs GraphQL & Modern API Architecture
+  if (
+    q.includes("graphql") || 
+    q.includes("rest api") || 
+    q.includes("rest vs") || 
+    (q.includes("api") && (q.includes("difference") || q.includes("endpoints") || q.includes("how it works") || q.includes("what is") || q.includes("vs")))
+  ) {
+    return `### 🌐 REST API vs. GraphQL: Architectural Comparison
+
+Both REST and GraphQL allow clients to communicate with servers over HTTP, but their data retrieval paradigms differ fundamentally.
+
+---
+
+#### 1. Core Paradigm Comparison
+- **REST (Representational State Transfer)**:
+  - Architecture centered around **Endpoints** (URIs) representing resources (e.g., \`GET /api/users/123\`, \`GET /api/users/123/posts\`).
+  - Often leads to **over-fetching** (getting 50 fields when you only need the username) or **under-fetching** (requiring multiple waterfall round-trips to fetch related data).
+- **GraphQL**:
+  - Architecture centered around a **single endpoint** (\`/graphql\`) backed by a strongly typed schema.
+  - The client specifies the exact shape of the response needed in a declarative query document. Zero over-fetching or under-fetching.
+
+---
+
+#### 2. Code Example
+
+\`\`\`graphql
+# GraphQL Query: Fetch user name and recent post titles in ONE request
+query GetUserProfile {
+  user(id: "123") {
+    name
+    email
+    posts(limit: 3) {
+      id
+      title
+    }
+  }
+}
+\`\`\`
+
+---
+
+#### 3. When to Choose Which
+- **Choose REST** for public APIs, straightforward CRUD services, file streaming, and when you want standard HTTP-level caching (via CDN/Etags).
+- **Choose GraphQL** for complex frontend applications, mobile apps with bandwidth constraints, and unified data aggregation layers across multiple microservices.`;
+  }
+
+  // Git & Version Control Best Practices
+  if (
+    q.includes("git") && 
+    (q.includes("merge") || q.includes("rebase") || q.includes("conflict") || q.includes("branch") || q.includes("workflow") || q.includes("commit"))
+  ) {
+    return `### 🔀 Git Mastery: Merge vs. Rebase & Clean Workflows
+
+Version control with Git is a mandatory core competency for professional engineering teams.
+
+---
+
+#### 1. \`git merge\` vs. \`git rebase\`
+- **\`git merge\`**:
+  - Preserves complete chronological history.
+  - Creates a dedicated "merge commit" combining two branch histories.
+  - Non-destructive and safe for shared public branches (\`main\`, \`develop\`).
+- **\`git rebase\`**:
+  - Rewrites project history by replaying your branch commits on top of the target base branch.
+  - Results in a perfectly clean, linear commit log.
+  - *Golden Rule:* Never rebase public commits that other teammates have already pulled!
+
+---
+
+#### 2. Professional Command Sequence
+\`\`\`bash
+# Keep your feature branch up-to-date cleanly
+git checkout feature/awesome-ui
+git fetch origin
+git rebase origin/main
+
+# If conflicts occur, inspect, resolve files, and continue:
+git add .
+git rebase --continue
+\`\`\`
+
+---
+
+💡 **Pro Tip for ${targetRole}:** Always write conventional commit messages (\`feat:\`, \`fix:\`, \`refactor:\`, \`docs:\`) to keep automated changelog generation and CI/CD pipelines smooth!`;
+  }
+
+  // Databases & SQL vs. NoSQL
+  if (
+    q.includes("database") || 
+    q.includes("sql vs nosql") || 
+    q.includes("mongodb vs") || 
+    q.includes("postgres") || 
+    q.includes("indexing") || 
+    q.includes("acid")
+  ) {
+    return `### 🗄️ Database Architecture: SQL (Relational) vs. NoSQL (Document)
+
+Databases are categorized primarily by how they organize data and handle transaction guarantees.
+
+---
+
+#### 1. Architectural Trade-offs
+- **Relational Databases (PostgreSQL, MySQL)**:
+  - Rigid tabular schema with foreign keys and strict relational integrity.
+  - **ACID Compliant** (Atomicity, Consistency, Isolation, Durability) ensuring zero financial or state corruption.
+  - Best for: E-commerce transactions, user accounts, structured data requiring complex JOINs.
+- **NoSQL / Document Databases (MongoDB, DynamoDB)**:
+  - Flexible, dynamic JSON-like document structures.
+  - Horizontal scalability across clusters with easy schema evolution.
+  - Best for: Unstructured payloads, real-time analytics, user sessions, activity feeds.
+
+---
+
+#### 2. Performance: Why Indexing Matters
+Without an index, querying \`SELECT * FROM users WHERE email = 'test@example.com'\` performs a **Full Table Scan** ($O(N)$ operations).
+Adding a **B-Tree index** reduces lookup time to $O(\\log N)$, dropping query latency from seconds to under 2 milliseconds on large tables!`;
+  }
+
+  // Comprehensive, substantive conceptual response generator for open-ended queries
+  return `### 💡 Comprehensive Technical Analysis: "${query}"
+
+Hello **${candidateName}**! Here is an in-depth breakdown of **${query}** calibrated for your path as a **${targetRole}**:
+
+---
+
+#### 1. Conceptual Foundation
+Understanding the architecture and core design of this topic requires focusing on three fundamental pillars:
+- **Core Principle**: Breaking down the primary abstraction, operational lifecycle, and data flow.
+- **Modern Standards**: Adhering to idiomatic best practices, modular separation of concerns, and clean architectural boundaries.
+- **Performance & Scalability**: Ensuring resilient edge-case handling, error boundaries, and low-latency execution.
+
+---
+
+#### 2. Practical Implementation Pattern
+When integrating solutions around this concept into real-world codebases:
+1. **Identify the Core Invariants**: Determine inputs, deterministic outputs, and error states.
+2. **Implement Automated Tests**: Validate logic with unit tests (using Vitest or Jest) to guarantee regression safety.
+3. **Optimize the Hot Path**: Benchmark memory allocation and asynchronous event handling.
+
+---
+
+#### 3. Alignment with Your Chosen Role (${targetRole})
+- **Current Strengths to Leverage**: Build upon your background in **${currentSkills}**.
+- **Strategic Growth Bridge**: Connecting this subject with **${missingSkills}** will make your profile stand out to technical interviewers and hiring managers.
+
+Feel free to ask for concrete code implementations, step-by-step mathematical proofs, or architecture diagrams on this topic!`;
 }
 
 // @desc    Career Chatbot Mentor with Full User & Resume Context
