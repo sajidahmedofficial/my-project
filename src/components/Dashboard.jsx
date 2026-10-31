@@ -86,7 +86,6 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
   const overallProgress = profile?.overallProgress || progressData.overall_progress || calculateOverallProgress(progressData);
   const resumeAnalysisDone = Boolean(progressData.resume_analysis_completed || hasUploadedResume);
   const skillGapDone = Boolean(progressData.skill_gap_completed || hasUploadedResume);
-  const jobMatrixDone = Boolean(progressData.job_matrix_completed || hasUploadedResume);
   const careerGuidanceProgress = progressData.career_guidance_completed ? 100 : (progressData.career_guidance_progress || 60);
   const aiMentorProgress = progressData.ai_mentor_completed ? 100 : (progressData.ai_mentor_progress || 40);
 
@@ -313,12 +312,6 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
               <div className="flex items-center justify-between p-2 rounded-xl bg-white border border-slate-100">
                 <span className="font-medium text-slate-700">Skill Gap Analysis</span>
                 <span className={`inline-flex items-center gap-1 font-semibold ${skillGapDone ? 'text-emerald-700' : 'text-emerald-600'}`}>
-                  <CheckCircle2 className="w-3.5 h-3.5" /> Complete
-                </span>
-              </div>
-              <div className="flex items-center justify-between p-2 rounded-xl bg-white border border-slate-100">
-                <span className="font-medium text-slate-700">Job Matrix</span>
-                <span className={`inline-flex items-center gap-1 font-semibold ${jobMatrixDone ? 'text-emerald-700' : 'text-emerald-600'}`}>
                   <CheckCircle2 className="w-3.5 h-3.5" /> Complete
                 </span>
               </div>
