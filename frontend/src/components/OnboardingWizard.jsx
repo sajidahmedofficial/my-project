@@ -1,4 +1,4 @@
-// agent-notes: { ctx: "Onboarding with mandatory manual Target Role, Industry & Objective inputs", deps: ["lucide-react", "../context/AuthContext", "../services/resumeApi", "../services/api", "../services/supabaseData", "../utils/sanitizeProfile"], state: "active", last: "anti@2026-10-28" }
+// agent-notes: { ctx: "Onboarding with mandatory manual Target Role, Industry & Objective inputs", deps: ["lucide-react", "../context/AuthContext", "../services/resumeApi", "../services/api", "../services/supabaseData", "../utils/sanitizeProfile"], state: "active", last: "sato@2026-10-31" }
 
 import React, { useState, useRef, useEffect } from 'react';
 import { 
@@ -875,7 +875,7 @@ export default function OnboardingWizard({
   ];
 
   return (
-    <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 text-slate-900 animate-fade-in pb-16">
+    <div className={`${currentStep === 5 ? 'max-w-7xl' : 'max-w-4xl'} mx-auto py-8 px-4 sm:px-6 text-slate-900 animate-fade-in pb-16 w-full`}>
       
       {/* Subheader Title */}
       <div className="text-center mb-8 space-y-1.5">
@@ -931,8 +931,9 @@ export default function OnboardingWizard({
         })}
       </div>
 
-      {/* Main Wizard Form Card */}
-      <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 sm:p-10 space-y-8">
+      {/* Main Wizard Form Card for Steps 1-4 */}
+      {currentStep !== 5 && (
+        <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 sm:p-10 space-y-8">
         
         {/* ===================================================================== */}
         {/* STEP 1: RESUME UPLOAD */}
@@ -1851,65 +1852,63 @@ export default function OnboardingWizard({
           </div>
         )}
 
-        {/* ===================================================================== */}
-        {/* STEP 5: SKILL GAP ANALYSIS */}
-        {/* ===================================================================== */}
-        {currentStep === 5 && (
-          <div className="space-y-6 animate-fade-in">
-            <div className="space-y-1">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#d5f5e9] border border-[#aeead4] text-[#0f766e] text-xs font-semibold">
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>AI Skill Gap Evaluation</span>
-              </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
-                Skill Gap Analysis for {targetRole}
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-500">
-                Detailed benchmark of your uploaded resume against real-world industry requirements.
-              </p>
-            </div>
+        </div>
+      )}
 
-            <SkillGapDashboard 
-              profile={{
-                ...currentUser,
-                name: `${firstName.trim()} ${lastName.trim()}`.trim() || 'Candidate',
-                careerGoal: targetRole,
-                skills: skillsList,
-                education: educationList,
-                experience: experienceList,
-                hasUploadedResume: Boolean(uploadFile || uploadProgress === 3),
-                resumeFileName: uploadFile?.name || (uploadProgress === 3 ? (analysisResult?.fileName || 'Uploaded_Resume.pdf') : 'Uploaded_Resume.pdf'),
-                resumeText: (skillsList || []).join(', ')
-              }}
-              onGenerateRoadmap={onGenerateRoadmap}
-              onNavigate={onNavigate}
-              onOpenVerification={onOpenVerification}
-            />
+      {/* ===================================================================== */}
+      {/* STEP 5: SKILL GAP ANALYSIS (Matches standalone Skill Gap Analysis page) */}
+      {/* ===================================================================== */}
+      {currentStep === 5 && (
+        <div className="space-y-6 animate-fade-in w-full">
+          <SkillGapDashboard 
+            profile={{
+              ...currentUser,
+              name: `${firstName.trim()} ${lastName.trim()}`.trim() || 'Candidate',
+              careerGoal: targetRole,
+              targetRole: targetRole,
+              skills: skillsList,
+              education: educationList,
+              experience: experienceList,
+              hasUploadedResume: Boolean(uploadFile || uploadProgress === 3),
+              resumeFileName: uploadFile?.name || (uploadProgress === 3 ? (analysisResult?.fileName || 'Uploaded_Resume.pdf') : 'Uploaded_Resume.pdf'),
+              resumeText: (skillsList || []).join(', ')
+            }}
+            setProfile={(updated) => {
+              if (typeof updated === 'function') {
+                const prev = { careerGoal: targetRole, targetRole };
+                const res = updated(prev);
+                if (res?.careerGoal) setTargetRole(res.careerGoal);
+              } else if (updated?.careerGoal) {
+                setTargetRole(updated.careerGoal);
+              }
+            }}
+            onGenerateRoadmap={onGenerateRoadmap}
+            onNavigate={onNavigate}
+            onOpenVerification={onOpenVerification}
+          />
 
-            {/* Launch Workspace CTA */}
-            <div className="pt-4 flex items-center justify-between border-t border-slate-100">
-              <button
-                type="button"
-                onClick={() => setCurrentStep(4)}
-                className="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-semibold transition-all flex items-center gap-1.5"
-              >
-                <ArrowLeft className="w-3.5 h-3.5" />
-                <span>Back to Career Path</span>
-              </button>
+          {/* Launch Workspace CTA */}
+          <div className="pt-6 flex items-center justify-between border-t border-slate-200/80">
+            <button
+              type="button"
+              onClick={() => setCurrentStep(4)}
+              className="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-semibold transition-all flex items-center gap-1.5"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back to Career Path</span>
+            </button>
 
-              <button
-                type="button"
-                onClick={handleFinishOnboarding}
-                className="px-8 py-3.5 rounded-xl bg-[#0f766e] hover:bg-[#0d594f] text-white text-xs sm:text-sm font-semibold shadow-md transition-all flex items-center gap-2 transform hover:-translate-y-0.5"
-              >
-                <span>Finish Profile Setup & Launch</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={handleFinishOnboarding}
+              className="px-8 py-3.5 rounded-xl bg-[#0f766e] hover:bg-[#0d594f] text-white text-xs sm:text-sm font-semibold shadow-md transition-all flex items-center gap-2 transform hover:-translate-y-0.5"
+            >
+              <span>Finish Profile Setup & Launch</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
           </div>
-        )}
-
-      </div>
+        </div>
+      )}
 
       {/* ===================================================================== */}
       {/* NAME INPUT POPUP MODAL (MANDATORY USER NAME ENTRY & STRIKE NOTIFICATION) */}
