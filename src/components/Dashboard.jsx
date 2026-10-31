@@ -113,7 +113,7 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
       accent: 'bg-emerald-50 text-emerald-700 border-emerald-200'
     },
     {
-      id: 'skillgap',
+      id: 'wizard',
       title: 'Skill Gap Benchmarking',
       desc: 'Compare your stack against current tech recruiter requirements in real-time.',
       icon: Briefcase,
@@ -384,7 +384,7 @@ export default function Dashboard({ profile, setProfile, onNavigate, onOpenVerif
                 Resume Analyzer
               </button>
               <button
-                onClick={() => onNavigate('skillgap')}
+                onClick={() => onNavigate('wizard')}
                 className="py-2 px-3 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold transition-all text-center"
               >
                 Skill Gap

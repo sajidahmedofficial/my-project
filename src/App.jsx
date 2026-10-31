@@ -34,7 +34,6 @@ import Dashboard from './components/Dashboard';
 
 // Dynamic lazy route imports for optimal bundle splitting
 const ResumeAnalyzer = React.lazy(() => import('./pages/ResumeAnalyzer'));
-const SkillGapDashboard = React.lazy(() => import('./components/SkillGapDashboard'));
 const LearningRoadmap = React.lazy(() => import('./components/LearningRoadmap'));
 const CareerMentor = React.lazy(() => import('./components/CareerMentor'));
 const SkillVerificationModal = React.lazy(() => import('./components/resume/SkillVerificationModal'));
@@ -54,7 +53,7 @@ function MainLayout() {
   const [activeTab, setActiveTab] = useState(() => {
     try {
       const savedTab = localStorage.getItem('sb_active_tab');
-      const validTabs = ['dashboard', 'wizard', 'skillgap', 'resume', 'roadmap', 'chat'];
+      const validTabs = ['dashboard', 'wizard', 'resume', 'roadmap', 'chat'];
       if (savedTab && validTabs.includes(savedTab)) {
         return savedTab;
       }
@@ -281,7 +280,6 @@ function MainLayout() {
   const navigationItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'wizard', label: 'Profile Setup', icon: User },
-    { id: 'skillgap', label: 'Skill Gap Analysis', icon: Briefcase },
     { id: 'resume', label: 'Resume Analyzer', icon: FileText },
     { id: 'roadmap', label: 'Learning Roadmap', icon: Map },
     { id: 'chat', label: 'AI Chatbot', icon: MessageSquare }
@@ -316,15 +314,6 @@ function MainLayout() {
               onLogout={logout}
             />
           </div>
-          <div className={activeTab === 'skillgap' ? 'block' : 'hidden'}>
-            <SkillGapDashboard 
-              profile={activeProfile} 
-              setProfile={handleProfileChange}
-              onGenerateRoadmap={handleGenerateRoadmap} 
-              onNavigate={handleTabChange} 
-              onOpenVerification={handleOpenGlobalVerification}
-            />
-          </div>
           <div className={activeTab === 'resume' ? 'block' : 'hidden'}>
             <ResumeAnalyzer 
               profile={activeProfile} 
@@ -357,7 +346,7 @@ function MainLayout() {
               onOpenVerification={handleOpenGlobalVerification}
               onComplete={() => {
                 setShowOnboarding(false);
-                handleTabChange('skillgap');
+                handleTabChange('dashboard');
               }} 
             />
           </div>

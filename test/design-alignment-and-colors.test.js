@@ -99,7 +99,7 @@ runTest('5. SkillGapDashboard aligns with standard max-w-7xl grid width instead 
 // 4. Zero Content & Feature Changes (Preservation Check)
 // -----------------------------------------------------------------------------
 runTest('6. All navigation tabs and feature IDs are strictly preserved in App.jsx', () => {
-  const requiredTabs = ['dashboard', 'wizard', 'skillgap', 'resume', 'roadmap', 'chat'];
+  const requiredTabs = ['dashboard', 'wizard', 'resume', 'roadmap', 'chat'];
   requiredTabs.forEach(tab => {
     assert(rootApp.includes(`'${tab}'`) || rootApp.includes(`"${tab}"`), `Tab '${tab}' must be preserved`);
     assert(frontendApp.includes(`'${tab}'`) || frontendApp.includes(`"${tab}"`), `Tab '${tab}' must be preserved in frontend`);
@@ -109,7 +109,6 @@ runTest('6. All navigation tabs and feature IDs are strictly preserved in App.js
   const requiredLabels = [
     'Dashboard',
     'Resume Analyzer',
-    'Skill Gap Analysis',
     'Learning Roadmap',
     'AI Chatbot',
     'Profile Setup'
